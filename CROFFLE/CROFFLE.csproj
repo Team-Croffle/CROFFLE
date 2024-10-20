@@ -30,10 +30,32 @@
     <None Remove="Font\LeagueSpartan-Regular.ttf" />
     <None Remove="Font\LeagueSpartan-SemiBold.ttf" />
     <None Remove="Font\LeagueSpartan-Thin.ttf" />
+    <None Remove="Icon\calendar_icon.png" />
+    <None Remove="Icon\Check_Icon.png" />
+    <None Remove="Icon\croffle.ico" />
+    <None Remove="Icon\croffle.png" />
+    <None Remove="Icon\delete_icon.png" />
+    <None Remove="Icon\file-lines-regular.png" />
+    <None Remove="Icon\id_icon.png" />
+    <None Remove="Icon\Info.png" />
+    <None Remove="Icon\key_icon.png" />
+    <None Remove="Icon\power_icon.png" />
+    <None Remove="Icon\setting_icon.png" />
+    <None Remove="Icon\trash-can-red.png" />
+    <None Remove="Icon\trash-can-solid.png" />
+    <None Remove="Icon\user_icon.png" />
+    <None Remove="Icon\WKULogo.png" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="8.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AnniversaryAPI\AnniversaryAPI.csproj" />
+    <ProjectReference Include="..\CroffleDataManager\CroffleDataManager.csproj" />
+    <ProjectReference Include="..\HttpManager\HttpManager.csproj" />
+    <ProjectReference Include="..\WaffleHttp\WaffleHttp.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -97,6 +119,55 @@
     <Resource Include="Font\LeagueSpartan-Thin.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Icon\calendar_icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\Check_Icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\croffle.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\croffle.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\delete_icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\file-lines-regular.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\id_icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\Info.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\key_icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\power_icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\setting_icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\trash-can-red.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\trash-can-solid.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\user_icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\WKULogo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DLL\" />
   </ItemGroup>
 
 </Project>

@@ -31,6 +31,14 @@ namespace CROFFLE.xamls.Controls
         public static readonly DependencyProperty ButtonFontSizeDependencyProperty =
             DependencyProperty.Register("ButtonFontSize", typeof(double), typeof(RoundButton), new PropertyMetadata(20.0));
 
+        // Image Properties
+        public static readonly DependencyProperty ButtonImageDependencyProperty =
+            DependencyProperty.Register("ButtonImage", typeof(ImageSource), typeof(RoundButton), new PropertyMetadata(null));
+        public static readonly DependencyProperty ButtonImageHeightDependencyProperty =
+            DependencyProperty.Register("ButtonImageHeight", typeof(double), typeof(RoundButton), new PropertyMetadata(20.0));
+        public static readonly DependencyProperty ButtonImageWidthDependencyProperty =
+            DependencyProperty.Register("ButtonImageWidth", typeof(double), typeof(RoundButton), new PropertyMetadata(20.0));
+
         // Click Event
         public static readonly RoutedEvent ClickEvent =
             EventManager.RegisterRoutedEvent("Click", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(RoundButton));
@@ -77,6 +85,23 @@ namespace CROFFLE.xamls.Controls
         {
             get { return (double)GetValue(ButtonFontSizeDependencyProperty); }
             set { SetValue(ButtonFontSizeDependencyProperty, value); }
+        }
+        
+        // Image Properties
+        public ImageSource ButtonImage
+        {
+            get { return (ImageSource)GetValue(ButtonImageDependencyProperty); }
+            set { SetValue(ButtonImageDependencyProperty, value); }
+        }
+        public double ButtonImageHeight
+        {
+            get { return (double)GetValue(ButtonImageHeightDependencyProperty); }
+            set { SetValue(ButtonImageHeightDependencyProperty, value); }
+        }
+        public double ButtonImageWidth
+        {
+            get { return (double)GetValue(ButtonImageWidthDependencyProperty); }
+            set { SetValue(ButtonImageWidthDependencyProperty, value); }
         }
 
         // Click Event

@@ -41,17 +41,17 @@
                     </Grid.RowDefinitions>
                     <!--Schedule Button-->
                     <Grid Grid.Row="0">
-                        <control:RoundButton x:Name="btn_Schedule" ButtonText="일정" ButtonBorderBrush="Transparent"
+                        <control:RoundButton x:Name="btn_Schedule" ButtonBorderBrush="Transparent"
                                              ButtonForeground="Black" ButtonFontSize="20" ButtonColor="#FF5757"
                                              ButtonFontFamily="pack://application:,,,/Font/KCC-Ganpan.ttf#KCC-Ganpan"
-                                             ButtonCornerRadius="15" Margin="10 5 10 2.5"/>
+                                             ButtonCornerRadius="15" Margin="10 5 10 2.5" ButtonText="일정"/>
                     </Grid>
                     <!--Schedule Button-->
                     <!--Task Button-->
                     <Grid Grid.Row="1">
                         <control:RoundButton x:Name="btn_Task" ButtonText="과업" ButtonBorderBrush="Transparent"
                                              ButtonForeground="Black" ButtonFontSize="20" ButtonColor="#0CC0DF" 
-                                             ButtonFontFamily="pack://application:,,,/Font/KCC-Ganpan.ttf#KCC-Ganpan"
+                                             ButtonFontFamily="pack://application:,,,/Font/#KCC-Ganpan"
                                              ButtonCornerRadius="15" Margin="10 2.5 10 2.5"/>
                     </Grid>
                     <!--Task Button-->

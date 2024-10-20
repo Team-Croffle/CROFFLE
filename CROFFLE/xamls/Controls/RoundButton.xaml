@@ -19,7 +19,8 @@
                             <Grid>
                                 <ContentPresenter
                                     HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                                    VerticalAlignment="{TemplateBinding VerticalAlignment}"/>
+                                    VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                    Content="{TemplateBinding Content}"/>
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -38,23 +39,28 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Border x:Name="bd_Button" Grid.Row="0"
-        BorderBrush="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonBorderBrush}"
-        BorderThickness="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonBorderThickness}"
-        Background="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonColor}"
-        CornerRadius="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonCornerRadius}"
-        Height="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Height}"
-        Width="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Width}"/>
+               BorderBrush="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonBorderBrush}"
+               BorderThickness="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonBorderThickness}"
+               Background="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonColor}"
+               CornerRadius="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonCornerRadius}"
+               Height="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Height}"
+               Width="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Width}"/>
+        <Image x:Name="img_Button" Grid.Row="0"
+                Source="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonImage}"
+                Height="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonImageHeight}"
+                Width="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonImageWidth}"
+                HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <Label x:Name="lb_Button" Grid.Row="0"
-        Content="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonText}"
-        Foreground="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonForeground}"
-        FontFamily="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonFontFamily}"
-        FontSize="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonFontSize}"
-        Height="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Height}"
-        Width="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Width}"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Center"/>
+               Content="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonText}"
+               Foreground="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonForeground}"
+               FontFamily="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonFontFamily}"
+               FontSize="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonFontSize}"
+               Height="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Height}"
+               Width="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Width}"
+               HorizontalAlignment="Center" VerticalAlignment="Center"
+               HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
         <Button x:Name="btn_Button" Style="{StaticResource StandardButton}" Grid.Row="0"
-        Height="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Height}"
-        Width="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Width}"/>
+               Height="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Height}"
+               Width="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Width}"/>
     </Grid>
 </UserControl>
