@@ -30,8 +30,13 @@
     <None Remove="Font\LeagueSpartan-Regular.ttf" />
     <None Remove="Font\LeagueSpartan-SemiBold.ttf" />
     <None Remove="Font\LeagueSpartan-Thin.ttf" />
+    <None Remove="Icon\angle-left-solid.png" />
+    <None Remove="Icon\angle-right-solid.png" />
+    <None Remove="Icon\bell-solid.png" />
     <None Remove="Icon\calendar_icon.png" />
+    <None Remove="Icon\check-solid.png" />
     <None Remove="Icon\Check_Icon.png" />
+    <None Remove="Icon\clock-regular.png" />
     <None Remove="Icon\croffle.ico" />
     <None Remove="Icon\croffle.png" />
     <None Remove="Icon\delete_icon.png" />
@@ -39,12 +44,26 @@
     <None Remove="Icon\id_icon.png" />
     <None Remove="Icon\Info.png" />
     <None Remove="Icon\key_icon.png" />
+    <None Remove="Icon\list-solid.png" />
+    <None Remove="Icon\location-dot-solid.png" />
+    <None Remove="Icon\palette-solid.png" />
+    <None Remove="Icon\pen-to-square-solid.ico" />
+    <None Remove="Icon\pen-to-square-solid.png" />
+    <None Remove="Icon\person-running-solid.png" />
+    <None Remove="Icon\plus-solid.png" />
     <None Remove="Icon\power_icon.png" />
     <None Remove="Icon\setting_icon.png" />
     <None Remove="Icon\trash-can-red.png" />
     <None Remove="Icon\trash-can-solid.png" />
     <None Remove="Icon\user_icon.png" />
+    <None Remove="Icon\video-solid.png" />
     <None Remove="Icon\WKULogo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Icon\bell-solid.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
@@ -119,10 +138,22 @@
     <Resource Include="Font\LeagueSpartan-Thin.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Icon\angle-left-solid.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\angle-right-solid.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Icon\calendar_icon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Icon\check-solid.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Icon\Check_Icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\clock-regular.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Icon\croffle.ico">
@@ -146,6 +177,27 @@
     <Resource Include="Icon\key_icon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Icon\list-solid.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\location-dot-solid.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\palette-solid.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\pen-to-square-solid.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\pen-to-square-solid.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\person-running-solid.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\plus-solid.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Icon\power_icon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -159,6 +211,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Icon\user_icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\video-solid.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Icon\WKULogo.png">

@@ -19,9 +19,18 @@ namespace CROFFLE.xamls.Windows
     /// </summary>
     public partial class DailyInfo : Window
     {
-        public DailyInfo()
+
+        DateTime _date;
+        public DailyInfo(DateTime date)
         {
+            _date = date;
             InitializeComponent();
+            test(_date);
+        }
+
+        private void test(DateTime date)
+        {
+            lb_annv_title.Content = date.ToString("yyyy-MM월-dd일");
         }
     }
 }
