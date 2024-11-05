@@ -116,12 +116,9 @@ namespace CROFFLE.xamls.Controls
             InitializeComponent();
         }
 
-        private void MouseDown_Button(object sender, MouseButtonEventArgs e)
+        private void MouseDown_Button(object sender, RoutedEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                RaiseEvent(new RoutedEventArgs(ClickEvent));
-            }
+            RaiseEvent(new RoutedEventArgs(ClickEvent));
         }
     }
 }

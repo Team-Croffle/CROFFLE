@@ -1,0 +1,281 @@
+﻿<Window x:Class="CROFFLE.xamls.Windows.ScheduleEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:root="clr-namespace:CROFFLE.xamls"
+        xmlns:local="clr-namespace:CROFFLE.xamls.Windows"
+        xmlns:control="clr-namespace:CROFFLE.xamls.Controls"
+        mc:Ignorable="d"
+        Title="ScheduleEditor" Height="380" Width="410" WindowStyle="SingleBorderWindow" AllowsTransparency="False"
+        Background="Transparent">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- TitleBar -->
+        <root:TitleBar Title="Schedule Editor" BackColor="#ffd8a3" ForeColor="Gray" TitleFontSize="15" TitleHeight="30"
+                    TitleFontFamily="pack://application:,,,/Font/KCC-Ganpan.ttf#KCC-Ganpan"/>
+        <!--TitleBar-->
+
+        <!--Content_Area-->
+        <Border x:Name="content_bd" Grid.Row="1" BorderBrush="Black" BorderThickness="1 0 1 1" Background="WhiteSmoke" CornerRadius="0 0 10 10"/>
+        <Grid x:Name="editor_Area" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="160"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="100"/>
+            </Grid.RowDefinitions>
+
+            <!--#region 일정 제목-->
+            <Grid x:Name="Subject" Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="15"/>
+                    <ColumnDefinition Width="360*"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid x:Name="subject_name_area" Grid.Column="1" Height="40">
+                    <Border BorderBrush="#FF707070" BorderThickness="1" CornerRadius="7"/>
+                    <Label x:Name="title_lb" Content="제목을 입력해주세요" Background="Transparent" BorderBrush="{x:Null}" VerticalAlignment="Center"
+                       HorizontalAlignment="Left" FontSize="12" Foreground="LightGray"/>
+                    <TextBox x:Name="title_tb" Text="" Background="Transparent" BorderBrush="{x:Null}" VerticalContentAlignment="Center"
+                         HorizontalContentAlignment="Left" FontSize="12" Foreground="Black"/>
+                </Grid>
+                
+                <!--삭제 버튼-->
+                <Grid x:Name="delete_Icon_area" Grid.Column="2">
+                    <Button x:Name="delete_btn" Width="25" Height="29" HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Background="Transparent" />
+                </Grid>
+            </Grid>
+            
+            <!--#endregion 일정 제목-->
+
+            <!--일정 정보-->
+            <Grid x:Name="inputDate_area" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35*"/>
+                    <RowDefinition Height="45*"/>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="45*"/>
+                    <RowDefinition Height="5*"/>
+                </Grid.RowDefinitions>
+
+                <Grid x:Name="calendarIcon_area" Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="70"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Content="img" Width=" 30" HorizontalAlignment="Right"/>
+                    <Label Grid.Column="1" Content="하루 종일" HorizontalAlignment="Right" Margin="0 0 5 0" VerticalAlignment="Center"
+                       FontFamily="../../Font/#KCC-Ganpan" FontSize="15"/>
+                    <Label Grid.Column="2" Content="switch" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                </Grid>
+
+                <Grid x:Name="dateStart_area" Grid.Row="1" Margin="15 0">
+                    <Border x:Name="dateStart_bd" CornerRadius="7" BorderThickness="1" BorderBrush="#FF707070"/>
+                    <Label x:Name="dateStart_lb" Content="시작: ----년 --월 --일 --:--" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                       BorderBrush="Transparent" Background="Transparent" FontSize="13"/>
+                    <Button x:Name="dateStart_btn" Content="" Background="Transparent" BorderBrush="Transparent"/>
+                </Grid>
+
+                <Grid x:Name="dateEnd_area" Grid.Row="3" Margin="15 0">
+                    <Border x:Name="dateEnd_bd" CornerRadius="7" BorderThickness="1" BorderBrush="#FF707070"/>
+                    <Label x:Name="dateEnd_lb" Content="종료: ----년--월--일 --:--" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                       BorderBrush="Transparent" Background="Transparent" FontSize="13"/>
+                    <Button x:Name="dateEnd_btnn" Content="" Background="Transparent" BorderBrush="Transparent"/>
+                </Grid>
+
+            </Grid>
+
+            <!--moreInfo area-->
+            <Grid x:Name="more_section_area" Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+
+                <Grid x:Name="more_Section" Grid.Row="0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="10*"/>
+                            <RowDefinition Height="45*"/>
+                            <!--장소정보-->
+                            <RowDefinition Height="10*"/>
+                            <RowDefinition Height="45*"/>
+                            <!--이동수단정보-->
+                            <RowDefinition Height="10*"/>
+                            <RowDefinition Height="45*"/>
+                            <!--기타메모사항-->
+                            <RowDefinition Height="10*"/>
+                        </Grid.RowDefinitions>
+
+                        <!--장소정보-->
+                        <Grid x:Name="place_area" Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50*"/>
+                                <ColumnDefinition Width="332*"/>
+                                <ColumnDefinition Width="14*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <Label Grid.Column="0" Content="img" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                            <Grid x:Name="place_input_area" Grid.Column="1">
+                                <Border x:Name="place_bd" CornerRadius="7" BorderThickness="1" BorderBrush="#FF707070"/>
+                                <Label x:Name="place_lb" Content="장소를 입력해주세요" Background="Transparent" BorderBrush="{x:Null}" VerticalAlignment="Center"
+                                       HorizontalAlignment="Left" Margin="7" FontFamily="맑은 고딕" FontSize="12" Foreground="DimGray"/>
+                                <TextBox x:Name="place_tb" Text=""  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                                         BorderBrush="Transparent" Background="Transparent" Margin="10 0 0 0" FontFamily="맑은 고딕" FontSize="13"/>
+                            </Grid>
+                        </Grid>
+
+                        <!--이동수단정보-->
+                        <Grid x:Name="transportation_area" Grid.Row="3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50*"/>
+                                <ColumnDefinition Width="332*"/>
+                                <ColumnDefinition Width="14*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Content="img" VerticalAlignment="Center" HorizontalAlignment="Right" />
+
+                            <Grid x:Name="transportation_input_area" Grid.Column="1">
+                                <Border x:Name="transp_bd" CornerRadius="7" BorderThickness="1" BorderBrush="#FF707070"/>
+                                <Label x:Name="transp_lb" Content="이동수단을 입력하세요" Background="Transparent" BorderBrush="{x:Null}" VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" Margin="7" FontFamily="맑은 고딕" FontSize="12" Foreground="DimGray"/>
+                                <TextBox x:Name="transp_tb" Text="" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                                     BorderBrush="Transparent" Background="Transparent" Margin="10,0,0,0" FontFamily="맑은 고딕" FontSize="13"/>
+                            </Grid>
+                        </Grid>
+
+                        <!--기타메모사항-->
+                        <Grid x:Name="etc_area" Grid.Row="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50*"/>
+                                <ColumnDefinition Width="332*"/>
+                                <ColumnDefinition Width="14*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Content="img" VerticalAlignment="Center" HorizontalAlignment="Right" />
+
+                            <Grid x:Name="etc_input_area" Grid.Column="1">
+                                <Border x:Name="etc_bd" CornerRadius="7" BorderThickness="1" BorderBrush="#FF707070"/>
+                                <Label x:Name="etc_lb" Content="기타 메모사항을 입력하세요" Background="Transparent" BorderBrush="{x:Null}" VerticalAlignment="Center"
+                     HorizontalAlignment="Left" Margin="7" FontFamily="맑은 고딕" FontSize="12" Foreground="DimGray"/>
+                                <TextBox x:Name="etc_tb" Text="" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                     BorderBrush="Transparent" Background="Transparent" Margin="10,0,0,0" FontFamily="맑은 고딕" FontSize="13"/>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid x:Name="Fold" Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="20"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Name="fold_lb" Content="더보기▽" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                       FontSize="12" Grid.Column="2"/>
+                    <Button x:Name="fold_btn" BorderThickness="0" Background="Transparent" Grid.Column="2" />
+                </Grid>
+            </Grid>
+
+            <!--일정 설정-->
+            <!--알람-->
+            <Grid x:Name="option_area" Grid.Row="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid x:Name="sw_option_area" Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="50*"/>
+                        <ColumnDefinition Width="5*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid x:Name="check_area" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition Width="5*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!--alarm_switch_area-->
+                        <Image x:Name="img_alarm" Grid.Column="0" Source="../../Icon/bell-solid.png" Width="20" Height="20" 
+                   VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15 0 0 0"/>
+                        <Label x:Name="lb_alarm" Grid.Column="0" Content="알림" VerticalAlignment="Center" HorizontalAlignment="Center"
+                   FontFamily="pack://application:,,,/Font/KCC-Ganpan.ttf#KCC-Ganpan" FontSize="14"/>
+                        <Label x:Name="sw_alarm" Grid.Column="0" Content="switch" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+
+                        <!--done_switch_area-->
+                        <Image x:Name="img_done" Grid.Column="2" Source="../../Icon/Check-solid.png" Width="20" Height="20" 
+                   VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15 0 0 0"/>
+                        <Label x:Name="lb_done" Grid.Column="2" Content="완료" VerticalAlignment="Center" HorizontalAlignment="Center"
+                   FontFamily="pack://application:,,,/Font/KCC-Ganpan.ttf#KCC-Ganpan" FontSize="14"/>
+                        <Label x:Name="sw_done" Grid.Column="2" Content="switch" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                    </Grid>
+                </Grid>
+                <!--footer_area-->
+                <Grid x:Name="footer_area" Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="170"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="150"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!--color_select_area-->
+                    <Grid x:Name="color_select_area" Grid.Column="0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <control:RoundButton x:Name="btn_palette" Grid.Column="1" Width="30" Height="30" ButtonColor="Black" ButtonCornerRadius="4" 
+
+                                     VerticalAlignment="Center" ButtonBorderThickness="0"/>
+
+                            <control:RoundButton x:Name="btn_color1" Grid.Column="2" Width="30" Height="30" ButtonColor="Red" ButtonCornerRadius="4" 
+                                     VerticalAlignment="Center" ButtonBorderThickness="0" Click="btn_Color_Click"/>
+
+                            <control:RoundButton x:Name="btn_color2" Grid.Column="3" Width="30" Height="30" ButtonColor="Yellow" ButtonCornerRadius="4" 
+                                     VerticalAlignment="Center" ButtonBorderThickness="0" Click="btn_Color_Click"/>
+
+                            <control:RoundButton x:Name="btn_color3" Grid.Column="4" Width="30" Height="30" ButtonColor="Green" ButtonCornerRadius="4" 
+                                     VerticalAlignment="Center" ButtonBorderThickness="0" Click="btn_Color_Click"/>
+
+                        </Grid>
+                    </Grid>
+
+                    <Grid x:Name="footer_btns_area" Grid.Column="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="6*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="6*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!--ok_btn-->
+                        <control:RoundButton x:Name="btn_ok" Grid.Column="1" Background="AliceBlue" VerticalAlignment="Center" ButtonColor="#ffd8a3"
+                                 ButtonBorderThickness="0" ButtonText="OK" ButtonFontFamily="../../Font/#KCC-Ganpan" ButtonFontSize="13" Click="MouseClick_Save"/>
+                        <!--ok_btn-->
+
+                        <!--cancel_btn-->
+                        <control:RoundButton x:Name="btn_cancel" Grid.Column="3" Background="AliceBlue" VerticalAlignment="Center" ButtonColor="LightGray"
+                                 ButtonBorderThickness="0" ButtonText="cancel" ButtonFontFamily="../../Font/#KCC-Ganpan" ButtonFontSize="13" Click="MouseClick_Close"/>
+                        <!--cancel_btn-->
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

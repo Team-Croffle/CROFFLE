@@ -16,8 +16,8 @@ namespace CROFFLE.xamls
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             // Set the window style to none
-            DailyInfo dailyInfo = new();
-            dailyInfo.Show();
+           /* DailyInfo dailyInfo = new();
+            dailyInfo.Show();*/
         }
     }
 }
