@@ -1,0 +1,35 @@
+﻿<Page x:Class="CROFFLE.xamls.Pages.WaffleNotice"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:CROFFLE.xamls.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="715" d:DesignWidth="888" Background="White"
+      Title="WaffleNotice">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="450"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="1">
+                <Border BorderBrush="Black" BorderThickness="1" CornerRadius="7" Background="#ffd8a3"/>
+                <Label Content="WAFFLE NOTICE" FontFamily="../../Font/#KCC-Ganpan" FontSize="30" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </Grid>
+        </Grid>
+        <ComboBox Name="array_ComboBox" Grid.Row="2" Text="일자 순" Margin="741,30,25,10" Initialized="ComboBox_Initialized"/>
+        <Grid Grid.Row="3">
+            <Border Background="DarkGray"/>
+        </Grid>
+    </Grid>
+</Page>
