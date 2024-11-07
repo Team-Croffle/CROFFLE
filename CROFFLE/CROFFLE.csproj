@@ -1,228 +1,207 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0-windows10.0.22000.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UseWPF>true</UseWPF>
-    <Authors>$(AssemblyName) Dev.</Authors>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
+		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
 
-  <ItemGroup>
-    <None Remove="Font\AgaveNerdFont-Bold.ttf" />
-    <None Remove="Font\AgaveNerdFont-Regular.ttf" />
-    <None Remove="Font\AgaveNerdFontMono-Bold.ttf" />
-    <None Remove="Font\AgaveNerdFontMono-Regular.ttf" />
-    <None Remove="Font\AgaveNerdFontPropo-Bold.ttf" />
-    <None Remove="Font\AgaveNerdFontPropo-Regular.ttf" />
-    <None Remove="Font\Dongle-Bold.ttf" />
-    <None Remove="Font\Dongle-Light.ttf" />
-    <None Remove="Font\Dongle-Regular.ttf" />
-    <None Remove="Font\KCC-Ganpan.otf" />
-    <None Remove="Font\KCC-Ganpan.ttf" />
-    <None Remove="Font\LeagueSpartan-Black.ttf" />
-    <None Remove="Font\LeagueSpartan-Bold.ttf" />
-    <None Remove="Font\LeagueSpartan-ExtraBold.ttf" />
-    <None Remove="Font\LeagueSpartan-ExtraLight.ttf" />
-    <None Remove="Font\LeagueSpartan-Light.ttf" />
-    <None Remove="Font\LeagueSpartan-Medium.ttf" />
-    <None Remove="Font\LeagueSpartan-Regular.ttf" />
-    <None Remove="Font\LeagueSpartan-SemiBold.ttf" />
-    <None Remove="Font\LeagueSpartan-Thin.ttf" />
-    <None Remove="Icon\angle-left-solid.png" />
-    <None Remove="Icon\angle-right-solid.png" />
-    <None Remove="Icon\bell-solid.png" />
-    <None Remove="Icon\calendar_icon.png" />
-    <None Remove="Icon\check-solid.png" />
-    <None Remove="Icon\Check_Icon.png" />
-    <None Remove="Icon\clock-regular.png" />
-    <None Remove="Icon\croffle.ico" />
-    <None Remove="Icon\croffle.png" />
-    <None Remove="Icon\delete_icon.png" />
-    <None Remove="Icon\file-lines-regular.png" />
-    <None Remove="Icon\id_icon.png" />
-    <None Remove="Icon\Info.png" />
-    <None Remove="Icon\key_icon.png" />
-    <None Remove="Icon\list-solid.png" />
-    <None Remove="Icon\location-dot-solid.png" />
-    <None Remove="Icon\palette-solid.png" />
-    <None Remove="Icon\pen-to-square-solid.ico" />
-    <None Remove="Icon\pen-to-square-solid.png" />
-    <None Remove="Icon\person-running-solid.png" />
-    <None Remove="Icon\plus-solid.png" />
-    <None Remove="Icon\power_icon.png" />
-    <None Remove="Icon\setting_icon.png" />
-    <None Remove="Icon\trash-can-red.png" />
-    <None Remove="Icon\trash-can-solid.png" />
-    <None Remove="Icon\user_icon.png" />
-    <None Remove="Icon\video-solid.png" />
-    <None Remove="Icon\WKULogo.png" />
-  </ItemGroup>
+		<!-- Note for MacCatalyst:
+		The default runtime is maccatalyst-x64, except in Release config, in which case the default is maccatalyst-x64;maccatalyst-arm64.
+		When specifying both architectures, use the plural <RuntimeIdentifiers> instead of the singular <RuntimeIdentifier>.
+		The Mac App Store will NOT accept apps with ONLY maccatalyst-arm64 indicated;
+		either BOTH runtimes must be indicated or ONLY macatalyst-x64. -->
+		<!-- For example: <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers> -->
 
-  <ItemGroup>
-    <Resource Include="Icon\bell-solid.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
+		<OutputType>Exe</OutputType>
+		<RootNamespace>CROFFLE</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="8.0.10" />
-  </ItemGroup>
+		<!-- Display name -->
+		<ApplicationTitle>CROFFLE</ApplicationTitle>
 
-  <ItemGroup>
-    <ProjectReference Include="..\AnniversaryAPI\AnniversaryAPI.csproj" />
-    <ProjectReference Include="..\CroffleDataManager\CroffleDataManager.csproj" />
-    <ProjectReference Include="..\HttpManager\HttpManager.csproj" />
-    <ProjectReference Include="..\WaffleHttp\WaffleHttp.csproj" />
-  </ItemGroup>
+		<!-- App Identifier -->
+		<ApplicationId>com.companyname.croffle</ApplicationId>
 
-  <ItemGroup>
-    <Resource Include="Font\AgaveNerdFont-Bold.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Font\AgaveNerdFont-Regular.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Font\AgaveNerdFontMono-Bold.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Font\AgaveNerdFontMono-Regular.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Font\AgaveNerdFontPropo-Bold.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Font\AgaveNerdFontPropo-Regular.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Font\Dongle-Bold.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Font\Dongle-Light.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Font\Dongle-Regular.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Font\KCC-Ganpan.otf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Font\KCC-Ganpan.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Font\LeagueSpartan-Black.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Font\LeagueSpartan-Bold.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Font\LeagueSpartan-ExtraBold.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Font\LeagueSpartan-ExtraLight.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Font\LeagueSpartan-Light.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Font\LeagueSpartan-Medium.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Font\LeagueSpartan-Regular.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Font\LeagueSpartan-SemiBold.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Font\LeagueSpartan-Thin.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\angle-left-solid.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\angle-right-solid.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\calendar_icon.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\check-solid.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\Check_Icon.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\clock-regular.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\croffle.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\croffle.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\delete_icon.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\file-lines-regular.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\id_icon.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\Info.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\key_icon.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\list-solid.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\location-dot-solid.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\palette-solid.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\pen-to-square-solid.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\pen-to-square-solid.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\person-running-solid.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\plus-solid.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\power_icon.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\setting_icon.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\trash-can-red.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\trash-can-solid.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\user_icon.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\video-solid.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icon\WKULogo.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
+		<!-- Versions -->
+		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>1</ApplicationVersion>
 
-  <ItemGroup>
-    <Folder Include="DLL\" />
-  </ItemGroup>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">22.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+		<PackageIcon>croffle.png</PackageIcon>
+		<Title>CROFFLE</Title>
+		<Authors>$(AssemblyName) Dev.</Authors>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- App Icon -->
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiIcon>
+
+		<!-- Splash Screen -->
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+
+		<!-- Images -->
+		<MauiImage Include="Resources\Images\*" />
+		<MauiImage Update="Resources\Images\croffle.png" Resize="True" BaseSize="500,500">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiImage>
+    <MauiImage Update="Resources\Images\croffle2.png" Resize="True" BaseSize="500,500">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </MauiImage>
+    <MauiImage Update="Resources\Images\croffle_big.png" Resize="True" BaseSize="1080,1080">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </MauiImage>
+    <MauiImage Update="Resources\Images\croffle_banner.png" Resize="True" BaseSize="540,1080">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </MauiImage>
+    <MauiImage Update="Resources\Images\dotnet_bot.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </MauiImage>
+
+		<!-- Custom Fonts -->
+		<MauiFont Include="Resources\Fonts\*" />
+
+		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <AndroidResource Remove="Images\**" />
+	  <Compile Remove="Images\**" />
+	  <EmbeddedResource Remove="Images\**" />
+	  <MauiCss Remove="Images\**" />
+	  <MauiXaml Remove="Images\**" />
+	  <None Remove="Images\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Resources\Fonts\AgaveNerdFont-Bold.ttf" />
+	  <None Remove="Resources\Fonts\AgaveNerdFont-Regular.ttf" />
+	  <None Remove="Resources\Fonts\AgaveNerdFontMono-Bold.ttf" />
+	  <None Remove="Resources\Fonts\AgaveNerdFontMono-Regular.ttf" />
+	  <None Remove="Resources\Fonts\AgaveNerdFontPropo-Bold.ttf" />
+	  <None Remove="Resources\Fonts\AgaveNerdFontPropo-Regular.ttf" />
+	  <None Remove="Resources\Fonts\Dongle-Bold.ttf" />
+	  <None Remove="Resources\Fonts\Dongle-Light.ttf" />
+	  <None Remove="Resources\Fonts\Dongle-Regular.ttf" />
+	  <None Remove="Resources\Fonts\KCC-Ganpan.otf" />
+	  <None Remove="Resources\Fonts\KCC-Ganpan.ttf" />
+	  <None Remove="Resources\Fonts\LeagueSpartan-Black.ttf" />
+	  <None Remove="Resources\Fonts\LeagueSpartan-Bold.ttf" />
+	  <None Remove="Resources\Fonts\LeagueSpartan-ExtraBold.ttf" />
+	  <None Remove="Resources\Fonts\LeagueSpartan-ExtraLight.ttf" />
+	  <None Remove="Resources\Fonts\LeagueSpartan-Light.ttf" />
+	  <None Remove="Resources\Fonts\LeagueSpartan-Medium.ttf" />
+	  <None Remove="Resources\Fonts\LeagueSpartan-Regular.ttf" />
+	  <None Remove="Resources\Fonts\LeagueSpartan-SemiBold.ttf" />
+	  <None Remove="Resources\Fonts\LeagueSpartan-Thin.ttf" />
+	  <None Remove="Resources\Images\croffle2.png" />
+	  <None Remove="Resources\Images\croffle_banner.png" />
+	  <None Remove="Resources\Images\croffle_big.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.92" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.92" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="MenuPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="xamls\Views\Calendar.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="xamls\Pages\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiFont Update="Resources\Fonts\AgaveNerdFont-Bold.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\AgaveNerdFont-Regular.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\AgaveNerdFontMono-Bold.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\AgaveNerdFontMono-Regular.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\AgaveNerdFontPropo-Bold.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\AgaveNerdFontPropo-Regular.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\Dongle-Bold.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\Dongle-Light.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\Dongle-Regular.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\KCC-Ganpan.otf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\KCC-Ganpan.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\LeagueSpartan-Black.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\LeagueSpartan-Bold.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\LeagueSpartan-ExtraBold.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\LeagueSpartan-ExtraLight.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\LeagueSpartan-Light.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\LeagueSpartan-Medium.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\LeagueSpartan-Regular.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\LeagueSpartan-SemiBold.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\LeagueSpartan-Thin.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\OpenSans-Regular.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\OpenSans-Semibold.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Resources\AppIcon\appiconfg.svg">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
 
 </Project>
