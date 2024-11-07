@@ -23,7 +23,9 @@ namespace DataManager.Json
             var json = _fileManager.ReadAllText();
             _jobject = JsonConvert.DeserializeObject<JObject>(json);
             Log.LogInfo("[JsonManager] LoadJObject: JObject Loaded");
-            return _jobject != null;
+            var result = _jobject != null;
+            _jobject ??= new();
+            return result;
         } // LoadJObject
 
         public bool LoadJObject(string json)
@@ -31,7 +33,9 @@ namespace DataManager.Json
             Log.LogInfo("[JsonManager] LoadJObject: JObject from string");
             _jobject = JsonConvert.DeserializeObject<JObject>(json);
             Log.LogInfo("[JsonManager] LoadJObject: JObject Loaded");
-            return _jobject != null;
+            var result = _jobject != null;
+            _jobject ??= new();
+            return result;
         } // LoadJObject
 
         public bool LoadJObject(JObject jobject)
@@ -39,24 +43,9 @@ namespace DataManager.Json
             Log.LogInfo("[JsonManager] LoadJObject: JObject from JObject");
             _jobject = jobject;
             Log.LogInfo("[JsonManager] LoadJObject: JObject Loaded");
-            return _jobject != null;
-        } // LoadJObject
-
-        public T? LoadJObject<T>()
-        {
-            Log.LogInfo("[JsonManager] LoadJObject: JObject to Object from file");
-            var json = _fileManager.ReadAllText();
-            var obj = JsonConvert.DeserializeObject<T>(json);
-            Log.LogInfo("[JsonManager] LoadJObject: Object Loaded");
-            return obj;
-        } // LoadJObject
-
-        public T? LoadJObject<T> (string json)
-        {
-            Log.LogInfo("[JsonManager] LoadJObject: JObject to Object from string");
-            var obj = JsonConvert.DeserializeObject<T>(json);
-            Log.LogInfo("[JsonManager] LoadJObject: Object Loaded");
-            return obj;
+            var result = _jobject != null;
+            _jobject ??= new();
+            return result;
         } // LoadJObject
 
         public void SaveJObject()
@@ -67,25 +56,50 @@ namespace DataManager.Json
             Log.LogInfo("[JsonManager] SaveJObject: JObject Saved");
         } // SaveJObject
 
-        public void AddItem(string key, object value)
+        public void AddItem(string key, string value)
         {
-            Log.LogInfo($"[JsonManager] AddItem: Add {key}");
+            Log.LogInfo($"[JsonManager] AddItem: Add {key} with {value}");
+            if (_jobject == null)
+            {
+                Log.LogWarn($"[JsonManager] AddItem: No JObject Loaded");
+                return;
+            }
             if (_jobject.ContainsKey(key))
             {
-                Log.LogWarn($"[JsonManager] AddItem: {key} already exists. Overwriting...");
-                _jobject[key] = JToken.FromObject(value);
-                Log.LogInfo($"[JsonManager] AddItem: {key} Added");
+                Log.LogWarn($"[JsonManager] AddItem: {key} Already Exists");
+                _jobject[key] = value;
+                return;
             }
-            else
+            _jobject.Add(key, value);
+            Log.LogInfo($"[JsonManager] AddItem: {key} Added");
+        } // AddItem
+
+        public void AddItem(string key, object values)
+        {
+            Log.LogInfo($"[JsonManager] AddItem: Add {key} with {values}");
+            if (_jobject == null)
             {
-                _jobject.Add(key, JToken.FromObject(value));
-                Log.LogInfo($"[JsonManager] AddItem: {key} Added");
+                Log.LogWarn($"[JsonManager] AddItem: No JObject Loaded");
+                return;
             }
+            if (_jobject.ContainsKey(key))
+            {
+                Log.LogWarn($"[JsonManager] AddItem: {key} Already Exists");
+                _jobject[key] = JToken.FromObject(values);
+                return;
+            }
+            _jobject.Add(key, JToken.FromObject(values));
+            Log.LogInfo($"[JsonManager] AddItem: {key} Added");
         } // AddItem
 
         public void RemoveItem(string key)
         {
             Log.LogInfo($"[JsonManager] RemoveItem: Remove {key}");
+            if (_jobject == null)
+            {
+                Log.LogWarn($"[JsonManager] AddItem: No JObject Loaded");
+                return;
+            }
             if (_jobject.ContainsKey(key))
             {
                 _jobject.Remove(key);
