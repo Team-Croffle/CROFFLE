@@ -7,7 +7,7 @@ namespace DataManager.Json
     public class JsonManager
     {
         FileManager _fileManager;
-        JObject _jobject;
+        JObject? _jobject;
 
         public JsonManager(string file_name)
         {
@@ -17,26 +17,29 @@ namespace DataManager.Json
             LoadJObject();
         } // JsonManager
 
-        public void LoadJObject()
+        public bool LoadJObject()
         {
             Log.LogInfo("[JsonManager] LoadJObject: JObject from file");
             var json = _fileManager.ReadAllText();
-            _jobject = JsonConvert.DeserializeObject<JObject>(json) ?? new();
+            _jobject = JsonConvert.DeserializeObject<JObject>(json);
             Log.LogInfo("[JsonManager] LoadJObject: JObject Loaded");
+            return _jobject != null;
         } // LoadJObject
 
-        public void LoadJObject(string json)
+        public bool LoadJObject(string json)
         {
             Log.LogInfo("[JsonManager] LoadJObject: JObject from string");
-            _jobject = JsonConvert.DeserializeObject<JObject>(json) ?? new();
+            _jobject = JsonConvert.DeserializeObject<JObject>(json);
             Log.LogInfo("[JsonManager] LoadJObject: JObject Loaded");
+            return _jobject != null;
         } // LoadJObject
 
-        public void LoadJObject(JObject jobject)
+        public bool LoadJObject(JObject jobject)
         {
             Log.LogInfo("[JsonManager] LoadJObject: JObject from JObject");
             _jobject = jobject;
             Log.LogInfo("[JsonManager] LoadJObject: JObject Loaded");
+            return _jobject != null;
         } // LoadJObject
 
         public T? LoadJObject<T>()
@@ -66,7 +69,7 @@ namespace DataManager.Json
 
         public void AddItem(string key, object value)
         {
-            Log.LogInfo($"[JsonManager] AddItem: Add {key} {value}");
+            Log.LogInfo($"[JsonManager] AddItem: Add {key}");
             if (_jobject.ContainsKey(key))
             {
                 Log.LogWarn($"[JsonManager] AddItem: {key} already exists. Overwriting...");
@@ -123,5 +126,18 @@ namespace DataManager.Json
                 Log.LogWarn($"[JsonManager] FindItems: {key} Not Found");
             }
         } // FindItems
+
+        public void GetKeys(out string[]? keys)
+        {
+            Log.LogInfo("[JsonManager] GetKeys: Get All Keys");
+            if (_jobject == null)
+            {
+                keys = null;
+                Log.LogWarn("[JsonManager] GetKeys: No JObject Loaded");
+                return;
+            }
+            keys = _jobject.Properties().Select(p => p.Name).ToArray();
+            Log.LogInfo("[JsonManager] GetKeys: Keys Found");
+        } // GetKeys
     } // JsonManager
 } // DataManager.Json
