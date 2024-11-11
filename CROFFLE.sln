@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CroffleLogManager", "Croffl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CROFFLE_Core", "CROFFLE_Core\CROFFLE_Core.csproj", "{427A1BD9-892E-493E-9AEA-A7C0182594AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnniversaryAPI", "AnniversayAPI\AnniversaryAPI.csproj", "{C66CAA75-74EA-4376-A1BE-474E17F08545}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnniversaryAPI", "AnniversaryAPI\AnniversaryAPI.csproj", "{C66CAA75-74EA-4376-A1BE-474E17F08545}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

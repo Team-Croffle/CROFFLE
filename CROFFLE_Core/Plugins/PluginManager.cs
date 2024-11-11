@@ -3,19 +3,6 @@ using System.Reflection;
 
 namespace CROFFLE_Core.Plugins
 {
-    public interface IPlugin
-    {
-        public string Name { get; }
-        public string Description { get; }
-        public string Version { get; }
-        public string Author { get; }
-        public string[] Dependencies { get; }
-        public string Path { get; }
-        public bool IsEnabled { get; }
-        public ContentPage? ContentPage { get; internal set; }
-        public void Initialize();
-    }
-
     public class PluginManager
     {
         JsonManager _jsonManager;
@@ -31,10 +18,7 @@ namespace CROFFLE_Core.Plugins
         void LoadPlugins()
         {
             GetPlugins();
-            foreach (var plugin in _plugins)
-            {
-                plugin.Initialize();
-            }
+            InitializePlugins();
         }
         void GetPlugins()
         {
@@ -47,21 +31,44 @@ namespace CROFFLE_Core.Plugins
 
             foreach (var key in keys)
             {
-                jm.LoadJObject(key);
-                jm.FindItem("Path", out var path);
+                _jsonManager.FindItem(key, out var value);
+                if (value is null) { continue; }
+                jm.LoadJObject(value);
+                jm.FindItem("FileName", out var file);
+                if (file is null) { continue; }
 
+                var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, file);
+                
                 var assembly = Assembly.LoadFile(path);
                 if (assembly is null) { continue; }
 
                 var types = assembly.GetTypes();
                 foreach (var type in types)
                 {
-                    if (type.GetInterface("IPlugin") is null) { continue; }
+                    if (type.GetInterface(nameof(IPlugin)) is null) { continue; }
                     var obj = Activator.CreateInstance(type);
                     if (obj is null) { continue; }
                     _plugins.Add((IPlugin)obj);
                 }
             } // foreach
         } // GetPlugins
+
+        void InitializePlugins()
+        {
+            foreach (var plugin in _plugins)
+            {
+                plugin.Initialize();
+            }
+        } // InitializePlugins
+
+        public IEnumerable<string> GetPluginNames()
+        {
+            List<string> names = new();
+            foreach (var plugin in _plugins)
+            {
+                names.Add(plugin.Name);
+            }
+            return names;
+        } // GetPluginNames
     } // PluginManager
 } // namespace CROFFLE_Core.Plugins

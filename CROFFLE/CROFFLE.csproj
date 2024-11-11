@@ -131,7 +131,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\AnniversayAPI\AnniversaryAPI.csproj" />
+	  <ProjectReference Include="..\AnniversaryAPI\AnniversaryAPI.csproj" />
 	  <ProjectReference Include="..\CroffleLogManager\CroffleLogManager.csproj" />
 	  <ProjectReference Include="..\CROFFLE_Core\CROFFLE_Core.csproj" />
 	  <ProjectReference Include="..\DataManager\DataManager.csproj" />
