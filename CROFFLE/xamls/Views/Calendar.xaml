@@ -10,7 +10,12 @@
             </DataTemplate>
             <DataTemplate x:Key="TodayBorder">
                 <Border Stroke="{AppThemeBinding Light={StaticResource Tertiary}, Dark={StaticResource Primary}}"
-                        HorizontalOptions="Fill" VerticalOptions="Fill" StrokeThickness="2" StrokeShape="{Binding BorderStrokeShape}" />
+                        HorizontalOptions="Fill" VerticalOptions="Fill" StrokeThickness="2" StrokeShape="{Binding BorderStrokeShape}"
+                        Grid.RowSpan="5"/>
+            </DataTemplate>
+            <DataTemplate x:Key="ContentLabel">
+                <Label Text="" FontSize="Default"  FontFamily="DongleBold" HorizontalOptions="Fill"
+                       TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" HorizontalTextAlignment="Center" />
             </DataTemplate>
         </ResourceDictionary>
     </ContentView.Resources>
@@ -52,6 +57,35 @@
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
+                
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -63,6 +97,72 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
+        </Grid>
+        <Grid Grid.Row="0" x:Name="Grid_btn">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Button BackgroundColor="Transparent" Grid.Row="0" Grid.Column="0" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="0" Grid.Column="1" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="0" Grid.Column="2" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="0" Grid.Column="3" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="0" Grid.Column="4" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="0" Grid.Column="5" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="0" Grid.Column="6" Clicked="Cal_Clicked" />
+            
+            <Button BackgroundColor="Transparent" Grid.Row="1" Grid.Column="0" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="1" Grid.Column="1" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="1" Grid.Column="2" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="1" Grid.Column="3" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="1" Grid.Column="4" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="1" Grid.Column="5" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="1" Grid.Column="6" Clicked="Cal_Clicked" />
+            
+            <Button BackgroundColor="Transparent" Grid.Row="2" Grid.Column="0" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="2" Grid.Column="1" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="2" Grid.Column="2" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="2" Grid.Column="3" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="2" Grid.Column="4" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="2" Grid.Column="5" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="2" Grid.Column="6" Clicked="Cal_Clicked" />
+            
+            <Button BackgroundColor="Transparent" Grid.Row="3" Grid.Column="0" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="3" Grid.Column="1" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="3" Grid.Column="2" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="3" Grid.Column="3" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="3" Grid.Column="4" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="3" Grid.Column="5" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="3" Grid.Column="6" Clicked="Cal_Clicked" />
+            
+            <Button BackgroundColor="Transparent" Grid.Row="4" Grid.Column="0" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="4" Grid.Column="1" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="4" Grid.Column="2" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="4" Grid.Column="3" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="4" Grid.Column="4" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="4" Grid.Column="5" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="4" Grid.Column="6" Clicked="Cal_Clicked" />
+            
+            <Button BackgroundColor="Transparent" Grid.Row="5" Grid.Column="0" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="5" Grid.Column="1" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="5" Grid.Column="2" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="5" Grid.Column="3" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="5" Grid.Column="4" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="5" Grid.Column="5" Clicked="Cal_Clicked" />
+            <Button BackgroundColor="Transparent" Grid.Row="5" Grid.Column="6" Clicked="Cal_Clicked" />
         </Grid>
     </Grid>
 </ContentView>

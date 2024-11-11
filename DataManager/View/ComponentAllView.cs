@@ -38,10 +38,14 @@ namespace DataManager.View
     public class ComponentAllView
     {
         private SQLiteConnection? _db;
-        public IEnumerable<ComponentAll>? ComponentAlls { get; set; }
+
+        IEnumerable<ComponentAll>? ComponentAlls;
+
+        public ComponentAll? this[int index] { get => ComponentAlls?.ElementAt(index); }
 
         public ComponentAllView()
         {
+            SQLiteDB db = new();
             Init();
         }
         public void Init() {
@@ -78,29 +82,86 @@ namespace DataManager.View
             ComponentAlls = result;
         } // LoadComponent
 
-        public async Task SaveComponent(ComponentAll cpa)
+        public void LoadComponent(DateTime target, bool done)
+        {
+            Log.LogInfo("[ComponentAllView] LoadComponent");
+            if (_db is null) return;
+            var result = _db.Table<Memo>()
+                    .Join(_db.Table<Event>(), (m) => m.ContentsID, (e) => e.ContentsID, (m, e) => new { m, e })
+                    .Join(_db.Table<Contents>(), (me) => me.m.ContentsID, (c) => c.ContentsID, (me, c) => new { me, c })
+                    .Select((mec) => new ComponentAll
+                    {
+                        ContentsID = mec.me.m.ContentsID,
+                        Type = mec.c.Type,
+                        ContentDate = mec.c.ContentDate,
+                        Color = mec.c.Color,
+                        AddedTime = mec.c.AddedTime,
+                        StartTime = mec.me.e.StartTime,
+                        EndTime = mec.me.e.EndTime,
+                        Alarm = mec.me.e.Alarm,
+                        Done = mec.me.e.Done,
+                        Repeat = mec.me.e.Repeat,
+                        Canceled = mec.me.e.Canceled,
+                        Title = mec.me.m.Title,
+                        Details = mec.me.m.Details,
+                    })
+                    .Where(t => t.StartTime <= target && t.EndTime > target)
+                    .Where(t => t.Done == done)
+                    .OrderBy(t => t.StartTime);
+            ComponentAlls = result;
+        } // LoadComponent
+
+        public ComponentAll? LoadComponent(string contentsID)
+        {
+            Log.LogInfo($@"[ComponentAllView] LoadComponent: ContentsID: {contentsID}");
+            if (_db is null) return null;
+            var result = _db.Table<Memo>()
+                    .Join(_db.Table<Event>(), (m) => m.ContentsID, (e) => e.ContentsID, (m, e) => new { m, e })
+                    .Join(_db.Table<Contents>(), (me) => me.m.ContentsID, (c) => c.ContentsID, (me, c) => new { me, c })
+                    .Select((mec) => new ComponentAll
+                    {
+                        ContentsID = mec.me.m.ContentsID,
+                        Type = mec.c.Type,
+                        ContentDate = mec.c.ContentDate,
+                        Color = mec.c.Color,
+                        AddedTime = mec.c.AddedTime,
+                        StartTime = mec.me.e.StartTime,
+                        EndTime = mec.me.e.EndTime,
+                        Alarm = mec.me.e.Alarm,
+                        Done = mec.me.e.Done,
+                        Repeat = mec.me.e.Repeat,
+                        Canceled = mec.me.e.Canceled,
+                        Title = mec.me.m.Title,
+                        Details = mec.me.m.Details,
+                    })
+                    .Where(t => t.ContentsID == contentsID)
+                    .FirstOrDefault();
+            return result;
+        } // LoadComponent
+
+        public void SaveComponent(ComponentAll cpa)
         {
             Log.LogInfo("[ComponentAllView] SaveComponent");
             if (_db is null) return;
             SQLiteDB db = new();
-            var result = await db.SaveItemASync(cpa._contents);
+            var result = db.SaveItem(cpa._contents);
             if (CheckResult(result, "Contents") is not 1) return;
-            result = await db.SaveItemASync(cpa._event);
+            result = db.SaveItem(cpa._event);
             if (CheckResult(result, "Event") is not 1) return;
-            result = await db.SaveItemASync(cpa._memo);
+            result = db.SaveItem(cpa._memo);
             if (CheckResult(result, "Memo") is not 1) return;
         } // SaveComponent
 
-        public async Task DeleteComponent(ComponentAll cpa)
+        public void DeleteComponent(ComponentAll cpa)
         {
             Log.LogInfo("[ComponentAllView] DeleteComponent");
             if (_db is null) return;
             SQLiteDB db = new();
-            var result = await db.DeleteItemAsync(cpa._contents);
+            var result = db.DeleteItem(cpa._contents);
             if (CheckResult(result, "Contents") is not 1) return;
-            result = await db.DeleteItemAsync(cpa._event);
+            result = db.DeleteItem(cpa._event);
             if (CheckResult(result, "Event") is not 1) return;
-            result = await db.DeleteItemAsync(cpa._memo);
+            result = db.DeleteItem(cpa._memo);
             if (CheckResult(result, "Memo") is not 1) return;
         } // DeleteComponent
 

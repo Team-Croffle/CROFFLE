@@ -24,10 +24,11 @@ namespace DataManager.View
 
         public MemoView()
         {
+            SQLiteDB db = new();
             Init();
         }
 
-        void Init()
+        void  Init()
         {
             if (_db is not null) return;
 
@@ -53,13 +54,13 @@ namespace DataManager.View
             _memoComponents = result;
         } // LoadMemo
 
-        public async Task SaveMemo(MemoComponents memoComponents)
+        public void SaveMemo(MemoComponents memoComponents)
         {
             Log.LogInfo("[MemoView] SaveMemo");
             SQLiteDB db = new();
-            var result = await db.SaveItemASync(memoComponents._contents);
+            var result = db.SaveItem(memoComponents._contents);
             if (Check(result, "Contents") == 0) return;
-            result = await db.SaveItemASync(memoComponents._memo);
+            result = db.SaveItem(memoComponents._memo);
             if (Check(result, "Memo") == 0) return;
         }
 

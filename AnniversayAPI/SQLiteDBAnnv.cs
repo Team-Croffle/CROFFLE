@@ -14,34 +14,28 @@
    limitations under the License.
 ***/
 
+using AnniversaryAPI.Scheme;
 using CroffleLogManager;
-using DataManager.SQLiteDBMS.Scheme;
 using SQLite;
 using System.Linq.Expressions;
 
-namespace DataManager.SQLiteDBMS
+namespace AnniversaryAPI
 {
-    public class SQLiteDB
+    public class SQLiteDBAnnv
     {
         protected SQLiteConnection? _db;
 
 
-        public SQLiteDB( ) { Init(); }
+        public SQLiteDBAnnv( ) { }
 
         protected void Init() 
         {
             if (_db is not null) return;
 
-            _db = new(Path.Combine(Constants.DB_PATH, Constants.DB_NAME), Constants.FLAGS);
+            _db = new(Path.Combine(ConstantsAnnv.DB_PATH, ConstantsAnnv.DB_NAME), ConstantsAnnv.FLAGS);
 
-            CreateTable<Account>();
-            CreateTable<Alarm>();
-            CreateTable<Contents>();
-            CreateTable<DateTemp>();
-            CreateTable<Event>();
-            CreateTable<Memo>();
-            CreateTable<Settings>();
-        }
+            CreateTable<Anniversary>();
+        } // Init
 
         void CreateTable<T>() where T : new()
         {
@@ -49,22 +43,22 @@ namespace DataManager.SQLiteDBMS
             var result = _db.CreateTable<T>();
             if (result is not CreateTableResult.Migrated)
                 Log.LogInfo($@"[SQLiteDB] CreateTable: Table {typeof(T).Name} Created.");
-         //fi
-        }
+            //fi
+        } // CreateTable
 
         public List<T>? GetItems<T>() where T : new()
         {
             Init();
             if (_db is null) return default;
             return _db.Table<T>().ToList();
-        }
+        } // GetItems
 
         public List<T>? GetItems<T>(Expression<Func<T, bool>> predExpr) where T : new()
         {
             Init();
             if (_db is null) return default;
             return _db.Table<T>().Where(predExpr).ToList();
-        }
+        } // GetItems
 
         public List<T>? GetItems<T>(
             Expression<Func<T, bool>> predExpr, Expression<Func<T, object>> orderExpr) where T : new()
@@ -72,14 +66,14 @@ namespace DataManager.SQLiteDBMS
             Init();
             if (_db is null) return default;
             return _db.Table<T>().Where(predExpr).OrderBy(orderExpr).ToList();
-        }
+        } // GetItems
 
         public T? GetItem<T>(Expression<Func<T, bool>> predExpr) where T : new()
         {
             Init();
             if (_db is null) return default;
             return _db.Table<T>().Where(predExpr).FirstOrDefault();
-        }
+        } // GetItem
 
         public T? GetItem<T>(
             Expression<Func<T, bool>> predExpr, Expression<Func<T, bool>> orderExpr) where T : new()
@@ -87,20 +81,32 @@ namespace DataManager.SQLiteDBMS
             Init();
             if (_db is null) return default;
             return _db.Table<T>().Where(predExpr).OrderBy(orderExpr).FirstOrDefault();
-        }
+        } // GetItem
 
         public int SaveItem<T>(T item) where T : new()
         {
             Init();
             if (_db is null) return 0;
             return _db.InsertOrReplace(item);
-        }
+        } // SaveItem
 
         public int DeleteItem<T>(T item) where T : new()
         {
             Init();
             if (_db is null) return 0;
             return _db.Delete(item);
-        }
-    }
-}
+        } // DeleteItem
+
+        public bool IsHoliday(DateTime date)
+        {
+            Init();
+            if (_db is null) return false;
+            var annvList = _db.Table<Anniversary>().Where(x => x.locdate == date).ToList();
+            foreach (var item in annvList)
+            {
+                if (item.isHoliday) return true;
+            }
+            return false;
+        } // IsHoliday
+    } // SQLiteDBAnnv
+} // AnniversaryAPI

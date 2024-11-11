@@ -14,16 +14,16 @@ namespace DataManager.View
             db = new();
         }
 
-        public async Task LoadAlarms()
+        public void LoadAlarms()
         {
-            alarmTable = await db.GetItemsAsync<Alarm>(
+            alarmTable = db.GetItems<Alarm>(
                 t => t.AlarmTime > DateTime.Now && t.AlarmTime < DateTime.Now.AddHours(1),
                 t => t.AlarmTime);
         } // LoadAlarms
 
-        public async Task SaveAlarm(Alarm alarm)
+        public void SaveAlarm(Alarm alarm)
         {
-            var result = await db.SaveItemASync(alarm);
+            var result = db.SaveItem(alarm);
             if (result is not 1)
             {
                 Log.LogError("[AlarmView] SaveAlarm: Alarm Save Failed.");
@@ -36,9 +36,9 @@ namespace DataManager.View
             }
         } // SaveAlarm
 
-        public async Task DeleteAlarm(Alarm alarm)
+        public void DeleteAlarm(Alarm alarm)
         {
-            var result = await db.DeleteItemAsync(alarm);
+            var result = db.DeleteItem(alarm);
             if (result is not 1)
             {
                 Log.LogError("[AlarmView] DeleteAlarm: Alarm Delete Failed.");

@@ -105,14 +105,13 @@
 	  <None Remove="Resources\Fonts\LeagueSpartan-Regular.ttf" />
 	  <None Remove="Resources\Fonts\LeagueSpartan-SemiBold.ttf" />
 	  <None Remove="Resources\Fonts\LeagueSpartan-Thin.ttf" />
+	  <None Remove="Resources\Fonts\Segoe Fluent Icons.ttf" />
 	  <None Remove="Resources\Images\croffle2.png" />
 	  <None Remove="Resources\Images\croffle_banner.png" />
 	  <None Remove="Resources\Images\croffle_big.png" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.92" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.92" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
 	</ItemGroup>
 
@@ -123,10 +122,19 @@
 	  <MauiXaml Update="xamls\Views\Calendar.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="xamls\Views\DailyInfo.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="xamls\Views\Detail.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="xamls\Pages\" />
+	  <ProjectReference Include="..\AnniversayAPI\AnniversaryAPI.csproj" />
+	  <ProjectReference Include="..\CroffleLogManager\CroffleLogManager.csproj" />
+	  <ProjectReference Include="..\CROFFLE_Core\CROFFLE_Core.csproj" />
+	  <ProjectReference Include="..\DataManager\DataManager.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -202,6 +210,14 @@
 	  <None Update="Resources\AppIcon\appiconfg.svg">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="Microsoft.Maui.Controls" Version="8.0.93" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.92" />
 	</ItemGroup>
 
 </Project>

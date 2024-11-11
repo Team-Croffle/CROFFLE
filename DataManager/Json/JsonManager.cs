@@ -9,6 +9,11 @@ namespace DataManager.Json
         FileManager _fileManager;
         JObject? _jobject;
 
+        public JsonManager()
+        {
+            _jobject = new();
+        } // JsonManager
+
         public JsonManager(string file_name)
         {
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "JSON");

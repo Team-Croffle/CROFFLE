@@ -3,7 +3,6 @@ using Android.Content;
 using Android.Graphics;
 using Android.OS;
 using AndroidX.Core.App;
-using CROFFLE.Classes;
 using CROFFLE.Interface;
 
 namespace CROFFLE.Platforms.Android

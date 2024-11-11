@@ -13,12 +13,14 @@ namespace CROFFLE.xamls.ViewModels
         private string buttonText = string.Empty;
 
         private int calendarIndex = 1;
+
         private Calendar[] calendars = 
         {
             new(), new(), new()
         };
 
         private View calendarTemplate;
+        private CarouselView carouselView;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -76,15 +78,48 @@ namespace CROFFLE.xamls.ViewModels
 
         public MainViewModel()
         {
+#if !ANDROID
             IncrementMonth = new Command(() => UpdateLabelMonth(1));
             DecrementMonth = new Command(() => UpdateLabelMonth(-1));
             NavigateToday = new Command(LoadToday);
+#endif
 
             calendars[0].LoadCalendar(Date.AddMonths(-1));
             calendars[1].LoadCalendar(Date);
+            calendars[1].LoadSchedules();
             calendars[2].LoadCalendar(Date.AddMonths(1));
 
+#if ANDROID
+            carouselView = new CarouselView();
+            carouselView.ItemTemplate = new DataTemplate(() =>
+            {
+                Calendar calendar = new();
+                calendar.SetBinding(Calendar.CalendarDateProperty, "CalendarDate");
+                calendar.LoadCalendar();
+                return calendar;
+            });
+            carouselView.ItemsSource = calendars;
+            carouselView.Position = 1;
+            carouselView.PositionChanged += (sender, e) =>
+            {
+                if ((calendarIndex + 1) % 3 == e.CurrentPosition)
+                {
+                    UpdateLabelMonth(1);
+                }
+                else
+                {
+                    UpdateLabelMonth(-1);
+                }
+            };
+
+            calendarTemplate = carouselView;
+            
+            IncrementMonth = new Command(() => carouselView.Position = (carouselView.Position + 1) % 3);
+            DecrementMonth = new Command(() => carouselView.Position = (carouselView.Position + 2) % 3);
+            NavigateToday = new Command(LoadToday);
+#else
             calendarTemplate = calendars[calendarIndex];
+#endif
 
             labelMonthText = Date.ToString("yyyy년 MM월");
         }
@@ -92,20 +127,21 @@ namespace CROFFLE.xamls.ViewModels
         private void UpdateLabelMonth(int month)
         {
             Date = Date.AddMonths(month);
-            LabelMonthText = Date.ToString("yyyy년 MM월");
-
             if (month > 0)
             {
                 calendarIndex = (calendarIndex + 1) % 3;
-                CalendarTemplate = calendars[calendarIndex];
                 calendars[(calendarIndex + 1) % 3].LoadCalendar(Date.AddMonths(1));
             }
             else
             {
                 calendarIndex = (calendarIndex + 2) % 3;
-                CalendarTemplate = calendars[calendarIndex];
                 calendars[(calendarIndex + 2) % 3].LoadCalendar(Date.AddMonths(-1));
             }
+            LabelMonthText = Date.ToString("yyyy년 MM월");
+#if !ANDROID
+            calendars[calendarIndex].LoadSchedules();
+            CalendarTemplate = calendars[calendarIndex];
+#endif
         }
 
         private void LoadToday()
@@ -122,6 +158,7 @@ namespace CROFFLE.xamls.ViewModels
                     calendarIndex = 1;
                     calendars[0].LoadCalendar(Date.AddMonths(-1));
                     calendars[1].LoadCalendar(Date);
+                    calendars[1].LoadSchedules();
                     calendars[2].LoadCalendar(Date.AddMonths(1));
                     CalendarTemplate = calendars[calendarIndex];
                 }

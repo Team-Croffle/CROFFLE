@@ -19,10 +19,11 @@ namespace DataManager.View
         SQLiteConnection? _db;
         IEnumerable<Components>? components;
 
-        Components? this[int index] { get => components?.ElementAt(index); }
+        public Components? this[int index] { get => components?.ElementAt(index); }
 
         public ComponentView()
         {
+            SQLiteDB db = new();
             Init();
         }
 
@@ -33,7 +34,7 @@ namespace DataManager.View
             _db = new(Path.Combine(Constants.DB_PATH, Constants.DB_NAME), Constants.FLAGS);
         }
 
-        void LoadComponent(DateTime from, DateTime to)
+        public void LoadComponent(DateTime from, DateTime to)
         {
             Log.LogInfo("[ComponentView] LoadComponent");
             if (_db is null) return;
