@@ -54,6 +54,7 @@ namespace DataManager.SQLiteDBMS
 
         public List<T>? GetItems<T>() where T : new()
         {
+            Log.LogInfo($@"[SQLiteDB] GetItems: {typeof(T).Name}");
             Init();
             if (_db is null) return default;
             return _db.Table<T>().ToList();
@@ -61,6 +62,7 @@ namespace DataManager.SQLiteDBMS
 
         public List<T>? GetItems<T>(Expression<Func<T, bool>> predExpr) where T : new()
         {
+            Log.LogInfo($@"[SQLiteDB] GetItems: {predExpr}");
             Init();
             if (_db is null) return default;
             return _db.Table<T>().Where(predExpr).ToList();
@@ -69,6 +71,7 @@ namespace DataManager.SQLiteDBMS
         public List<T>? GetItems<T>(
             Expression<Func<T, bool>> predExpr, Expression<Func<T, object>> orderExpr) where T : new()
         {
+            Log.LogInfo($@"[SQLiteDB] GetItems: {predExpr}");
             Init();
             if (_db is null) return default;
             return _db.Table<T>().Where(predExpr).OrderBy(orderExpr).ToList();
@@ -76,6 +79,7 @@ namespace DataManager.SQLiteDBMS
 
         public T? GetItem<T>(Expression<Func<T, bool>> predExpr) where T : new()
         {
+            Log.LogInfo($@"[SQLiteDB] GetItem: {predExpr}");
             Init();
             if (_db is null) return default;
             return _db.Table<T>().Where(predExpr).FirstOrDefault();
@@ -84,6 +88,7 @@ namespace DataManager.SQLiteDBMS
         public T? GetItem<T>(
             Expression<Func<T, bool>> predExpr, Expression<Func<T, bool>> orderExpr) where T : new()
         {
+            Log.LogInfo($@"[SQLiteDB] GetItem: {predExpr}");
             Init();
             if (_db is null) return default;
             return _db.Table<T>().Where(predExpr).OrderBy(orderExpr).FirstOrDefault();
@@ -91,13 +96,24 @@ namespace DataManager.SQLiteDBMS
 
         public int SaveItem<T>(T item) where T : new()
         {
+            Log.LogInfo($@"[SQLiteDB] SaveItem: {item}");
             Init();
             if (_db is null) return 0;
-            return _db.InsertOrReplace(item);
+            try
+            {
+                var result = _db.InsertOrReplace(item);
+                return result;
+            }
+            catch (SQLiteException e)
+            {
+                Log.LogError($@"[SQLiteDB] SaveItem: {e.Message}");
+                return 0;
+            }
         }
 
         public int DeleteItem<T>(T item) where T : new()
         {
+            Log.LogInfo($@"[SQLiteDB] DeleteItem: {item}");
             Init();
             if (_db is null) return 0;
             return _db.Delete(item);

@@ -20,6 +20,7 @@ namespace DataManager.View
         IEnumerable<Components>? components;
 
         public Components? this[int index] { get => components?.ElementAt(index); }
+        public IEnumerable<Components>? ListAll => components;
 
         public ComponentView()
         {
@@ -50,7 +51,7 @@ namespace DataManager.View
                         start_time = mec.me.e.StartTime,
                         end_time = mec.me.e.EndTime,
                     })
-                    .Where(t => t.start_time >= from && t.end_time < to)
+                    .Where(t => t.start_time >= from && t.end_time <= to)
                     .OrderBy(t => t.end_time - t.start_time);
             components = result;
         }

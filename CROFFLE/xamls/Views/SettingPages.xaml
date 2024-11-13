@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CROFFLE.xamls.Views.SettingPages"
+             Title="SettingPages">
+    <Shell.TitleView>
+        <Grid HorizontalOptions="Fill"
+      BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray950}}">
+            <HorizontalStackLayout>
+                <Button Text="&#xE830;" FontFamily="SegoeFluentIcons" VerticalOptions="Center" BackgroundColor="Transparent"
+            Command="{Binding NavPrevious}" TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
+                <Label Text="설정" FontFamily="KCC-Ganpan" VerticalOptions="Center" Background="Transparent"
+             TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+           FontSize="Medium"/>
+            </HorizontalStackLayout>
+        </Grid>
+    </Shell.TitleView>
+    <VerticalStackLayout>
+        <Label 
+            Text="Welcome to .NET MAUI!"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+    </VerticalStackLayout>
+</ContentPage>

@@ -12,8 +12,11 @@ namespace CROFFLE
         public static MauiApp CreateMauiApp()
         {
             Log.SetConfig($@"Log/{DateTime.Now:yyyyMMddHHmmssFF}.log");
+            Routing.RegisterRoute("ScheduleEditor", typeof(ScheduleEditor));
+            Routing.RegisterRoute("TaskEditor", typeof(TaskEditor));
+            Routing.RegisterRoute("MemoEditor", typeof(MemoEditor));
             Routing.RegisterRoute("DailyInfo", typeof(DailyInfo));
-            Routing.RegisterRoute("Detail", typeof(Detail));
+            Routing.RegisterRoute("Setting", typeof(SettingPages));
 
             var builder = MauiApp.CreateBuilder();
             builder

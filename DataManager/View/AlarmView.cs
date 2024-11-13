@@ -9,6 +9,9 @@ namespace DataManager.View
         SQLiteDB db;
         private List<Alarm>? alarmTable;
 
+        public Alarm? this[int index] { get => alarmTable?.ElementAt(index); }
+        public List<Alarm>? ListAll => alarmTable;
+
         public AlarmView()
         {
             db = new();

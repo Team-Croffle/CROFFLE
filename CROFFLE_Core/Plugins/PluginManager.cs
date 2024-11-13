@@ -6,20 +6,16 @@ namespace CROFFLE_Core.Plugins
     public class PluginManager
     {
         JsonManager _jsonManager;
-        public List<IPlugin> _plugins;
+        private List<IPlugin> _plugins;
+
+        public List<IPlugin> Plugins => _plugins;
 
         public PluginManager()
         {
             _jsonManager = new("plugins.json");
             _plugins = new();
-            LoadPlugins();
-        } // PluginManager
-
-        void LoadPlugins()
-        {
             GetPlugins();
-            InitializePlugins();
-        }
+        } // PluginManager
         void GetPlugins()
         {
             var result = _jsonManager.LoadJObject();
@@ -53,7 +49,7 @@ namespace CROFFLE_Core.Plugins
             } // foreach
         } // GetPlugins
 
-        void InitializePlugins()
+        public void InitializePlugins()
         {
             foreach (var plugin in _plugins)
             {
@@ -64,9 +60,9 @@ namespace CROFFLE_Core.Plugins
         public IEnumerable<string> GetPluginNames()
         {
             List<string> names = new();
-            foreach (var plugin in _plugins)
+            foreach (var p in _plugins)
             {
-                names.Add(plugin.Name);
+                names.Add(p.Name);
             }
             return names;
         } // GetPluginNames

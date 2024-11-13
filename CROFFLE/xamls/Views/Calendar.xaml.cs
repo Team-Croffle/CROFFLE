@@ -2,6 +2,7 @@ using AnniversaryAPI;
 using AnniversaryAPI.Scheme;
 using CroffleLogManager;
 using DataManager.View;
+using Microsoft.Maui.Controls.Shapes;
 
 namespace CROFFLE.xamls.Views;
 
@@ -45,6 +46,11 @@ public partial class Calendar : ContentView
     public void LoadCalendar()
     {
         LoadCalendar(calendar_date);
+    }
+
+    public void LoadSchedules(object sender, EventArgs e)
+    {
+        LoadSchedules();
     }
 
     public void LoadCalendar(DateTime date)
@@ -112,6 +118,8 @@ public partial class Calendar : ContentView
     {
         Log.LogInfo("[Calendar] LoadSchedules");
 
+        Grid_Calendar_Schedule.Children.Clear();
+
         for (int i = 0; i < 6; i++)
         {
             for (int j = 0; j < 7; j++)
@@ -136,13 +144,13 @@ public partial class Calendar : ContentView
                 var row = index / 7;
                 var col = index % 7;
                 if (labelExists[row][col][1] && !al.isHoliday) continue;
-                var label = (Label)((DataTemplate)Resources["ContentLabel"]).CreateContent();
+                var label = (Label)((DataTemplate)Resources["ContentAnnvLabel"]).CreateContent();
                 label.Text = al.dateName;
                 if (al.isHoliday) label.TextColor = Colors.Red;
                 Grid.SetRow(label, row * 5 + 1);
                 Grid.SetColumn(label, col);
-                if (labelExists[row][col][1]) Grid_Calendar.Children.RemoveAt(Grid_Calendar.Children.Count - 1);
-                Grid_Calendar.Children.Add(label);
+                if (labelExists[row][col][1]) Grid_Calendar_Schedule.Children.RemoveAt(Grid_Calendar_Schedule.Children.Count - 1);
+                Grid_Calendar_Schedule.Children.Add(label);
                 labelExists[row][col][1] = true;
             }
 
@@ -158,13 +166,18 @@ public partial class Calendar : ContentView
             }
         }
 
+        Log.LogInfo("[Calendar] LoadSchedules: Draw Components");
         ComponentView scheList = new();
         scheList.LoadComponent(firstDayOfMonth, lastDayOfMonth);
-        var count = scheList.Count();
-        if (count is null) return;
-        for (int i = 0; i < count; i++)
+        if (scheList.ListAll is null) return;
+
+        var count = scheList.ListAll.Count();
+        Log.LogInfo($@"[Calendar] LoadSchedules: Count - {count}");
+
+        if (count is 0) return;
+        foreach (Components sche in scheList.ListAll)
         {
-            DrawContentLabelAlgorithm(scheList[i]);
+            DrawContentLabelAlgorithm(sche);
         }
         Log.LogInfo("[Calendar] LoadSchedules: Done");
     }
@@ -174,7 +187,7 @@ public partial class Calendar : ContentView
         Log.LogInfo("[Calendar] DrawContentLabelAlgorithm");
         var startRow = (components.start_time - startPointer).Days / 7;
         var startCol = (components.start_time - startPointer).Days % 7;
-        var scheduleLength = (components.end_time - components.start_time).Days;
+        var scheduleLength = (components.end_time - components.start_time).Days + 1;
         var needLabelCount = (startCol + scheduleLength) / 7 + 1;
         int actualRow, canDraw;
 
@@ -182,9 +195,10 @@ public partial class Calendar : ContentView
         if (needLabelCount == 1)
         {
             canDraw = CheckCanDraw(startRow, startCol, scheduleLength);
+            Log.LogWarn($@"[Calendar] DrawContentLabelAlgorithm: canDraw - {canDraw}");
             if (canDraw == -1) return;
             actualRow = startRow * 5 + 2 + canDraw;
-            DrawMyLabel(actualRow, startCol, scheduleLength, components.title, Color.FromUint((uint)components.color));
+            DrawMyLabel(actualRow, startCol, scheduleLength, components.title, Color.FromUint((uint)components.color), 3);
         }
         else
         {
@@ -192,7 +206,7 @@ public partial class Calendar : ContentView
             if (canDraw is not -1)
             {
                 actualRow = startRow * 5 + 2 + canDraw;
-                DrawMyLabel(actualRow, startCol, 7 - startCol, components.title, Color.FromUint((uint)components.color));
+                DrawMyLabel(actualRow, startCol, 7 - startCol, components.title, Color.FromUint((uint)components.color), 0);
             }
             for (int i = 1; i < needLabelCount - 1; i++)
             {
@@ -200,7 +214,7 @@ public partial class Calendar : ContentView
                 if (canDraw is not -1)
                 {
                     actualRow = (startRow + i) * 5 + 2 + canDraw;
-                    DrawMyLabel(canDraw, 0, 7, components.title, Color.FromUint((uint)components.color));
+                    DrawMyLabel(canDraw, 0, 7, components.title, Color.FromUint((uint)components.color), 1);
                 }
             }
 
@@ -208,13 +222,14 @@ public partial class Calendar : ContentView
             if (canDraw is not -1){
                 actualRow = (startRow + needLabelCount - 1) * 5 + 2 + canDraw;
                 DrawMyLabel(startRow + needLabelCount - 1, 0, (startCol + scheduleLength) % 7, components.title,
-                    Color.FromUint((uint)components.color));
+                    Color.FromUint((uint)components.color), 2);
             }
         }
     }
 
     private int CheckCanDraw(int row, int startCol, int length)
     {
+        Log.LogInfo($@"[Calendar] DrawMyLabel: row - {row}, col - {startCol}, length - {length}");
         for (int i = 0; i < 3; i++)
         {
             for (int col = startCol; col < startCol + length; col++)
@@ -226,15 +241,33 @@ public partial class Calendar : ContentView
         return -1;
     }
 
-    private void DrawMyLabel(int row, int col, int length, string text, Color background)
+    private void DrawMyLabel(int row, int col, int length, string text, Color background, int type)
     {
-        var Label = (Label)((DataTemplate)Resources["MyLabel"]).CreateContent();
+        Border border = new()
+        {
+            Stroke = Colors.Transparent,
+            BackgroundColor = background,
+            StrokeShape = new RoundRectangle()
+            {
+                CornerRadius = type == 0 ? new CornerRadius(10, 0, 10, 0)
+                : type == 1 ? new CornerRadius(0)
+                : type == 2 ? new CornerRadius(0, 10, 0, 10)
+                : new CornerRadius(10)
+            }
+        };
+        Grid.SetRow(border, row);
+        Grid.SetColumn(border, col);
+        Grid.SetColumnSpan(border, length);
+        Grid_Calendar_Schedule.Children.Add(border);
+
+
+        var Label = (Label)((DataTemplate)Resources["ContentLabel"]).CreateContent();
         Label.Text = text;
-        Label.BackgroundColor = background;
+        Label.BackgroundColor = Colors.Transparent;
         Grid.SetRow(Label, row);
         Grid.SetColumn(Label, col);
         Grid.SetColumnSpan(Label, length);
-        Grid_Calendar.Children.Add(Label);
+        Grid_Calendar_Schedule.Children.Add(Label);
     }
 
     private async void Cal_Clicked(object sender, EventArgs e)

@@ -5,20 +5,28 @@
              x:Class="CROFFLE.xamls.Views.DailyInfo"
              Title="DailyInfo" Loaded="LoadedDaily">
     <ContentPage.BindingContext>
-        <model:DailyInfoViewModel />
+        <model:MainViewModel />
     </ContentPage.BindingContext>
     <Shell.TitleView>
         <Grid HorizontalOptions="Fill"
               BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray950}}">
             <HorizontalStackLayout>
                 <Button Text="&#xE830;" FontFamily="SegoeFluentIcons" VerticalOptions="Center" BackgroundColor="Transparent"
-                    Command="{Binding NavPrevious}" TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
+                        TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                    Command="{Binding NavPrevious}" CornerRadius="100">
+                    <Button.GestureRecognizers>
+                        <PointerGestureRecognizer
+                            PointerEntered="OnPointerEntered"
+                            PointerExited="OnPointerExited" />
+                    </Button.GestureRecognizers>
+                </Button>
                 <Label Text="오늘 일정" FontFamily="KCC-Ganpan" VerticalOptions="Center" Background="Transparent"
                      TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                    FontSize="Medium"/>
             </HorizontalStackLayout>
             <Grid BackgroundColor="Transparent" HorizontalOptions="End" VerticalOptions="Center">
                 <HorizontalStackLayout>
+                    <Grid WidthRequest="10" BackgroundColor="Transparent" VerticalOptions="Fill" />
                     <Label Text="&#xE710;" FontFamily="SegoeFluentIcons" VerticalOptions="Center" BackgroundColor="Transparent"
                            TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" FontSize="Medium"
                            HorizontalOptions="Start"/>
@@ -28,7 +36,13 @@
                     <Grid WidthRequest="10" BackgroundColor="Transparent" VerticalOptions="Fill" />
                 </HorizontalStackLayout>
                 <Button Text="" BackgroundColor="Transparent" VerticalOptions="Fill" HorizontalOptions="Fill"
-                        Command="{Binding NavAdd}" />
+                        Clicked="Btn_AddClicked" CornerRadius="5">
+                    <Button.GestureRecognizers>
+                        <PointerGestureRecognizer
+                            PointerEntered="OnPointerEntered"
+                            PointerExited="OnPointerExited" />
+                    </Button.GestureRecognizers>
+                </Button>
             </Grid>
         </Grid>
     </Shell.TitleView>
@@ -42,15 +56,26 @@
                 <Label Text="" FontSize="Medium"  FontFamily="DongleBold" HorizontalOptions="End"
                 TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" HorizontalTextAlignment="Center" />
             </DataTemplate>
-            <DataTemplate x:Key="ContentsButton">
-                <Button Text="" FontSize="Medium" FontFamily="KCC-Ganpan" HorizontalOptions="Fill"
-                        TextColor="White" />
-            </DataTemplate>
+            <!--DataTemplate x:Key="ContentsTemplate">
+                <Grid BackgroundColor="{Binding BackColor}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Label Text="{Binding Title}" FontFamily="KCC-Ganpan" FontSize="Medium" TextColor="White" Grid.Row="0"
+                           HorizontalTextAlignment="Center" VerticalTextAlignment="Center" Margin="10,10,10,0"/>
+                    <Label Text="{Binding DateString}" FontFamily="KCC-Ganpan" FontSize="Caption"
+                           TextColor="{StaticResource Gray600}" Grid.Row="1" HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center" Margin="10,10,10,0" />
+                    <Button BackgroundColor="Transparent" Grid.Row="0" Grid.RowSpan="2" Command="{Binding DailInfoContentClick}"
+                            HorizontalOptions="Fill" VerticalOptions="Fill" />
+                </Grid>
+            </DataTemplate-->
         </ResourceDictionary>
     </ContentPage.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
 
@@ -65,7 +90,7 @@
                     <ColumnDefinition Width="3*" />
                     <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
-                <VerticalStackLayout Grid.Column="0" Background="Transparent" Spacing="5" Margin="5">
+                <VerticalStackLayout Grid.Column="0" Background="Transparent" Spacing="5" Margin="5" VerticalOptions="Fill">
                     <Button Text="일정" BorderColor="Transparent" BackgroundColor="#ff5757" FontFamily="KCC-Ganpan"
                         CornerRadius="15" FontSize="Title" TextColor="Black" Clicked="Btn_Shedule_SW" HorizontalOptions="Fill"
                         x:Name="btn_schedule"/>
@@ -93,14 +118,14 @@
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0" BackgroundColor="Transparent">
                     <Border BackgroundColor="Green" HorizontalOptions="Fill" VerticalOptions="Fill"
-                            StrokeShape="{Binding BorderStrokeShape}" StrokeThickness="0"/>
+                            StrokeShape="{Binding BorderStrokeShape_DailyInfo}" StrokeThickness="0"/>
                     <Label Text="완료된 일정" FontFamily="Dongle-Bold" FontSize="Medium" HorizontalOptions="Fill"
                            TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                            HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
                 </Grid>
                 <Grid Grid.Column="1" BackgroundColor="Transparent">
                     <Border BackgroundColor="IndianRed" HorizontalOptions="Fill" VerticalOptions="Fill"
-                            StrokeShape="{Binding BorderStrokeShape}" StrokeThickness="0"/>
+                            StrokeShape="{Binding BorderStrokeShape_DailyInfo}" StrokeThickness="0"/>
                     <Label Text="미완료된 일정" FontFamily="Dongle-Bold" FontSize="Medium" HorizontalOptions="Fill"
                            TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                            HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
@@ -108,13 +133,20 @@
             </Grid>
         </Grid>
         <!--Daily Area-->
-        <Grid>
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <VerticalStackLayout Grid.Column="0" HorizontalOptions="Fill" VerticalOptions="Fill" Loaded="LoadComplete_VSL"/>
-            <VerticalStackLayout Grid.Column="1" HorizontalOptions="Fill" VerticalOptions="Fill" Loaded="LoadIncomplete_VSL" />
+            <ScrollView VerticalOptions="Fill" HorizontalOptions="Fill" Grid.Column="0" >
+                <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Fill" Loaded="LoadComplete_VSL"
+                                     BindingContextChanged="LoadComplete_VSL" x:Name="vsl_complete">
+                </VerticalStackLayout>
+            </ScrollView>
+            <ScrollView VerticalOptions="Fill" HorizontalOptions="Fill" Grid.Column="1">
+                <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Fill" Loaded="LoadIncomplete_VSL"
+                                     BindingContextChanged="LoadIncomplete_VSL" x:Name="vsl_incomplete"/>
+            </ScrollView>
         </Grid>
     </Grid>
 </ContentPage>

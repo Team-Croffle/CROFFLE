@@ -8,6 +8,6 @@ public interface IPlugin
     public string Author { get; }
     public string[] Dependencies { get; }
     public bool IsEnabled { get; }
-    public ContentPage? ContentPage { get; set; }
     public void Initialize();
+    public FlyoutItem? GetFlyoutItem();
 } // IPlugin

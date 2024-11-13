@@ -42,6 +42,7 @@ namespace DataManager.View
         IEnumerable<ComponentAll>? ComponentAlls;
 
         public ComponentAll? this[int index] { get => ComponentAlls?.ElementAt(index); }
+        public IEnumerable<ComponentAll>? ListAll => ComponentAlls;
 
         public ComponentAllView()
         {
@@ -105,7 +106,7 @@ namespace DataManager.View
                         Title = mec.me.m.Title,
                         Details = mec.me.m.Details,
                     })
-                    .Where(t => t.StartTime <= target && t.EndTime > target)
+                    .Where(t => t.StartTime <= target && t.EndTime >= target)
                     .Where(t => t.Done == done)
                     .OrderBy(t => t.StartTime);
             ComponentAlls = result;
@@ -144,10 +145,16 @@ namespace DataManager.View
             Log.LogInfo("[ComponentAllView] SaveComponent");
             if (_db is null) return;
             SQLiteDB db = new();
+
+            Log.LogInfo("[ComponentAllView] SaveComponent: SaveItem - Contents");
             var result = db.SaveItem(cpa._contents);
             if (CheckResult(result, "Contents") is not 1) return;
+
+            Log.LogInfo("[ComponentAllView] SaveComponent: SaveItem - Event");
             result = db.SaveItem(cpa._event);
             if (CheckResult(result, "Event") is not 1) return;
+
+            Log.LogInfo("[ComponentAllView] SaveComponent: SaveItem - Memo");
             result = db.SaveItem(cpa._memo);
             if (CheckResult(result, "Memo") is not 1) return;
         } // SaveComponent

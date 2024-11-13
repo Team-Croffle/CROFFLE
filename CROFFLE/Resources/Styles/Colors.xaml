@@ -28,6 +28,13 @@
     <Color x:Key="Gray900">#212121</Color>
     <Color x:Key="Gray950">#141414</Color>
 
+    <Color x:Key="SColor1">OrangeRed</Color>
+    <Color x:Key="SColor2">Gold</Color>
+    <Color x:Key="SColor3">LightGreen</Color>
+    <Color x:Key="SColor4">RoyalBlue</Color>
+    <Color x:Key="SColor5">MediumPurple</Color>
+    <Color x:Key="SColor6">Gray</Color>
+
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
     <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
