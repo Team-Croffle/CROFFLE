@@ -1,8 +1,7 @@
-﻿using AnniversaryAPI;
-using CROFFLE.Interface;
+﻿using CROFFLE.Interface;
 using CROFFLE.xamls.Views;
+using CROFFLE.xamls.Views.SettingPages;
 using CroffleLogManager;
-using DataManager.SQLiteDBMS;
 using Microsoft.Extensions.Logging;
 
 namespace CROFFLE
@@ -16,7 +15,8 @@ namespace CROFFLE
             Routing.RegisterRoute("TaskEditor", typeof(TaskEditor));
             Routing.RegisterRoute("MemoEditor", typeof(MemoEditor));
             Routing.RegisterRoute("DailyInfo", typeof(DailyInfo));
-            Routing.RegisterRoute("Setting", typeof(SettingPages));
+            Routing.RegisterRoute("GeneralSettings", typeof(GeneralSettings));
+            Routing.RegisterRoute("About", typeof(About));
 
             var builder = MauiApp.CreateBuilder();
             builder
@@ -47,7 +47,7 @@ namespace CROFFLE
                     fonts.AddFont("Segoe Fluent Icons.ttf", "SegoeFluentIcons");
                 });
 #if ANDROID
-            builder.Services.AddSingleton<INotificationManagerService, CROFFLE.Platforms.Android.AndroidNotificationManagerService>();
+            builder.Services.AddSingleton<INotificationManagerService, Platforms.Android.AndroidNotificationManagerService>();
 #endif
 
 #if DEBUG

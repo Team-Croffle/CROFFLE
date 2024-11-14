@@ -106,7 +106,7 @@ namespace DataManager.SQLiteDBMS
             }
             catch (SQLiteException e)
             {
-                Log.LogError($@"[SQLiteDB] SaveItem: {e.Message}");
+                Log.LogError($@"[SQLiteDB] SaveItem: Failed - {e.Message}");
                 return 0;
             }
         }

@@ -20,7 +20,7 @@
                             PointerExited="OnPointerExited" />
                     </Button.GestureRecognizers>
                 </Button>
-                <Label Text="일정 조회 | 편집" FontFamily="KCC-Ganpan" VerticalOptions="Center" Background="Transparent"
+                <Label Text="메모 조회 | 편집" FontFamily="KCC-Ganpan" VerticalOptions="Center" Background="Transparent"
                        TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                        FontSize="Medium"/>
             </HorizontalStackLayout>

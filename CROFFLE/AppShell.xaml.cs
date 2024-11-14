@@ -1,6 +1,8 @@
 ﻿using CROFFLE.xamls.Views;
+using CROFFLE.xamls.Views.SettingPages;
 using CROFFLE_Core.Plugins;
 using CroffleLogManager;
+using DataManager.SQLiteDBMS.Scheme;
 
 namespace CROFFLE
 {
@@ -20,20 +22,33 @@ namespace CROFFLE
             foreach (var p in pluginManager.Plugins)
             {
                 var flyoutitem = p.GetFlyoutItem();
-                if (flyoutitem is not null) Items.Add(flyoutitem);
-                else continue;
+                if (flyoutitem is not null)
+                {
+                    foreach (var item in flyoutitem)
+                    {
+                        Items.Add(item);
+                    }
+                }
+
+                var setting_item = p.GetSettingContent();
+                if (setting_item is not null)
+                {
+                    foreach (var item in setting_item)
+                    {
+                        tab_Settings.Items.Add(item);
+                    }
+                }
             }
-        }
+
+        } // LoadPlugins
 
         private void AddMenuItem()
         {
-            MenuItem setting = new MenuItem()
+            ShellContent setting = new()
             {
-                Text = "Setting",
-                Command = new Command(async () =>
-                {
-                    await Current.GoToAsync("Setting");
-                })
+                Title = "Settings",
+                ContentTemplate = new DataTemplate(typeof(GeneralSettings)),
+                Route = "SettingPages"
             };
             Items.Add(setting);
 

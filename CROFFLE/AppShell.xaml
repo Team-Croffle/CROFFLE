@@ -5,7 +5,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:CROFFLE"
-    Title="CROFFLE"
+    xmlns:settings="clr-namespace:CROFFLE.xamls.Views.SettingPages"
+    Title="CROFFLE" 
     FlyoutBackgroundColor="{StaticResource Primary}">
     <Shell.ItemTemplate>
         <DataTemplate>
@@ -47,6 +48,7 @@
             </Grid>
         </DataTemplate>
     </Shell.MenuItemTemplate>
+
     <Shell.FlyoutBehavior>
         <OnPlatform x:TypeArguments="FlyoutBehavior">
             <On Platform="Android">Flyout</On>
@@ -54,6 +56,7 @@
             <On Platform="WinUI">Locked</On>
         </OnPlatform>
     </Shell.FlyoutBehavior>
+    
     <Shell.FlyoutHeader>
         <Grid BackgroundColor="{StaticResource Primary}" Padding="0" Margin="0">
             <Grid.RowDefinitions>
@@ -62,12 +65,14 @@
             <Image Source="croffle_banner.png" Aspect="AspectFit" Grid.Row="0" Margin="0"/>
         </Grid>
     </Shell.FlyoutHeader>
-    
+
     <FlyoutItem Title="Calendar">
         <ShellContent Title="Calendar" ContentTemplate="{DataTemplate local:MainPage}" Route="MainPage" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Menu">
-        <ShellContent Title="Menu" ContentTemplate="{DataTemplate local:MenuPage}" Route="MenuPage"/>
-    </FlyoutItem>
+    <TabBar>
+        <Tab Title="Main" x:Name="tab_Settings">
+            <ShellContent Title="Settings" ContentTemplate="{DataTemplate settings:GeneralSettings}" Route="SettingPages"/>
+        </Tab>
+    </TabBar>
 </Shell>

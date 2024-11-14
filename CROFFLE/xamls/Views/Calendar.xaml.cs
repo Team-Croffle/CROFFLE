@@ -168,7 +168,10 @@ public partial class Calendar : ContentView
 
         Log.LogInfo("[Calendar] LoadSchedules: Draw Components");
         ComponentView scheList = new();
-        scheList.LoadComponent(firstDayOfMonth, lastDayOfMonth);
+
+        if (AppSetting.ShowDone) scheList.LoadComponent(firstDayOfMonth, lastDayOfMonth);
+        else scheList.LoadComponent(firstDayOfMonth, lastDayOfMonth, false);
+
         if (scheList.ListAll is null) return;
 
         var count = scheList.ListAll.Count();
@@ -198,7 +201,7 @@ public partial class Calendar : ContentView
             Log.LogWarn($@"[Calendar] DrawContentLabelAlgorithm: canDraw - {canDraw}");
             if (canDraw == -1) return;
             actualRow = startRow * 5 + 2 + canDraw;
-            DrawMyLabel(actualRow, startCol, scheduleLength, components.title, Color.FromUint((uint)components.color), 3);
+            DrawMyLabel(actualRow, startCol, scheduleLength, components.title, Color.FromInt(components.color), 3);
         }
         else
         {
@@ -206,7 +209,7 @@ public partial class Calendar : ContentView
             if (canDraw is not -1)
             {
                 actualRow = startRow * 5 + 2 + canDraw;
-                DrawMyLabel(actualRow, startCol, 7 - startCol, components.title, Color.FromUint((uint)components.color), 0);
+                DrawMyLabel(actualRow, startCol, 7 - startCol, components.title, Color.FromInt(components.color), 0);
             }
             for (int i = 1; i < needLabelCount - 1; i++)
             {
@@ -214,15 +217,15 @@ public partial class Calendar : ContentView
                 if (canDraw is not -1)
                 {
                     actualRow = (startRow + i) * 5 + 2 + canDraw;
-                    DrawMyLabel(canDraw, 0, 7, components.title, Color.FromUint((uint)components.color), 1);
+                    DrawMyLabel(actualRow, 0, 7, components.title, Color.FromInt(components.color), 1);
                 }
             }
 
             canDraw = CheckCanDraw(startRow + needLabelCount - 1, 0, (startCol + scheduleLength) % 7);
             if (canDraw is not -1){
                 actualRow = (startRow + needLabelCount - 1) * 5 + 2 + canDraw;
-                DrawMyLabel(startRow + needLabelCount - 1, 0, (startCol + scheduleLength) % 7, components.title,
-                    Color.FromUint((uint)components.color), 2);
+                DrawMyLabel(actualRow, 0, (startCol + scheduleLength) % 7, components.title,
+                    Color.FromInt(components.color), 2);
             }
         }
     }

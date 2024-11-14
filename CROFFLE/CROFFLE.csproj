@@ -208,7 +208,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="MenuPage.xaml">
+	  <MauiXaml Update="xamls\Views\About.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="xamls\Views\Calendar.xaml">
@@ -223,7 +223,7 @@
 	  <MauiXaml Update="xamls\Views\ScheduleEditor.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="xamls\Views\SettingPages.xaml">
+	  <MauiXaml Update="xamls\Views\SettingPages\GeneralSettings.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="xamls\Views\TaskEditor.xaml">

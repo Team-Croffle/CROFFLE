@@ -10,6 +10,7 @@ namespace DataManager.View
         public string ContentsID { get; set; }
         public string title { get; set; }
         public int color { get; set; }
+        public bool done { get; set; }
         public DateTime content_date { get; set; }
         public DateTime start_time { get; set; }
         public DateTime end_time { get; set; }
@@ -47,11 +48,35 @@ namespace DataManager.View
                         ContentsID = mec.me.m.ContentsID,
                         title = mec.me.m.Title,
                         color = mec.c.Color,
+                        done = mec.me.e.Done,
                         content_date = mec.c.ContentDate,
                         start_time = mec.me.e.StartTime,
                         end_time = mec.me.e.EndTime,
                     })
                     .Where(t => t.start_time >= from && t.end_time <= to)
+                    .OrderBy(t => t.end_time - t.start_time);
+            components = result;
+        }
+
+        public void LoadComponent(DateTime from, DateTime to, bool done)
+        {
+            Log.LogInfo("[ComponentView] LoadComponent");
+            if (_db is null) return;
+            var result = _db.Table<Memo>()
+                    .Join(_db.Table<Event>(), (m) => m.ContentsID, (e) => e.ContentsID, (m, e) => new { m, e })
+                    .Join(_db.Table<Contents>(), (me) => me.m.ContentsID, (c) => c.ContentsID, (me, c) => new { me, c })
+                    .Select((mec) => new Components
+                    {
+                        ContentsID = mec.me.m.ContentsID,
+                        title = mec.me.m.Title,
+                        color = mec.c.Color,
+                        done = mec.me.e.Done,
+                        content_date = mec.c.ContentDate,
+                        start_time = mec.me.e.StartTime,
+                        end_time = mec.me.e.EndTime,
+                    })
+                    .Where(t => t.start_time >= from && t.end_time <= to)
+                    .Where(t => t.done == done)
                     .OrderBy(t => t.end_time - t.start_time);
             components = result;
         }

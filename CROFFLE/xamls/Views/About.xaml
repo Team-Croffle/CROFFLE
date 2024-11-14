@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CROFFLE.xamls.Views.About"
+             Title="About">
+    <Shell.TitleView>
+        <Grid HorizontalOptions="Fill" BackgroundColor="{StaticResource Primary}">
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Label Text="Developer" FontFamily="KCC-Ganpan" VerticalOptions="Center" Background="Transparent"
+               TextColor="{StaticResource Black}"
+               FontSize="Medium"/>
+            </HorizontalStackLayout>
+        </Grid>
+    </Shell.TitleView>
+    <ScrollView>
+        <VerticalStackLayout VerticalOptions="Start" Spacing="20">
+            <Label Text="Created By CROFFLE Dev." FontFamily="KCC-Ganpan" FontSize="Medium" HorizontalOptions="Center"
+                   TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+
+            <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray100}}"
+                     HorizontalOptions="Fill" VerticalOptions="Start" Margin="10, 0, 10, 0" />
+
+            <Label Text="Croffle Dev." FontFamily="KCC-Ganpan" FontSize="Medium" HorizontalOptions="Center"
+                   TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+            <Label Text="안 규 태      김 지 훈&#10;김 해 성       이 세중&#10;정 윤 성" FontFamily="KCC-Ganpan" FontSize="Medium" HorizontalOptions="Center"
+                   TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+
+            <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray100}}"
+                     HorizontalOptions="Fill" VerticalOptions="Start" Margin="10, 0, 10, 0" />
+
+            <Label Text="Version 1.0.0" FontFamily="KCC-Ganpan" FontSize="Medium" HorizontalOptions="Center"
+                   TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+
+            <VerticalStackLayout>
+                <Label FontFamily="AgaveNerdFont-Regular" FontSize="Default" HorizontalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                       Text="Copyright 2024 Croffle Development Team (WKU - CSE)&#10;"/>
+                <Label FontFamily="AgaveNerdFont-Regular" FontSize="Default" HorizontalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}">
+                    <Label.Text>
+                        Licensed under the Apache License, Version 2.0 (the "License");
+                    </Label.Text>
+                </Label>
+                <Label FontFamily="AgaveNerdFont-Regular" FontSize="Default" HorizontalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" 
+                       Text="you may not use this file except in compliance with the License."/>
+                <Label FontFamily="AgaveNerdFont-Regular" FontSize="Default" HorizontalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" 
+                       Text="You may obtain a copy of the License at&#10;"/>
+                <Label FontFamily="AgaveNerdFont-Regular" FontSize="Default" HorizontalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" 
+                       Text="http://www.apache.org/licenses/LICENSE-2.0&#10;"/>
+                <Label FontFamily="AgaveNerdFont-Regular" FontSize="Default" HorizontalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" 
+                       Text="Unless required by applicable law or agreed to in writing, software&#10;"/>
+                <Label FontFamily="AgaveNerdFont-Regular" FontSize="Default" HorizontalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}">
+                    <Label.Text>
+                        distributed under the License is distributed on an "AS IS" BASIS,
+                    </Label.Text>
+                </Label>
+                <Label FontFamily="AgaveNerdFont-Regular" FontSize="Default" HorizontalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" 
+                       Text="WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied."/>
+                <Label FontFamily="AgaveNerdFont-Regular" FontSize="Default" HorizontalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" 
+                       Text=" See the License for the specific language governing permissions and"/>
+                <Label FontFamily="AgaveNerdFont-Regular" FontSize="Default" HorizontalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" 
+                       Text="limitations under the License."/>
+            </VerticalStackLayout>
+
+            <Label Text="ⓒ 2021 Croffle Dev." FontFamily="KCC-Ganpan" FontSize="18" HorizontalOptions="Center"
+                   TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

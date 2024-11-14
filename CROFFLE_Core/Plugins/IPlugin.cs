@@ -9,5 +9,6 @@ public interface IPlugin
     public string[] Dependencies { get; }
     public bool IsEnabled { get; }
     public void Initialize();
-    public FlyoutItem? GetFlyoutItem();
+    public FlyoutItem[]? GetFlyoutItem();
+    public ShellContent[]? GetSettingContent();
 } // IPlugin
