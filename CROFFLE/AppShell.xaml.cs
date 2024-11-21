@@ -2,7 +2,7 @@
 using CROFFLE.xamls.Views.SettingPages;
 using CROFFLE_Core.Plugins;
 using CroffleLogManager;
-using DataManager.SQLiteDBMS.Scheme;
+using Microsoft.UI.Xaml.Controls;
 
 namespace CROFFLE
 {
@@ -17,10 +17,31 @@ namespace CROFFLE
 
         private void LoadPlugins()
         {
+            Log.LogInfo("[AppShell] Loading plugins...");
+
             PluginManager pluginManager = new();
             pluginManager.InitializePlugins();
+
+            FlyoutItem setting = new() { Title = "Settings" };
+            setting.Items.Add(
+                new Tab
+                {
+                    Title = "General",
+                    Items =
+                    {
+                        new ShellContent
+                        {
+                            Title = "General",
+                            ContentTemplate = new DataTemplate(typeof(GeneralSettings)),
+                            Route = "GeneralSettings"
+                        },
+                    }
+                }
+            );
+
             foreach (var p in pluginManager.Plugins)
             {
+                Log.LogInfo($@"[AppShell] Loading plugin: {p.Name}");
                 var flyoutitem = p.GetFlyoutItem();
                 if (flyoutitem is not null)
                 {
@@ -30,38 +51,39 @@ namespace CROFFLE
                     }
                 }
 
-                var setting_item = p.GetSettingContent();
-                if (setting_item is not null)
+                try
                 {
-                    foreach (var item in setting_item)
+                    var setting_item = p.GetSettingContent();
+                    if (setting_item is not null)
                     {
-                        tab_Settings.Items.Add(item);
+                        foreach (var item in setting_item)
+                        {
+                            setting.Items.Add(item);
+                        }
                     }
                 }
+                catch (Exception e)
+                {
+                    Log.LogError($@"[AppShell] {p.Name} failed to load setting content: {e.Message}");
+                    continue;
+                }
             }
+            Items.Add(setting);
 
         } // LoadPlugins
 
         private void AddMenuItem()
         {
-            ShellContent setting = new()
-            {
-                Title = "Settings",
-                ContentTemplate = new DataTemplate(typeof(GeneralSettings)),
-                Route = "SettingPages"
-            };
-            Items.Add(setting);
+            Log.LogInfo("[AppShell] Adding menu items...");
 
-            MenuItem about = new MenuItem()
+            ShellContent about = new()
             {
-                Text = "About",
-                Command = new Command(async () =>
-                {
-                    await Current.GoToAsync("About");
-                })
+                Title = "About",
+                ContentTemplate = new DataTemplate(typeof(About)),
+                Route = "About"
             };
             Items.Add(about);
-
+            Log.LogInfo("[AppShell] Added About menu item.");
         }
     }
 }

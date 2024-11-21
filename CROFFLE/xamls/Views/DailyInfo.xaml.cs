@@ -2,15 +2,13 @@ using AnniversaryAPI;
 using AnniversaryAPI.Scheme;
 using CroffleLogManager;
 using DataManager.View;
-using Microsoft.Maui.Controls.Shapes;
-using System.ComponentModel;
 
 namespace CROFFLE.xamls.Views;
 
 [QueryProperty(nameof(CalendarDate), "date")]
 public partial class DailyInfo : ContentPage
 {
-    bool isShedule = true;
+    bool isSchedule = true;
     bool isTask = true;
     bool isMemo = true;
 
@@ -38,6 +36,7 @@ public partial class DailyInfo : ContentPage
         if (sender is null) return;
         
         SQLiteDBAnnv annv = new();
+        annv.DB_Init();
         var annvList = annv.GetItems<Anniversary>(x => x.locdate == calendarDate);
         if (annvList is null) return;
         foreach (var item in annvList)
@@ -70,6 +69,7 @@ public partial class DailyInfo : ContentPage
     {
         if (vsl_incomplete is null) return;
         if (vsl_incomplete.Children is not null) vsl_incomplete.Children.Clear();
+        Log.LogInfo("[DailyInfo] LoadIncomplete_VSL: Children Cleared");
         Load_VSL(vsl_incomplete, false);
     }
 
@@ -95,9 +95,9 @@ public partial class DailyInfo : ContentPage
 
         if (count is null) return;
         if (count == 0) return;
-        for (int i = 0; i < count; i++)
+        if (memoView.ListAll is null) return;
+        foreach (var memo in memoView.ListAll)
         {
-            var memo = memoView[i];
             if (memo is null) continue;
 
             VerticalStackLayout vsl = new()
@@ -105,7 +105,7 @@ public partial class DailyInfo : ContentPage
                 BackgroundColor = Color.FromInt(memo.Color),
                 Spacing = 0,
             };
-            vsl.AddLogicalChild(new Label()
+            vsl.Children.Add(new Label()
             {
                 Text = memo.Title,
                 FontFamily = "KCC-Ganpan",
@@ -116,7 +116,7 @@ public partial class DailyInfo : ContentPage
                 VerticalTextAlignment = TextAlignment.Start,
                 Margin = new Thickness(10, 10, 10, 0),
             });
-            vsl.AddLogicalChild(new Label()
+            vsl.Children.Add(new Label()
             {
                 Text = memo.ContentDate.ToString("yyyy-MM-dd"),
                 FontFamily = "KCC-Ganpan",
@@ -161,7 +161,7 @@ public partial class DailyInfo : ContentPage
         foreach (ComponentAll component in componentAllView.ListAll)
         {
             if (component is null) continue;
-            if (!isShedule && component.Type == "Shedule") continue;
+            if (!isSchedule && component.Type == "Schedule") continue;
             if (!isTask && component.Type == "Task") continue;
 
             VerticalStackLayout vsl = new()
@@ -217,19 +217,22 @@ public partial class DailyInfo : ContentPage
         var btn = (Button)sender;
         if (btn == btn_schedule)
         {
-            if (isShedule)
+            Log.LogInfo("[DailyInfo] Btn_Shedule_SW Clicked");
+            if (isSchedule)
             {
                 btn_schedule.BackgroundColor = Colors.LightGray;
-                isShedule = false;
+                isSchedule = false;
             }
             else
             {
                 btn_schedule.BackgroundColor = Color.FromArgb("FF5757");
-                isShedule = true;
+                isSchedule = true;
             }
+            Log.LogInfo($@"[DailyInfo] Btn_Shedule_SW: {isSchedule}");
         }
         if (btn == btn_task)
         {
+            Log.LogInfo("[DailyInfo] Btn_Shedule_SW Clicked");
             if (isTask)
             {
                 btn_task.BackgroundColor = Colors.LightGray;
@@ -240,9 +243,11 @@ public partial class DailyInfo : ContentPage
                 btn_task.BackgroundColor = Color.FromArgb("0CC0DF");
                 isTask = true;
             }
+            Log.LogInfo($@"[DailyInfo] Btn_Shedule_SW: {isTask}");
         }
         if (btn == btn_memo)
         {
+            Log.LogInfo("[DailyInfo] Btn_Shedule_SW Clicked");
             if (isMemo)
             {
                 btn_memo.BackgroundColor = Colors.LightGray;
@@ -253,6 +258,7 @@ public partial class DailyInfo : ContentPage
                 btn_memo.BackgroundColor = Color.FromArgb("7ED957");
                 isMemo = true;
             }
+            Log.LogInfo($@"[DailyInfo] Btn_Shedule_SW: {isMemo}");
         }
         LoadComplete_VSL();
         LoadIncomplete_VSL();
@@ -261,23 +267,17 @@ public partial class DailyInfo : ContentPage
     private async void Btn_AddClicked(object sender, EventArgs e)
     {
         Log.LogInfo("[DailyInfo] NavAdd");
-        string action = await DisplayActionSheet("추가할 항목을 선택하세요", "Cancel", null, "일정", "할 일", "메모");
-        if (action == "일정")
+        string action = await DisplayActionSheet("추가할 항목을 선택하세요", "Cancel", null, "Schedule", "Task", "Memo");
+
+        ShellNavigationQueryParameters navigationParameter = new()
         {
-            Log.LogInfo("[DailyInfo] NavAdd: Schedule");
-            await Shell.Current.GoToAsync($"ScheduleEditor?startTime={calendarDate}");
-        }
-        else if (action == "할 일")
-        {
-            Log.LogInfo("[DailyInfo] NavAdd: Task");
-            await Shell.Current.GoToAsync($"TaskEditor?startTime={calendarDate}");
-        }
-        else if (action == "메모")
-        {
-            Log.LogInfo("[DailyInfo] NavAdd: Memo");
-            await Shell.Current.GoToAsync($"MemoEditor?startTime={calendarDate}");
-        }
-        Log.LogInfo("[DailyInfoViewModel] NavAdd: Done");
+            { "query", $@"startTime={calendarDate}" }
+        };
+
+        if (action == "Cancel") return;
+        if (action is null) return;
+        Log.LogInfo($@"[DailyInfo] NavAdd: {action}");
+        await Shell.Current.GoToAsync($@"{action}Editor", navigationParameter);
     } // Btn_AddClicked
 
     private void Test_AddComponent(VerticalStackLayout obj)
@@ -360,7 +360,7 @@ public partial class DailyInfo : ContentPage
         Log.LogInfo($@"[DailyInfo] Button Clicked: {btn.Text}");
         Log.LogInfo($@"[DailyInfo] Button Clicked: {btn.CommandParameter}");
         var type = btn.CommandParameter;
-        var shellNavQueryParams = new ShellNavigationQueryParameters() { { "query", $@"contentID={btn.Text}" } };
+        ShellNavigationQueryParameters shellNavQueryParams = new() { { "query", $@"contentID={btn.Text}" } };
         await Shell.Current.GoToAsync($@"{type}Editor", shellNavQueryParams);
     }
 } // CROFFLE.xamls.Views.DailyInfo

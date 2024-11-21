@@ -22,7 +22,7 @@ namespace DataManager.SQLiteDBMS.Scheme
     public class Event
     {
         [PrimaryKey, Column("CID"), NotNull, Unique]
-        public string ContentsID { get; set; }
+        public string? ContentsID { get; set; }
 
         [Column("start_time"), NotNull]
         public DateTime StartTime { get; set; }

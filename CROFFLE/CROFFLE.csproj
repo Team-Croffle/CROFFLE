@@ -204,10 +204,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <MauiXaml Update="xamls\Views\About.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -226,6 +222,9 @@
 	  <MauiXaml Update="xamls\Views\SettingPages\GeneralSettings.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="xamls\Views\SettingPages\TestPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="xamls\Views\TaskEditor.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -236,6 +235,7 @@
 	  <ProjectReference Include="..\CroffleLogManager\CroffleLogManager.csproj" />
 	  <ProjectReference Include="..\CROFFLE_Core\CROFFLE_Core.csproj" />
 	  <ProjectReference Include="..\DataManager\DataManager.csproj" />
+	  <ProjectReference Include="..\HttpConn\HttpConn.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -314,11 +314,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Update="Microsoft.Maui.Controls" Version="8.0.93" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.92" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.71" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.82" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.82" />
 	</ItemGroup>
 
 </Project>

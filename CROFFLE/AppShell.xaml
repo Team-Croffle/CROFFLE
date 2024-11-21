@@ -5,6 +5,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:CROFFLE"
+    xmlns:view="clr-namespace:CROFFLE.xamls.Views"
     xmlns:settings="clr-namespace:CROFFLE.xamls.Views.SettingPages"
     Title="CROFFLE" 
     FlyoutBackgroundColor="{StaticResource Primary}">
@@ -66,13 +67,9 @@
         </Grid>
     </Shell.FlyoutHeader>
 
+
+
     <FlyoutItem Title="Calendar">
         <ShellContent Title="Calendar" ContentTemplate="{DataTemplate local:MainPage}" Route="MainPage" />
     </FlyoutItem>
-
-    <TabBar>
-        <Tab Title="Main" x:Name="tab_Settings">
-            <ShellContent Title="Settings" ContentTemplate="{DataTemplate settings:GeneralSettings}" Route="SettingPages"/>
-        </Tab>
-    </TabBar>
 </Shell>

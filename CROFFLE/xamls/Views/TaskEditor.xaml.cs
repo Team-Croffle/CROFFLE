@@ -11,7 +11,6 @@ public partial class TaskEditor : ContentPage
     ComponentAll? component;
     List<Alarm> alarmList;
     DateTime startTime;
-    DateTime endTime;
     Button colorSelected;
 
     private bool alarm = true;
@@ -41,8 +40,8 @@ public partial class TaskEditor : ContentPage
         var action = await DisplayAlert("취소", "일정을 삭제하시겠습니까?", "예", "아니오");
         if (action is false) return;
 
-        if (component is not null) new ComponentAllView().DeleteComponent(component);
-        await Shell.Current.GoToAsync("../");
+        if (contentID is not "" || contentID != string.Empty) ComponentAllView.DeleteComponent(contentID);
+        await Shell.Current.GoToAsync("//MainPage/DailyInfo");
     }
 
     private void OnLoaded(object sender, EventArgs e)
@@ -52,7 +51,7 @@ public partial class TaskEditor : ContentPage
 
         if (component is null)
         {
-            contentID = $@"S{DateTime.Now:yyyyMMddHHmmss}";
+            contentID = $@"T{DateTime.Now:yyyyMMddHHmmss}";
             Log.LogInfo($"[TaskEditor] New Task: {contentID}");
             return;
         }
@@ -72,9 +71,7 @@ public partial class TaskEditor : ContentPage
         }
 
         datePicker_Start.Date = component.StartTime;
-        datePicker_End.Date = component.EndTime;
         timePicker_Start.Time = component.StartTime.TimeOfDay;
-        timePicker_End.Time = component.EndTime.TimeOfDay;
         entry_Subject.Text = component.Title;
         entry_Memo.Text = component.Details;
 
@@ -121,7 +118,7 @@ public partial class TaskEditor : ContentPage
         var action = await DisplayAlert("취소", "편집을 취소하시겠습니까?", "예", "아니오");
         if (action is false) return;
 
-        await Shell.Current.GoToAsync("../");
+        await Shell.Current.GoToAsync("//MainPage/DailyInfo");
     }
 
     private async void Btn_SaveClicked(object sender, EventArgs e)
@@ -135,8 +132,19 @@ public partial class TaskEditor : ContentPage
             component.ContentsID = contentID;
         }
 
+        if (alarm)
+        {
+            btn_alarm.Text = "알람 켜짐";
+            btn_alarm.BackgroundColor = Colors.RoyalBlue;
+        }
+        else
+        {
+            btn_alarm.Text = "알람 꺼짐";
+            btn_alarm.BackgroundColor = Colors.Gray;
+        }
+
         component.StartTime = datePicker_Start.Date.Add(timePicker_Start.Time);
-        component.EndTime = datePicker_End.Date.Add(timePicker_End.Time);
+        component.EndTime = datePicker_Start.Date.Add(timePicker_Start.Time);
         component.Alarm = alarm;
         component.Title = entry_Subject.Text;
         component.Details = entry_Memo.Text;
@@ -146,12 +154,12 @@ public partial class TaskEditor : ContentPage
         component.Repeat = false;
         component.Canceled = false;
 
-        new ComponentAllView().SaveComponent(component);
+        ComponentAllView.SaveComponent(component);
 
         if (alarm)
         {
             Log.LogInfo("[TaskEditor] Alarm is created");
-            new AlarmView().SaveAlarm(new()
+            AlarmView.SaveAlarm(new()
             {
                 ContentsID = contentID,
                 Type = "Task",

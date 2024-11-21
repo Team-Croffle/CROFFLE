@@ -4,17 +4,18 @@
              xmlns:model="clr-namespace:CROFFLE.xamls.ViewModels"
              x:Class="CROFFLE.xamls.Views.ScheduleEditor"
              Loaded="OnLoaded"
-             Title="ScheduleEditor">
+             Title="ScheduleEditor"
+             Shell.TabBarIsVisible="False">
     <ContentPage.BindingContext>
         <model:MainViewModel />
     </ContentPage.BindingContext>
     <Shell.TitleView>
         <Grid HorizontalOptions="Fill"
-          BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray950}}">
+                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray950}}">
             <HorizontalStackLayout>
                 <Button Text="&#xE830;" FontFamily="SegoeFluentIcons" VerticalOptions="Center" BackgroundColor="Transparent"
                         TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                        Command="{Binding NavPrevious}" CornerRadius="100">
+                        Command="{Binding NavPreviousEditor}" CornerRadius="100">
                     <Button.GestureRecognizers>
                         <PointerGestureRecognizer
                             PointerEntered="OnPointerEntered"
@@ -197,7 +198,7 @@
                     HorizontalTextAlignment="Start" VerticalOptions="Center" />
                 
                 <Button Text="" BackgroundColor="{StaticResource SColor1}" CornerRadius="10" BorderColor="Black"
-                        BorderWidth="0" HorizontalOptions="Center" VerticalOptions="Center" x:Name="SColor1Btn" Clicked="ColorBtnClick"/>
+                        BorderWidth="2" HorizontalOptions="Center" VerticalOptions="Center" x:Name="SColor1Btn" Clicked="ColorBtnClick"/>
                 <Button Text="" BackgroundColor="{StaticResource SColor2}" CornerRadius="10" BorderColor="Black"
                         BorderWidth="0" HorizontalOptions="Center" VerticalOptions="Center" x:Name="SColor2Btn" Clicked="ColorBtnClick"/>
                 <Button Text="" BackgroundColor="{StaticResource SColor3}" CornerRadius="10" BorderColor="Black"

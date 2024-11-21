@@ -84,7 +84,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <CheckBox Grid.Column="0" x:Name="cb_ShowDone" IsEnabled="False" />
+                <CheckBox Grid.Column="0" x:Name="cb_ShowDone" />
                 <Label Grid.Column="1" Text="완료한 일정 보이기" VerticalOptions="Center"
                        HorizontalTextAlignment="Start" VerticalTextAlignment="Center"
                        TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
@@ -103,7 +103,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <CheckBox Grid.Column="0" x:Name="cb_AlertOn" IsEnabled="False" />
+                <CheckBox Grid.Column="0" x:Name="cb_AlertOn" IsChecked="True" />
                 <Label Grid.Column="1" Text="알림 켜기" VerticalOptions="Center"
                        HorizontalTextAlignment="Start" VerticalTextAlignment="Center"
                        TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"

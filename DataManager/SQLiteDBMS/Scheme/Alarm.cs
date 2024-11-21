@@ -22,13 +22,13 @@ namespace DataManager.SQLiteDBMS.Scheme
     public class Alarm
     {
         [PrimaryKey, Column("CID"), NotNull, Unique]
-        public string ContentsID { get; set; }
+        public string? ContentsID { get; set; }
 
         [Column("title"), NotNull]
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         [Column("type"), NotNull]
-        public string Type { get; set; }
+        public string? Type { get; set; }
 
         [Column("alarm_time"), NotNull]
         public DateTime AlarmTime { get; set; }

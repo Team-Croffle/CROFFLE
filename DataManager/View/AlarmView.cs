@@ -15,6 +15,7 @@ namespace DataManager.View
         public AlarmView()
         {
             db = new();
+            db.DB_Init();
         }
 
         public void LoadAlarms()
@@ -24,13 +25,13 @@ namespace DataManager.View
                 t => t.AlarmTime);
         } // LoadAlarms
 
-        public void SaveAlarm(Alarm alarm)
+        public static void SaveAlarm(Alarm alarm)
         {
+            SQLiteDB db = new();
             var result = db.SaveItem(alarm);
             if (result is not 1)
             {
                 Log.LogError("[AlarmView] SaveAlarm: Alarm Save Failed.");
-                alarmTable = null;
                 return;
             }
             else
@@ -39,13 +40,13 @@ namespace DataManager.View
             }
         } // SaveAlarm
 
-        public void DeleteAlarm(Alarm alarm)
+        public static void DeleteAlarm(string alarm_id)
         {
-            var result = db.DeleteItem(alarm);
+            SQLiteDB db = new();
+            var result = db.DeleteItem<Alarm>(alarm_id);
             if (result is not 1)
             {
                 Log.LogError("[AlarmView] DeleteAlarm: Alarm Delete Failed.");
-                alarmTable = null;
                 return;
             }
             else

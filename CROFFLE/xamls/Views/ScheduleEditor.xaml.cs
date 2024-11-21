@@ -11,7 +11,6 @@ public partial class ScheduleEditor : ContentPage
     ComponentAll? component;
     List<Alarm> alarmList;
     DateTime startTime;
-    DateTime endTime;
     Button colorSelected;
 
     private bool alarm = true;
@@ -27,6 +26,7 @@ public partial class ScheduleEditor : ContentPage
             var data = query.Split('=')[1];
             if (type == "contentID") contentID = data;
             else if (type == "startTime") startTime = DateTime.Parse(data);
+            Log.LogInfo(data);
         }
     }
 
@@ -43,8 +43,9 @@ public partial class ScheduleEditor : ContentPage
         var action = await DisplayAlert("취소", "일정을 삭제하시겠습니까?", "예", "아니오");
         if (action is false) return;
 
-        if (component is not null) new ComponentAllView().DeleteComponent(component);
-        await Shell.Current.GoToAsync("../");
+        if (contentID is not "" || contentID != string.Empty) ComponentAllView.DeleteComponent(contentID);
+
+        await Shell.Current.GoToAsync("..");
     }
 
     private void OnLoaded(object sender, EventArgs e)
@@ -103,6 +104,7 @@ public partial class ScheduleEditor : ContentPage
             btn_alarm.BackgroundColor = Colors.Gray;
         }
     }
+
     private void Btn_Done_Click(object sender, EventArgs e)
     {
         done = !done;
@@ -123,7 +125,7 @@ public partial class ScheduleEditor : ContentPage
         var action = await DisplayAlert("취소", "편집을 취소하시겠습니까?", "예", "아니오");
         if (action is false) return;
 
-        await Shell.Current.GoToAsync("../");
+        await Shell.Current.GoToAsync("//MainPage/DailyInfo");
     }
 
     private async void Btn_SaveClicked(object sender, EventArgs e)
@@ -133,11 +135,14 @@ public partial class ScheduleEditor : ContentPage
         if (component is null)
         {
             Log.LogInfo("[ScheduleEditor] Component is created");
-            component = new();
-            component.ContentsID = contentID;
+            component = new()
+            {
+                ContentsID = contentID
+            };
         }
 
         component.StartTime = datePicker_Start.Date.Add(timePicker_Start.Time);
+        startTime = component.StartTime;
         component.EndTime = datePicker_End.Date.Add(timePicker_End.Time);
         component.Alarm = alarm;
         component.Title = entry_Subject.Text;
@@ -148,12 +153,12 @@ public partial class ScheduleEditor : ContentPage
         component.Repeat = false;
         component.Canceled = false;
 
-        new ComponentAllView().SaveComponent(component);
+        ComponentAllView.SaveComponent(component);
 
         if (alarm)
         {
             Log.LogInfo("[ScheduleEditor] Alarm is created");
-            new AlarmView().SaveAlarm(new()
+            AlarmView.SaveAlarm(new()
             {
                 ContentsID = contentID,
                 Type = "Schedule",
@@ -164,7 +169,7 @@ public partial class ScheduleEditor : ContentPage
                     .AddMinutes(alarmtime_picker.Time.Minutes))
             });
         }
-        await Shell.Current.GoToAsync("../");
+        await Shell.Current.GoToAsync("//MainPage/DailyInfo");
     }
 
     void OnPointerEntered(object sender, PointerEventArgs e)

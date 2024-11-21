@@ -7,13 +7,13 @@ namespace DataManager.View
 {
     public class ComponentAll
     {
-        internal Contents _contents = new();
-        internal Event _event = new();
-        internal Memo _memo = new();
+        public Contents _contents = new();
+        public Event _event = new();
+        public Memo _memo = new();
 
-        public string ContentsID
+        public string? ContentsID
         {
-            get => _contents?.ContentsID ?? "";
+            get => _contents.ContentsID;
             set
             {
                 _contents.ContentsID = value;
@@ -22,7 +22,7 @@ namespace DataManager.View
             }
         }
 
-        public string Type { get => _contents.Type; set => _contents.Type = value; }
+        public string? Type { get => _contents.Type; set => _contents.Type = value; }
         public DateTime ContentDate { get => _contents.ContentDate; set => _contents.ContentDate = value; }
         public int Color { get => _contents.Color; set => _contents.Color = value; }
         public DateTime AddedTime { get => _contents.AddedTime; set => _contents.AddedTime = value; }
@@ -32,27 +32,28 @@ namespace DataManager.View
         public bool Done { get => _event.Done; set => _event.Done = value; }
         public bool Repeat { get => _event.Repeat; set => _event.Repeat = value; }
         public bool Canceled { get => _event.Canceled; set => _event.Canceled = value; }
-        public string Title { get => _memo.Title; set => _memo.Title = value; }
-        public string Details { get => _memo.Details; set => _memo.Details = value; }
+        public string? Title { get => _memo.Title; set => _memo.Title = value; }
+        public string? Details { get => _memo.Details; set => _memo.Details = value; }
     }
     public class ComponentAllView
     {
         private SQLiteConnection? _db;
 
+        protected static string DB_PATH = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DB");
+
         IEnumerable<ComponentAll>? ComponentAlls;
 
-        public ComponentAll? this[int index] { get => ComponentAlls?.ElementAt(index); }
         public IEnumerable<ComponentAll>? ListAll => ComponentAlls;
 
         public ComponentAllView()
         {
-            SQLiteDB db = new();
             Init();
         }
         public void Init() {
             if (_db is not null) return;
 
-            _db = new(Path.Combine(Constants.DB_PATH, Constants.DB_NAME), Constants.FLAGS);
+            Log.LogInfo("[ComponentAllView] Init");
+            _db = new(Path.Combine(DB_PATH, Constants.DB_NAME), Constants.FLAGS);
         }
 
         public void LoadComponent(DateTime target)
@@ -140,11 +141,11 @@ namespace DataManager.View
             return result;
         } // LoadComponent
 
-        public void SaveComponent(ComponentAll cpa)
+        public static void SaveComponent(ComponentAll cpa)
         {
             Log.LogInfo("[ComponentAllView] SaveComponent");
-            if (_db is null) return;
             SQLiteDB db = new();
+            db.DB_Init();
 
             Log.LogInfo("[ComponentAllView] SaveComponent: SaveItem - Contents");
             var result = db.SaveItem(cpa._contents);
@@ -159,20 +160,15 @@ namespace DataManager.View
             if (CheckResult(result, "Memo") is not 1) return;
         } // SaveComponent
 
-        public void DeleteComponent(ComponentAll cpa)
+        public static void DeleteComponent(string ContentID)
         {
             Log.LogInfo("[ComponentAllView] DeleteComponent");
-            if (_db is null) return;
-            SQLiteDB db = new();
-            var result = db.DeleteItem(cpa._contents);
-            if (CheckResult(result, "Contents") is not 1) return;
-            result = db.DeleteItem(cpa._event);
-            if (CheckResult(result, "Event") is not 1) return;
-            result = db.DeleteItem(cpa._memo);
-            if (CheckResult(result, "Memo") is not 1) return;
+            SQLiteConnection? _db = new(Path.Combine(DB_PATH, Constants.DB_NAME), Constants.FLAGS);
+
+            _db.Delete<Contents>(ContentID);
         } // DeleteComponent
 
-        private int CheckResult(int result, string tableName)
+        private static int CheckResult(int result, string tableName)
         {
             if (result is not 1)
                 Log.LogError($"[ComponentAllView] SaveComponent: {tableName} Save Failed.");

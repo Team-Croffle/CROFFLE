@@ -11,7 +11,5 @@ namespace AnniversaryAPI
             SQLiteOpenFlags.Create |
             SQLiteOpenFlags.SharedCache |
             SQLiteOpenFlags.ProtectionCompleteUntilFirstUserAuthentication;
-
-        public static string DB_PATH = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DB");
     }
 }

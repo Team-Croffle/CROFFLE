@@ -7,8 +7,8 @@ namespace DataManager.View
 {
     public class Components
     {
-        public string ContentsID { get; set; }
-        public string title { get; set; }
+        public string? ContentsID { get; set; }
+        public string? title { get; set; }
         public int color { get; set; }
         public bool done { get; set; }
         public DateTime content_date { get; set; }
@@ -18,6 +18,8 @@ namespace DataManager.View
     public class ComponentView
     {
         SQLiteConnection? _db;
+        protected string DB_PATH = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DB");
+
         IEnumerable<Components>? components;
 
         public Components? this[int index] { get => components?.ElementAt(index); }
@@ -26,6 +28,7 @@ namespace DataManager.View
         public ComponentView()
         {
             SQLiteDB db = new();
+            db.DB_Init();
             Init();
         }
 
@@ -33,7 +36,7 @@ namespace DataManager.View
         {
             if (_db is not null) return;
 
-            _db = new(Path.Combine(Constants.DB_PATH, Constants.DB_NAME), Constants.FLAGS);
+            _db = new(Path.Combine(DB_PATH, Constants.DB_NAME), Constants.FLAGS);
         }
 
         public void LoadComponent(DateTime from, DateTime to)

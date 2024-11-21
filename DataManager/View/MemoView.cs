@@ -10,17 +10,26 @@ namespace DataManager.View
         internal Contents _contents = new();
         internal Memo _memo = new();
 
-        public string ContentsID { get => _contents.ContentsID; set => _contents.ContentsID = value; }
-        public string Title { get => _memo.Title; set => _memo.Title = value; }
-        public string Details { get => _memo.Details; set => _memo.Details = value; }
+        public string? ContentsID {
+            get => _contents.ContentsID;
+            set
+            {
+                _contents.ContentsID = value;
+                _memo.ContentsID = value;
+            }
+        }
+        public string? Title { get => _memo.Title; set => _memo.Title = value; }
+        public string? Details { get => _memo.Details; set => _memo.Details = value; }
         public int Color { get => _contents.Color; set => _contents.Color = value; }
-        public string Type { get => _contents.Type; set => _contents.Type = value; }
+        public string? Type { get => _contents.Type; set => _contents.Type = value; }
         public DateTime ContentDate { get => _contents.ContentDate; set => _contents.ContentDate = value; }
         public DateTime AddedTime { get => _contents.AddedTime; set => _contents.AddedTime = value; }
     }
     public class MemoView
     {
         private SQLiteConnection? _db;
+        protected string DB_PATH = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DB");
+
         IEnumerable<MemoComponents>? _memoComponents;
 
         public MemoComponents? this[int index] { get => _memoComponents?.ElementAt(index); }
@@ -36,7 +45,7 @@ namespace DataManager.View
         {
             if (_db is not null) return;
 
-            _db = new(Path.Combine(Constants.DB_PATH, Constants.DB_NAME), Constants.FLAGS);
+            _db = new(Path.Combine(DB_PATH, Constants.DB_NAME), Constants.FLAGS);
         }
 
         public void LoadMemo(DateTime from, DateTime to)
@@ -49,6 +58,7 @@ namespace DataManager.View
                     .Select((mc) => new MemoComponents
                     {
                         ContentsID = mc.m.ContentsID,
+                        Details = mc.m.Details,
                         Title = mc.m.Title,
                         Color = mc.c.Color,
                         ContentDate = mc.c.ContentDate,
@@ -70,6 +80,7 @@ namespace DataManager.View
                     .Select((mc) => new MemoComponents
                     {
                         ContentsID = mc.m.ContentsID,
+                        Details = mc.m.Details,
                         Title = mc.m.Title,
                         Color = mc.c.Color,
                         ContentDate = mc.c.ContentDate,
@@ -80,7 +91,7 @@ namespace DataManager.View
             return result.FirstOrDefault();
         } // LoadMemo(string contentID)
 
-        public void SaveMemo(MemoComponents memoComponents)
+        public static void SaveMemo(MemoComponents memoComponents)
         {
             Log.LogInfo("[MemoView] SaveMemo");
             SQLiteDB db = new();
@@ -90,17 +101,17 @@ namespace DataManager.View
             if (Check(result, "Memo") == 0) return;
         }
 
-        public void DeleteMemo(MemoComponents memoComponents)
+        public static void DeleteMemo(string contentID)
         {
             Log.LogInfo("[MemoView] DeleteMemo");
             SQLiteDB db = new();
-            var result = db.DeleteItem(memoComponents._contents);
+            var result = db.DeleteItem<Contents>(contentID);
             if (Check(result, "Contents") == 0) return;
-            result = db.DeleteItem(memoComponents._memo);
+            result = db.DeleteItem<Memo>(contentID);
             if (Check(result, "Memo") == 0) return;
         }
 
-        private int Check(int result, string tableName)
+        private static int Check(int result, string tableName)
         {
             if (result == 1)
             {

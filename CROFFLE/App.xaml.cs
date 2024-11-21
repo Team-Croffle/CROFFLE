@@ -1,4 +1,6 @@
-﻿namespace CROFFLE
+﻿using CroffleLogManager;
+
+namespace CROFFLE
 {
     public partial class App : Application
     {
@@ -6,6 +8,7 @@
         {
             InitializeComponent();
 
+            Log.LogInfo("[App] App has been initialized.");
             MainPage = new AppShell();
         }
     }

@@ -16,26 +16,28 @@ namespace CROFFLE
 
         public static void LoadSettings()
         {
-            var set = new SQLiteDB().GetItems<Settings>();
+            SQLiteDB _db = new();
+            _db.DB_Init();
+            var set = _db.GetItems<Settings>();
             if (set is not null)
             {
 
 #if WINDOWS
                 var wres = set[set.FindIndex(s => s.Key == "AutoStart")];
-                AutoStart = bool.Parse(wres.Value);
+                if (wres.Value is not null) AutoStart = bool.Parse(wres.Value);
 
                 wres = set[set.FindIndex(s => s.Key == "SystemTray")];
-                SystemTray = bool.Parse(wres.Value);
+                if (wres.Value is not null) SystemTray = bool.Parse(wres.Value);
 #endif
 
                 var res = set[set.FindIndex(s => s.Key == "ShowWeekend")];
-                ShowWeekend = bool.Parse(res.Value);
+                if (res.Value is not null) ShowWeekend = bool.Parse(res.Value);
 
                 res = set[set.FindIndex(s => s.Key == "ShowDone")];
-                ShowDone = bool.Parse(res.Value);
+                if (res.Value is not null) ShowDone = bool.Parse(res.Value);
 
                 res = set[set.FindIndex(s => s.Key == "AlarmOn")];
-                AlarmOn = bool.Parse(res.Value);
+                if (res.Value is not null) AlarmOn = bool.Parse(res.Value);
             }
         }
 

@@ -22,12 +22,12 @@ namespace DataManager.SQLiteDBMS.Scheme
     public class Memo
     {
         [PrimaryKey, Column("CID"), NotNull, Unique]
-        public string ContentsID { get; set; }
+        public string? ContentsID { get; set; }
 
         [Column("title"), NotNull]
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         [Column("details"), NotNull]
-        public string Details { get; set; }
+        public string? Details { get; set; }
     }
 }

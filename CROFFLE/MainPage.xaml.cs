@@ -1,24 +1,19 @@
-﻿using CROFFLE.xamls.Views;
-using System.Collections.ObjectModel;
+﻿using CroffleLogManager;
 
+namespace CROFFLE;
 
-namespace CROFFLE
+public partial class MainPage : ContentPage
 {
-    public partial class MainPage : ContentPage
+    public MainPage()
     {
-        private DateTime date = DateTime.Today;
+        InitializeComponent();
 
-        public MainPage()
-        {
-            InitializeComponent();
-
-            //Cal_view.LoadCalendar(date);
-        }
-
-        private void OnNavigateClicked(object sender, EventArgs e)
-        {
-            Shell.Current.FlyoutIsPresented = true;
-        }
+        Log.LogInfo("[MainPage] MainPage initialized.");
+        //Cal_view.LoadCalendar(date);
     }
 
+    private void OnNavigateClicked(object sender, EventArgs e)
+    {
+        Shell.Current.FlyoutIsPresented = true;
+    }
 }

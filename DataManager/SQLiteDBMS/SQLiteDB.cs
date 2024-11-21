@@ -25,16 +25,27 @@ namespace DataManager.SQLiteDBMS
     {
         protected SQLiteConnection? _db;
 
+        protected string DB_PATH = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DB");
 
-        public SQLiteDB( ) { Init(); }
+        public SQLiteDB( ) { }
+
+        public void DB_Init()
+        {
+            ConnInit();
+            Init();
+        }
+
+        protected void ConnInit()
+        {
+            if (_db is not null) return;
+            DirectoryInfo db_path = new(DB_PATH);
+            if (!db_path.Exists) db_path.Create();
+
+            _db = new(Path.Combine(DB_PATH, Constants.DB_NAME), Constants.FLAGS);
+        }
 
         protected void Init() 
         {
-            if (_db is not null) return;
-
-            _db = new(Path.Combine(Constants.DB_PATH, Constants.DB_NAME), Constants.FLAGS);
-
-            CreateTable<Account>();
             CreateTable<Alarm>();
             CreateTable<Contents>();
             CreateTable<DateTemp>();
@@ -43,7 +54,7 @@ namespace DataManager.SQLiteDBMS
             CreateTable<Settings>();
         }
 
-        void CreateTable<T>() where T : new()
+        public void CreateTable<T>() where T : new()
         {
             if (_db is null) return;
             var result = _db.CreateTable<T>();
@@ -55,32 +66,28 @@ namespace DataManager.SQLiteDBMS
         public List<T>? GetItems<T>() where T : new()
         {
             Log.LogInfo($@"[SQLiteDB] GetItems: {typeof(T).Name}");
-            Init();
-            if (_db is null) return default;
-            return _db.Table<T>().ToList();
+            if (_db is null) return null;
+            return [.. _db.Table<T>()];
         }
 
         public List<T>? GetItems<T>(Expression<Func<T, bool>> predExpr) where T : new()
         {
-            Log.LogInfo($@"[SQLiteDB] GetItems: {predExpr}");
-            Init();
-            if (_db is null) return default;
-            return _db.Table<T>().Where(predExpr).ToList();
+            Log.LogInfo($@"[SQLiteDB] GetItems: {typeof(T).Name}");
+            if (_db is null) return null;
+            return [.. _db.Table<T>().Where(predExpr)];
         }
 
         public List<T>? GetItems<T>(
             Expression<Func<T, bool>> predExpr, Expression<Func<T, object>> orderExpr) where T : new()
         {
-            Log.LogInfo($@"[SQLiteDB] GetItems: {predExpr}");
-            Init();
-            if (_db is null) return default;
-            return _db.Table<T>().Where(predExpr).OrderBy(orderExpr).ToList();
+            Log.LogInfo($@"[SQLiteDB] GetItems: {typeof(T).Name}");
+            if (_db is null) return null;
+            return [.. _db.Table<T>().Where(predExpr).OrderBy(orderExpr)];
         }
 
         public T? GetItem<T>(Expression<Func<T, bool>> predExpr) where T : new()
         {
-            Log.LogInfo($@"[SQLiteDB] GetItem: {predExpr}");
-            Init();
+            Log.LogInfo($@"[SQLiteDB] GetItem: {typeof(T).Name}");
             if (_db is null) return default;
             return _db.Table<T>().Where(predExpr).FirstOrDefault();
         }
@@ -88,8 +95,7 @@ namespace DataManager.SQLiteDBMS
         public T? GetItem<T>(
             Expression<Func<T, bool>> predExpr, Expression<Func<T, bool>> orderExpr) where T : new()
         {
-            Log.LogInfo($@"[SQLiteDB] GetItem: {predExpr}");
-            Init();
+            Log.LogInfo($@"[SQLiteDB] GetItem: {typeof(T).Name}");
             if (_db is null) return default;
             return _db.Table<T>().Where(predExpr).OrderBy(orderExpr).FirstOrDefault();
         }
@@ -97,7 +103,6 @@ namespace DataManager.SQLiteDBMS
         public int SaveItem<T>(T item) where T : new()
         {
             Log.LogInfo($@"[SQLiteDB] SaveItem: {item}");
-            Init();
             if (_db is null) return 0;
             try
             {
@@ -111,12 +116,11 @@ namespace DataManager.SQLiteDBMS
             }
         }
 
-        public int DeleteItem<T>(T item) where T : new()
+        public int DeleteItem<T>(string primaryKey) where T : new()
         {
-            Log.LogInfo($@"[SQLiteDB] DeleteItem: {item}");
-            Init();
+            Log.LogInfo($@"[SQLiteDB] DeleteItem: {primaryKey}");
             if (_db is null) return 0;
-            return _db.Delete(item);
+            return _db.Delete<T>(primaryKey);
         }
     }
 }

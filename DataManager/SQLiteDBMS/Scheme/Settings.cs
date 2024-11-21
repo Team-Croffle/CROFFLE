@@ -22,9 +22,9 @@ namespace DataManager.SQLiteDBMS.Scheme
     public class Settings
     {
         [PrimaryKey, Column("key"), NotNull, Unique]
-        public string Key { get; set; }
+        public string? Key { get; set; }
 
         [Column("value"), NotNull]
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 }

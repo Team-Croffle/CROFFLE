@@ -1,8 +1,6 @@
-﻿using CROFFLE.Interface;
-using CROFFLE.xamls.Views;
+﻿using CROFFLE.xamls.Views;
 using CROFFLE.xamls.Views.SettingPages;
 using CroffleLogManager;
-using Microsoft.Extensions.Logging;
 
 namespace CROFFLE
 {
@@ -11,11 +9,13 @@ namespace CROFFLE
         public static MauiApp CreateMauiApp()
         {
             Log.SetConfig($@"Log/{DateTime.Now:yyyyMMddHHmmssFF}.log");
+            Routing.RegisterRoute("MainPage", typeof(MainPage));
+            Routing.RegisterRoute("DailyInfo", typeof(DailyInfo));
             Routing.RegisterRoute("ScheduleEditor", typeof(ScheduleEditor));
             Routing.RegisterRoute("TaskEditor", typeof(TaskEditor));
             Routing.RegisterRoute("MemoEditor", typeof(MemoEditor));
-            Routing.RegisterRoute("DailyInfo", typeof(DailyInfo));
             Routing.RegisterRoute("GeneralSettings", typeof(GeneralSettings));
+            Routing.RegisterRoute("TestPage", typeof(TestPage));
             Routing.RegisterRoute("About", typeof(About));
 
             var builder = MauiApp.CreateBuilder();
@@ -46,14 +46,11 @@ namespace CROFFLE
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddFont("Segoe Fluent Icons.ttf", "SegoeFluentIcons");
                 });
-#if ANDROID
-            builder.Services.AddSingleton<INotificationManagerService, Platforms.Android.AndroidNotificationManagerService>();
-#endif
 
 #if DEBUG
-            builder.Logging.AddDebug();
+            //builder.Logging.AddDebug();
 #endif
-
+            Log.LogInfo("[MauiProgram] MauiApp has been created.");
             return builder.Build();
         }
     }

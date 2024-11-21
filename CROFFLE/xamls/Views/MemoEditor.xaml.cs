@@ -7,19 +7,15 @@ namespace CROFFLE.xamls.Views;
 public partial class MemoEditor : ContentPage
 {
     private string contentID = "";
+    private DateTime startTime;
     MemoComponents? component;
-    DateTime startTime;
-    DateTime endTime;
     Button colorSelected;
-
-    private bool alarm = true;
-    private bool done = false;
 
     public string QueryString
     {
         set
         {
-            Log.LogInfo($@"[TaskEditor] QueryString: {value}");
+            Log.LogInfo($@"[MemoEditor] QueryString: {value}");
             var query = Uri.UnescapeDataString(value);
             var type = query.Split('=')[0];
             var data = query.Split('=')[1];
@@ -37,22 +33,22 @@ public partial class MemoEditor : ContentPage
         var action = await DisplayAlert("취소", "일정을 삭제하시겠습니까?", "예", "아니오");
         if (action is false) return;
 
-        if (component is not null) new MemoView().DeleteMemo(component);
-        await Shell.Current.GoToAsync("../");
+        if (contentID is not "" || contentID != string.Empty) MemoView.DeleteMemo(contentID);
+        await Shell.Current.GoToAsync("//MainPage/DailyInfo");
     }
 
     private void OnLoaded(object sender, EventArgs e)
     {
-        Log.LogInfo($@"[TaskEditor] TaskEditor: {contentID}");
+        Log.LogInfo($@"[MemoEditor] MemoEditor: {contentID}");
         if (contentID != "" || contentID != string.Empty) component = new MemoView().LoadMemo(contentID);
 
         if (component is null)
         {
-            contentID = $@"S{DateTime.Now:yyyyMMddHHmmss}";
-            Log.LogInfo($"[TaskEditor] New Task: {contentID}");
+            contentID = $@"M{DateTime.Now:yyyyMMddHHmmss}";
+            Log.LogInfo($"[MemoEditor] New Memo: {contentID}");
             return;
         }
-        Log.LogInfo($"[TaskEditor] Edit Task: {component.ContentsID}");
+        Log.LogInfo($"[MemoEditor] Edit Memo: {component.ContentsID}");
 
         entry_Subject.Text = component.Title;
         entry_Memo.Text = component.Details;
@@ -71,26 +67,29 @@ public partial class MemoEditor : ContentPage
         var action = await DisplayAlert("취소", "편집을 취소하시겠습니까?", "예", "아니오");
         if (action is false) return;
 
-        await Shell.Current.GoToAsync("../");
+        await Shell.Current.GoToAsync("DailyInfo");
     }
 
     private async void Btn_SaveClicked(object sender, EventArgs e)
     {
-        Log.LogInfo("[TaskEditor] Btn_SaveClicked");
+        Log.LogInfo("[MemoEditor] Btn_SaveClicked");
 
         if (component is null)
         {
-            Log.LogInfo("[TaskEditor] Component is created");
+            Log.LogInfo("[MemoEditor] Component is created");
             component = new();
             component.ContentsID = contentID;
         }
         component.Title = entry_Subject.Text;
+        component.Details = entry_Memo.Text;
         component.Color = colorSelected.BackgroundColor.ToInt();
-        component.Type = "Task";
+        component.Type = "Memo";
+        component.AddedTime = DateTime.Now;
+        component.ContentDate = startTime;
 
-        new MemoView().SaveMemo(component);
+        MemoView.SaveMemo(component);
 
-        await Shell.Current.GoToAsync("../");
+        await Shell.Current.GoToAsync("//MainPage/DailyInfo");
     }
 
     void OnPointerEntered(object sender, PointerEventArgs e)

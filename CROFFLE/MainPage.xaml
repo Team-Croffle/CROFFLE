@@ -4,7 +4,8 @@
              xmlns:local="clr-namespace:CROFFLE"
              xmlns:model="clr-namespace:CROFFLE.xamls.ViewModels"
              xmlns:views="clr-namespace:CROFFLE.xamls.Views"
-             x:Class="CROFFLE.MainPage">
+             x:Class="CROFFLE.MainPage"
+             Shell.TabBarIsVisible="False">
     <ContentPage.Title>
         <OnPlatform x:TypeArguments="x:String">
             <On Platform="Android">CROFFLE</On>

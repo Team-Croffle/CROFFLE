@@ -16,20 +16,19 @@
 
 using SQLite;
 
-namespace DataManager.SQLiteDBMS.Scheme
+namespace Plugin_Waffle.DB_Scheme;
+
+[Table("Account")]
+public class Account
 {
-    [Table("Account")]
-    public class Account
+    [PrimaryKey, Column("userid"), NotNull, Unique]
+    public string? UserID { get; set; }
+
+    [Column("passwd"), NotNull]
+    public string? Passwd { get; set; }
+
+    public void SetPasswd(string passwd)
     {
-        [PrimaryKey, Column("userid"), NotNull, Unique]
-        public string UserID { get; set; }
-
-        [Column("passwd"), NotNull]
-        public string Passwd { get; set; }
-
-        public void SetPasswd(string passwd)
-        {
-            Passwd = passwd;
-        }
+        Passwd = passwd;
     }
 }

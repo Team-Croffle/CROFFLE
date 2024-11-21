@@ -22,10 +22,10 @@ namespace DataManager.SQLiteDBMS.Scheme
     public class Contents
     {
         [PrimaryKey, Column("CID"), NotNull, Unique]
-        public string ContentsID { get; set; }
+        public string? ContentsID { get; set; }
 
         [Column("type"), NotNull]
-        public string Type { get; set; }
+        public string? Type { get; set; }
 
         [Column("content_date"), NotNull]
         public DateTime ContentDate { get; set; }
