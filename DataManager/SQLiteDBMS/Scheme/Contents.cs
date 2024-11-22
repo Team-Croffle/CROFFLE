@@ -16,24 +16,23 @@
 
 using SQLite;
 
-namespace DataManager.SQLiteDBMS.Scheme
+namespace DataManager.SQLiteDBMS.Scheme;
+
+[Table("Contents")]
+public class Contents
 {
-    [Table("Contents")]
-    public class Contents
-    {
-        [PrimaryKey, Column("CID"), NotNull, Unique]
-        public string? ContentsID { get; set; }
+    [PrimaryKey, Column("CID"), NotNull, Unique]
+    public string? ContentsID { get; set; }
 
-        [Column("type"), NotNull]
-        public string? Type { get; set; }
+    [Column("type"), NotNull]
+    public string? Type { get; set; }
 
-        [Column("content_date"), NotNull]
-        public DateTime ContentDate { get; set; }
+    [Column("content_date"), NotNull]
+    public DateTime ContentDate { get; set; }
 
-        [Column("color")]
-        public int Color { get; set; }
+    [Column("color")]
+    public int Color { get; set; }
 
-        [Column("added_time"), NotNull]
-        public DateTime AddedTime { get; set; }
-    }
+    [Column("added_time"), NotNull]
+    public DateTime AddedTime { get; set; }
 }

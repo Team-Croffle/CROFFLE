@@ -19,108 +19,146 @@ using DataManager.SQLiteDBMS.Scheme;
 using SQLite;
 using System.Linq.Expressions;
 
-namespace DataManager.SQLiteDBMS
+namespace DataManager.SQLiteDBMS;
+
+public class SQLiteDB
 {
-    public class SQLiteDB
+    protected SQLiteConnection? _db;
+
+    protected string DB_PATH = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DB");
+
+    public SQLiteDB( ) { }
+
+    public void DB_Init()
     {
-        protected SQLiteConnection? _db;
+        ConnInit();
+        Init();
+    }
 
-        protected string DB_PATH = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DB");
+    protected void ConnInit()
+    {
+        if (_db is not null) return;
+        DirectoryInfo db_path = new(DB_PATH);
+        if (!db_path.Exists) db_path.Create();
 
-        public SQLiteDB( ) { }
+        _db = new(Path.Combine(DB_PATH, Constants.DB_NAME), Constants.FLAGS);
+    }
 
-        public void DB_Init()
+    protected void Init() 
+    {
+        CreateTable<Alarm>();
+        CreateTable<Contents>();
+        CreateTable<DateTemp>();
+        CreateTable<Event>();
+        CreateTable<Memo>();
+        CreateTable<Settings>();
+    }
+
+    public void CreateTable<T>() where T : new()
+    {
+        if (_db is null) return;
+        var result = _db.CreateTable<T>();
+        if (result is CreateTableResult.Created)
+            Log.LogInfo($@"[SQLiteDB] CreateTable: Table {typeof(T).Name} Created.");
+     //fi
+    }
+
+    public List<T>? GetItems<T>() where T : new()
+    {
+        if (_db is null) return null;
+        try
         {
-            ConnInit();
-            Init();
-        }
-
-        protected void ConnInit()
-        {
-            if (_db is not null) return;
-            DirectoryInfo db_path = new(DB_PATH);
-            if (!db_path.Exists) db_path.Create();
-
-            _db = new(Path.Combine(DB_PATH, Constants.DB_NAME), Constants.FLAGS);
-        }
-
-        protected void Init() 
-        {
-            CreateTable<Alarm>();
-            CreateTable<Contents>();
-            CreateTable<DateTemp>();
-            CreateTable<Event>();
-            CreateTable<Memo>();
-            CreateTable<Settings>();
-        }
-
-        public void CreateTable<T>() where T : new()
-        {
-            if (_db is null) return;
-            var result = _db.CreateTable<T>();
-            if (result is not CreateTableResult.Migrated)
-                Log.LogInfo($@"[SQLiteDB] CreateTable: Table {typeof(T).Name} Created.");
-         //fi
-        }
-
-        public List<T>? GetItems<T>() where T : new()
-        {
-            Log.LogInfo($@"[SQLiteDB] GetItems: {typeof(T).Name}");
-            if (_db is null) return null;
             return [.. _db.Table<T>()];
         }
-
-        public List<T>? GetItems<T>(Expression<Func<T, bool>> predExpr) where T : new()
+        catch (SQLiteException e)
         {
-            Log.LogInfo($@"[SQLiteDB] GetItems: {typeof(T).Name}");
-            if (_db is null) return null;
+            Log.LogError($@"[SQLiteDB] GetItems - Failed: {e.Message}");
+        }
+        return null;
+    }
+
+    public List<T>? GetItems<T>(Expression<Func<T, bool>> predExpr) where T : new()
+    {
+        if (_db is null) return null;
+        try
+        {
             return [.. _db.Table<T>().Where(predExpr)];
         }
-
-        public List<T>? GetItems<T>(
-            Expression<Func<T, bool>> predExpr, Expression<Func<T, object>> orderExpr) where T : new()
+        catch (SQLiteException e)
         {
-            Log.LogInfo($@"[SQLiteDB] GetItems: {typeof(T).Name}");
-            if (_db is null) return null;
+            Log.LogError($@"[SQLiteDB] GetItems - Failed: {e.Message}");
+        }
+        return null;
+    }
+
+    public List<T>? GetItems<T>(
+        Expression<Func<T, bool>> predExpr, Expression<Func<T, object>> orderExpr) where T : new()
+    {;
+        if (_db is null) return null;
+        try
+        {
             return [.. _db.Table<T>().Where(predExpr).OrderBy(orderExpr)];
         }
-
-        public T? GetItem<T>(Expression<Func<T, bool>> predExpr) where T : new()
+        catch (SQLiteException e)
         {
-            Log.LogInfo($@"[SQLiteDB] GetItem: {typeof(T).Name}");
-            if (_db is null) return default;
+            Log.LogError($@"[SQLiteDB] GetItems - Failed: {e.Message}");
+        }
+        return null;
+    }
+
+    public T? GetItem<T>(Expression<Func<T, bool>> predExpr) where T : new()
+    {
+        if (_db is null) return default;
+        try
+        {
             return _db.Table<T>().Where(predExpr).FirstOrDefault();
         }
-
-        public T? GetItem<T>(
-            Expression<Func<T, bool>> predExpr, Expression<Func<T, bool>> orderExpr) where T : new()
+        catch (SQLiteException e)
         {
-            Log.LogInfo($@"[SQLiteDB] GetItem: {typeof(T).Name}");
-            if (_db is null) return default;
+            Log.LogError($@"[SQLiteDB] GetItem - Failed: {e.Message}");
+        }
+        return default;
+    }
+
+    public T? GetItem<T>(
+        Expression<Func<T, bool>> predExpr, Expression<Func<T, bool>> orderExpr) where T : new()
+    {
+        if (_db is null) return default;
+        try
+        {
             return _db.Table<T>().Where(predExpr).OrderBy(orderExpr).FirstOrDefault();
         }
-
-        public int SaveItem<T>(T item) where T : new()
+        catch (SQLiteException e)
         {
-            Log.LogInfo($@"[SQLiteDB] SaveItem: {item}");
-            if (_db is null) return 0;
-            try
-            {
-                var result = _db.InsertOrReplace(item);
-                return result;
-            }
-            catch (SQLiteException e)
-            {
-                Log.LogError($@"[SQLiteDB] SaveItem: Failed - {e.Message}");
-                return 0;
-            }
+            Log.LogError($@"[SQLiteDB] GetItem - Failed: {e.Message}");
         }
+        return default;
+    }
 
-        public int DeleteItem<T>(string primaryKey) where T : new()
+    public int SaveItem<T>(T item) where T : new()
+    {
+        if (_db is null) return 0;
+        try
         {
-            Log.LogInfo($@"[SQLiteDB] DeleteItem: {primaryKey}");
-            if (_db is null) return 0;
-            return _db.Delete<T>(primaryKey);
+            var result = _db.InsertOrReplace(item, typeof(T));
+            return result;
+        }
+        catch (SQLiteException e)
+        {
+            Log.LogError($@"[SQLiteDB] SaveItem - Failed: {e.Message}");
+            return 0;
         }
     }
-}
+
+    public int DeleteItem<T>(string primaryKey) where T : new()
+    {
+        if (_db is null) return 0;
+        try { return _db.Delete<T>(primaryKey); }
+        catch (SQLiteException e)
+        {
+            Log.LogError($@"[SQLiteDB] DeleteItem - Failed: {e.Message}");
+            return 0;
+        }
+    } // DeleteItem
+} // SQLiteDB
+

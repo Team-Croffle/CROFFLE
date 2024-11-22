@@ -1,17 +1,16 @@
 ﻿using SQLite;
 
-namespace AnniversaryAPI.Scheme
+namespace AnniversaryAPI.Scheme;
+
+[Table("anniversary")]
+public class Anniversary
 {
-    [Table("anniversary")]
-    public class Anniversary
-    {
-        [Column("locdate"), PrimaryKey, NotNull]
-        public DateTime locdate { get; set; }
+    [Column("locdate"), PrimaryKey, NotNull]
+    public DateTime locdate { get; set; }
 
-        [Column("isHoliday"), NotNull]
-        public bool isHoliday { get; set; }
+    [Column("isHoliday"), NotNull]
+    public bool isHoliday { get; set; }
 
-        [Column("dateName"), NotNull]
-        public string? dateName { get; set; }
-    }
+    [Column("dateName"), NotNull]
+    public string? dateName { get; set; }
 }

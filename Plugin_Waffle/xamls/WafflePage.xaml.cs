@@ -41,18 +41,17 @@ public partial class WafflePage : ContentPage
 
     void LoadWaffle_VSL(object sender, EventArgs e)
     {
+        Log.LogInfo("[WafflePage] LoadWaffle_VSL");
         Load_VSL();
     }
 
     void Load_VSL()
     {
-        Log.LogInfo("[WafflePage] LoadWaffle_VSL");
-
         WaffleView waffle = new();
         waffle.LoadWaffles();
         
         var count = waffle.Count();
-        Log.LogInfo($"[WafflePage] LoadWaffle_VSL: count={count}");
+        //Log.LogInfo($"[WafflePage] LoadWaffle_VSL: count={count}");
         
         if (count is null) return;
         if (count is 0) return;

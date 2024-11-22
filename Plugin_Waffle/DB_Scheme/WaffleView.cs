@@ -63,20 +63,17 @@ public class WaffleView
     {
         if (_db is not null) return;
 
-        Log.LogInfo("[WaffleView] Init");
         _db = new(Path.Combine(DB_PATH, Constants.DB_NAME), Constants.FLAGS);
     }
 
     public void LoadWaffles()
     {
-        Log.LogInfo("[WaffleView] LoadWaffles");
-        var result = LoadWContent(t => t.StartTime >= DateTime.Now);
+        var result = LoadWContent(t => t.EndTime >= DateTime.Now);
         waffleTable = result;
     } // LoadWaffles
 
     public VWaffle? LoadComponent(string contentsID)
     {
-        Log.LogInfo("[WaffleView] LoadComponent");
         var result = LoadWContent(t => t.ContentID == contentsID);
         if (result is null) return null;
         return result.FirstOrDefault();
@@ -84,30 +81,30 @@ public class WaffleView
 
     public static void SaveComponent(VWaffle vWaffle)
     {
-        Log.LogInfo("[WaffleView] SaveComponent");
+        //Log.LogInfo("[WaffleView] SaveComponent");
         SQLiteDB db = new();
         db.DB_Init();
 
-        Log.LogInfo("[WaffleView] SaveComponent: SaveItem - Contents");
+        //Log.LogInfo("[WaffleView] SaveComponent: SaveItem - Contents");
         var res = db.SaveItem(vWaffle._contents);
-        if (CheckResult(res, "Contents") is not 1) return;
+        if (res is not 1) return;
 
-        Log.LogInfo("[WaffleView] SaveComponent: SaveItem - Event");
+        //Log.LogInfo("[WaffleView] SaveComponent: SaveItem - Event");
         res = db.SaveItem(vWaffle._event);
-        if (CheckResult(res, "Event") is not 1) return;
+        if (res is not 1) return;
 
-        Log.LogInfo("[WaffleView] SaveComponent: SaveItem - Memo");
+        //Log.LogInfo("[WaffleView] SaveComponent: SaveItem - Memo");
         res = db.SaveItem(vWaffle._memo);
-        if (CheckResult(res, "Memo") is not 1) return;
+        if (res is not 1) return;
 
-        Log.LogInfo("[WaffleView] SaveComponent: SaveItem - Waffle");
+        //Log.LogInfo("[WaffleView] SaveComponent: SaveItem - Waffle");
         res = db.SaveItem(vWaffle._waffle);
-        if (CheckResult(res, "Waffle") is not 1) return;
+        if (res is not 1) return;
     } // SaveComponent
 
     public static void DeleteComponent(string ContentID)
     {
-        Log.LogInfo("[ComponentAllView] DeleteComponent");
+        //Log.LogInfo("[ComponentAllView] DeleteComponent");
         SQLiteConnection? _db = new(Path.Combine(DB_PATH, Constants.DB_NAME), Constants.FLAGS);
 
         _db.Delete<Contents>(ContentID);
@@ -119,50 +116,48 @@ public class WaffleView
         return waffleTable.Count();
     }
 
-    private static int CheckResult(int result, string tableName)
-    {
-        if (result is not 1)
-            Log.LogError($"[ComponentAllView] SaveComponent: {tableName} Save Failed.");
-        else
-            Log.LogInfo($"[ComponentAllView] SaveComponent: {tableName} Save Succeed.");
-
-        return 1;
-    } // CheckResult
-
     private IOrderedEnumerable<VWaffle>? LoadWContent(Func<VWaffle, bool> wherePred)
     {
         if (_db is null) return null;
         new DB_CTRL().DB_Init();
 
-        var result = _db.Table<Waffle>()
-            .Join(_db.Table<Memo>(), (w) => w.ContentID, (m) => m.ContentsID, (w, m) => new { w, m })
-            .Join(_db.Table<Event>(), (wm) => wm.w.ContentID, (e) => e.ContentsID, (wm, e) => new { wm, e })
-            .Join(_db.Table<Contents>(), (wme) => wme.wm.w.ContentID, (c) => c.ContentsID, (wme, c) => new { wme, c })
-            .Select((wmec) => new VWaffle
-            {
-                ContentID = wmec.wme.wm.w.ContentID,
-                WCount = wmec.wme.wm.w.WeekCount,
-                WLctrName = wmec.wme.wm.w.WLctrName,
-                WType = wmec.wme.wm.w.WType,
-                WTitle = wmec.wme.wm.w.WTitle,
+        try
+        {
+            var result = _db.Table<Waffle>()
+                .Join(_db.Table<Memo>(), (w) => w.ContentID, (m) => m.ContentsID, (w, m) => new { w, m })
+                .Join(_db.Table<Event>(), (wm) => wm.w.ContentID, (e) => e.ContentsID, (wm, e) => new { wm, e })
+                .Join(_db.Table<Contents>(), (wme) => wme.wm.w.ContentID, (c) => c.ContentsID, (wme, c) => new { wme, c })
+                .Select((wmec) => new VWaffle
+                {
+                    ContentID = wmec.wme.wm.w.ContentID,
+                    WCount = wmec.wme.wm.w.WeekCount,
+                    WLctrName = wmec.wme.wm.w.WLctrName,
+                    WType = wmec.wme.wm.w.WType,
+                    WTitle = wmec.wme.wm.w.WTitle,
 
-                Type = wmec.c.Type,
-                ContentDate = wmec.c.ContentDate,
-                Color = wmec.c.Color,
-                AddedTime = wmec.c.AddedTime,
+                    Type = wmec.c.Type,
+                    ContentDate = wmec.c.ContentDate,
+                    Color = wmec.c.Color,
+                    AddedTime = wmec.c.AddedTime,
 
-                StartTime = wmec.wme.e.StartTime,
-                EndTime = wmec.wme.e.EndTime,
-                Alarm = wmec.wme.e.Alarm,
-                Done = wmec.wme.e.Done,
-                Repeat = wmec.wme.e.Repeat,
-                Canceled = wmec.wme.e.Canceled,
+                    StartTime = wmec.wme.e.StartTime,
+                    EndTime = wmec.wme.e.EndTime,
+                    Alarm = wmec.wme.e.Alarm,
+                    Done = wmec.wme.e.Done,
+                    Repeat = wmec.wme.e.Repeat,
+                    Canceled = wmec.wme.e.Canceled,
 
-                Title = wmec.wme.wm.m.Title,
-                Details = wmec.wme.wm.m.Details,
-            })
-            .Where(wherePred)
-            .OrderBy(t => t.StartTime);
-        return result;
+                    Title = wmec.wme.wm.m.Title,
+                    Details = wmec.wme.wm.m.Details,
+                })
+                .Where(wherePred)
+                .OrderBy(t => t.EndTime);
+            return result;
+        }
+        catch (SQLiteException e)
+        {
+            Log.LogError($"[WaffleView] LoadWContent - Failed: {e.Message}");
+            return null;
+        }
     } // LoadWContent
 } // WaffleView

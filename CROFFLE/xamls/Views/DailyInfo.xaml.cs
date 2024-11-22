@@ -14,7 +14,6 @@ public partial class DailyInfo : ContentPage
 
     DateTime calendarDate;
 
-
     public string CalendarDate
     {
         get => calendarDate.ToString();
@@ -54,14 +53,14 @@ public partial class DailyInfo : ContentPage
         
             vsl_daily.Children.Add(lb);
         }
-        Log.LogInfo($@"[DailyInfo] LoadedDaily: Done");
+        //Log.LogInfo($@"[DailyInfo] LoadedDaily: Done");
     }
 
     public void LoadComplete_VSL()
     {
         if (vsl_complete is null) return;
         if (vsl_complete.Children is not null) vsl_complete.Children.Clear();
-        Log.LogInfo("[DailyInfo] LoadComplete_VSL: Children Cleared");
+        //Log.LogInfo("[DailyInfo] LoadComplete_VSL: Children Cleared");
         Load_VSL_Memo(vsl_complete);
         Load_VSL(vsl_complete, true);
     }
@@ -69,7 +68,7 @@ public partial class DailyInfo : ContentPage
     {
         if (vsl_incomplete is null) return;
         if (vsl_incomplete.Children is not null) vsl_incomplete.Children.Clear();
-        Log.LogInfo("[DailyInfo] LoadIncomplete_VSL: Children Cleared");
+        //Log.LogInfo("[DailyInfo] LoadIncomplete_VSL: Children Cleared");
         Load_VSL(vsl_incomplete, false);
     }
 
@@ -87,11 +86,11 @@ public partial class DailyInfo : ContentPage
 
     private void Load_VSL_Memo(VerticalStackLayout sender)
     {
-        Log.LogInfo("[DailyInfo] Load_VSL_Memo");
+        //Log.LogInfo("[DailyInfo] Load_VSL_Memo");
         MemoView memoView = new();
         memoView.LoadMemo(calendarDate, calendarDate.AddDays(1));
         var count = memoView.Count();
-        Log.LogInfo($@"[DailyInfo] Load_VSL_Memo: {count}");
+        //Log.LogInfo($@"[DailyInfo] Load_VSL_Memo: {count}");
 
         if (count is null) return;
         if (count == 0) return;
@@ -148,13 +147,13 @@ public partial class DailyInfo : ContentPage
 
     private void Load_VSL(VerticalStackLayout sender, bool complete)
     {
-        Log.LogInfo($@"[DailyInfo] Load_VSL: {complete}");
+        //Log.LogInfo($@"[DailyInfo] Load_VSL: {complete}");
         ComponentAllView componentAllView = new();
         componentAllView.LoadComponent(calendarDate, complete);
 
         if (componentAllView.ListAll is null) return;
         var count = componentAllView.ListAll.Count();
-        Log.LogInfo($@"[DailyInfo] Load_VSL: {count}");
+        //Log.LogInfo($@"[DailyInfo] Load_VSL: {count}");
 
         //var hasValue = Resources.TryGetValue("Medium", out var style);
         if (count == 0) return;
@@ -217,7 +216,7 @@ public partial class DailyInfo : ContentPage
         var btn = (Button)sender;
         if (btn == btn_schedule)
         {
-            Log.LogInfo("[DailyInfo] Btn_Shedule_SW Clicked");
+            //Log.LogInfo("[DailyInfo] Btn_Shedule_SW Clicked");
             if (isSchedule)
             {
                 btn_schedule.BackgroundColor = Colors.LightGray;
@@ -228,11 +227,11 @@ public partial class DailyInfo : ContentPage
                 btn_schedule.BackgroundColor = Color.FromArgb("FF5757");
                 isSchedule = true;
             }
-            Log.LogInfo($@"[DailyInfo] Btn_Shedule_SW: {isSchedule}");
+            //Log.LogInfo($@"[DailyInfo] Btn_Shedule_SW: {isSchedule}");
         }
         if (btn == btn_task)
         {
-            Log.LogInfo("[DailyInfo] Btn_Shedule_SW Clicked");
+            //Log.LogInfo("[DailyInfo] Btn_Shedule_SW Clicked");
             if (isTask)
             {
                 btn_task.BackgroundColor = Colors.LightGray;
@@ -243,11 +242,11 @@ public partial class DailyInfo : ContentPage
                 btn_task.BackgroundColor = Color.FromArgb("0CC0DF");
                 isTask = true;
             }
-            Log.LogInfo($@"[DailyInfo] Btn_Shedule_SW: {isTask}");
+            //Log.LogInfo($@"[DailyInfo] Btn_Shedule_SW: {isTask}");
         }
         if (btn == btn_memo)
         {
-            Log.LogInfo("[DailyInfo] Btn_Shedule_SW Clicked");
+            //Log.LogInfo("[DailyInfo] Btn_Shedule_SW Clicked");
             if (isMemo)
             {
                 btn_memo.BackgroundColor = Colors.LightGray;
@@ -258,7 +257,7 @@ public partial class DailyInfo : ContentPage
                 btn_memo.BackgroundColor = Color.FromArgb("7ED957");
                 isMemo = true;
             }
-            Log.LogInfo($@"[DailyInfo] Btn_Shedule_SW: {isMemo}");
+            //Log.LogInfo($@"[DailyInfo] Btn_Shedule_SW: {isMemo}");
         }
         LoadComplete_VSL();
         LoadIncomplete_VSL();
@@ -266,7 +265,7 @@ public partial class DailyInfo : ContentPage
 
     private async void Btn_AddClicked(object sender, EventArgs e)
     {
-        Log.LogInfo("[DailyInfo] NavAdd");
+        //Log.LogInfo("[DailyInfo] NavAdd");
         string action = await DisplayActionSheet("추가할 항목을 선택하세요", "Cancel", null, "Schedule", "Task", "Memo");
 
         ShellNavigationQueryParameters navigationParameter = new()
@@ -326,7 +325,7 @@ public partial class DailyInfo : ContentPage
             Padding = new Thickness(0, 0, 0, 0),
             Command = new Command(() =>
             {
-                Log.LogInfo($@"[DailyInfo] Button Clicked: testid");
+                //Log.LogInfo($@"[DailyInfo] Button Clicked");
                 Shell.Current.GoToAsync($@"ScheduleEditor?contentsID=testid");
             }),
             BorderWidth = 1,
@@ -357,8 +356,8 @@ public partial class DailyInfo : ContentPage
     {
         if (sender is null) return;
         Button btn = (Button)sender;
-        Log.LogInfo($@"[DailyInfo] Button Clicked: {btn.Text}");
-        Log.LogInfo($@"[DailyInfo] Button Clicked: {btn.CommandParameter}");
+        //Log.LogInfo($@"[DailyInfo] Button Clicked: {btn.Text}");
+        //Log.LogInfo($@"[DailyInfo] Button Clicked: {btn.CommandParameter}");
         var type = btn.CommandParameter;
         ShellNavigationQueryParameters shellNavQueryParams = new() { { "query", $@"contentID={btn.Text}" } };
         await Shell.Current.GoToAsync($@"{type}Editor", shellNavQueryParams);

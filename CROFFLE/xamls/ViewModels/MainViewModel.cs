@@ -2,7 +2,6 @@
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using CROFFLE.xamls.Views;
-using CroffleLogManager;
 using Microsoft.Maui.Controls.Shapes;
 
 namespace CROFFLE.xamls.ViewModels;
@@ -28,16 +27,12 @@ public class MainViewModel : INotifyPropertyChanged
 
     public ICommand? NavPrevious { get; } = new Command(async () =>
         {
-            Log.LogInfo("[MainInfoViewModel] NavPrevious");
             await Shell.Current.GoToAsync("../");
-            Log.LogInfo("[MainInfoViewModel] NavPrevious: Done");
         });
 
     public ICommand? NavPreviousEditor { get; } = new Command(async () =>
         {
-            Log.LogInfo("[MainInfoViewModel] NavPrevious");
             await Shell.Current.GoToAsync("//MainPage/DailyInfo");
-            Log.LogInfo("[MainInfoViewModel] NavPrevious: Done");
         });
     public ICommand? IncrementMonth { get; }
     public ICommand? DecrementMonth { get; }
@@ -74,7 +69,6 @@ public class MainViewModel : INotifyPropertyChanged
         set
         {
             deleteBtnBackground = value;
-            Log.LogInfo($"[MainViewModel] Changed: DeleteBtnBackground");
             OnPropertyChanged();
         }
     }

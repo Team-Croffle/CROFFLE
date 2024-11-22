@@ -16,15 +16,14 @@
 
 using SQLite;
 
-namespace DataManager.SQLiteDBMS.Scheme
-{
-    [Table("Settings")]
-    public class Settings
-    {
-        [PrimaryKey, Column("key"), NotNull, Unique]
-        public string? Key { get; set; }
+namespace DataManager.SQLiteDBMS.Scheme;
 
-        [Column("value"), NotNull]
-        public string? Value { get; set; }
-    }
+[Table("Settings")]
+public class Settings
+{
+    [PrimaryKey, Column("key"), NotNull, Unique]
+    public string? Key { get; set; }
+
+    [Column("value"), NotNull]
+    public string? Value { get; set; }
 }

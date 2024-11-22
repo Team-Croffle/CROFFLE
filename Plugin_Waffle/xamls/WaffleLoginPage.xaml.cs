@@ -48,7 +48,7 @@ public partial class WaffleLoginPage : ContentPage
 
         if (res is not 1)
         {
-            Log.LogError("[WaffleLoginPage] OnLoginClicked failed");
+            Log.LogError("[WaffleLoginPage] OnLoginClicked: failed");
             await DisplayAlert("Error", "로그인에 실패했습니다.", "OK");
             return;
         }

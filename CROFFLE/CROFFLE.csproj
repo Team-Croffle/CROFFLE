@@ -52,18 +52,6 @@
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
-		<MauiImage Update="Resources\Images\bell_solid.png" Resize="True" BaseSize="448,512">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</MauiImage>
-		<MauiImage Update="Resources\Images\calendar_icon.png" Resize="True" BaseSize="989,1024">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</MauiImage>
-		<MauiImage Update="Resources\Images\check_solid.png" Resize="True" BaseSize="800,800">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</MauiImage>
-		<MauiImage Update="Resources\Images\clock_regular.png" Resize="True" BaseSize="512,512">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</MauiImage>
 		<MauiImage Update="Resources\Images\croffle.png" Resize="True" BaseSize="500,500">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiImage>
@@ -76,61 +64,7 @@
     <MauiImage Update="Resources\Images\croffle_banner.png" Resize="True" BaseSize="540,1080">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </MauiImage>
-    <MauiImage Update="Resources\Images\daily_icon.png" Resize="True" BaseSize="1600,1600">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </MauiImage>
     <MauiImage Update="Resources\Images\dotnet_bot.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </MauiImage>
-    <MauiImage Update="Resources\Images\editor.png" Resize="True" BaseSize="1600,1600">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </MauiImage>
-    <MauiImage Update="Resources\Images\file_lines_regular.png" Resize="True" BaseSize="192,256">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </MauiImage>
-    <MauiImage Update="Resources\Images\house.png" Resize="True" BaseSize="512,512">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </MauiImage>
-    <MauiImage Update="Resources\Images\id_icon.png" Resize="True" BaseSize="1024,1024">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </MauiImage>
-    <MauiImage Update="Resources\Images\info_icon.png" Resize="True" BaseSize="1800,1687">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </MauiImage>
-    <MauiImage Update="Resources\Images\key_icon.png" Resize="True" BaseSize="512,512">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </MauiImage>
-    <MauiImage Update="Resources\Images\list_solid.png" Resize="True" BaseSize="512,512">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </MauiImage>
-    <MauiImage Update="Resources\Images\location_dot_solid.png" Resize="True" BaseSize="384,512">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </MauiImage>
-    <MauiImage Update="Resources\Images\login_icon.png" Resize="True" BaseSize="794,837">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </MauiImage>
-    <MauiImage Update="Resources\Images\palette_solid.png" Resize="True" BaseSize="512,512">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </MauiImage>
-    <MauiImage Update="Resources\Images\pen_to_square_solid.png" Resize="True" BaseSize="256,256">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </MauiImage>
-    <MauiImage Update="Resources\Images\person_running_solid.png" Resize="True" BaseSize="448,512">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </MauiImage>
-    <MauiImage Update="Resources\Images\power_icon.png" Resize="True" BaseSize="916,980">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </MauiImage>
-    <MauiImage Update="Resources\Images\setting_icon.png" Resize="True" BaseSize="448,512">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </MauiImage>
-    <MauiImage Update="Resources\Images\trash_can_red.png" Resize="True" BaseSize="448,512">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </MauiImage>
-    <MauiImage Update="Resources\Images\trash_can_solid.png" Resize="True" BaseSize="224,256">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </MauiImage>
-    <MauiImage Update="Resources\Images\user_icon.png" Resize="True" BaseSize="700,601">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </MauiImage>
     <MauiImage Update="Resources\Images\wku_logo.png" Resize="True" BaseSize="260,71">
@@ -175,31 +109,9 @@
 	  <None Remove="Resources\Fonts\LeagueSpartan-SemiBold.ttf" />
 	  <None Remove="Resources\Fonts\LeagueSpartan-Thin.ttf" />
 	  <None Remove="Resources\Fonts\Segoe Fluent Icons.ttf" />
-	  <None Remove="Resources\Images\bell_solid.png" />
-	  <None Remove="Resources\Images\calendar_icon.png" />
-	  <None Remove="Resources\Images\check_solid.png" />
-	  <None Remove="Resources\Images\clock_regular.png" />
 	  <None Remove="Resources\Images\croffle2.png" />
 	  <None Remove="Resources\Images\croffle_banner.png" />
 	  <None Remove="Resources\Images\croffle_big.png" />
-	  <None Remove="Resources\Images\daily_icon.png" />
-	  <None Remove="Resources\Images\editor.png" />
-	  <None Remove="Resources\Images\file_lines_regular.png" />
-	  <None Remove="Resources\Images\House.png" />
-	  <None Remove="Resources\Images\id_icon.png" />
-	  <None Remove="Resources\Images\info_icon.png" />
-	  <None Remove="Resources\Images\key_icon.png" />
-	  <None Remove="Resources\Images\list_solid.png" />
-	  <None Remove="Resources\Images\location_dot_solid.png" />
-	  <None Remove="Resources\Images\login_icon.png" />
-	  <None Remove="Resources\Images\palette_solid.png" />
-	  <None Remove="Resources\Images\pen_to_square_solid.png" />
-	  <None Remove="Resources\Images\person_running_solid.png" />
-	  <None Remove="Resources\Images\power_icon.png" />
-	  <None Remove="Resources\Images\setting_icon.png" />
-	  <None Remove="Resources\Images\trash_can_red.png" />
-	  <None Remove="Resources\Images\trash_can_solid.png" />
-	  <None Remove="Resources\Images\user_icon.png" />
 	  <None Remove="Resources\Images\wku_logo.png" />
 	</ItemGroup>
 
@@ -220,9 +132,6 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="xamls\Views\SettingPages\GeneralSettings.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="xamls\Views\SettingPages\TestPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="xamls\Views\TaskEditor.xaml">

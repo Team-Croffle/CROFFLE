@@ -13,7 +13,7 @@ public partial class WaffleEditor : ContentPage
     {
         set
         {
-            Log.LogInfo($@"[TaskEditor] QueryString: {value}");
+            //Log.LogInfo($@"[TaskEditor] QueryString: {value}");
             var query = Uri.UnescapeDataString(value);
             var type = query.Split('=')[0];
             var data = query.Split('=')[1];
@@ -31,7 +31,7 @@ public partial class WaffleEditor : ContentPage
         Log.LogInfo("[WaffleEditor] OnLoaded");
         if (contentID == "" || contentID == string.Empty)
         {
-            Log.LogInfo("[WaffleEditor] contentID is empty");
+            Log.LogError("[WaffleEditor] contentID is empty");
             await DisplayAlert("Error", "컨텐츠를 찾을 수 없습니다.", "OK");
             await Shell.Current.GoToAsync("//MainPage/WafflePage");
             return;
@@ -40,7 +40,7 @@ public partial class WaffleEditor : ContentPage
         _waffle = new WaffleView().LoadComponent(contentID);
         if (_waffle is null)
         {
-            Log.LogInfo("[WaffleEditor] _waffle is null");
+            Log.LogError("[WaffleEditor] _waffle is null");
             await DisplayAlert("Error", "컨텐츠를 찾을 수 없습니다.", "OK");
             await Shell.Current.GoToAsync("//MainPage/WafflePage");
             return;

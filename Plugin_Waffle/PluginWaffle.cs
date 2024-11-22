@@ -55,7 +55,6 @@ public class PluginWaffle : IPlugin
         }
         if (sp.UpdateWaffle() is 1)
         {
-            Log.LogInfo("[PluginWaffle] BackgroundTask: Waffle data has been updated.");
             return;
         }
         Log.LogError("[PluginWaffle] BackgroundTask: Waffle data update failed.");

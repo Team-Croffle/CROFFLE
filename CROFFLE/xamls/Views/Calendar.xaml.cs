@@ -56,7 +56,7 @@ public partial class Calendar : ContentView
 
     public void LoadCalendar(DateTime date)
     {
-        Log.LogInfo($@"[Calendar] LoadCalendar: {date:yyyy-MM-dd}");
+        Log.LogInfo($@"[Calendar] LoadCalendar");
         calendar_date = date;
         DateTime firstDayOfMonth = new(date.Year, date.Month, 1);
 
@@ -112,7 +112,7 @@ public partial class Calendar : ContentView
                 datePointer = datePointer.AddDays(1);
             }
         }
-        Log.LogInfo("[Calendar] LoadCalendar: Done");
+        //Log.LogInfo("[Calendar] LoadCalendar: Done");
     }
 
     public void LoadSchedules()
@@ -135,7 +135,7 @@ public partial class Calendar : ContentView
         DateTime firstDayOfMonth = new(calendar_date.Year, calendar_date.Month, 1);
         DateTime lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
 
-        Log.LogInfo("[Calendar] LoadSchedules: Load Anniversaries");
+        //Log.LogInfo("[Calendar] LoadSchedules: Load Anniversaries");
         var annvList = annvDB.GetItems<Anniversary>(t => t.locdate >= firstDayOfMonth && t.locdate <= lastDayOfMonth, t => t.locdate);
         if (annvList is not null)
             foreach (var al in annvList)
@@ -154,19 +154,18 @@ public partial class Calendar : ContentView
                 labelExists[row][col][1] = true;
             }
 
-        Log.LogInfo("[Calendar] LoadSchedules: Load Components");
-        Log.LogInfo("[Calendar] LoadSchedules: Initialize Label Number Array");
+        //Log.LogInfo("[Calendar] LoadSchedules: Load Components");
+        //Log.LogInfo("[Calendar] LoadSchedules: Initialize Label Number Array");
         for (int row = 0; row < 6; row++)
         {
             for (int col = 0; col < 7; col++)
             {
-                labelExists[row][col] = new bool[3];
                 for (int lbCount = 0; lbCount < 3; lbCount++)
                     labelExists[row][col][lbCount] = false;
             }
         }
 
-        Log.LogInfo("[Calendar] LoadSchedules: Draw Components");
+        //Log.LogInfo("[Calendar] LoadSchedules: Draw Components");
         scheList = new();
 
         if (AppSetting.ShowDone) scheList.LoadComponent(firstDayOfMonth, lastDayOfMonth);
@@ -175,64 +174,75 @@ public partial class Calendar : ContentView
         if (scheList.ListAll is null) return;
 
         var count = scheList.ListAll.Count();
-        Log.LogInfo($@"[Calendar] LoadSchedules: Count - {count}");
+        //Log.LogInfo($@"[Calendar] LoadSchedules: Count - {count}");
 
         if (count is 0) return;
         foreach (Components sche in scheList.ListAll)
         {
             DrawContentLabelAlgorithm(sche);
         }
-        Log.LogInfo("[Calendar] LoadSchedules: Done");
+        //Log.LogInfo("[Calendar] LoadSchedules: Done");
     }
 
     private void DrawContentLabelAlgorithm(Components components)
     {
-        Log.LogInfo("[Calendar] DrawContentLabelAlgorithm");
+        //Log.LogInfo("[Calendar] DrawContentLabelAlgorithm");
         var startRow = (components.start_time - startPointer).Days / 7;
         var startCol = (components.start_time - startPointer).Days % 7;
         var scheduleLength = (components.end_time - components.start_time).Days + 1;
-        var needLabelCount = (startCol + scheduleLength) / 7 + 1;
-        int actualRow, canDraw;
-
-        Log.LogInfo($@"[Calendar] DrawContentLabelAlgorithm: Label Count - {needLabelCount}");
+        var needLabelCount = (startCol + scheduleLength) / 7;
+        if ((startCol + scheduleLength) % 7 > 0) needLabelCount += 1;
+        int actualRow, canDraw, actualLength;
+        
+        //Log.LogInfo($@"[Calendar] DrawContentLabelAlgorithm: Label Count - {needLabelCount}");
+        //Log.LogInfo($@"[Calendar] DCLA: {components.title} {components.start_time:yyyy-MM-dd} {components.end_time:yyyy-MM-dd} {startRow} {startCol} {scheduleLength} {needLabelCount}");
         if (needLabelCount == 1)
         {
             canDraw = CheckCanDraw(startRow, startCol, scheduleLength);
-            Log.LogWarn($@"[Calendar] DrawContentLabelAlgorithm: canDraw - {canDraw}");
+            //Log.LogWarn($@"[Calendar] DrawContentLabelAlgorithm: canDraw - {canDraw}");
             if (canDraw == -1) return;
             actualRow = startRow * 5 + 2 + canDraw;
             DrawMyLabel(actualRow, startCol, scheduleLength, components.title ?? "", Color.FromInt(components.color), 3);
+            DrawRecog(startRow, startCol, scheduleLength, canDraw);
         }
         else
         {
             canDraw = CheckCanDraw(startRow, startCol, 7 - startCol);
+            //Log.LogWarn($@"[Calendar] DrawContentLabelAlgorithm: canDraw - {canDraw}");
             if (canDraw is not -1)
             {
                 actualRow = startRow * 5 + 2 + canDraw;
                 DrawMyLabel(actualRow, startCol, 7 - startCol, components.title ?? "", Color.FromInt(components.color), 0);
+                DrawRecog(startRow, startCol, 7 - startCol, canDraw);
             }
             for (int i = 1; i < needLabelCount - 1; i++)
             {
                 canDraw = CheckCanDraw(startRow + i, 0, 7);
+                //Log.LogWarn($@"[Calendar] DrawContentLabelAlgorithm: canDraw - {canDraw}");
                 if (canDraw is not -1)
                 {
                     actualRow = (startRow + i) * 5 + 2 + canDraw;
                     DrawMyLabel(actualRow, 0, 7, components.title ?? "", Color.FromInt(components.color), 1);
+                    DrawRecog(startRow + i, 0, 7, canDraw);
                 }
             }
 
             canDraw = CheckCanDraw(startRow + needLabelCount - 1, 0, (startCol + scheduleLength) % 7);
+            //Log.LogWarn($@"[Calendar] DrawContentLabelAlgorithm: canDraw - {canDraw}");
             if (canDraw is not -1){
                 actualRow = (startRow + needLabelCount - 1) * 5 + 2 + canDraw;
-                DrawMyLabel(actualRow, 0, (startCol + scheduleLength) % 7, components.title ?? "",
+                actualLength = (startCol + scheduleLength) % 7;
+                if (actualLength == 0) actualLength = 7;
+                DrawMyLabel(actualRow, 0, actualLength, components.title ?? "",
                     Color.FromInt(components.color), 2);
+                DrawRecog(startRow + needLabelCount - 1, 0, (startCol + scheduleLength) % 7, canDraw);
             }
         }
     }
 
     private int CheckCanDraw(int row, int startCol, int length)
     {
-        Log.LogInfo($@"[Calendar] DrawMyLabel: row - {row}, col - {startCol}, length - {length}");
+        //Log.LogInfo($@"[Calendar] DrawMyLabel: row - {row}, col - {startCol}, length - {length}");
         for (int i = 0; i < 3; i++)
         {
             for (int col = startCol; col < startCol + length; col++)
@@ -265,12 +275,20 @@ public partial class Calendar : ContentView
 
 
         var Label = (Label)((DataTemplate)Resources["ContentLabel"]).CreateContent();
+        if (text.Length > 10) text = text.Substring(0, 10) + "...";
         Label.Text = text;
         Label.BackgroundColor = Colors.Transparent;
         Grid.SetRow(Label, row);
         Grid.SetColumn(Label, col);
         Grid.SetColumnSpan(Label, length);
         Grid_Calendar_Schedule.Children.Add(Label);
+    }
+    private void DrawRecog(int row, int col, int length, int canDraw)
+    {
+        for(int i = 0; i < length; i++)
+        {
+            labelExists[row][col + i][canDraw] = true;
+        }
     }
 
     private async void Cal_Clicked(object sender, EventArgs e)
@@ -279,7 +297,7 @@ public partial class Calendar : ContentView
         var col = Grid.GetColumn(obj);
         var row = Grid.GetRow(obj);
         var selected = startPointer.AddDays(col + row * 7);
-        Log.LogInfo($@"[Calendar] Cal_Clicked: row - {row}, col - {col}");
+        //Log.LogInfo($@"[Calendar] Cal_Clicked: row - {row}, col - {col}");
         Log.LogInfo($@"[Calendar] Cal_Clicked: {selected:yyyy-MM-dd}");
         var navigationParameter = new ShellNavigationQueryParameters
         {

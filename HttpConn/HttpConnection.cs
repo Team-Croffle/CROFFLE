@@ -21,7 +21,6 @@ public class HttpConnection
     /// <returns>1 is success, -1 is no response or 404 Not Found, 0 is other error</returns>
     public static int GetDataPOST(string url, string? post_data, string? host, string? referer, MediaTypeHeaderValue content_type, out string data)
     {
-        Log.LogInfo("[HttpConnection] GetDataPOST");
         int result = POSTPOSTPOST(url, post_data, host, referer, content_type, out HttpResponseMessage? resp);
         data = string.Empty;
 
@@ -44,7 +43,6 @@ public class HttpConnection
     /// <returns>1 is success, -1 is no response or 404 Not Found, 0 is other error</returns>
     public static int GetDataPOST(string url, string? post_data, out string? data)
     {
-        Log.LogInfo("[HttpConnection] GetDataPOST");
         int result = POSTPOSTPOST(url, post_data, null, null, new(""), out HttpResponseMessage? resp);
 
         data = string.Empty;
@@ -70,7 +68,6 @@ public class HttpConnection
     /// <returns></returns>
     public static int GetDataGET(string url, string? query, string? host, string? referer, out string? data)
     {
-        Log.LogInfo("[HttpConnection] GetDataGET");
         if (query is not null && query != string.Empty) url += $@"?{query}";
         int result = GETGETGET(url, host, referer, out HttpResponseMessage? resp);
 
@@ -94,7 +91,6 @@ public class HttpConnection
     /// <returns></returns>
     public static int GetDataGET(string url, out string? data)
     {
-        Log.LogInfo("[HttpConnection] GetDataGET");
         int result = GETGETGET(url, "", null, out HttpResponseMessage? resp);
 
         data = string.Empty;
@@ -122,7 +118,6 @@ public class HttpConnection
     private static int POSTPOSTPOST(string url, string? post_data, string? host, string? referer, MediaTypeHeaderValue? content_type,  out HttpResponseMessage? resp)
     {
         // Make a POST request
-        Log.LogInfo("[HttpConnection] POSTPOSTPOST");
         HttpRequestMessage request = new(HttpMethod.Post, url);
 
         // Set post data when not null
@@ -146,6 +141,17 @@ public class HttpConnection
         // Send request
         try { response = client.SendAsync(request).Result; }
         catch (HttpRequestException) { response = null; }
+        catch (AggregateException)
+        {
+            Log.LogError("[HttpConnection] POSTPOSTPOST error: no host");
+            resp = null;
+            return -2;
+        }
+        catch (Exception e)
+        {
+            Log.LogError($"HttpConnection POSTPOSTPOST error: {e.Message}");
+            response = null;
+        }
 
         // Check response. If null, return -1
         if (response is null) { resp = null; return -1; }
@@ -153,7 +159,6 @@ public class HttpConnection
         resp = response;
 
         HttpStatusCode status = response.StatusCode;
-        Log.LogInfo($"[HttpConnection] POSTPOSTPOST status: {status}");
 
         if (status is HttpStatusCode.OK) return 1;
         else if (status is HttpStatusCode.NotFound) return 0;
@@ -171,7 +176,6 @@ public class HttpConnection
     private static int GETGETGET(string url, string? host, string? referer, out HttpResponseMessage? resp)
     {
         // Make a GET request
-        Log.LogInfo("[HttpConnection] GETGETGET");
         HttpRequestMessage request = new(HttpMethod.Get, url)
         {
             Content = new StringContent("")
@@ -193,6 +197,12 @@ public class HttpConnection
             Log.LogError($@"[HttpConnection] GETGETGET error: {e.Message}");
             response = null;
         }
+        catch (AggregateException e)
+        {
+            Log.LogError($@"[HttpConnection] GETGETGET error: {e.Message}");
+            resp = null;
+            return -2;
+        }
         catch (Exception e)
         {
             Log.LogError($@"[HttpConnection] GETGETGET error: {e.Message}");
@@ -204,7 +214,6 @@ public class HttpConnection
         resp = response;
 
         HttpStatusCode state = response.StatusCode;
-        Log.LogInfo($"[HttpConnection] GETGETGET status: {state}");
 
         if (state is HttpStatusCode.OK) return 1;
         else if (state is HttpStatusCode.NotFound) return 0;

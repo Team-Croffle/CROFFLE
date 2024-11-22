@@ -20,7 +20,7 @@ public partial class ScheduleEditor : ContentPage
     {
         set
         {
-            Log.LogInfo($@"[ScheduleEditor] QueryString: {value}");
+            //Log.LogInfo($@"[ScheduleEditor] QueryString: {value}");
             var query = Uri.UnescapeDataString(value);
             var type = query.Split('=')[0];
             var data = query.Split('=')[1];
@@ -50,7 +50,7 @@ public partial class ScheduleEditor : ContentPage
 
     private void OnLoaded(object sender, EventArgs e)
     {
-        Log.LogInfo($@"[ScheduleEditor] ScheduleEditor: {contentID}");
+        //Log.LogInfo($@"[ScheduleEditor] ScheduleEditor: {contentID}");
         if (contentID != "" || contentID != string.Empty) component = new ComponentAllView().LoadComponent(contentID);
 
         if (component is null)
@@ -59,7 +59,7 @@ public partial class ScheduleEditor : ContentPage
             Log.LogInfo($"[ScheduleEditor] New Schedule: {contentID}");
             return;
         }
-        Log.LogInfo($"[ScheduleEditor] Edit Schedule: {component.ContentsID}");
+        else Log.LogInfo($"[ScheduleEditor] Edit Schedule: {component.ContentsID}");
 
         alarm = component.Alarm;
         done = component.Done;
@@ -130,7 +130,7 @@ public partial class ScheduleEditor : ContentPage
 
     private async void Btn_SaveClicked(object sender, EventArgs e)
     {
-        Log.LogInfo("[ScheduleEditor] Btn_SaveClicked");
+        //Log.LogInfo("[ScheduleEditor] Btn_SaveClicked");
 
         if (component is null)
         {

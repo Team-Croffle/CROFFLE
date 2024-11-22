@@ -20,7 +20,7 @@ public partial class TaskEditor : ContentPage
     {
         set
         {
-            Log.LogInfo($@"[TaskEditor] QueryString: {value}");
+            //Log.LogInfo($@"[TaskEditor] QueryString: {value}");
             var query = Uri.UnescapeDataString(value);
             var type = query.Split('=')[0];
             var data = query.Split('=')[1];
@@ -46,7 +46,7 @@ public partial class TaskEditor : ContentPage
 
     private void OnLoaded(object sender, EventArgs e)
     {
-        Log.LogInfo($@"[TaskEditor] TaskEditor: {contentID}");
+        //Log.LogInfo($@"[TaskEditor] TaskEditor: {contentID}");
         if (contentID != "" || contentID != string.Empty) component = new ComponentAllView().LoadComponent(contentID);
 
         if (component is null)
@@ -55,7 +55,7 @@ public partial class TaskEditor : ContentPage
             Log.LogInfo($"[TaskEditor] New Task: {contentID}");
             return;
         }
-        Log.LogInfo($"[TaskEditor] Edit Task: {component.ContentsID}");
+        else Log.LogInfo($"[TaskEditor] Edit Task: {component.ContentsID}");
 
         alarm = component.Alarm;
         done = component.Done;
@@ -123,7 +123,7 @@ public partial class TaskEditor : ContentPage
 
     private async void Btn_SaveClicked(object sender, EventArgs e)
     {
-        Log.LogInfo("[TaskEditor] Btn_SaveClicked");
+        //Log.LogInfo("[TaskEditor] Btn_SaveClicked");
 
         if (component is null)
         {

@@ -16,30 +16,29 @@
 
 using SQLite;
 
-namespace DataManager.SQLiteDBMS.Scheme
+namespace DataManager.SQLiteDBMS.Scheme;
+
+[Table("Event")]
+public class Event
 {
-    [Table("Event")]
-    public class Event
-    {
-        [PrimaryKey, Column("CID"), NotNull, Unique]
-        public string? ContentsID { get; set; }
+    [PrimaryKey, Column("CID"), NotNull, Unique]
+    public string? ContentsID { get; set; }
 
-        [Column("start_time"), NotNull]
-        public DateTime StartTime { get; set; }
+    [Column("start_time"), NotNull]
+    public DateTime StartTime { get; set; }
 
-        [Column("end_time"), NotNull]
-        public DateTime EndTime { get; set; }
+    [Column("end_time"), NotNull]
+    public DateTime EndTime { get; set; }
 
-        [Column("alarm")]
-        public bool Alarm { get; set; }
+    [Column("alarm")]
+    public bool Alarm { get; set; }
 
-        [Column("done")]
-        public bool Done { get; set; }
+    [Column("done")]
+    public bool Done { get; set; }
 
-        [Column("repeat")]
-        public bool Repeat { get; set; }
+    [Column("repeat")]
+    public bool Repeat { get; set; }
 
-        [Column("canceled")]
-        public bool Canceled { get; set; }
-    }
+    [Column("canceled")]
+    public bool Canceled { get; set; }
 }

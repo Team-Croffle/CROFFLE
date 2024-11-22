@@ -17,10 +17,10 @@ public class WaffleProfile
 
     public int TryLogin()
     {
-        Log.LogInfo("[WaffleProfile] TryLogin");
+        //Log.LogInfo("[WaffleProfile] TryLogin");
         if (userid is null || passwd is null)
         {
-            Log.LogInfo("[WaffleProfile] TryLogin: Find account data from DB.");
+            //Log.LogInfo("[WaffleProfile] TryLogin: Find account data from DB.");
             DB_CTRL _db = new();
             _db.DB_Init();
 
@@ -35,7 +35,7 @@ public class WaffleProfile
 
         if (userid is null || passwd is null)
         {
-            Log.LogError("[WaffleProfile] TryLogin failed: Account data not found.");
+            Log.LogError("[WaffleProfile] TryLogin - failed: Account data not found.");
             return 0;
         }
         if (userid is null || passwd is null)
@@ -55,16 +55,17 @@ public class WaffleProfile
 
         if (userid is null || passwd is null)
         {
-            Log.LogError("[WaffleProfile] TryLogin failed: Account data not found.");
+            Log.LogError("[WaffleProfile] TryLogin - failed: Account data not found.");
             return 0;
         }
 
         var success = _waffleMng.SetWaffle(userid, passwd);
         if (success is not 1)
         {
-            Log.LogError("[WaffleProfile] TryLogin failed: Login Request failed");
+            Log.LogError("[WaffleProfile] TryLogin - failed: Login Request failed");
             return success;
         }
+        Log.LogInfo($"[WaffleProfile] TryLogin - success: {WaffleLoginInfo.USERNAME}");
 
         // Set WaffleLoginInfo
         WaffleLoginInfo.IsLogin = true;
@@ -74,13 +75,12 @@ public class WaffleProfile
         _acntdb.DB_Init();
         _acntdb.SaveItem(new Account { UserID = userid, Passwd = passwd });
 
-        Log.LogInfo("[WaffleProfile] TryLogin: Login successful.");
         return success;
     }
 
     public int Logout()
     {
-        Log.LogInfo("[WaffleProfile] Logout");
+        //Log.LogInfo("[WaffleProfile] Logout");
 
         DB_CTRL _acntdb = new();
         _acntdb.DB_Init();
@@ -89,30 +89,29 @@ public class WaffleProfile
 
         if (userid is null)
         {
-            Log.LogError("[WaffleProfile] Logout failed: Not logged in.");
+            Log.LogError("[WaffleProfile] Logout - failed: Not logged in.");
             return 0;
         }
         var res = _acntdb.DeleteItem<Account>(userid);
 
         if (res is 1)
         {
-            Log.LogInfo("[WaffleProfile] Logout: Account deleted successfully.");
             userid = null;
             passwd = null;
             WaffleLoginInfo.SNO = null;
             WaffleLoginInfo.USERNAME = null;
             WaffleLoginInfo.IsLogin = false;
         }
-        else Log.LogError("[WaffleProfile] Logout failed: Account deletion failed.");
+        else Log.LogError("[WaffleProfile] Logout - failed: Account deletion failed.");
         return res;
     }
 
     public int UpdateWaffle()
     {
-        Log.LogInfo("[WaffleProfile] UpdateWaffle");
+        //Log.LogInfo("[WaffleProfile] UpdateWaffle");
         if (WaffleLoginInfo.IsLogin is false)
         {
-            Log.LogError("[WaffleProfile] UpdateWaffle failed: Not logged in.");
+            Log.LogError("[WaffleProfile] UpdateWaffle - failed: Not logged in.");
             return 0;
         }
 

@@ -8,7 +8,7 @@ public partial class MainPage : ContentPage
     {
         InitializeComponent();
 
-        Log.LogInfo("[MainPage] MainPage initialized.");
+        //Log.LogInfo("[MainPage] MainPage initialized.");
         //Cal_view.LoadCalendar(date);
     }
 

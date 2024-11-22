@@ -15,7 +15,6 @@ namespace CROFFLE
             Routing.RegisterRoute("TaskEditor", typeof(TaskEditor));
             Routing.RegisterRoute("MemoEditor", typeof(MemoEditor));
             Routing.RegisterRoute("GeneralSettings", typeof(GeneralSettings));
-            Routing.RegisterRoute("TestPage", typeof(TestPage));
             Routing.RegisterRoute("About", typeof(About));
 
             var builder = MauiApp.CreateBuilder();
@@ -50,7 +49,7 @@ namespace CROFFLE
 #if DEBUG
             //builder.Logging.AddDebug();
 #endif
-            Log.LogInfo("[MauiProgram] MauiApp has been created.");
+            //Log.LogInfo("[MauiProgram] MauiApp has been created.");
             return builder.Build();
         }
     }

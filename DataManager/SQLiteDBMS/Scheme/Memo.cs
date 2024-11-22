@@ -16,18 +16,17 @@
 
 using SQLite;
 
-namespace DataManager.SQLiteDBMS.Scheme
+namespace DataManager.SQLiteDBMS.Scheme;
+
+[Table("Memo")]
+public class Memo
 {
-    [Table("Memo")]
-    public class Memo
-    {
-        [PrimaryKey, Column("CID"), NotNull, Unique]
-        public string? ContentsID { get; set; }
+    [PrimaryKey, Column("CID"), NotNull, Unique]
+    public string? ContentsID { get; set; }
 
-        [Column("title"), NotNull]
-        public string? Title { get; set; }
+    [Column("title"), NotNull]
+    public string? Title { get; set; }
 
-        [Column("details"), NotNull]
-        public string? Details { get; set; }
-    }
+    [Column("details"), NotNull]
+    public string? Details { get; set; }
 }

@@ -37,7 +37,7 @@ public class WaffleManager
 
     public int SetWaffle(string id, string passwd)
     {
-        Log.LogInfo("[WaffleManager] SetWaffle");
+        //Log.LogInfo("[WaffleManager] SetWaffle");
 
         var url = WafflePage.GetPage(EPage.eLoginJSP);
         var post_data = $"nextURL={WafflePage.GetPage(EPage.eReturnJSP)}" +
@@ -50,7 +50,7 @@ public class WaffleManager
 
         if (result is not 1)
         {
-            Log.LogError("[WaffleManager] SetWaffle failed: Login failed");
+            Log.LogError("[WaffleManager] SetWaffle - failed: Login failed");
             return result;
         }
 
@@ -62,7 +62,7 @@ public class WaffleManager
 
         if (result is not 1)
         {
-            Log.LogError("[WaWaffleManagerffle] SetWaffle failed: Get Page failed");
+            Log.LogError("[WaWaffleManagerffle] SetWaffle - failed: Get Page failed");
             return result;
         }
 
@@ -72,7 +72,7 @@ public class WaffleManager
 
         if (result is not 1)
         {
-            Log.LogError("[WaffleManager] SetWaffle failed: Refresh failed");
+            Log.LogError("[WaffleManager] SetWaffle - failed: Refresh failed");
             return result;
         }
 
@@ -87,20 +87,17 @@ public class WaffleManager
         }
         catch (NullReferenceException)
         {
-            Log.LogError("[WaffleManager] SetWaffle failed: Parsing failed");
+            Log.LogError("[WaffleManager] SetWaffle - failed: Parsing failed");
             return -2;
         }
 
         WaffleLoginInfo.SNO = sNo;
         WaffleLoginInfo.USERNAME = username;
-
-        Log.LogInfo("[WaffleManager] SetWaffle success");
         return 1;
     } // SetWaffle
 
     public void UpdateWaffleData()
     {
-        Log.LogInfo("[WaffleManager] UpdateWaffleData");
 
         var lctr = GetLectureList();
         if (lctr is null) return;
@@ -111,8 +108,7 @@ public class WaffleManager
 
         foreach (var (lctr_mngno, lctr_nm) in lctr)
         {
-            Log.LogInfo($"[WaffleManager] UpdateWaffleData: {lctr_mngno} {lctr_nm}");
-
+            //Log.LogInfo($"[WaffleManager] UpdateWaffleData: {lctr_mngno} {lctr_nm}");
             var result = HttpConnection.GetDataGET(url, $"lctr_mngno={lctr_mngno}", null, null, out var data);
             if (data is null) { Log.LogInfo($"[WaffleManager] UpdateWaffleData: No data found at {lctr_mngno}"); continue; }
             if (result is not 1) { Log.LogError($"[WaffleManager] UpdateWaffleData: Failed to get data at {lctr_mngno}"); continue; }
@@ -123,7 +119,7 @@ public class WaffleManager
 
     private List<Tuple<string, string>>? GetLectureList()
     {
-        Log.LogInfo("[WaffleManager] GetLectureList");
+        //Log.LogInfo("[WaffleManager] GetLectureList");
 
         var url = WafflePage.GetPage(EPage.eFSPServlet);
         var post_data = $"_SQL_ID={WafflePage.GetPage(EPost.eMain)}"
@@ -135,7 +131,7 @@ public class WaffleManager
 
         if (result is not 1)
         {
-            Log.LogError("[WaffleManager] GetLectureList failed: Get data failed");
+            Log.LogError("[WaffleManager] GetLectureList - failed: Get data failed");
             return null;
         }
 
@@ -145,12 +141,12 @@ public class WaffleManager
         jsm.FindItem("ErrorMsg", out var errorMsg);
         if (errorMsg is null)
         {
-            Log.LogError("[WaffleManager] GetLectureList failed: Error Message found");
+            Log.LogError("[WaffleManager] GetLectureList - failed: Error Message found");
             return null;
         }
         if (errorMsg != "ok")
         {
-            Log.LogError("[WaffleManager] GetLectureList failed: Error Message is not ok");
+            Log.LogError("[WaffleManager] GetLectureList - failed: Error Message is not ok");
             return null;
         }
 
@@ -171,14 +167,11 @@ public class WaffleManager
             lctr.Add(new(lctr_mngno_value, lctr_nm_value));
         }
 
-        Log.LogInfo("[WaffleManager] GetLectureList success");
-
         return lctr;
     } // GetLectureList
 
     private void UpdateLecture(string data, string lctr_nm)
     {
-        Log.LogInfo($"[WaffleManager] UpdateLecture: {lctr_nm}");
         HtmlDocument htmlDoc = new();
         htmlDoc.LoadHtml(data);
 
@@ -221,7 +214,6 @@ public class WaffleManager
 
     private void SaveOnDB(string lctr_nm, int weekcount, string lctr_no, int count, HtmlNode select)
     {
-        Log.LogInfo($"[WaffleManager] SaveOnDB: {lctr_nm} {weekcount} {lctr_no} {count}");
         vWaffle.ContentID = $"W{lctr_no}{weekcount}{count}";
 
         var recentWaffle = new WaffleView().LoadComponent(vWaffle.ContentID);
@@ -235,9 +227,11 @@ public class WaffleManager
         var doneNode = select.SelectSingleNode("td[contains(@class, 'typeico')]/i");
         if (doneNode is not null) done = doneNode.Attributes["class"].Value.Contains("check");
 
+        if (type == "설문") return;
+
         if (type == "과제" || type == "퀴즈")
         {
-            startTime = deadline;
+            startTime = new DateTime(deadline.Year, deadline.Month, deadline.Day, 0, 0, 0);
         }
 
         vWaffle.WCount = weekcount;

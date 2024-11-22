@@ -15,7 +15,7 @@ public partial class MemoEditor : ContentPage
     {
         set
         {
-            Log.LogInfo($@"[MemoEditor] QueryString: {value}");
+            //Log.LogInfo($@"[MemoEditor] QueryString: {value}");
             var query = Uri.UnescapeDataString(value);
             var type = query.Split('=')[0];
             var data = query.Split('=')[1];
@@ -39,7 +39,7 @@ public partial class MemoEditor : ContentPage
 
     private void OnLoaded(object sender, EventArgs e)
     {
-        Log.LogInfo($@"[MemoEditor] MemoEditor: {contentID}");
+        //Log.LogInfo($@"[MemoEditor] MemoEditor: {contentID}");
         if (contentID != "" || contentID != string.Empty) component = new MemoView().LoadMemo(contentID);
 
         if (component is null)
@@ -48,7 +48,7 @@ public partial class MemoEditor : ContentPage
             Log.LogInfo($"[MemoEditor] New Memo: {contentID}");
             return;
         }
-        Log.LogInfo($"[MemoEditor] Edit Memo: {component.ContentsID}");
+        else Log.LogInfo($"[MemoEditor] Edit Memo: {component.ContentsID}");
 
         entry_Subject.Text = component.Title;
         entry_Memo.Text = component.Details;
@@ -72,7 +72,7 @@ public partial class MemoEditor : ContentPage
 
     private async void Btn_SaveClicked(object sender, EventArgs e)
     {
-        Log.LogInfo("[MemoEditor] Btn_SaveClicked");
+        //Log.LogInfo("[MemoEditor] Btn_SaveClicked");
 
         if (component is null)
         {

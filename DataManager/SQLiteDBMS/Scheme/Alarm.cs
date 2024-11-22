@@ -16,21 +16,20 @@
 
 using SQLite;
 
-namespace DataManager.SQLiteDBMS.Scheme
+namespace DataManager.SQLiteDBMS.Scheme;
+
+[Table("Alarm")]
+public class Alarm
 {
-    [Table("Alarm")]
-    public class Alarm
-    {
-        [PrimaryKey, Column("CID"), NotNull, Unique]
-        public string? ContentsID { get; set; }
+    [PrimaryKey, Column("CID"), NotNull, Unique]
+    public string? ContentsID { get; set; }
 
-        [Column("title"), NotNull]
-        public string? Title { get; set; }
+    [Column("title"), NotNull]
+    public string? Title { get; set; }
 
-        [Column("type"), NotNull]
-        public string? Type { get; set; }
+    [Column("type"), NotNull]
+    public string? Type { get; set; }
 
-        [Column("alarm_time"), NotNull]
-        public DateTime AlarmTime { get; set; }
-    }
+    [Column("alarm_time"), NotNull]
+    public DateTime AlarmTime { get; set; }
 }

@@ -7,6 +7,8 @@ public interface IPlugin
     public string Version { get; }
     public string Author { get; }
     public string[] Dependencies { get; }
+
+    public void AddPlugin();
     public void Initialize();
     public void BackgroundTask();
     public FlyoutItem[]? GetFlyoutItem();
