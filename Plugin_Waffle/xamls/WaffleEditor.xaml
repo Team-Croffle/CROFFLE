@@ -8,7 +8,7 @@
         <Grid HorizontalOptions="Fill"
           BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray950}}">
             <HorizontalStackLayout>
-                <Button Text="&#xE830;" FontFamily="SegoeFluentIcons" VerticalOptions="Center" BackgroundColor="Transparent"
+                <Button Text="&#xf030d;" FontFamily="AgaveNerdFontBold" VerticalOptions="Center" BackgroundColor="Transparent"
                     TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                     Clicked="NavPreviousEditor" CornerRadius="100">
                     <Button.GestureRecognizers>
@@ -32,8 +32,8 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Margin="10" Padding="0" Text="&#xE71D;" BackgroundColor="Transparent"
-                       FontFamily="SegoeFluentIcons" HorizontalOptions="Center" VerticalOptions="Center"
+                <Label Grid.Column="0" Margin="10" Padding="0" Text="&#xF03A;" BackgroundColor="Transparent"
+                       FontFamily="AgaveNerdFontBold" HorizontalOptions="Center" VerticalOptions="Center"
                        TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                        VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="Medium" />
                 <Label x:Name="lb_lctr_mn" Grid.Column="1" Margin="10" Padding="0" BackgroundColor="Transparent"
@@ -70,8 +70,8 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Margin="10" Padding="0" Text="&#xE8EC;" BackgroundColor="Transparent"
-                       FontFamily="SegoeFluentIcons" HorizontalOptions="Center" VerticalOptions="Center"
+                <Label Grid.Column="0" Margin="10" Padding="0" Text="&#xF412;" BackgroundColor="Transparent"
+                       FontFamily="AgaveNerdFontBold" HorizontalOptions="Center" VerticalOptions="Center"
                        TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                        VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="Medium" />
                 <Label x:Name="lb_title" Grid.Column="1" Margin="10" Padding="0" BackgroundColor="Transparent"
@@ -90,7 +90,7 @@
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Margin="10" Padding="0" Text="&#xE823;" BackgroundColor="Transparent"
+                <Label Grid.Column="0" Margin="10" Padding="0" Text="&#xF017;" BackgroundColor="Transparent"
                        FontFamily="SegoeFluentIcons" WidthRequest="25" HorizontalOptions="Center" VerticalOptions="Center"
                        TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                        VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="Medium" />

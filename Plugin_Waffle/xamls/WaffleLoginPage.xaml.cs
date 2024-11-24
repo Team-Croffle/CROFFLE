@@ -99,12 +99,12 @@ public partial class WaffleLoginPage : ContentPage
         if (entry_passwd.IsPassword)
         {
             entry_passwd.IsPassword = false;
-            ((Button)sender).Text = "\uED1A";
+            ((Button)sender).Text = "\uEAE7";
         }
         else
         {
             entry_passwd.IsPassword = true;
-            ((Button)sender).Text = "\uE890";
+            ((Button)sender).Text = "\uEA70";
         }
     }
 }

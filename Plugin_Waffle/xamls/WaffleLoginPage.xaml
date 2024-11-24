@@ -9,7 +9,7 @@
         <Grid HorizontalOptions="Fill"
           BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray950}}">
             <HorizontalStackLayout>
-                <Button Text="&#xE830;" FontFamily="SegoeFluentIcons" VerticalOptions="Center" BackgroundColor="Transparent"
+                <Button Text="&#xF030D;" FontFamily="AgaveNerdFontBold" VerticalOptions="Center" BackgroundColor="Transparent"
                     TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                     Clicked="NavPreviousEditor" CornerRadius="100">
                     <Button.GestureRecognizers>
@@ -48,8 +48,8 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <Label Grid.Column="0" Margin="10" Padding="0" Text="&#xE77B;" BackgroundColor="Transparent"
-                       FontFamily="SegoeFluentIcons" WidthRequest="25" HorizontalOptions="Center" VerticalOptions="Center"
+                <Label Grid.Column="0" Margin="10" Padding="0" Text="&#xF415;" BackgroundColor="Transparent"
+                       FontFamily="AgaveNerdFontBold" WidthRequest="25" HorizontalOptions="Center" VerticalOptions="Center"
                        TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                        VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="Medium" />
 
@@ -66,8 +66,8 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <Label Grid.Column="0" Margin="10" Padding="0" Text="&#xE8D7;" BackgroundColor="Transparent"
-                       FontFamily="SegoeFluentIcons" WidthRequest="25" HorizontalOptions="Center" VerticalOptions="Center"
+                <Label Grid.Column="0" Margin="10" Padding="0" Text="&#xF0306;" BackgroundColor="Transparent"
+                       FontFamily="AgaveNerdFontBold" WidthRequest="25" HorizontalOptions="Center" VerticalOptions="Center"
                        TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                        VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="Medium" />
 
@@ -76,7 +76,7 @@
                        BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
                        IsPassword="True"/>
 
-                <Button Text="&#xE890;" FontFamily="SegoeFluentIcons" WidthRequest="25" Grid.Column="1" BackgroundColor="Transparent"
+                <Button Text="&#xEA70;" FontFamily="AgaveNerdFontBold" WidthRequest="25" Grid.Column="1" BackgroundColor="Transparent"
                         HorizontalOptions="End" VerticalOptions="Center" FontSize="Medium" Clicked="OnPwHideClicked"
                        TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}">
                 </Button>
@@ -108,8 +108,8 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <Label Grid.Column="0" Margin="10" Padding="0" Text="&#xEE57;" BackgroundColor="Transparent"
-                       FontFamily="SegoeFluentIcons" WidthRequest="30" HorizontalOptions="Center" VerticalOptions="Center"
+                <Label Grid.Column="0" Margin="10" Padding="0" Text="&#xF2C1;" BackgroundColor="Transparent"
+                       FontFamily="AgaveNerdFontBold" WidthRequest="30" HorizontalOptions="Center" VerticalOptions="Center"
                        TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                        VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="Title" />
 

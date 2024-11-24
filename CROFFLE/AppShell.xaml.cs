@@ -2,7 +2,6 @@
 using CROFFLE.xamls.Views.SettingPages;
 using CROFFLE_Core.Plugins;
 using CroffleLogManager;
-using Microsoft.UI.Xaml.Controls;
 
 namespace CROFFLE
 {

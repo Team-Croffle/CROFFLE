@@ -12,9 +12,9 @@
         <Grid HorizontalOptions="Fill"
               BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray950}}">
             <HorizontalStackLayout>
-                <Button Text="&#xE830;" FontFamily="SegoeFluentIcons" VerticalOptions="Center" BackgroundColor="Transparent"
+                <Button Text="&#xf030d;" FontFamily="AgaveNerdFontBold" VerticalOptions="Center" BackgroundColor="Transparent"
                         TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                    Command="{Binding NavPrevious}" CornerRadius="100">
+                        Command="{Binding NavPrevious}" CornerRadius="100" FontSize="Medium">
                     <Button.GestureRecognizers>
                         <PointerGestureRecognizer
                             PointerEntered="OnPointerEntered"
@@ -28,7 +28,7 @@
             <Grid BackgroundColor="Transparent" HorizontalOptions="End" VerticalOptions="Center">
                 <HorizontalStackLayout>
                     <Grid WidthRequest="10" BackgroundColor="Transparent" VerticalOptions="Fill" />
-                    <Label Text="&#xE710;" FontFamily="SegoeFluentIcons" VerticalOptions="Center" BackgroundColor="Transparent"
+                    <Label Text="&#xf067;&#xec03;" FontFamily="AgaveNerdFontBold" VerticalOptions="Center" BackgroundColor="Transparent"
                            TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" FontSize="Medium"
                            HorizontalOptions="Start"/>
                     <Label Text="추가" FontFamily="KCC-Ganpan" VerticalOptions="Center" HorizontalOptions="End"

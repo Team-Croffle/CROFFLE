@@ -12,7 +12,7 @@
         <Grid HorizontalOptions="Fill"
               BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray950}}">
             <HorizontalStackLayout>
-                <Button Text="&#xE830;" FontFamily="SegoeFluentIcons" VerticalOptions="Center" BackgroundColor="Transparent"
+                <Button Text="&#xe830;" FontFamily="SegoeFluentIcons" VerticalOptions="Center" BackgroundColor="Transparent"
                         TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                         Command="{Binding NavPreviousEditor}" CornerRadius="100">
                     <Button.GestureRecognizers>

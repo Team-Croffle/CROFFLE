@@ -109,7 +109,7 @@ public class HttpConnection
     /// Http POST Method
     /// </summary>
     /// <param name="url">URL - Not Null</param>
-    /// <param name="post_data">Postdata. Can null. Ex)param1=value1&param2=value2... </param>
+    /// <param name="post_data">Postdata. Can null. </param>
     /// <param name="host">host. null</param>
     /// <param name="referer">referer. null/param>
     /// <param name="content_type">MediaType HeaderValue</param>
