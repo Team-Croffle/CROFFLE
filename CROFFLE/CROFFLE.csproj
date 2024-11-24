@@ -39,6 +39,63 @@
 		<PackageIcon>croffle.png</PackageIcon>
 		<Title>CROFFLE</Title>
 		<Authors>$(AssemblyName) Dev.</Authors>
+		<DefaultLanguage>ko-kr</DefaultLanguage>
+		<PackageCertificateThumbprint>F69D606888511C5A2E2CE04201784E5D1917E3A6</PackageCertificateThumbprint>
+		<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+		<GenerateAppInstallerFile>True</GenerateAppInstallerFile>
+		<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+		<AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+		<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+		<GenerateTestArtifacts>True</GenerateTestArtifacts>
+		<AppInstallerUri>C:\Users\xpsj2\HelloWorld\MyWorks\CROFFLE_Build</AppInstallerUri>
+		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+
+    <WindowsPackageType>None</WindowsPackageType>
+    <WindowsAppSDKSelfContained Condition="'$(IsUnpackaged)' == 'true'">true</WindowsAppSDKSelfContained>
+    <SelfContained Condition="'$(IsUnpackaged)' == 'true'">true</SelfContained>
+    <AssemblyVersion>0.8.0.0</AssemblyVersion>
+    <FileVersion>0.8.0.0</FileVersion>
+
+  </PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+	  <DebugType>embedded</DebugType>
+	  <ApplicationDisplayVersion>0.8.0</ApplicationDisplayVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
+	  <DebugType>embedded</DebugType>
+	  <ApplicationDisplayVersion>0.8.0</ApplicationDisplayVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-maccatalyst|AnyCPU'">
+	  <DebugType>embedded</DebugType>
+	  <ApplicationDisplayVersion>0.8.0</ApplicationDisplayVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-windows10.0.19041.0|AnyCPU'">
+	  <DebugType>embedded</DebugType>
+	  <ApplicationDisplayVersion>0.8.0</ApplicationDisplayVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+	  <DebugType>embedded</DebugType>
+	  <ApplicationDisplayVersion>0.8.0</ApplicationDisplayVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
+	  <DebugType>embedded</DebugType>
+	  <ApplicationDisplayVersion>0.8.0</ApplicationDisplayVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-maccatalyst|AnyCPU'">
+	  <DebugType>embedded</DebugType>
+	  <ApplicationDisplayVersion>0.8.0</ApplicationDisplayVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-windows10.0.19041.0|AnyCPU'">
+	  <DebugType>embedded</DebugType>
+	  <ApplicationDisplayVersion>0.8.0</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -214,6 +271,9 @@
 	  <MauiFont Update="Resources\Fonts\OpenSans-Semibold.ttf">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </MauiFont>
+	  <MauiFont Update="Resources\Fonts\Segoe Fluent Icons.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiFont>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -227,6 +287,10 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
     <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.82" />
     <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.82" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Properties\PublishProfiles\" />
 	</ItemGroup>
 
 </Project>
