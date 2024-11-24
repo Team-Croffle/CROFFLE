@@ -61,4 +61,10 @@
 	  <ProjectReference Include="..\DataManager\DataManager.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="annv.db">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>
