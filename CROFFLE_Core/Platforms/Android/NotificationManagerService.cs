@@ -19,9 +19,9 @@ namespace CROFFLE_Core.Platforms.Android
         int messageId = 0;
         int pendingIntentId = 0;
 
-        private NotificationManagerCompat compatManager;
+        private readonly NotificationManagerCompat? compatManager;
 
-        public event EventHandler NotificationReceived;
+        public event EventHandler? NotificationReceived;
 
         public static NotificationManagerService? Instance { get; private set; }
 
@@ -51,10 +51,10 @@ namespace CROFFLE_Core.Platforms.Android
                     ? PendingIntentFlags.UpdateCurrent | PendingIntentFlags.Immutable
                     : PendingIntentFlags.UpdateCurrent;
 
-                PendingIntent pendingIntent = PendingIntent.GetBroadcast(Platform.AppContext, pendingIntentId++, intent, pendingIntentFlags);
+                PendingIntent? pendingIntent = PendingIntent.GetBroadcast(Platform.AppContext, pendingIntentId++, intent, pendingIntentFlags);
                 long triggerTime = GetNotifyTime(notifyTime.Value);
-                AlarmManager alarmManager = Platform.AppContext.GetSystemService(Context.AlarmService) as AlarmManager;
-                alarmManager.Set(AlarmType.RtcWakeup, triggerTime, pendingIntent);
+                AlarmManager? alarmManager = Platform.AppContext.GetSystemService(Context.AlarmService) as AlarmManager;
+                if (alarmManager != null) alarmManager.Set(AlarmType.RtcWakeup, triggerTime, pendingIntent);
             }
             else
             {

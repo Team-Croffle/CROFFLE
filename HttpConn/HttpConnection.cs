@@ -109,7 +109,7 @@ public class HttpConnection
     /// Http POST Method
     /// </summary>
     /// <param name="url">URL - Not Null</param>
-    /// <param name="post_data">Postdata. Can null. Ex)param1=value1&param2=value2... </param>
+    /// <param name="post_data">Postdata. Can null.</param>
     /// <param name="host">host. null</param>
     /// <param name="referer">referer. null/param>
     /// <param name="content_type">MediaType HeaderValue</param>
@@ -118,7 +118,7 @@ public class HttpConnection
     private static int POSTPOSTPOST(string url, string? post_data, string? host, string? referer, MediaTypeHeaderValue? content_type,  out HttpResponseMessage? resp)
     {
         // Make a POST request
-        HttpRequestMessage request = new(HttpMethod.Post, url);
+        HttpRequestMessage? request = new(HttpMethod.Post, url);
 
         // Set post data when not null
         if (post_data is not null) request.Content = new StringContent(post_data, Encoding.UTF8);
@@ -176,7 +176,7 @@ public class HttpConnection
     private static int GETGETGET(string url, string? host, string? referer, out HttpResponseMessage? resp)
     {
         // Make a GET request
-        HttpRequestMessage request = new(HttpMethod.Get, url)
+        HttpRequestMessage? request = new(HttpMethod.Get, url)
         {
             Content = new StringContent("")
         };
