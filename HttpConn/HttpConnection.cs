@@ -109,13 +109,9 @@ public class HttpConnection
     /// Http POST Method
     /// </summary>
     /// <param name="url">URL - Not Null</param>
-<<<<<<< HEAD
     /// <param name="post_data">Postdata. Can null. </param>
-=======
-    /// <param name="post_data">Postdata. Can null.</param>
->>>>>>> release
     /// <param name="host">host. null</param>
-    /// <param name="referer">referer. null/param>
+    /// <param name="referer">referer. null</param>
     /// <param name="content_type">MediaType HeaderValue</param>
     /// <param name="resp">response of post request</param>
     /// <returns>1 is success for request. 0 is 404 or no response. -1 is other errors</returns>
@@ -174,7 +170,7 @@ public class HttpConnection
     /// </summary>
     /// <param name="url">URL - Not Null</param>
     /// <param name="host">host. null</param>
-    /// <param name="referer">referer. null/param>
+    /// <param name="referer">referer. null</param>
     /// <param name="resp">response of post request</param>
     /// <returns>1 is success for request. 0 is 404 or no response. -1 is other errors</returns>
     private static int GETGETGET(string url, string? host, string? referer, out HttpResponseMessage? resp)

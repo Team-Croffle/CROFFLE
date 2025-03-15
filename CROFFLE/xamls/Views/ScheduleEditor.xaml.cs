@@ -45,7 +45,7 @@ public partial class ScheduleEditor : ContentPage
 
         if (contentID is not "" || contentID != string.Empty) ComponentAllView.DeleteComponent(contentID);
 
-        await Shell.Current.GoToAsync("..");
+        await Shell.Current.GoToAsync("//MainPage/DailyInfo");
     }
 
     private void OnLoaded(object sender, EventArgs e)

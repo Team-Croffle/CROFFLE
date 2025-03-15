@@ -7,11 +7,7 @@ namespace CROFFLE_Core.Platforms.Android
     {
         public override void OnReceive(Context? context, Intent? intent)
         {
-<<<<<<< HEAD
             if (intent == null) return;
-=======
-            if (intent is null) return;
->>>>>>> release
             string title = intent.GetStringExtra(NotificationManagerService.TitleKey) ?? "";
             string message = intent.GetStringExtra(NotificationManagerService.MessageKey) ?? "";
 

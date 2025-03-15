@@ -133,7 +133,7 @@ public partial class Calendar : ContentView
             }
         }
         DateTime firstDayOfMonth = new(calendar_date.Year, calendar_date.Month, 1);
-        DateTime lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+        DateTime lastDayOfMonth = firstDayOfMonth.AddMonths(1);
 
         //Log.LogInfo("[Calendar] LoadSchedules: Load Anniversaries");
         var annvList = annvDB.GetItems<Anniversary>(t => t.locdate >= firstDayOfMonth && t.locdate <= lastDayOfMonth, t => t.locdate);
@@ -174,7 +174,7 @@ public partial class Calendar : ContentView
         if (scheList.ListAll is null) return;
 
         var count = scheList.ListAll.Count();
-        //Log.LogInfo($@"[Calendar] LoadSchedules: Count - {count}");
+        Log.LogInfo($@"[Calendar] LoadSchedules: Count - {count}");
 
         if (count is 0) return;
         foreach (Components sche in scheList.ListAll)

@@ -13,7 +13,7 @@
         <Grid HorizontalOptions="Fill"
                 BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray950}}">
             <HorizontalStackLayout>
-                <Button Text="&#xE830;" FontFamily="SegoeFluentIcons" VerticalOptions="Center" BackgroundColor="Transparent"
+                <Button Text="&#xf030d;" FontFamily="AgaveNerdFontBold" VerticalOptions="Center" BackgroundColor="Transparent"
                         TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                         Command="{Binding NavPreviousEditor}" CornerRadius="100">
                     <Button.GestureRecognizers>
@@ -28,7 +28,7 @@
             </HorizontalStackLayout>
             <Grid BackgroundColor="Transparent" HorizontalOptions="End" VerticalOptions="Center">
                 <HorizontalStackLayout>
-                    <Button Text="&#xE74D;" VerticalOptions="Fill" HorizontalOptions="Fill" FontFamily="SegoeFluentIcons"
+                    <Button Text="&#xf48e;" VerticalOptions="Fill" HorizontalOptions="Fill" FontFamily="AgaveNerdFontBold"
                             Clicked="OnDelete" BackgroundColor="{Binding DeleteBtnBackground}"
                             TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                             FontSize="Medium" CornerRadius="10">
@@ -39,8 +39,8 @@
                         PointerExitedCommand="{Binding OnPointerExitedBtnDelete}" />
                         </Button.GestureRecognizers>
                     </Button>
-                    <Button Text="&#xE74E;" BackgroundColor="Transparent" VerticalOptions="Fill" HorizontalOptions="Fill"
-                            Clicked="Btn_SaveClicked" FontFamily="SegoeFluentIcons"
+                    <Button Text="&#xf0c7;" BackgroundColor="Transparent" VerticalOptions="Fill" HorizontalOptions="Fill"
+                            Clicked="Btn_SaveClicked" FontFamily="AgaveNerdFontBold"
                             TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                             FontSize="Medium" CornerRadius="10">
                         <Button.GestureRecognizers>
@@ -61,8 +61,8 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Margin="10" Padding="0" Text="&#xE787;" BackgroundColor="Transparent"
-                    FontFamily="SegoeFluentIcons" WidthRequest="25" HorizontalOptions="Center" VerticalOptions="Center"
+                <Label Grid.Column="0" Margin="10" Padding="0" Text="&#xf274;" BackgroundColor="Transparent"
+                    FontFamily="AgaveNerdFontBold" WidthRequest="25" HorizontalOptions="Center" VerticalOptions="Center"
                     TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                     VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="Medium" />
                 <Entry x:Name="entry_Subject" Placeholder="제목을 입력하세요" Grid.Column="1" Margin="10"
@@ -80,8 +80,8 @@
                     <ColumnDefinition />
                     <ColumnDefinition Width="4*"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Margin="10" Padding="0" Text="&#xE823;" BackgroundColor="Transparent"
-                    FontFamily="SegoeFluentIcons" WidthRequest="25" HorizontalOptions="Center" VerticalOptions="Center"
+                <Label Grid.Column="0" Margin="10" Padding="0" Text="&#xf017;" BackgroundColor="Transparent"
+                    FontFamily="AgaveNerdFontBold" WidthRequest="25" HorizontalOptions="Center" VerticalOptions="Center"
                     TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                     VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="Medium" />
 
@@ -126,8 +126,8 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Margin="10" Padding="0" Text="&#xE70B;" BackgroundColor="Transparent"
-                    FontFamily="SegoeFluentIcons" WidthRequest="25" HorizontalOptions="Center" VerticalOptions="Center"
+                <Label Grid.Column="0" Margin="10" Padding="0" Text="&#xeb9d;" BackgroundColor="Transparent"
+                    FontFamily="AgaveNerdFontBold" WidthRequest="25" HorizontalOptions="Center" VerticalOptions="Center"
                     TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                     VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="Medium" />
                 <Entry x:Name="entry_Memo" Placeholder="메모를 입력하세요" Grid.Column="1" Margin="10"
@@ -145,8 +145,8 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Margin="10" Padding="0" Text="&#xEA8F;" BackgroundColor="Transparent"
-                    FontFamily="SegoeFluentIcons" WidthRequest="25" HorizontalOptions="Center" VerticalOptions="Center"
+                <Label Grid.Column="0" Margin="10" Padding="0" Text="&#xeaa2;" BackgroundColor="Transparent"
+                    FontFamily="AgaveNerdFontBold" WidthRequest="25" HorizontalOptions="Center" VerticalOptions="Center"
                     TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                     VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="Medium" />
                 <Button Text="알람 끄기" BorderColor="Transparent" BackgroundColor="RoyalBlue" FontFamily="KCC-Ganpan"
@@ -188,8 +188,8 @@
                 </Grid.ColumnDefinitions>
             </Grid>
             <HorizontalStackLayout Spacing="10" Margin="10">
-                <Label Margin="10" Padding="0" Text="&#xE790;" BackgroundColor="Transparent"
-                    FontFamily="SegoeFluentIcons" WidthRequest="25" HorizontalOptions="Center" VerticalOptions="Center"
+                <Label Margin="10" Padding="0" Text="&#xeb5c;" BackgroundColor="Transparent"
+                    FontFamily="AgaveNerdFontBold" WidthRequest="25" HorizontalOptions="Center" VerticalOptions="Center"
                     TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                     VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="Medium" />
                 

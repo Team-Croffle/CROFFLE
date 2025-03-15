@@ -153,7 +153,7 @@ public partial class DailyInfo : ContentPage
 
         if (componentAllView.ListAll is null) return;
         var count = componentAllView.ListAll.Count();
-        //Log.LogInfo($@"[DailyInfo] Load_VSL: {count}");
+        Log.LogInfo($@"[DailyInfo] Load_VSL: {count}");
 
         //var hasValue = Resources.TryGetValue("Medium", out var style);
         if (count == 0) return;

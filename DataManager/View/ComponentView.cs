@@ -60,6 +60,7 @@ public class ComponentView
                     .Where(t => t.start_time >= from && t.end_time <= to)
                     .OrderByDescending(t => (t.end_time - t.start_time).Days + 1);
             components = result;
+            Log.LogInfo($@"[ComponentView] LoadComponent - Success: {components.Count()} components loaded");
         }
         catch (SQLiteException e)
         {
@@ -88,7 +89,7 @@ public class ComponentView
                     })
                     .Where(t => t.start_time >= from && t.end_time <= to)
                     .Where(t => t.done == done)
-                    .OrderBy(t => t.end_time - t.start_time);
+                    .OrderByDescending(t => (t.end_time - t.start_time).Days + 1);
             components = result;
         }
         catch (SQLiteException e)
