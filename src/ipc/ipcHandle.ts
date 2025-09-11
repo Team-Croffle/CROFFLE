@@ -1,12 +1,12 @@
-import { BrowserWindow, ipcMain } from "electron";
+import { BrowserWindow, ipcMain } from 'electron';
 
 export function ipcHandlers() {
-  ipcMain.handle("window:minimize", (event) => {
+  ipcMain.handle('window:minimize', (event) => {
     const window = BrowserWindow.fromWebContents(event.sender);
     if (window) window.minimize();
   });
 
-  ipcMain.handle("window:maximize", (event) => {
+  ipcMain.handle('window:maximize', (event) => {
     const window = BrowserWindow.fromWebContents(event.sender);
     if (window) {
       if (window.isMaximized()) {
@@ -17,7 +17,7 @@ export function ipcHandlers() {
     }
   });
 
-  ipcMain.handle("window:close", (event) => {
+  ipcMain.handle('window:close', (event) => {
     const window = BrowserWindow.fromWebContents(event.sender);
     if (window) window.close();
   });

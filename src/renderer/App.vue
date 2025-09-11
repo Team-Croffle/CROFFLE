@@ -18,46 +18,46 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+  import { ref } from 'vue';
 
-const title = ref<string>("Electron + Vue + TypeScript");
-const message = ref<string>("Hello from Vue renderer!");
-const counter = ref<number>(0);
+  const title = ref<string>('Electron + Vue + TypeScript');
+  const message = ref<string>('Hello from Vue renderer!');
+  const counter = ref<number>(0);
 
-const incrementCounter = (): void => {
-  counter.value++;
-};
-const minimizeWindow = () => {
-  window.electronAPI?.minimize();
-};
+  const incrementCounter = (): void => {
+    counter.value++;
+  };
+  const minimizeWindow = () => {
+    window.electronAPI?.minimize();
+  };
 
-const maximizeWindow = () => {
-  window.electronAPI?.maximize();
-};
+  const maximizeWindow = () => {
+    window.electronAPI?.maximize();
+  };
 
-const closeWindow = () => {
-  window.electronAPI?.close();
-};
+  const closeWindow = () => {
+    window.electronAPI?.close();
+  };
 </script>
 
 <style scoped>
-.app {
-  text-align: center;
-  padding: 2rem;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-}
+  .app {
+    text-align: center;
+    padding: 2rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
 
-button {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  background: #007acc;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
+  button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    background: #007acc;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
 
-button:hover {
-  background: #005a9e;
-}
+  button:hover {
+    background: #005a9e;
+  }
 </style>
