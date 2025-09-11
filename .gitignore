@@ -13,3 +13,8 @@ release
 
 test
 __tests__
+
+.stignore
+.stcache
+.stfolder
+.stversions
