@@ -1,29 +1,41 @@
 {
-  "name": "@croffle/main",
+  "name": "@croffledev/croffle",
   "version": "1.0.0",
-  "description": "Project Croffle Electron Main Process",
-  "private": true,
+  "description": "Croffle Main Process",
   "main": "dist/main.js",
   "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "dev": "tsc && cross-env NODE_ENV=development npx electron@38.1.2 .",
-    "build": "tsc"
+    "build": "tsc",
+    "dev": "npm run build && cross-env NODE_ENV=development electron ."
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
   "devDependencies": {
-    "@electron-forge/cli": "^7.9.0",
-    "@electron-forge/maker-deb": "^7.9.0",
-    "@electron-forge/maker-rpm": "^7.9.0",
-    "@electron-forge/maker-squirrel": "^7.9.0",
-    "@electron-forge/maker-zip": "^7.9.0",
-    "@electron-forge/plugin-auto-unpack-natives": "^7.9.0",
-    "@electron-forge/plugin-fuses": "^7.9.0",
-    "@electron/fuses": "^1.8.0",
-    "@types/node": "^24.3.1",
+    "@types/node": "^24.5.2",
+    "eslint-config-custom": "^0.0.0",
+    "typescript": "^5.9.2",
     "electron": "^38.1.2"
   },
-  "dependencies": {
-    "electron-squirrel-startup": "^1.0.1"
+  "build": {
+    "appId": "kr.croffledev.croffle",
+    "productName": "Croffle",
+    "directories": {
+      "output": "./dist"
+    },
+    "files": [
+      "dist/**/*",
+      "package.json",
+      {
+        "from": "../renderer/dist/",
+        "to": "renderer/"
+      }
+    ],
+    "win": {
+      "target": "squirrel"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
   }
 }
