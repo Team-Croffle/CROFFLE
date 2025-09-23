@@ -1,42 +1,30 @@
 {
   "name": "croffle",
   "version": "1.0.0",
-  "description": "",
+  "private": true,
+  "description": "Project Croffle - Electron + Vue3 + Vite + TailwindCSS",
+  "author": "Croffle Dev.",
+  "license": "ISC",
   "main": "dist/main.js",
   "keywords": [],
   "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "build": "tsc && vue-tsc -v && vite build",
-    "build:electron": "tsc",
-    "build:vue": "vue-tsc -v && vite build",
-    "dev:vue": "vite",
-    "dev:electron": "tsc && cross-env NODE_ENV=development electron ."
+    "dev:renderer": "pnpm --filter @croffle/renderer dev",
+    "dev:main": "wait-on tcp:5173 && pnpm --filter @croffle/main dev"
   },
-  "author": "Croffle Dev.",
-  "license": "ISC",
   "devDependencies": {
-    "@electron-forge/cli": "^7.9.0",
-    "@electron-forge/maker-deb": "^7.9.0",
-    "@electron-forge/maker-rpm": "^7.9.0",
-    "@electron-forge/maker-squirrel": "^7.9.0",
-    "@electron-forge/maker-zip": "^7.9.0",
-    "@electron-forge/plugin-auto-unpack-natives": "^7.9.0",
-    "@electron-forge/plugin-fuses": "^7.9.0",
-    "@electron/fuses": "^1.8.0",
-    "@types/node": "^24.3.1",
-    "@vitejs/plugin-vue": "^6.0.1",
-    "@vue/tsconfig": "^0.8.1",
-    "concurrently": "^9.2.1",
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
+    "@typescript-eslint/parser": "^8.44.1",
     "cross-env": "^10.0.0",
-    "electron": "^38.0.0",
+    "eslint": "^9.36.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-promise": "^7.2.1",
+    "eslint-plugin-sonarjs": "^3.0.5",
+    "eslint-plugin-unicorn": "^61.0.2",
+    "eslint-plugin-vue": "^10.2.0",
+    "eslint-plugin-vuejs-accessibility": "^2.4.1",
+    "prettier": "^3.6.2",
     "typescript": "^5.9.2",
-    "vite": "^7.1.5",
-    "vue-tsc": "^3.0.6"
-  },
-  "dependencies": {
-    "electron-squirrel-startup": "^1.0.1",
-    "vue": "^3.5.21"
+    "wait-on": "^9.0.1"
   }
 }

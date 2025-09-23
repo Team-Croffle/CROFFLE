@@ -13,3 +13,7 @@ release
 
 test
 __tests__
+
+.stfolder/
+.stignore
+.stversions/
