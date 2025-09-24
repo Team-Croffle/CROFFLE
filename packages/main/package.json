@@ -5,37 +5,17 @@
   "main": "dist/main.js",
   "scripts": {
     "build": "tsc",
-    "dev": "npm run build && cross-env NODE_ENV=development electron ."
+    "dev": "npm run build && cross-env NODE_ENV=development electron .",
+    "lint": "eslint ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@croffledev/croffle-vue": "^1.0.0",
     "@types/node": "^24.5.2",
-    "eslint-config-custom": "^0.0.0",
-    "typescript": "^5.9.2",
-    "electron": "^38.1.2"
-  },
-  "build": {
-    "appId": "kr.croffledev.croffle",
-    "productName": "Croffle",
-    "directories": {
-      "output": "./dist"
-    },
-    "files": [
-      "dist/**/*",
-      "package.json",
-      {
-        "from": "../renderer/dist/",
-        "to": "renderer/"
-      }
-    ],
-    "win": {
-      "target": "squirrel"
-    },
-    "linux": {
-      "target": "AppImage"
-    }
+    "electron": "^38.1.2",
+    "typescript": "^5.9.2"
   }
 }

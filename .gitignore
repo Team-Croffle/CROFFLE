@@ -39,7 +39,7 @@ yarn-error.log*
 
 .stfolder
 .stignore
-.stversion
+.stversions
 
 .vscode/* 
 !.vscode/settings.json

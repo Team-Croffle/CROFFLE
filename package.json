@@ -4,12 +4,14 @@
   "description": "Croffle Mono Repo",
   "author": "Croffledev",
   "license": "ISC",
-  "main": "packages/main/dist/main.js",
+  "main": "./packages/main/dist/main.js",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev:main": "wait-on tcp:5173 && npm run dev --workspace=@croffledev/croffle",
     "dev:vue": "npm run dev --workspace=@croffledev/croffle-vue",
-    "lint": "turbo lint",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "build:main": "npm run build --workspace=@croffledev/croffle",
     "build:vue": "npm run build --workspace=@croffledev/croffle-vue",
     "build": "npm run build:vue && npm run build:main",
@@ -36,6 +38,7 @@
     "prettier-plugin-tailwindcss": "^0.6.14",
     "turbo": "^2.5.7",
     "typescript": "^5.9.2",
+    "typescript-eslint": "^8.44.1",
     "vue-eslint-parser": "^10.2.0",
     "wait-on": "^9.0.1"
   },
@@ -45,5 +48,25 @@
   "packageManager": "npm@11.5.2",
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "build": {
+    "appId": "kr.croffledev.croffle",
+    "productName": "Croffle",
+    "directories": {
+      "output": "./dist"
+    },
+    "files": [
+      "./packages/main/package.json",
+      "./packages/main/dist/",
+      "./packages/renderer/dist/"
+    ],
+    "win": {
+      "target": "squirrel",
+      "icon": "./icons/icon.ico"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "./icons/icon.ico"
+    }
+  }
 }
