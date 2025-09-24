@@ -1,42 +1,72 @@
 {
-  "name": "croffle",
+  "name": "croffledev",
   "version": "1.0.0",
-  "description": "",
-  "main": "dist/main.js",
-  "keywords": [],
-  "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "build": "tsc && vue-tsc -v && vite build",
-    "build:electron": "tsc",
-    "build:vue": "vue-tsc -v && vite build",
-    "dev:vue": "vite",
-    "dev:electron": "tsc && cross-env NODE_ENV=development electron ."
-  },
-  "author": "Croffle Dev.",
+  "description": "Croffle Mono Repo",
+  "author": "Croffledev",
   "license": "ISC",
-  "devDependencies": {
-    "@electron-forge/cli": "^7.9.0",
-    "@electron-forge/maker-deb": "^7.9.0",
-    "@electron-forge/maker-rpm": "^7.9.0",
-    "@electron-forge/maker-squirrel": "^7.9.0",
-    "@electron-forge/maker-zip": "^7.9.0",
-    "@electron-forge/plugin-auto-unpack-natives": "^7.9.0",
-    "@electron-forge/plugin-fuses": "^7.9.0",
-    "@electron/fuses": "^1.8.0",
-    "@types/node": "^24.3.1",
-    "@vitejs/plugin-vue": "^6.0.1",
-    "@vue/tsconfig": "^0.8.1",
-    "concurrently": "^9.2.1",
-    "cross-env": "^10.0.0",
-    "electron": "^38.0.0",
-    "typescript": "^5.9.2",
-    "vite": "^7.1.5",
-    "vue-tsc": "^3.0.6"
+  "main": "./packages/main/dist/main.js",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev:main": "wait-on tcp:5173 && npm run dev --workspace=@croffledev/croffle",
+    "dev:vue": "npm run dev --workspace=@croffledev/croffle-vue",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "build:main": "npm run build --workspace=@croffledev/croffle",
+    "build:vue": "npm run build --workspace=@croffledev/croffle-vue",
+    "build": "npm run build:vue && npm run build:main",
+    "dist": "npm run build && electron-builder",
+    "dist:builder": "electron-builder",
+    "pack": "npm run build && electron-builder --dir",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
-  "dependencies": {
-    "electron-squirrel-startup": "^1.0.1",
-    "vue": "^3.5.21"
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
+    "@typescript-eslint/parser": "^8.44.1",
+    "cross-env": "^10.0.0",
+    "electron-builder": "^26.0.12",
+    "eslint": "^9.36.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-promise": "^7.2.1",
+    "eslint-plugin-sonarjs": "^3.0.5",
+    "eslint-plugin-unicorn": "^61.0.2",
+    "eslint-plugin-vue": "^10.5.0",
+    "eslint-plugin-vuejs-accessibility": "^2.4.1",
+    "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.6.14",
+    "turbo": "^2.5.7",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.44.1",
+    "vue-eslint-parser": "^10.2.0",
+    "wait-on": "^9.0.1"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "npm@11.5.2",
+  "workspaces": [
+    "packages/*"
+  ],
+  "build": {
+    "appId": "kr.croffledev.croffle",
+    "productName": "Croffle",
+    "directories": {
+      "output": "./dist"
+    },
+    "files": [
+      "./packages/main/package.json",
+      "./packages/main/dist/",
+      "./packages/renderer/dist/"
+    ],
+    "win": {
+      "target": "squirrel",
+      "icon": "./icons/icon.ico"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "./icons/icon.ico"
+    }
   }
 }
