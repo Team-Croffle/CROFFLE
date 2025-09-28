@@ -68,35 +68,35 @@ export default [
     },
   },
   {
-    files: ['packages/renderer/src/**/*.{ts,tsx}'],
+    files: ['app/renderer/src/**/*.{ts,tsx}'],
     languageOptions: {
       parserOptions: {
-        project: './packages/renderer/tsconfig.app.json',
+        project: './app/renderer/tsconfig.app.json',
         tsconfigRootDir: process.cwd(),
       },
     },
   },
   {
-    files: ['packages/renderer/vite.config.{ts,js}'],
+    files: ['app/renderer/vite.config.{ts,js}'],
     languageOptions: {
       parserOptions: {
-        project: './packages/renderer/tsconfig.node.json',
+        project: './app/renderer/tsconfig.node.json',
         tsconfigRootDir: process.cwd(),
       },
     },
   },
   {
-    files: ['packages/main/src/**/*.{ts,tsx}'],
+    files: ['app/main/src/**/*.{ts,tsx}'],
     languageOptions: {
       parserOptions: {
-        project: './packages/main/tsconfig.json',
+        project: './app/main/tsconfig.json',
         tsconfigRootDir: process.cwd(),
       },
     },
     settings: {
       'import/resolver': {
         typescript: {
-          project: './packages/main/tsconfig.json',
+          project: './app/main/tsconfig.json',
         },
       },
     },
