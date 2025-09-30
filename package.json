@@ -60,12 +60,18 @@
       "./app/renderer/dist/"
     ],
     "win": {
-      "target": "squirrel",
-      "icon": "./icons/icon.ico"
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg"
     },
     "linux": {
-      "target": "AppImage",
-      "icon": "./icons/icon.ico"
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm"
+      ],
+      "category": "Utility"
     }
   }
 }
