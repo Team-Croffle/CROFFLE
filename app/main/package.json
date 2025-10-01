@@ -1,0 +1,21 @@
+{
+  "name": "@croffledev/croffle",
+  "version": "1.0.0",
+  "description": "Croffle Main Process",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "npm run build && cross-env NODE_ENV=development electron .",
+    "lint": "eslint ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@croffledev/croffle-vue": "^1.0.0",
+    "@types/node": "^24.5.2",
+    "electron": "^38.1.2",
+    "typescript": "^5.9.2"
+  }
+}

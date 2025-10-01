@@ -1,0 +1,58 @@
+name: Croffle Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-and-release:
+    name: Build and Release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest, fedora-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
+      - name: Create Release and Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/**/*.exe
+            dist/**/*.dmg
+            dist/**/*.AppImage
+            dist/**/*.deb
+            dist/**/*.snap
+            dist/**/*.tar.gz
+            dist/**/*.rpm
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_NAME: Release ${{ github.ref_name }}
+          RELEASE_BODY: |
+            ## What's New
+            - Automated release for version ${{ github.ref_name }}
+            - Built on ${{ matrix.os }}
+
+            ## Assets
+            - Windows Installer (.exe)
+            - macOS Installer (.dmg)
+            - Linux AppImage (.AppImage)
+            - Linux Debian Package (.deb)
+            - Linux Snap Package (.snap)
+            - Linux Tarball (.tar.gz)
+            - Linux RPM Package (.rpm)

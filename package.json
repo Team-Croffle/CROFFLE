@@ -1,0 +1,77 @@
+{
+  "name": "croffledev",
+  "version": "1.0.0",
+  "description": "Croffle Mono Repo",
+  "author": "Croffledev",
+  "license": "ISC",
+  "main": "./app/main/dist/main.js",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev:main": "wait-on tcp:5173 && npm run dev --workspace=@croffledev/croffle",
+    "dev:vue": "npm run dev --workspace=@croffledev/croffle-vue",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "build:main": "npm run build --workspace=@croffledev/croffle",
+    "build:vue": "npm run build --workspace=@croffledev/croffle-vue",
+    "build": "npm run build:vue && npm run build:main",
+    "dist": "npm run build && electron-builder",
+    "dist:builder": "electron-builder",
+    "pack": "npm run build && electron-builder --dir",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
+    "@typescript-eslint/parser": "^8.44.1",
+    "cross-env": "^10.0.0",
+    "electron-builder": "^26.0.12",
+    "eslint": "^9.36.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-promise": "^7.2.1",
+    "eslint-plugin-unicorn": "^61.0.2",
+    "eslint-plugin-vue": "^10.5.0",
+    "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.6.14",
+    "turbo": "^2.5.7",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.44.1",
+    "vue-eslint-parser": "^10.2.0",
+    "wait-on": "^9.0.1"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "npm@11.5.2",
+  "workspaces": [
+    "packages/*",
+    "app/*"
+  ],
+  "build": {
+    "appId": "kr.croffledev.croffle",
+    "productName": "Croffle",
+    "directories": {
+      "output": "./dist"
+    },
+    "files": [
+      "./app/main/package.json",
+      "./app/main/dist/",
+      "./app/renderer/dist/"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm"
+      ],
+      "category": "Utility"
+    }
+  }
+}
