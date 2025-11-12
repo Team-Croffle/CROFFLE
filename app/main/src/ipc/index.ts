@@ -1,10 +1,12 @@
 import { registerWindowIpcHandlers } from './window.handler';
+import { registerScheduleIpcHandlers } from './schedule.handler';
 
 export function registerAllIpcHandlers() {
   // Window IPC Handlers
   registerWindowIpcHandlers();
 
   // Schedule IPC Handlers
+  registerScheduleIpcHandlers();
 
   // Tag IPC Handlers
 
