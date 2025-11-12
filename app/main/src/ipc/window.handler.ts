@@ -1,6 +1,6 @@
 import { BrowserWindow, ipcMain } from 'electron';
 
-export function ipcHandlers() {
+export function registerWindowIpcHandlers() {
   ipcMain.handle('window:minimize', (event) => {
     const window = BrowserWindow.fromWebContents(event.sender);
     if (window) window.minimize();
@@ -21,11 +21,9 @@ export function ipcHandlers() {
     const window = BrowserWindow.fromWebContents(event.sender);
     if (window) window.close();
   });
-
-  // Handle IPC events here
 }
 
-export interface IpcHandlers {
+export interface WindowAPI {
   minimize: () => void;
   maximize: () => void;
   close: () => void;

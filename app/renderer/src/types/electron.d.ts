@@ -1,11 +1,9 @@
+import type { ElectronAPI } from '@croffledev/croffle/src/preload';
+
 // 전역 타입 선언
 declare global {
   interface Window {
-    electronAPI: {
-      minimize: () => Promise<void>;
-      maximize: () => Promise<void>;
-      close: () => Promise<void>;
-    };
+    electronAPI: ElectronAPI;
   }
 }
 
