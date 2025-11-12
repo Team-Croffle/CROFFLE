@@ -1,6 +1,8 @@
+import 'reflect-metadata';
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 import { registerAllIpcHandlers } from './ipc';
+import { databaseManager } from './services/DatabaseManager';
 
 const DEV_URL = 'http://localhost:5173';
 
@@ -23,9 +25,15 @@ function createWindow() {
   }
 }
 
-app.whenReady().then(() => {
-  registerAllIpcHandlers();
-  createWindow();
+app.whenReady().then(async () => {
+  try {
+    await databaseManager.initialize();
+    registerAllIpcHandlers();
+    createWindow();
+  } catch (error) {
+    console.error('Failed to initialize the application:', error);
+    app.quit();
+  }
 
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
