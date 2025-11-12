@@ -1,6 +1,6 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
-import { ipcHandlers } from './ipc/ipcHandle';
+import { registerAllIpcHandlers } from './ipc';
 
 const DEV_URL = 'http://localhost:5173';
 
@@ -9,7 +9,7 @@ function createWindow() {
     width: 1200,
     height: 800,
     webPreferences: {
-      preload: path.join(__dirname, './preload/preload.js'),
+      preload: path.join(__dirname, './preload/index.js'),
       contextIsolation: true,
       nodeIntegration: false,
     },
@@ -24,7 +24,7 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  ipcHandlers();
+  registerAllIpcHandlers();
   createWindow();
 
   app.on('activate', function () {
