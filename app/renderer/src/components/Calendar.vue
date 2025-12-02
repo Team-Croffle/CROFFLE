@@ -6,6 +6,11 @@
   import { storeToRefs } from 'pinia';
   import { reactive } from 'vue';
   import type { CalendarOptions } from '@fullcalendar/core';
+  import ContextMenu from './ui/context-menu/ContextMenu.vue';
+  import ContextMenuTrigger from './ui/context-menu/ContextMenuTrigger.vue';
+  import ContextMenuContent from './ui/context-menu/ContextMenuContent.vue';
+  import ContextMenuSeparator from './ui/context-menu/ContextMenuSeparator.vue';
+  import ContextMenuItem from './ui/context-menu/ContextMenuItem.vue';
 
   // pinia store 연결
   const store = useCalendarStore();
@@ -40,9 +45,20 @@
 </script>
 
 <template>
-  <div class="calendar-card">
-    <FullCalendar :options="calendarOptions" />
-  </div>
+  <ContextMenu>
+    <ContextMenuTrigger>
+      <div class="calendar-card">
+        <FullCalendar :options="calendarOptions" />
+      </div>
+    </ContextMenuTrigger>
+    <ContextMenuContent>
+      <ContextMenuItem>Profile</ContextMenuItem>
+      <ContextMenuItem>Billing</ContextMenuItem>
+      <ContextMenuItem>Team</ContextMenuItem>
+      <ContextMenuSeparator />
+      <ContextMenuItem>Subscription</ContextMenuItem>
+    </ContextMenuContent>
+  </ContextMenu>
 </template>
 
 <style scoped>
