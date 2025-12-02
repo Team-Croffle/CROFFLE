@@ -79,52 +79,35 @@
 
   /* 제목 스타일 */
   :deep(.fc-toolbar-title) {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    color: #4a4a4a;
+    color: #dca780;
   }
 
+  /* 버튼 그룹 */
   :deep(.fc-button-group) {
     display: flex !important;
     gap: 8px !important;
   }
 
-  :deep(.fc-button-group > .fc-button) {
+  /* 개별 버튼 디자인 */
+  :deep(.fc-button) {
+    background-color: transparent;
+    border: 1px solid #f0f0f0 !important;
+    color: #666;
+    font-weight: 500;
     border-radius: 8px !important;
-
     margin: 0 !important;
-
-    /* 테두리 및 배경 디자인 */
-    border: 1px solid #e5e5e5 !important;
-    background-color: white;
-    color: #4a4a4a;
     box-shadow: none !important;
-
-    height: 36px;
-    padding: 0 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 6px 12px;
   }
 
-  :deep(.fc-button-group > .fc-button:hover) {
-    background-color: #f9fafb;
-    color: #111827;
+  :deep(.fc-button:hover) {
+    background-color: #fafafa;
+    color: #333;
   }
 
-  /* [Today] 버튼 활성화 상태 (이번 달일 때) */
-  :deep(.fc-button-group > .fc-button.fc-button-active),
-  :deep(.fc-button-group > .fc-button:active) {
-    background-color: #8b8b8b !important;
-    border-color: #8b8b8b !important;
-    color: white !important;
-  }
-
-  :deep(.fc-button:disabled) {
-    opacity: 1 !important;
-  }
-
-  /* '오늘' 버튼 활성화 상태일 때 */
+  /* '오늘' 버튼 등 활성 상태 */
   :deep(.fc-button-primary:not(:disabled).fc-button-active),
   :deep(.fc-button-primary:not(:disabled):active) {
     background-color: #fff8f0 !important;
@@ -132,20 +115,22 @@
     border-color: #dca780 !important;
   }
 
-  /* 요일 헤더 (일, 월, 화...) */
+  /* 요일 헤더*/
   :deep(.fc-col-header-cell) {
-    background-color: #fafafa;
+    background-color: #fffcf9;
     padding: 15px 0;
     border: none !important;
+    /* 요일 아래쪽 구분선 */
+    border-bottom: 1px solid #f5f5f5 !important;
   }
 
-  /* 요일 글자 색상 */
+  /* 요일 텍스트 스타일 */
   :deep(.fc-col-header-cell-cushion) {
-    color: #999;
-    font-weight: 500;
+    color: #8d7b68; /* 따뜻한 갈색 텍스트 */
+    font-weight: 600;
     text-decoration: none;
   }
-
+  /* 공휴일 컬러 */
   :deep(.fc-day-sun .fc-col-header-cell-cushion) {
     color: #ff6b6b;
   }
@@ -153,52 +138,48 @@
     color: #4d96ff;
   }
 
-  /* 날짜 표(Grid)*/
+  /* 날짜 칸 테두리 (가로선만 표시) */
   :deep(.fc-theme-standard td),
   :deep(.fc-theme-standard th),
   :deep(.fc-scrollgrid) {
-    border: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-top: none !important;
+    border-bottom: 1px solid #f0ead6 !important;
   }
 
-  /* 날짜 칸 하나하나의 스타일 */
-  :deep(.fc-daygrid-day) {
-    padding: 10px;
-  }
-
-  /* 날짜 숫자 (1, 2, 3...) */
-  :deep(.fc-daygrid-day-top) {
-    flex-direction: row;
-    justify-content: center;
-  }
-
-  :deep(.fc-daygrid-day-number) {
-    font-size: 1rem;
-    color: #666;
-    text-decoration: none;
-    width: 32px;
-    height: 32px;
-    line-height: 32px;
-    text-align: center;
-    border-radius: 50%;
-  }
-
-  /* 오늘 날짜 표시 */
-  :deep(.fc-day-today .fc-daygrid-day-number) {
-    background-color: #dca780;
-    color: white;
-    font-weight: bold;
-  }
-  /* 오늘 날짜 칸 전체 배경색 */
+  /* 오늘 날짜 표시 (칸 전체 하이라이트) */
   :deep(.fc-day-today) {
-    background-color: transparent !important;
+    background-color: #fff5ea !important;
   }
 
-  /* 이벤트 막대 (일정) 디자인 */
+  /* 오늘 날짜 숫자 스타일 */
+  :deep(.fc-day-today .fc-daygrid-day-number) {
+    background-color: transparent !important;
+    color: #dca780; /* 진한 주황색 글씨 */
+    font-weight: 800;
+    border-radius: 0;
+  }
+
+  /* 일반 날짜 숫자 스타일 */
+  :deep(.fc-daygrid-day-number) {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #777;
+    text-decoration: none;
+    padding: 8px;
+    width: 100%;
+    text-align: left;
+  }
+
+  /* 이벤트 스타일 */
   :deep(.fc-event) {
     border: none;
     border-radius: 4px;
     box-shadow: none;
     padding: 3px 5px;
     margin-top: 5px;
+    background-color: #2dc12f;
+    color: #374151;
   }
 </style>
