@@ -3,14 +3,14 @@ export interface Schedule {
   title: string;
   description: string;
   location: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: string; // ISO 8601 format
+  endDate: string; // ISO 8601 format
   isAllDay: boolean;
   recurrenceRule?: string;
   colorLabel: string;
-  tagIds: string[];
-  createdAt: Date;
-  updatedAt: Date;
+  tags: Tag[];
+  createdAt: string; // ISO 8601 format
+  updatedAt: string; // ISO 8601 format
 }
 
 export interface Tag {
@@ -22,10 +22,10 @@ export interface Tag {
 export interface SearchQuery {
   text?: string;
   dateRange?: {
-    start: Date;
-    end: Date;
+    start: string; // ISO 8601 format
+    end: string; // ISO 8601 format
   };
-  tagIds?: string[];
+  tags?: Tag[];
 }
 
 export interface PluginInfo {
