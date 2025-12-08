@@ -1,8 +1,8 @@
 import { DataSource, ObjectLiteral, Repository } from 'typeorm';
 import * as path from 'path';
 import { app } from 'electron';
-// Tag entity import
-// Schedule entity import
+import { Tag } from '../core/tags/model/Tag';
+import { Schedule } from '../core/schedules/model/Schedule';
 // Search Query entity import
 // PluginInfo entity import
 // Application Settings entity import
@@ -13,20 +13,20 @@ class DatabaseManager {
   constructor() {
     const dbPath = path.join(app.getPath('userData'), 'croffledb.sqlite');
 
-    console.log(`[DB] Database path: ${dbPath}`);
+    console.debug(`[DB] Database path: ${dbPath}`);
 
     this.dataSource = new DataSource({
       type: 'sqlite',
       database: dbPath,
       entities: [
-        // Tag entity
-        // Schedule entity
+        Tag,
+        Schedule,
         // Search Query entity
         // PluginInfo entity
         // Application Settings entity
       ],
       synchronize: true,
-      logging: false,
+      logging: process.env.NODE_ENV === 'development',
     });
   }
 
