@@ -3,8 +3,8 @@ import * as path from 'path';
 import { app } from 'electron';
 import { Tag } from '../core/tags/model/Tag';
 import { Schedule } from '../core/schedules/model/Schedule';
-import { PluginInfo } from '../core/plugin-info/PluginInfo';
-import { Settings } from '../core/settings/Settings';
+import { PluginInfo } from '../core/plugin-info/model/PluginInfo';
+import { Settings } from '../core/settings/model/Settings';
 
 class DatabaseManager {
   private dataSource: DataSource;
