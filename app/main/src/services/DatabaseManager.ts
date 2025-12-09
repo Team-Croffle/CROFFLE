@@ -3,9 +3,8 @@ import * as path from 'path';
 import { app } from 'electron';
 import { Tag } from '../core/tags/model/Tag';
 import { Schedule } from '../core/schedules/model/Schedule';
-// Search Query entity import
-// PluginInfo entity import
-// Application Settings entity import
+import { PluginInfo } from '../core/plugin-info/PluginInfo';
+import { Settings } from '../core/settings/Settings';
 
 class DatabaseManager {
   private dataSource: DataSource;
@@ -18,13 +17,7 @@ class DatabaseManager {
     this.dataSource = new DataSource({
       type: 'sqlite',
       database: dbPath,
-      entities: [
-        Tag,
-        Schedule,
-        // Search Query entity
-        // PluginInfo entity
-        // Application Settings entity
-      ],
+      entities: [Tag, Schedule, PluginInfo, Settings],
       synchronize: true,
       logging: process.env.NODE_ENV === 'development',
     });
