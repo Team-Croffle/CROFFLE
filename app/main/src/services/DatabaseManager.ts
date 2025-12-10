@@ -18,7 +18,7 @@ class DatabaseManager {
       type: 'sqlite',
       database: dbPath,
       entities: [Tag, Schedule, PluginInfo, Settings],
-      synchronize: true,
+      synchronize: process.env.NODE_ENV === 'development',
       logging: process.env.NODE_ENV === 'development',
     });
   }
@@ -43,7 +43,9 @@ class DatabaseManager {
   }
 
   public async save<T extends ObjectLiteral>(entity: T): Promise<T> {
-    const repository = this.dataSource.getRepository(entity.constructor.name) as Repository<T>;
+    const repository = this.dataSource.getRepository(
+      entity.constructor as new () => T
+    ) as Repository<T>;
     const result = await repository.save(entity);
     return result;
   }
