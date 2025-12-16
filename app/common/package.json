@@ -4,6 +4,7 @@
   "description": "Shared common types and utilities for the Croffle application.",
   "license": "ISC",
   "author": "Croffle Dev.",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
