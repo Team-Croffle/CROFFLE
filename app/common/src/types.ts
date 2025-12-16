@@ -38,9 +38,43 @@ export interface PluginInfo {
 }
 
 export interface AppSettings {
+  general: {
+    language: 'ko' | 'en';
+    theme: 'light' | 'dark' | 'system';
+    autoUpdate: boolean;
+    startupBehavior: 'openLastSession' | 'openNewWindow' | 'doNothing';
+    startOnSystemBoot: boolean;
+    startMinimized: boolean;
+  };
+  calendar: {
+    defaultView: 'day' | 'week' | 'month' | 'year';
+    weekStartDay: 'sunday' | 'monday';
+    showWeekNumbers: boolean;
+    timeFormat: '12h' | '24h';
+  };
   notifications: {
     enabled: boolean;
     defaultReminderMinutes: number;
   };
-  theme: 'light' | 'dark' | 'system';
 }
+
+export const DEFAULT_SETTINGS: AppSettings = {
+  general: {
+    language: 'en',
+    theme: 'system',
+    autoUpdate: true,
+    startupBehavior: 'openLastSession',
+    startOnSystemBoot: false,
+    startMinimized: false,
+  },
+  calendar: {
+    defaultView: 'month',
+    weekStartDay: 'sunday',
+    showWeekNumbers: false,
+    timeFormat: '24h',
+  },
+  notifications: {
+    enabled: true,
+    defaultReminderMinutes: 10,
+  },
+};
