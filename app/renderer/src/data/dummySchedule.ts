@@ -1,4 +1,4 @@
-import type { Schedule } from '@/types/schedules';
+import type { Schedule } from '@common/types';
 
 export const INITIAL_SCHEDULES: Schedule[] = [
   {
@@ -9,7 +9,7 @@ export const INITIAL_SCHEDULES: Schedule[] = [
     startDate: '2025-09-01T10:00:00',
     endDate: '2025-09-01T12:00:00',
     isAllDay: false,
-    recurringRule: '',
+    recurrenceRule: '',
     colorLabel: '#DCA780',
     tags: [{ id: 't1', name: '업무', color: '#FF0000' }],
     createdAt: '2025-08-20T09:00:00',
@@ -23,7 +23,7 @@ export const INITIAL_SCHEDULES: Schedule[] = [
     startDate: '2025-09-05',
     endDate: '2025-09-05',
     isAllDay: true,
-    recurringRule: '',
+    recurrenceRule: '',
     colorLabel: '#8D7B68',
     tags: [{ id: 't2', name: '디자인', color: '#00FF00' }],
     createdAt: '2025-08-25T14:00:00',
@@ -37,7 +37,7 @@ export const INITIAL_SCHEDULES: Schedule[] = [
     startDate: '2025-09-15',
     endDate: '2025-09-17',
     isAllDay: true,
-    recurringRule: '',
+    recurrenceRule: '',
     colorLabel: '#FF6B6B',
     tags: [{ id: 't3', name: '개인', color: '#0000FF' }],
     createdAt: '2025-09-01T09:00:00',
@@ -51,7 +51,7 @@ export const INITIAL_SCHEDULES: Schedule[] = [
     startDate: '2025-09-23T16:00:00',
     endDate: '2025-09-23T17:00:00',
     isAllDay: false,
-    recurringRule: 'FREQ=WEEKLY;BYDAY=FR',
+    recurrenceRule: 'FREQ=WEEKLY;BYDAY=FR',
     colorLabel: '#4D96FF',
     tags: [{ id: 't1', name: '업무', color: '#FF0000' }],
     createdAt: '2025-09-01T09:00:00',
@@ -65,7 +65,7 @@ export const INITIAL_SCHEDULES: Schedule[] = [
     startDate: '2025-09-23T12:00:00',
     endDate: '2025-09-23T13:30:00',
     isAllDay: false,
-    recurringRule: '',
+    recurrenceRule: '',
     colorLabel: '#2dc12f',
     tags: [{ id: 't4', name: '회식', color: '#FFA500' }],
     createdAt: '2025-09-20T10:00:00',
