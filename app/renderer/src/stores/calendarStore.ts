@@ -1,18 +1,41 @@
+import { INITIAL_SCHEDULES } from '@/data/dummySchedule';
+import type { Schedule } from '@common/types';
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 export const useCalendarStore = defineStore('calendar', () => {
-  // 캘린더 일정 데이터
-  const events = ref([
-    { title: '프로젝트 시작', start: '2025-11-01', end: '2025-11-03' },
-    { title: '중간 점검', date: '2025-11-15' },
-    { title: '최종 발표', date: '2026-11-30' },
-  ]);
+  // 더미 데이터 사용
+  const schedules = ref<Schedule[]>(INITIAL_SCHEDULES);
 
-  // 일정 추가 함수
-  const addEvent = (title: string, date: string) => {
-    events.value.push({ title, date });
+  // 데이터 변환(FullCalendar 이벤트 형식에 맞게)
+  const events = computed(() => {
+    return schedules.value.map((schedule) => ({
+      id: schedule.id,
+      title: schedule.title,
+      start: schedule.startDate,
+      end: schedule.endDate,
+      allDay: schedule.isAllDay,
+      backgroundColor: schedule.colorLabel,
+      borderColor: schedule.colorLabel,
+      textColor: '#FFFFFF',
+
+      extendedProps: {
+        description: schedule.description,
+        location: schedule.location,
+        tags: schedule.tags,
+        recurrenceRule: schedule.recurrenceRule,
+      },
+    }));
+  });
+
+  // Actions
+  const addSchedule = (newSchedule: Schedule) => {
+    schedules.value.push(newSchedule);
   };
 
-  return { events, addEvent };
+  const removeSchedule = (id: string) => {
+    schedules.value = schedules.value.filter((s) => s.id !== id);
+  };
+
+  return { schedules, events, addSchedule, removeSchedule };
 });
