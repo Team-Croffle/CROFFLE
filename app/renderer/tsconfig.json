@@ -4,7 +4,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@common/*": ["../common/src/*"]
     }
-  }
+  },
+
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue", "../common/src/**/*.ts"]
 }
