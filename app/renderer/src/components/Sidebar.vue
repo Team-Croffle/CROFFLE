@@ -19,7 +19,7 @@
     <nav class="menu-list">
       <!-- 캘린더 메뉴 -->
       <a href="#" class="menu-item" :title="isCollapsed ? '캘린더' : ''">
-        <span class="calendar-icon">📅</span>
+        <span class="calendar-icon"><CalendarDays /></span>
         <span class="menu-text" v-if="!isCollapsed">
           <div class="menu-title">캘린더</div>
           <div class="menu-subtitle">Calendar</div>
@@ -27,7 +27,7 @@
       </a>
       <!-- 대시보드 메뉴 -->
       <a href="#" class="menu-item" :title="isCollapsed ? '대시보드' : ''">
-        <span class="menu-icon">📈</span>
+        <span class="menu-icon"><ChartLine /></span>
         <span class="menu-text" v-if="!isCollapsed">
           <div class="menu-title">대시보드</div>
           <div class="menu-subtitle">Dashboard</div>
@@ -35,7 +35,7 @@
       </a>
       <!-- 리포트 메뉴 -->
       <a href="#" class="menu-item" :title="isCollapsed ? '리포트' : ''">
-        <span class="menu-icon">📝</span>
+        <span class="menu-icon"><Pencil /></span>
         <span class="menu-text" v-if="!isCollapsed">
           <div class="menu-title">리포트</div>
           <div class="menu-subtitle">Report</div>
@@ -43,7 +43,7 @@
       </a>
       <!-- 팀 관리 메뉴 -->
       <a href="#" class="menu-item" :title="isCollapsed ? '팀 관리' : ''">
-        <span class="menu-icon">👥</span>
+        <span class="menu-icon"><Users /></span>
         <span class="menu-text" v-if="!isCollapsed">
           <div class="menu-title">팀 관리</div>
           <div class="menu-subtitle">Team</div>
@@ -53,14 +53,15 @@
 
     <!-- 하단 아이콘들 -->
     <div class="sidebar-footer">
-      <button class="footer-icon" :title="isCollapsed ? '알림' : ''">🔔</button>
-      <button class="footer-icon" :title="isCollapsed ? '설정' : ''">⚙️</button>
-      <button class="footer-icon" :title="isCollapsed ? '도움말' : ''">?</button>
+      <button class="footer-icon" :title="isCollapsed ? '알림' : ''"><Bell /></button>
+      <button class="footer-icon" :title="isCollapsed ? '설정' : ''"><Settings /></button>
+      <button class="footer-icon" :title="isCollapsed ? '도움말' : ''"><CircleQuestionMark /></button>
     </div>
   </aside>
 </template>
 
 <script setup lang="ts">
+import { Bell, CalendarDays, ChartLine, CircleQuestionMark, Pencil, Settings, Users } from 'lucide-vue-next';
 import { ref } from 'vue'; //Vue의 반응형 상태를 만들기 위해 ref 함수를 가져옵
 
 // 사이드바 접힘 상태 관리
