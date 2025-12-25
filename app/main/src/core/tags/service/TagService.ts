@@ -2,20 +2,26 @@ import { databaseManager } from '../../../services/DatabaseManager';
 import { Tag } from '../model/Tag';
 
 export const tagService = {
-  getAllTags: async () => {
+  getAllTags: async (): Promise<Tag[]> => {
     const tagRepo = databaseManager.getRepository(Tag);
     const tags = await tagRepo.find();
     return tags;
   },
 
-  addTag: async (name: string, color: string) => {
+  getByName: async (name: string): Promise<Tag | null> => {
+    const tagRepo = databaseManager.getRepository(Tag);
+    const tag = await tagRepo.findOneBy({ name });
+    return tag;
+  },
+
+  addTag: async (name: string, color: string): Promise<Tag> => {
     const tagRepo = databaseManager.getRepository(Tag);
     const newTag = tagRepo.create({ name, color });
     await tagRepo.save(newTag);
     return newTag;
   },
 
-  modTag: async (id: string, name: string, color: string) => {
+  modTag: async (id: string, name: string, color: string): Promise<Tag> => {
     const tagRepo = databaseManager.getRepository(Tag);
     const tag = await tagRepo.findOneBy({ id });
     if (!tag) throw new Error('Tag not found');
@@ -26,7 +32,7 @@ export const tagService = {
     return tag;
   },
 
-  delTag: async (id: string) => {
+  delTag: async (id: string): Promise<boolean> => {
     const tagRepo = databaseManager.getRepository(Tag);
     const tag = await tagRepo.findOneBy({ id });
     if (!tag) throw new Error('Tag not found');
