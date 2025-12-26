@@ -1,4 +1,6 @@
+import { Not } from 'typeorm';
 import { databaseManager } from '../../../services/DatabaseManager';
+import { colorValidation } from '../../helper/colorValidation';
 import { Tag } from '../model/Tag';
 
 export const tagService = {
@@ -16,6 +18,16 @@ export const tagService = {
 
   addTag: async (name: string, color: string): Promise<Tag> => {
     const tagRepo = databaseManager.getRepository(Tag);
+
+    // check validity for name and color could be added here
+    const isExisting = await tagRepo.existsBy({ name });
+    if (isExisting) {
+      throw new Error('Tag with the same name already exists');
+    }
+    if (!colorValidation(color)) {
+      throw new Error('Invalid color format');
+    }
+
     const newTag = tagRepo.create({ name, color });
     await tagRepo.save(newTag);
     return newTag;
@@ -25,6 +37,15 @@ export const tagService = {
     const tagRepo = databaseManager.getRepository(Tag);
     const tag = await tagRepo.findOneBy({ id });
     if (!tag) throw new Error('Tag not found');
+
+    const isExisting = await tagRepo.existsBy({ name, id: Not(id) });
+    if (isExisting) {
+      throw new Error('Another tag with the same name already exists');
+    }
+
+    if (!colorValidation(color)) {
+      throw new Error('Invalid color format');
+    }
 
     tag.name = name;
     tag.color = color;
