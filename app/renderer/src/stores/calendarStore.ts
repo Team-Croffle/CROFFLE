@@ -1,5 +1,5 @@
 import { INITIAL_SCHEDULES } from '@/data/dummySchedule';
-import type { Schedule } from '@common/types';
+import type { Schedule } from '@croffledev/croffle-common';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
