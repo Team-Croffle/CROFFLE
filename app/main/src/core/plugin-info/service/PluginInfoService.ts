@@ -2,7 +2,7 @@ import { databaseManager } from '../../../services/DatabaseManager';
 import { PluginInfo } from '../model/PluginInfo';
 
 export const pluginService = {
-  getInstalledPLugins: async (): Promise<PluginInfo[]> => {
+  getInstalledPlugins: async (): Promise<PluginInfo[]> => {
     const repo = databaseManager.getRepository(PluginInfo);
     return repo.find({
       order: {
