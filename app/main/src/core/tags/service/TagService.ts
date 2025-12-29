@@ -44,7 +44,7 @@ export const tagService = {
     if (!tag) throw new Error('Tag not found');
 
     if (!stringValidation(name, false, 50, 1)) {
-      throw new Error('Invalid tag name');
+      throw new Error('Tag name must be between 1 and 50 characters');
     }
 
     const isExisting = await tagRepo.existsBy({ name, id: Not(id) });
