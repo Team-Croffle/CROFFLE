@@ -28,3 +28,11 @@ export const registerTagIpcHandlers = (): void => {
     return result;
   });
 };
+
+export interface TagApi {
+  getAllTags(): Promise<Tag[]>;
+  getTagByName(name: string): Promise<Tag | null>;
+  createTag(name: string, color: string): Promise<Tag>;
+  modifyTag(id: string, name: string, color: string): Promise<Tag>;
+  deleteTag(id: string): Promise<boolean>;
+}

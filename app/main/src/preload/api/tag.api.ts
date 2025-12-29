@@ -1,5 +1,6 @@
-import { Tag } from '@croffledev/croffle-common';
+import { Tag } from '../../core/tags/model/Tag';
 import { ipcRenderer } from 'electron';
+import { TagApi } from '../../ipc/tag.handler';
 
 export const tagApi = {
   getAllTags: async (): Promise<Tag[]> => {
@@ -21,4 +22,4 @@ export const tagApi = {
   deleteTag: async (id: string): Promise<boolean> => {
     return ipcRenderer.invoke('tag:del', id);
   },
-};
+} satisfies TagApi;
