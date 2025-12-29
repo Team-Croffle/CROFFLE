@@ -2,6 +2,7 @@ import { Not } from 'typeorm';
 import { databaseManager } from '../../../services/DatabaseManager';
 import { colorValidation } from '../../helper/colorValidation';
 import { Tag } from '../model/Tag';
+import { stringValidation } from '../../helper/stringValidation';
 
 export const tagService = {
   getAllTags: async (): Promise<Tag[]> => {
@@ -18,6 +19,10 @@ export const tagService = {
 
   addTag: async (name: string, color: string): Promise<Tag> => {
     const tagRepo = databaseManager.getRepository(Tag);
+
+    if (!stringValidation(name, false, 50, 1)) {
+      throw new Error('Invalid tag name');
+    }
 
     // check validity for name and color could be added here
     const isExisting = await tagRepo.existsBy({ name });
@@ -37,6 +42,10 @@ export const tagService = {
     const tagRepo = databaseManager.getRepository(Tag);
     const tag = await tagRepo.findOneBy({ id });
     if (!tag) throw new Error('Tag not found');
+
+    if (!stringValidation(name, false, 50, 1)) {
+      throw new Error('Invalid tag name');
+    }
 
     const isExisting = await tagRepo.existsBy({ name, id: Not(id) });
     if (isExisting) {
