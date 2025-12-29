@@ -7,9 +7,7 @@ export const tagApi = {
   },
 
   getTagByName: async (name: string): Promise<Tag | null> => {
-    const tags: Tag[] = await ipcRenderer.invoke('tag:getByName', name);
-    const tag = tags.find((t) => t.name === name) || null;
-    return tag;
+    return ipcRenderer.invoke('tag:getByName', name);
   },
 
   createTag: async (name: string, color: string): Promise<Tag> => {
