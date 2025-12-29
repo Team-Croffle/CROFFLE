@@ -1,6 +1,7 @@
 import { registerWindowIpcHandlers } from './window.handler';
 import { registerScheduleIpcHandlers } from './schedule.handler';
 import { registerTagIpcHandlers } from './tag.handler';
+import { registerPluginInfoIpcHandlers } from './pluginInfo.handler';
 
 export function registerAllIpcHandlers() {
   // Window IPC Handlers
@@ -13,6 +14,7 @@ export function registerAllIpcHandlers() {
   registerTagIpcHandlers();
 
   // Plugin Manager IPC Handlers
+  registerPluginInfoIpcHandlers();
 
   // Search IPC Handlers
 
