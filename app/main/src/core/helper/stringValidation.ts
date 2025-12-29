@@ -1,15 +1,15 @@
 export const stringValidation = (
-  input: string,
+  input: string | null,
   nullable: boolean = false,
   maxLength: number = 255,
   minLength: number = 1,
   pattern?: RegExp
 ): boolean => {
-  if (!nullable && input === null) {
-    return false;
-  }
   if (nullable && input === null) {
     return true;
+  }
+  if (input === null) {
+    return false;
   }
   if (input.length < minLength || input.length > maxLength) {
     return false;
