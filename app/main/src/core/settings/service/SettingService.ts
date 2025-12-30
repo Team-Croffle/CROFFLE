@@ -45,7 +45,13 @@ class SettingService {
     return this.settings;
   }
 
-  public getOf(key: keyof AppSettings): AppSettings[keyof AppSettings] {
+  public getOf(search: string): AppSettings[keyof AppSettings] {
+    // validate key
+    if (!(search in this.settings)) {
+      throw new Error(`[Settings] Key "${search}" does not exist in settings.`);
+    }
+
+    const key: keyof AppSettings = search as keyof AppSettings;
     return this.settings[key];
   }
 
