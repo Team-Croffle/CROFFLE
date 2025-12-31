@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import Calendar from '@/components/Calendar.vue';
   import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
+  import { Toaster } from '@/components/ui/sonner';
 
   // Electron 윈도우 제어
   const minimizeWindow = async () => {
@@ -46,6 +47,7 @@
         </SidebarInset>
       </SidebarProvider>
     </div>
+    <Toaster />
   </div>
 </template>
 
