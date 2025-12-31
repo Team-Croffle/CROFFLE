@@ -5,19 +5,23 @@ import {
   Plus, 
   ChevronRight, 
   ChevronLeft,
-  Home,
-  HelpCircle 
+  Home 
 } from 'lucide-vue-next'
+
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
+import { 
+  Card, 
+  CardContent, 
+  CardHeader, 
+  CardTitle 
+} from '@/components/ui/card'
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  // useSidebar 훅을 사용하여 토글 기능 구현
-  useSidebar, 
+  useSidebar,
 } from "@/components/ui/sidebar"
 
 defineProps<{
@@ -27,18 +31,15 @@ defineProps<{
 }>()
 
 const emit = defineEmits(['click-add-schedule'])
-
-// ★ 핵심: useSidebar 훅에서 토글 함수와 현재 상태를 가져옵니다.
-// (이 컴포넌트가 App.vue의 SidebarProvider 안에 있어야 동작합니다)
 const { toggleSidebar, state } = useSidebar()
 </script>
 
 <template>
-  <Sidebar side="right" collapsible="icon" class="border-l bg-[#FAF8F5]">
+  <Sidebar side="right" collapsible="icon" class="border-l border-[#E5DCCF] bg-[#FAF8F5]">
     
     <SidebarHeader class="p-4 pb-0">
-      <div class="flex justify-between items-center mb-2">
-        <div class="space-y-1 text-left overflow-hidden group-data-[collapsible=icon]:hidden">
+      <div class="flex justify-between items-center mb-2 h-10">
+        <div class="space-y-1 text-left overflow-hidden group-data-[collapsible=icon]:hidden transition-all duration-300">
           <h2 class="text-lg font-bold text-[#8B5E3C] whitespace-nowrap">
             일정 관리
           </h2>
@@ -63,25 +64,31 @@ const { toggleSidebar, state } = useSidebar()
 
     <SidebarContent class="p-4 pt-0 gap-6 overflow-hidden">
       
-      <div class="mt-2">
+      <div class="mt-2 flex justify-center">
         <Button 
           @click="emit('click-add-schedule')"
-          class="bg-[#D4A373] hover:bg-[#C39262] text-white shadow-sm font-medium transition-all duration-300 border-none w-full h-11 rounded-lg group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:rounded-full group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:mx-auto"
+          class="!bg-[#d4a574] hover:!bg-[#b88a5c] text-white shadow-sm font-medium transition-all duration-300 border-none 
+          w-full h-11 rounded-lg 
+          group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:rounded-full group-data-[collapsible=icon]:p-0"
         >
-          <Plus class="w-5 h-5 group-data-[state=expanded]:mr-1" />
+          <Plus class="w-5 h-5 transition-all" :class="state === 'expanded' ? 'mr-1' : ''" />
           <span class="group-data-[collapsible=icon]:hidden">새 일정 추가</span>
         </Button>
       </div>
 
-      <div class="flex flex-col gap-4 group-data-[collapsible=icon]:hidden animate-in fade-in">
+      <div class="flex flex-col gap-4 group-data-[collapsible=icon]:hidden animate-in fade-in duration-300">
+        
         <Card class="bg-white border-none shadow-sm rounded-xl overflow-hidden">
-          <div class="p-4 pb-2 flex items-center gap-2">
-            <Calendar class="w-4 h-4 text-[#5A4E46]" />
-            <span class="text-sm font-bold text-[#5A4E46]">오늘의 일정</span>
-            <Badge class="bg-[#F0EAE0] text-[#8B5E3C] ml-auto h-5 px-1.5 rounded-md">
-              {{ todayCount || 0 }}
-            </Badge>
-          </div>
+          <CardHeader class="px-4 pt-2 pb-2 space-y-0">
+            <CardTitle class="flex items-center gap-2 text-sm font-bold text-[#5A4E46]">
+              <Calendar class="w-4 h-4" />
+              <span>오늘의 일정</span>
+              <Badge class="bg-[#F0EAE0] text-[#8B5E3C] ml-auto h-5 px-1.5 rounded-md hover:bg-[#E5DCCF]">
+                {{ todayCount || 0 }}
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          
           <CardContent class="h-[120px] flex items-center justify-center text-sm text-[#A89F91]">
             <span v-if="!hasTodayEvent">오늘 일정이 없습니다</span>
             <span v-else>일정 리스트...</span>
@@ -89,21 +96,24 @@ const { toggleSidebar, state } = useSidebar()
         </Card>
 
         <Card class="bg-white border-none shadow-sm rounded-xl overflow-hidden">
-          <div class="p-4 pb-2 flex items-center gap-2">
-            <Clock class="w-4 h-4 text-[#5A4E46]" />
-            <span class="text-sm font-bold text-[#5A4E46]">다가오는 일정</span>
-          </div>
+          <CardHeader class="px-4 pt-2 pb-2 space-y-0">
+            <CardTitle class="flex items-center gap-2 text-sm font-bold text-[#5A4E46]">
+              <Clock class="w-4 h-4" />
+              <span>다가오는 일정</span>
+            </CardTitle>
+          </CardHeader>
+
           <CardContent class="h-[120px] flex items-center justify-center text-sm text-[#A89F91]">
             다가오는 일정이 없습니다
           </CardContent>
         </Card>
       </div>
 
-      <div class="hidden group-data-[collapsible=icon]:flex flex-col gap-4 items-center mt-2">
-        <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm text-[#CC9B6D] hover:bg-[#FAF8F5] cursor-pointer" title="오늘의 일정">
+      <div class="hidden group-data-[collapsible=icon]:flex flex-col gap-4 items-center mt-2 animate-in fade-in duration-300">
+        <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm text-[#d4a574] hover:bg-[#FAF8F5] cursor-pointer" title="오늘의 일정">
             <Calendar class="w-5 h-5" />
         </div>
-        <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm text-[#CC9B6D] hover:bg-[#FAF8F5] cursor-pointer" title="다가오는 일정">
+        <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm text-[#d4a574] hover:bg-[#FAF8F5] cursor-pointer" title="다가오는 일정">
             <Clock class="w-5 h-5" />
         </div>
       </div>
@@ -111,8 +121,10 @@ const { toggleSidebar, state } = useSidebar()
     </SidebarContent>
 
     <SidebarFooter class="p-4 flex flex-col items-center justify-center">
-      <div class="bg-white w-full rounded-xl p-4 flex flex-col items-center justify-center shadow-sm mb-4 group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:shadow-none group-data-[collapsible=icon]:p-0">
-        <Home class="w-6 h-6 text-[#CC9B6D] mb-1 group-data-[collapsible=icon]:w-5 group-data-[collapsible=icon]:h-5" />
+      <div class="bg-white w-full rounded-xl p-4 flex flex-col items-center justify-center shadow-sm mb-4 
+                  group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:shadow-none group-data-[collapsible=icon]:p-0">
+        <Home class="w-6 h-6 text-[#d4a574] mb-1 group-data-[collapsible=icon]:w-5 group-data-[collapsible=icon]:h-5" />
+        
         <div class="text-center group-data-[collapsible=icon]:hidden">
             <h4 class="font-bold text-[#8B5E3C] text-xs tracking-wider">CROFFLE</h4>
             <span class="text-[10px] text-[#A89F91]">v1.0.0</span>
@@ -120,7 +132,8 @@ const { toggleSidebar, state } = useSidebar()
       </div>
     </SidebarFooter>
     
-    <button class="absolute bottom-4 right-4 w-6 h-6 bg-[#2C2C2C] text-white rounded-full flex items-center justify-center hover:bg-black transition-colors shadow-md z-10 group-data-[collapsible=icon]:right-1/2 group-data-[collapsible=icon]:translate-x-1/2">
+    <button class="absolute bottom-4 right-4 w-6 h-6 bg-[#2C2C2C] text-white rounded-full flex items-center justify-center hover:bg-black transition-colors shadow-md z-10 
+                  group-data-[collapsible=icon]:right-1/2 group-data-[collapsible=icon]:translate-x-1/2">
       <span class="text-xs font-bold">?</span>
     </button>
   </Sidebar>
