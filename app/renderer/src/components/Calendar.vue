@@ -52,11 +52,8 @@
       </div>
     </ContextMenuTrigger>
     <ContextMenuContent>
-      <ContextMenuItem>Profile</ContextMenuItem>
-      <ContextMenuItem>Billing</ContextMenuItem>
-      <ContextMenuItem>Team</ContextMenuItem>
-      <ContextMenuSeparator />
-      <ContextMenuItem>Subscription</ContextMenuItem>
+      <ContextMenuItem>일정 추가</ContextMenuItem>
+      <ContextMenuItem>일정 삭제</ContextMenuItem>
     </ContextMenuContent>
   </ContextMenu>
 </template>
