@@ -11,8 +11,8 @@ export const scheduleService = {
 
     const schedules = await repo.find({
       where: {
-        startDate: LessThanOrEqual(end),
-        endDate: MoreThanOrEqual(start),
+        startDate: LessThanOrEqual(new Date(end)),
+        endDate: MoreThanOrEqual(new Date(start)),
       },
       order: { startDate: 'ASC' },
       relations: ['tags'],
@@ -23,7 +23,7 @@ export const scheduleService = {
   createSchedule: async (data: Partial<Schedule>): Promise<Schedule> => {
     const repo = databaseManager.getRepository(Schedule);
 
-    if (!stringValidation(data.title, false, 100, 1)) {
+    if (!stringValidation(data.title ?? null, false, 100, 1)) {
       throw new Error('Title must be between 1 and 100 characters');
     }
     if (data.colorLabel && !colorValidation(data.colorLabel)) {
