@@ -19,6 +19,7 @@ import {
   CircleHelp,
   Settings,
 } from 'lucide-vue-next'
+import logoImg from '@/assets/Logo2Only.png';
 
 // 사이드바 상태 가져오기 (펼쳐짐/접힘)
 const { state } = useSidebar()
@@ -26,43 +27,36 @@ const { state } = useSidebar()
 // 사이드바가 펼쳐져 있는지 확인 (true/false)
 const isSidebarExpanded = computed(() => state.value === 'expanded')
 
+// 더미 데이터 가져오기
 const menuItems = computed(() => DEFAULT_MENU_ITEMS);
 </script>
 
 <template>
-  <!-- 사이드바 전체 컨테이너 -->
   <Sidebar collapsible="icon" class="border-r border-[#e8e6e3]">
     
-    <!-- 상단 헤더 영역 (로고 + 타이틀 + 접기 버튼) -->
-    <SidebarHeader class="header-section">
-      <div class="header-content">
-        <!-- 로고 아이콘 -->
-        <div class="logo-circle">
-          C
+    <SidebarHeader class="header-section" :class="{ 'collapsed-header': !isSidebarExpanded }">
+      <div class="header-content" :class="{ 'flex-col items-center justify-center': !isSidebarExpanded }">
+        <div class="logo-wrapper">
+          <img :src="logoImg" alt="Croffle Logo" class="logo-img" />
         </div>
         
-        <!-- 타이틀 텍스트 (사이드바가 펼쳐졌을 때만 보임) -->
         <div v-if="isSidebarExpanded" class="title-text">
           <span class="title-main">CROFFLE</span>
           <span class="title-sub">할일 달력</span>
         </div>
+
+        <SidebarTrigger class="collapse-button" />
       </div>
-      
-      <!-- 접기 버튼 (항상 오른쪽 상단에 표시) -->
-      <SidebarTrigger class="collapse-button" />
     </SidebarHeader>
 
-    <!-- 메뉴 카테고리 제목 -->
     <div v-if="isSidebarExpanded" class="menu-category">
       메인 메뉴
     </div>
 
-    <!-- 중간 메뉴 영역 -->
     <SidebarContent>
       <SidebarGroup>
         <SidebarGroupContent>
           <SidebarMenu>
-            <!-- 각 메뉴 아이템 반복 -->
             <SidebarMenuItem v-for="item in menuItems" :key="item.title">
               <SidebarMenuButton 
                 as-child 
@@ -72,14 +66,12 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
                 :tooltip="item.title" 
               >
                 <a :href="item.url" class="menu-link">
-                  <!-- 메뉴 아이콘 -->
                   <component 
                     :is="item.icon" 
                     class="menu-icon" 
                     :class="{ 'icon-active': item.active }" 
                   />
                   
-                  <!-- 메뉴 텍스트 (사이드바가 펼쳐졌을 때만 보임) -->
                   <div v-if="isSidebarExpanded" class="menu-text">
                     <span class="menu-title" :class="{ 'title-active': item.active }">
                       {{ item.title }}
@@ -96,23 +88,19 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
       </SidebarGroup>
     </SidebarContent>
 
-    <!-- 하단 푸터 영역 (알림, 설정, 도움말) -->
     <SidebarFooter class="footer-container">
       <div class="footer-buttons" :class="{ 'footer-collapsed': !isSidebarExpanded }">
         
-        <!-- 알림 버튼 -->
         <SidebarMenuButton size="sm" class="footer-button" tooltip="알림">
           <div class="footer-button-content">
             <Bell class="footer-icon" />
           </div>
         </SidebarMenuButton>
         
-        <!-- 설정 버튼 -->
         <SidebarMenuButton size="sm" class="footer-button" tooltip="설정">
           <Settings class="footer-icon" />
         </SidebarMenuButton>
         
-        <!-- 도움말 버튼 -->
         <SidebarMenuButton size="sm" class="footer-button" tooltip="도움말">
           <CircleHelp class="footer-icon" />
         </SidebarMenuButton>
@@ -130,34 +118,44 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
   background-color: #faf9f7 !important;
 }
 
-/* 헤더 섹션 */
+/* --- 헤더 섹션 스타일 --- */
 .header-section {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
   padding: 1rem;
   border-bottom: 1px solid #e8e6e3;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+/* 사이드바가 접혔을 때 헤더 패딩 */
+.collapsed-header {
+  padding: 1rem 0;
+  align-items: center;
 }
 
 .header-content {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  width: 100%;
 }
 
-/* 로고 원형 스타일 */
-.logo-circle {
+/* 로고 이미지 스타일 */
+.logo-wrapper {
   display: flex;
   width: 32px;
   height: 32px;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  border-radius: 9999px;
-  background: linear-gradient(to bottom right, #f5a962, #e89550);
-  color: white;
-  font-weight: bold;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 /* 타이틀 텍스트 영역 */
@@ -180,15 +178,26 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
   color: #999;
 }
 
-/* 접기 버튼 */
+/* 접기 버튼 위치 제어 */
 .collapse-button {
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
   color: #999;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
-/* 메뉴 카테고리 제목 */
+/* 사이드바가 접혔을 때 로고 아래로 버튼 배치 */
+:deep(.collapsed-header) .collapse-button {
+  position: relative;
+  top: unset;
+  right: unset;
+  margin-top: 0.75rem; /* 로고 이미지와의 간격 */
+}
+
+/* 메뉴 및 푸터 공통 스타일 */
 .menu-category {
   padding: 0.75rem 1rem 0.5rem 1rem;
   font-size: 0.7rem;
@@ -198,7 +207,6 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
   letter-spacing: 0.05em;
 }
 
-/* 메뉴 링크 */
 .menu-link {
   display: flex;
   align-items: center;
@@ -207,18 +215,19 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
   padding: 0.625rem 1rem;
 }
 
-/* 메뉴 버튼 스타일 */
 .menu-button {
   margin: 0 0.5rem;
   border-radius: 0.5rem;
   transition: all 0.2s;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .menu-button:hover {
-  background-color: #f0eeeb;
+  background-color: #f0eeeb !important;
 }
 
-/* 활성화된 메뉴 스타일 */
 .menu-active {
   background-color: #e8aa6f !important;
 }
@@ -227,7 +236,6 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
   background-color: #e8aa6f !important;
 }
 
-/* 메뉴 아이콘 */
 .menu-icon {
   width: 20px;
   height: 20px;
@@ -239,7 +247,6 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
   color: white !important;
 }
 
-/* 메뉴 텍스트 */
 .menu-text {
   display: flex;
   flex-direction: column;
@@ -267,7 +274,6 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
   color: rgba(255, 255, 255, 0.8) !important;
 }
 
-/* 푸터 컨테이너 */
 .footer-container {
   border-top: 1px solid #e8e6e3;
   padding: 0.75rem;
@@ -285,21 +291,33 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
   flex-direction: column;
 }
 
+/* 푸터 버튼 스타일 수정 */
 .footer-button {
   position: relative;
   padding: 0.5rem;
   transition: background-color 0.2s;
+  /* 기본 배경색 및 그림자 제거 */
+  background-color: transparent !important;
+  --sidebar-accent: transparent !important;
+  --sidebar-primary: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
+/* 마우스 호버 시에만 연한 회색 배경 적용 */
 .footer-button:hover {
-  background-color: #f0eeeb;
+  background-color: #f0eeeb !important;
 }
 
-.footer-button-content {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* shadcn 내부 버튼 구조까지 강제 투명화 */
+:deep(.footer-button) {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+:deep(.footer-button:hover) {
+  background-color: #f0eeeb !important;
 }
 
 .footer-icon {
