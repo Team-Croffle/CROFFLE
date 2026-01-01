@@ -4,7 +4,9 @@
   "description": "Croffle Main Process",
   "main": "dist/main.js",
   "scripts": {
-    "build": "tsc",
+    "build": "npm run build:main && npm run build:preload",
+    "build:main": "tsc",
+    "build:preload": "esbuild src/preload/index.ts --bundle --platform=node --target=node16 --outfile=dist/preload/index.js --external:electron",
     "dev": "npm run build && cross-env NODE_ENV=development electron .",
     "lint": "eslint ."
   },
@@ -18,6 +20,7 @@
     "@types/node": "^24.5.2",
     "@types/node-schedule": "^2.1.8",
     "electron": "^38.1.2",
+    "esbuild": "^0.27.2",
     "typescript": "^5.9.2"
   },
   "dependencies": {
