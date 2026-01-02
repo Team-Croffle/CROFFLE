@@ -10,8 +10,11 @@ function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
+    frame: false,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, './preload/index.js'),
+      sandbox: true,
       contextIsolation: true,
       nodeIntegration: false,
     },
