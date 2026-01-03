@@ -2,6 +2,7 @@
   import Calendar from '@/components/Calendar.vue';
   import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
   import { Toaster } from '@/components/ui/sonner';
+  import { Minus, Square, X } from 'lucide-vue-next';
 
   // Electron 윈도우 제어
   const minimizeWindow = async () => {
@@ -27,10 +28,28 @@
       </div>
 
       <div class="no-drag flex gap-1">
-        <button @click="minimizeWindow" class="control-btn hover:bg-gray-100">−</button>
-        <button @click="maximizeWindow" class="control-btn hover:bg-gray-100">□</button>
-        <button @click="closeWindow" class="control-btn hover:bg-red-100 hover:text-red-500">
-          x
+        <button
+          @click="minimizeWindow"
+          class="flex h-7 w-7 items-center justify-center rounded text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-900"
+          aria-label="Minimize window"
+        >
+          <Minus class="h-4 w-4" />
+        </button>
+
+        <button
+          @click="maximizeWindow"
+          class="flex h-7 w-7 items-center justify-center rounded text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-900"
+          aria-label="Maximize window"
+        >
+          <Square class="h-3 w-3" />
+        </button>
+
+        <button
+          @click="closeWindow"
+          class="flex h-7 w-7 items-center justify-center rounded text-gray-500 transition-colors hover:bg-red-100 hover:text-red-600"
+          aria-label="Close window"
+        >
+          <X class="h-4 w-4" />
         </button>
       </div>
     </header>
@@ -38,7 +57,7 @@
     <!-- 메인 콘텐츠 영역 -->
     <div class="relative min-h-0 flex-1">
       <!-- 사이드바 및 캘린더 -->
-      <SidebarProvider class="h-full w-full" style="min-height: 100%">
+      <SidebarProvider class="h-full min-h-full w-full">
         <SidebarInset class="flex h-full flex-col bg-[#FDFBF7]">
           <!-- 캘린더 영역 -->
           <div class="flex-1 overflow-y-auto p-4">
@@ -59,21 +78,5 @@
   /* 드래그 영역 제외 */
   .no-drag {
     -webkit-app-region: no-drag;
-  }
-
-  /* 윈도우 제어 버튼 스타일 */
-  .control-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 4px;
-    background: transparent;
-    border: none;
-    font-size: 0.9rem;
-    color: #666;
-    cursor: pointer;
-    transition: background-color 0.2s;
   }
 </style>
