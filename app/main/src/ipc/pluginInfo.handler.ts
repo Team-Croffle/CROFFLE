@@ -1,6 +1,7 @@
 import { ipcMain } from 'electron';
 import { pluginService } from '../core/plugin-info/service/PluginInfoService';
 import { PluginInfo } from '../core/plugin-info/model/PluginInfo';
+import { validatePluginInstallation } from '../core/helper/pluginValidator';
 
 export const registerPluginInfoIpcHandlers = (): void => {
   ipcMain.handle('pluginInfo:getInstalledPlugins', async (): Promise<PluginInfo[]> => {
@@ -21,6 +22,13 @@ export const registerPluginInfoIpcHandlers = (): void => {
   ipcMain.handle(
     'pluginInfo:installPlugin',
     async (_, pluginData: Partial<PluginInfo>): Promise<PluginInfo> => {
+      validatePluginInstallation(pluginData);
+
+      const existing = await pluginService.getPluginByName(pluginData.name!);
+      if (existing) {
+        throw new Error(`Plugin with name "${pluginData.name}" is already installed.`);
+      }
+
       return pluginService.installPlugin(pluginData);
     }
   );
