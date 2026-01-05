@@ -9,7 +9,11 @@ export const registerSettingsIpcHandlers = (): void => {
 
   ipcMain.handle(
     'settings:getOf',
-    async (_, key: string): Promise<AppSettings[keyof AppSettings]> => {
+    async (_, key: unknown): Promise<AppSettings[keyof AppSettings]> => {
+      if (typeof key !== 'string') {
+        throw new Error('[Settings] Key must be a string.');
+      }
+
       return settingService.getOf(key);
     }
   );
