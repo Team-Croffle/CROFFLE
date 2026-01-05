@@ -1,135 +1,121 @@
-# Turborepo starter
+<div align="center">
+  <img src="./icons/Logo2Only.png" width="150" />
 
-This Turborepo starter is maintained by the Turborepo core team.
+# CROFFLE
 
-## Using this example
+> An extensible desktop productivity platform that unifies everything you need
 
-Run the following command:
+[![to_ko_readme](<https://img.shields.io/badge/KOR(%ED%95%9C%EA%B5%AD%EC%96%B4)-README-018EF5?style=for-the-badge&logo=readme&logoColor=white>)](./README.ko.md)
 
-```sh
-npx create-turbo@latest
+![License](https://img.shields.io/badge/license-MIT-green) ![Electron](https://img.shields.io/badge/Electron-47848F?logo=electron&style=flat&logoColor=white) ![Vue.js](https://img.shields.io/badge/Vue.js-4FC08D?logo=vue.js&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
+
+</div>
+
+**Croffle** is an open-source **desktop application** designed to go beyond simple schedule management. It empowers users to add custom features and automate workflows directly within the app.
+
+We provide a **powerful plugin system** that allows you to build your own productivity environment. Starting with robust Calendar and To-Do management, you can extend Croffle infinitely according to your imagination. Built on Electron, it offers a consistent and powerful experience across Windows, macOS, and Linux.
+
+---
+
+## ✨ Key Features
+
+### 📅 All-in-One Life Management
+
+- **Unified View**: Manage your **Schedules** and **To-dos** intuitively on a single timeline.
+- **Flexible Tagging**: Efficiently categorize and filter all your tasks with a versatile tagging system.
+- **Desktop Optimized**: Enjoy a seamless desktop experience optimized for large screens and keyboard shortcuts.
+
+### 📦 Infinite Extensibility (Plugin System)
+
+- **Easy Installation**: Install new features instantly **via GitHub** without complex file transfers.
+- **Your Own Toolkit**: Install only the plugins you need—such as timers, habit trackers, or memo pads—to keep the app lightweight yet powerful.
+- **Full Control**: Enable or disable installed plugins at any time with a single click.
+
+### 🤖 Workflow Automation
+
+- Go beyond simple notifications. Create personalized automation routines, such as launching specific applications or calling external services when an event starts.
+
+---
+
+## 🚀 Getting Started
+
+### Installation
+
+Download the installer for your operating system from the [Latest Release Page](#).
+
+- [Windows Download (.exe)](#)
+- [macOS Download (.dmg)](#)
+- [Linux Download (.AppImage)](#)
+
+### How to Use Plugins
+
+1. Open Croffle and navigate to **Settings > Plugins**.
+2. Click the **'Install Plugin'** button.
+3. Enter the **GitHub Repository URL** of the plugin you wish to install.
+   - Example: `https://github.com/username/my-croffle-plugin`
+   - Alternatively, select a `.zip` file containing the downloaded or built plugin files.
+4. Once installed, activate the plugin to use it immediately.
+
+---
+
+## 👩‍💻 For Developers
+
+### Build and Run
+
+This project is managed using `npm` and `TurboRepo`.
+
+```bash
+# 1. Clone the repository
+git clone [https://github.com/croffledev/croffle.git](https://github.com/croffledev/croffle.git)
+cd croffle
+
+# 2. Install dependencies
+npm install
+
+# 3. Build 'common' workspace to define types for development
+npm run build --workspace=@croffledev/croffle-common
+
+# 4. Run in development mode
+npm run dev
+
+# (4. Alternatively, run renderer and main processes separately)
+# Terminal 1
+cd ./app/renderer
+npm run dev
+# Terminal 2
+cd ./app/main
+npm run dev
 ```
 
-## What's inside?
+### Plugin Development
 
-This Turborepo includes the following packages/apps:
+Croffle plugins can be developed using standard web technologies. Once you push your developed plugin to a public GitHub repository, users worldwide can install and use it.
 
-### Apps and Packages
+---
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+## 🛠️ Tech Stack
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+- **Runtime:** Electron
+- **Renderer(Frontend):** Vue.js 3, Vite, TailwindCSS
+- **Language:** TypeScript
+- **Database:** SQLite, TypeORM
 
-### Utilities
+---
 
-This Turborepo has some additional tools already setup for you:
+### 🤝 Contributing
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+Croffle is an open-source project. Bug reports, feature suggestions, and Pull Requests are always welcome!
 
-### Build
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-To build all apps and packages, run the following command:
+---
 
-```
-cd my-turborepo
+## 📄 License
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
+This project is distributed under the **MIT License**. You are free to use, modify, and distribute it. See the `LICENSE` file for details.
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
-```
-
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
-
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+Copyright (c) 2026 Croffle Dev. & Croffle Contributors
