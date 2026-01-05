@@ -48,7 +48,7 @@ export const pluginService = {
     const repo = databaseManager.getRepository(PluginInfo);
     const plugin = await repo.findOne({ where: { name } });
     if (!plugin) {
-      return null;
+      throw new Error(`Plugin "${name}" not found.`);
     }
     plugin.isEnabled = enable;
     return repo.save(plugin);
