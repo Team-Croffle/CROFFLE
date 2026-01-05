@@ -1,5 +1,10 @@
 import { PluginInfo } from '@croffledev/croffle-common';
 
+/**
+ * Validates the plugin data before installation.
+ * @param data Partial plugin info data to validate before installation.
+ * @throws Error if validation fails.
+ */
 export const validatePluginInstallation = (data: Partial<PluginInfo>): void => {
   if (!data.name) {
     throw new Error('[PluginInfo] Plugin name is required for installation.');
@@ -27,5 +32,32 @@ export const validatePluginInstallation = (data: Partial<PluginInfo>): void => {
 
   if (data.enabled !== undefined && typeof data.enabled !== 'boolean') {
     throw new Error('[PluginInfo] Enabled flag must be a boolean if provided.');
+  }
+};
+
+/**
+ * Validates the parameters for toggling a plugin's enabled status.
+ * @param name Name of the plugin to toggle.
+ * @param enable Boolean indicating whether to enable or disable the plugin.
+ * @throws Error if validation fails.
+ */
+export const validatePluginToggle = (name: unknown, enable: unknown): void => {
+  if (typeof name !== 'string' || name.trim().length === 0) {
+    throw new Error('[PluginInfo] Invalid plugin name provided for toggle.');
+  }
+
+  if (typeof enable !== 'boolean') {
+    throw new Error('[PluginInfo] Enable status must be a boolean.');
+  }
+};
+
+/**
+ * Validates the plugin name.
+ * @param name Name of the plugin to validate.
+ * @throws Error if the plugin name is invalid.
+ */
+export const validatePluginName = (name: unknown): void => {
+  if (typeof name !== 'string' || name.trim().length === 0) {
+    throw new Error('[PluginInfo] Invalid plugin name provided.');
   }
 };

@@ -1,7 +1,11 @@
 import { ipcMain } from 'electron';
 import { pluginService } from '../core/plugin-info/service/PluginInfoService';
 import { PluginInfo } from '../core/plugin-info/model/PluginInfo';
-import { validatePluginInstallation } from '../core/helper/pluginValidator';
+import {
+  validatePluginInstallation,
+  validatePluginName,
+  validatePluginToggle,
+} from '../core/helper/pluginValidator';
 
 export const registerPluginInfoIpcHandlers = (): void => {
   ipcMain.handle('pluginInfo:getInstalledPlugins', async (): Promise<PluginInfo[]> => {
@@ -15,6 +19,7 @@ export const registerPluginInfoIpcHandlers = (): void => {
   ipcMain.handle(
     'pluginInfo:getPluginByName',
     async (_, name: string): Promise<PluginInfo | null> => {
+      validatePluginName(name);
       return pluginService.getPluginByName(name);
     }
   );
@@ -36,11 +41,13 @@ export const registerPluginInfoIpcHandlers = (): void => {
   ipcMain.handle(
     'pluginInfo:togglePlugin',
     async (_, name: string, enable: boolean): Promise<PluginInfo | null> => {
+      validatePluginToggle(name, enable);
       return pluginService.togglePlugin(name, enable);
     }
   );
 
   ipcMain.handle('pluginInfo:uninstallPlugin', async (_, name: string): Promise<boolean> => {
+    validatePluginName(name);
     return pluginService.uninstallPlugin(name);
   });
 };
