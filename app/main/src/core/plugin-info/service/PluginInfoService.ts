@@ -34,6 +34,12 @@ export const pluginService = {
 
   installPlugin: async (pluginData: Partial<PluginInfo>): Promise<PluginInfo> => {
     const repo = databaseManager.getRepository(PluginInfo);
+
+    const existing = await repo.findOne({ where: { name: pluginData.name! } });
+    if (existing) {
+      throw new Error(`Plugin with name "${pluginData.name}" is already installed.`);
+    }
+
     const plugin = repo.create(pluginData);
     return repo.save(plugin);
   },
