@@ -9,7 +9,6 @@
   import ContextMenu from './ui/context-menu/ContextMenu.vue';
   import ContextMenuTrigger from './ui/context-menu/ContextMenuTrigger.vue';
   import ContextMenuContent from './ui/context-menu/ContextMenuContent.vue';
-  import ContextMenuSeparator from './ui/context-menu/ContextMenuSeparator.vue';
   import ContextMenuItem from './ui/context-menu/ContextMenuItem.vue';
 
   // pinia store 연결
@@ -38,17 +37,19 @@
     events: events.value, // pinia store의 events 사용
     editable: true,
     selectable: true,
-    height: 'auto',
+    height: '100%',
+    windowResizeDelay: 0,
+    handleWindowResize: true,
 
     locale: 'ko', // 한국어 설정
   });
 </script>
 
 <template>
-  <ContextMenu>
-    <ContextMenuTrigger>
-      <div class="calendar-card">
-        <FullCalendar :options="calendarOptions" />
+  <ContextMenu class="h-full">
+    <ContextMenuTrigger class="block h-full w-full">
+      <div class="calendar-card flex h-full flex-col">
+        <FullCalendar :options="calendarOptions" class="h-full w-full flex-1" />
       </div>
     </ContextMenuTrigger>
     <ContextMenuContent>
@@ -62,15 +63,19 @@
   /* 캘린더 전체 틀 */
   .calendar-card {
     background-color: white;
-    padding: 30px;
+    padding: 15px;
     border-radius: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    min-height: 600px;
+  }
+
+  :deep(.fc) {
+    height: 100%;
+    width: 100%;
   }
 
   /* 헤더(제목+버튼) */
   :deep(.fc-header-toolbar) {
-    margin-bottom: 30px !important;
+    margin-bottom: 10px !important;
     padding: 0 10px;
   }
 
@@ -115,7 +120,7 @@
   /* 요일 헤더*/
   :deep(.fc-col-header-cell) {
     background-color: #fffcf9;
-    padding: 15px 0;
+    padding: 8px 0;
     border: none !important;
     /* 요일 아래쪽 구분선 */
     border-bottom: 1px solid #f5f5f5 !important;

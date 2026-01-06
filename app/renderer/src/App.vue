@@ -57,10 +57,10 @@
     <!-- 메인 콘텐츠 영역 -->
     <div class="relative min-h-0 flex-1">
       <!-- 사이드바 및 캘린더 -->
-      <SidebarProvider class="h-full min-h-full w-full">
+      <SidebarProvider class="h-full !min-h-full w-full">
         <SidebarInset class="flex h-full flex-col bg-[#FDFBF7]">
           <!-- 캘린더 영역 -->
-          <div class="flex-1 overflow-y-auto p-4">
+          <div class="flex-1 overflow-hidden p-4">
             <Calendar />
           </div>
         </SidebarInset>
