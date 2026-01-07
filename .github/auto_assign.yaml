@@ -1,0 +1,11 @@
+addReviewers: true
+addAssignees: author
+reviewers:
+  - BlueNyang
+numberOfReviewers: 2
+numberOfAssignees: 1
+skipKeywords:
+  - WIP
+  - do not merge
+  - draft
+  - work in progress

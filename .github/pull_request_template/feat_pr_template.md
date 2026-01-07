@@ -2,6 +2,11 @@
 
 - Please provide a brief description of the new feature being added and its intended purpose.
 
+## Area (Please check only one)
+
+- [ ] MainProcess
+- [ ] Renderer
+
 ## Related Issue
 
 Feat #00

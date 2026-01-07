@@ -2,6 +2,11 @@
 
 - Please provide a brief description of the bug that was fixed and the context in which it occurred.
 
+## Area (Please check only one)
+
+- [ ] MainProcess
+- [ ] Renderer
+
 ## Related Issue
 
 Fixes #00

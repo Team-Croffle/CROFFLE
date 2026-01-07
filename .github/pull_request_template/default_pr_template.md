@@ -2,6 +2,11 @@
 
 - Please provide a brief description of the changes made in this pull request.
 
+## Area (Please check only one)
+
+- [ ] MainProcess
+- [ ] Renderer
+
 ## Related Feature ID
 
 Resolves TEMPLATE-1
