@@ -6,31 +6,26 @@ export const registerScheduleIpcHandlers = (): void => {
   ipcMain.handle(
     'schedule:get',
     async (_, period: { start: string; end: string }): Promise<Schedule[]> => {
-      const schedules = await scheduleService.getSchedules(period);
-      return schedules;
+      return await scheduleService.getSchedules({
+        start: new Date(period.start),
+        end: new Date(period.end),
+      });
     }
   );
 
-  ipcMain.handle(
-    'schedule:create',
-    async (_, data: Partial<Schedule>): Promise<Schedule> => {
-      const newSchedule = await scheduleService.createSchedule(data);
-      return newSchedule;
-    }
-  );
+  ipcMain.handle('schedule:create', async (_, data: Partial<Schedule>): Promise<Schedule> => {
+    return await scheduleService.createSchedule(data);
+  });
 
   ipcMain.handle(
     'schedule:update',
     async (_, id: string, data: Partial<Schedule>): Promise<Schedule> => {
-      const updatedSchedule = await scheduleService.updateSchedule(id, data);
-      return updatedSchedule;
+      return await scheduleService.updateSchedule(id, data);
     }
   );
 
-  ipcMain.handle('schedule:delete',
-    async (_, id: string): Promise<boolean> => {
-    const result = await scheduleService.deleteSchedule(id);
-    return result;
+  ipcMain.handle('schedule:delete', async (_, id: string): Promise<boolean> => {
+    return await scheduleService.deleteSchedule(id);
   });
 };
 

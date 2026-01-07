@@ -44,7 +44,7 @@ export class Schedule {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToMany(() => Tag)
+  @ManyToMany(() => Tag, { cascade: true })
   @JoinTable({ name: 'schedule_tags' })
   tags: Tag[];
 }
