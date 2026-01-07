@@ -3,6 +3,7 @@ import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 import { registerAllIpcHandlers } from './ipc';
 import { databaseManager } from './services/DatabaseManager';
+import { windowService } from './core/window/service/WindowService';
 
 const DEV_URL = 'http://localhost:5173';
 
@@ -19,6 +20,8 @@ function createWindow() {
       nodeIntegration: false,
     },
   });
+
+  windowService.init(mainWindow);
 
   if (process.env.NODE_ENV === 'development') {
     mainWindow.loadURL(DEV_URL);
