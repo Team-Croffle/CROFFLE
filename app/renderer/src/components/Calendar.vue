@@ -4,7 +4,7 @@
   import interactionPlugin from '@fullcalendar/interaction';
   import { useCalendarStore } from '@/stores/calendarStore';
   import { storeToRefs } from 'pinia';
-  import { reactive } from 'vue';
+  import { reactive, ref } from 'vue';
   import type { CalendarOptions } from '@fullcalendar/core';
   import ContextMenu from './ui/context-menu/ContextMenu.vue';
   import ContextMenuTrigger from './ui/context-menu/ContextMenuTrigger.vue';
@@ -14,6 +14,28 @@
   // pinia store 연결
   const store = useCalendarStore();
   const { events } = storeToRefs(store);
+
+  // 날짜 위치 저장 변수(우클릭 시 컨텍스트 메뉴 위치 지정용)
+  const selectedDate = ref<string | null>(null);
+
+  // 우클릭 핸들러
+  const handleContextMenu = (e: MouseEvent) => {
+    // 클릭된 요소가 날짜인지 확인
+    const target = e.target as HTMLElement;
+    const dayCell = target.closest('.fc-daygrid-day');
+
+    if (dayCell) {
+      const date = dayCell.getAttribute('data-date');
+      if (date) {
+        selectedDate.value = date;
+      }
+    } else {
+      // 날짜 영역 밖은 컨텍스트 메뉴 비활성화
+      selectedDate.value = null;
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
 
   // fullCalendar 옵션 설정
   const calendarOptions = reactive<CalendarOptions>({
@@ -48,12 +70,12 @@
 <template>
   <ContextMenu class="h-full">
     <ContextMenuTrigger class="block h-full w-full">
-      <div class="calendar-card flex h-full flex-col">
+      <div class="calendar-card flex h-full flex-col" @contextmenu="handleContextMenu">
         <FullCalendar :options="calendarOptions" class="h-full w-full flex-1" />
       </div>
     </ContextMenuTrigger>
     <ContextMenuContent>
-      <ContextMenuItem>일정 추가</ContextMenuItem>
+      <ContextMenuItem>일정 추가 ({{ selectedDate }})</ContextMenuItem>
       <ContextMenuItem>일정 삭제</ContextMenuItem>
     </ContextMenuContent>
   </ContextMenu>
