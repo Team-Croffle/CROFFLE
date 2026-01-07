@@ -23,7 +23,8 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
 </script>
 
 <template>
-  <Sidebar collapsible="icon" class="border-r border-neutral-000 !bg-[#faf9f7]">
+  <Sidebar 
+  collapsible="icon" class="border-r border-neutral-000 !bg-neutral-000">
     
     <SidebarHeader 
       class="flex flex-col border-b border-neutral-000 relative transition-all duration-200"
@@ -38,18 +39,18 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
         </div>
         
         <div v-if="isSidebarExpanded" class="flex flex-col gap-[0.125rem]">
-          <span class="text-[0.75rem] font-bold leading-none text-[#666]">CROFFLE</span>
+          <span class="text-[0.75rem] font-bold leading-none text-yellow-600">CROFFLE</span>
           <span class="text-[0.65rem] leading-none text-[#999]">할일 달력</span>
         </div>
 
         <SidebarTrigger 
-          class="text-[#999] !bg-transparent !border-none !shadow-none"
+          class="text-[#999] !bg-transparent !border-none !shadow-none !ring-0 !ring-offset-0 !outline-none focus:!ring-0 focus-visible:!ring-0 focus-visible:!ring-offset-0"
           :class="[isSidebarExpanded ? 'absolute top-[0.75rem] right-[0.75rem]' : 'relative mt-[0.75rem]']" 
         />
       </div>
     </SidebarHeader>
 
-    <div v-if="isSidebarExpanded" class="px-4 pt-[0.75rem] pb-[0.5rem] text-[0.7rem] font-semibold text-[#999] uppercase tracking-[0.05em]">
+    <div v-if="isSidebarExpanded" class="pl-4 pr-0 pt-[0.75rem] pb-[0.5rem] text-[0.7rem] font-semibold text-[#999] uppercase tracking-[0.05em] text-left w-full">
       메인 메뉴
     </div>
 
@@ -61,11 +62,18 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
               <SidebarMenuButton 
                 as-child 
                 size="lg" 
-                class="mx-2 rounded-[0.5rem] transition-all duration-200 !bg-transparent hover:!bg-[#f0eeeb]"
-                :class="{ '!bg-[#e8aa6f] hover:!bg-[#e8aa6f]': item.active }"
+                class="rounded-[0.5rem] transition-all duration-200 !bg-transparent hover:!bg-[#f0eeeb] !ring-0 !outline-none"
+                :class="[
+                  { '!bg-[#e8aa6f] hover:!bg-[#e8aa6f]': item.active },
+                  isSidebarExpanded ? 'mx-2' : 'mx-0 justify-center'
+                ]"
                 :tooltip="item.title" 
               >
-                <a :href="item.url" class="flex items-center gap-[0.75rem] w-full px-4 py-[0.625rem]">
+                <a 
+                  :href="item.url" 
+                  class="flex items-center w-full py-[0.625rem]"
+                  :class="[isSidebarExpanded ? 'px-4 gap-[0.75rem]' : 'justify-center px-0']"
+                >
                   <component 
                     :is="item.icon" 
                     class="w-5 h-5 shrink-0 text-[#666]" 
@@ -88,14 +96,14 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
       </SidebarGroup>
     </SidebarContent>
 
-    <SidebarFooter class="border-t border-neutral-000 p-[0.75rem] bg-[#faf9f7]">
+    <SidebarFooter class="border-t border-neutral-000 p-[0.75rem] bg-neutral-000">
       <div 
         class="flex items-center justify-around gap-[0.5rem]" 
         :class="{ 'flex-col': !isSidebarExpanded }"
       >
         <SidebarMenuButton 
           size="sm" 
-          class="relative p-2 transition-colors !bg-transparent hover:!bg-[#f0eeeb] !border-none !shadow-none [--sidebar-accent:transparent]"
+          class="relative p-2 transition-colors !bg-transparent hover:!bg-[#f0eeeb] !border-none !shadow-none !ring-0 !ring-offset-0 !outline-none focus:!ring-0 focus-visible:!ring-0 [--sidebar-accent:transparent]"
           tooltip="알림"
         >
           <Bell class="w-5 h-5 text-[#666]" />
@@ -103,7 +111,7 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
         
         <SidebarMenuButton 
           size="sm" 
-          class="relative p-2 transition-colors !bg-transparent hover:!bg-[#f0eeeb] !border-none !shadow-none [--sidebar-accent:transparent]"
+          class="relative p-2 transition-colors !bg-transparent hover:!bg-[#f0eeeb] !border-none !shadow-none !ring-0 !ring-offset-0 !outline-none focus:!ring-0 focus-visible:!ring-0 [--sidebar-accent:transparent]"
           tooltip="설정"
         >
           <Settings class="w-5 h-5 text-[#666]" />
@@ -111,7 +119,7 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
         
         <SidebarMenuButton 
           size="sm" 
-          class="relative p-2 transition-colors !bg-transparent hover:!bg-[#f0eeeb] !border-none !shadow-none [--sidebar-accent:transparent]"
+          class="relative p-2 transition-colors !bg-transparent hover:!bg-[#f0eeeb] !border-none !shadow-none !ring-0 !ring-offset-0 !outline-none focus:!ring-0 focus-visible:!ring-0 [--sidebar-accent:transparent]"
           tooltip="도움말"
         >
           <CircleHelp class="w-5 h-5 text-[#666]" />
