@@ -14,42 +14,42 @@ import {
   SidebarTrigger,
   useSidebar
 } from '@/components/ui/sidebar'
-import {
-  Bell,
-  CircleHelp,
-  Settings,
-} from 'lucide-vue-next'
+import { Bell, CircleHelp, Settings } from 'lucide-vue-next'
 import logoImg from '@/assets/Logo2Only.png';
 
-// 사이드바 상태 가져오기 (펼쳐짐/접힘)
 const { state } = useSidebar()
-
-// 사이드바가 펼쳐져 있는지 확인 (true/false)
 const isSidebarExpanded = computed(() => state.value === 'expanded')
-
-// 더미 데이터 가져오기
 const menuItems = computed(() => DEFAULT_MENU_ITEMS);
 </script>
 
 <template>
-  <Sidebar collapsible="icon" class="border-r border-[#e8e6e3]">
+  <Sidebar collapsible="icon" class="border-r border-neutral-000 !bg-[#faf9f7]">
     
-    <SidebarHeader class="header-section" :class="{ 'collapsed-header': !isSidebarExpanded }">
-      <div class="header-content" :class="{ 'flex-col items-center justify-center': !isSidebarExpanded }">
-        <div class="logo-wrapper">
-          <img :src="logoImg" alt="Croffle Logo" class="logo-img" />
+    <SidebarHeader 
+      class="flex flex-col border-b border-neutral-000 relative transition-all duration-200"
+      :class="[isSidebarExpanded ? 'p-4' : 'p-4 items-center']"
+    >
+      <div 
+        class="flex items-center gap-[0.75rem] w-full"
+        :class="{ 'flex-col justify-center': !isSidebarExpanded }"
+      >
+        <div class="flex w-8 h-8 shrink-0 items-center justify-center overflow-hidden">
+          <img :src="logoImg" alt="Croffle Logo" class="w-full h-full object-contain" />
         </div>
         
-        <div v-if="isSidebarExpanded" class="title-text">
-          <span class="title-main">CROFFLE</span>
-          <span class="title-sub">할일 달력</span>
+        <div v-if="isSidebarExpanded" class="flex flex-col gap-[0.125rem]">
+          <span class="text-[0.75rem] font-bold leading-none text-[#666]">CROFFLE</span>
+          <span class="text-[0.65rem] leading-none text-[#999]">할일 달력</span>
         </div>
 
-        <SidebarTrigger class="collapse-button" />
+        <SidebarTrigger 
+          class="text-[#999] !bg-transparent !border-none !shadow-none"
+          :class="[isSidebarExpanded ? 'absolute top-[0.75rem] right-[0.75rem]' : 'relative mt-[0.75rem]']" 
+        />
       </div>
     </SidebarHeader>
 
-    <div v-if="isSidebarExpanded" class="menu-category">
+    <div v-if="isSidebarExpanded" class="px-4 pt-[0.75rem] pb-[0.5rem] text-[0.7rem] font-semibold text-[#999] uppercase tracking-[0.05em]">
       메인 메뉴
     </div>
 
@@ -61,22 +61,22 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
               <SidebarMenuButton 
                 as-child 
                 size="lg" 
-                class="menu-button"
-                :class="{ 'menu-active': item.active }"
+                class="mx-2 rounded-[0.5rem] transition-all duration-200 !bg-transparent hover:!bg-[#f0eeeb]"
+                :class="{ '!bg-[#e8aa6f] hover:!bg-[#e8aa6f]': item.active }"
                 :tooltip="item.title" 
               >
-                <a :href="item.url" class="menu-link">
+                <a :href="item.url" class="flex items-center gap-[0.75rem] w-full px-4 py-[0.625rem]">
                   <component 
                     :is="item.icon" 
-                    class="menu-icon" 
-                    :class="{ 'icon-active': item.active }" 
+                    class="w-5 h-5 shrink-0 text-[#666]" 
+                    :class="{ '!text-white': item.active }" 
                   />
                   
-                  <div v-if="isSidebarExpanded" class="menu-text">
-                    <span class="menu-title" :class="{ 'title-active': item.active }">
+                  <div v-if="isSidebarExpanded" class="flex flex-col gap-[0.125rem]">
+                    <span class="text-[0.875rem] font-medium leading-[1.2] text-[#333]" :class="{ '!text-white': item.active }">
                       {{ item.title }}
                     </span>
-                    <span class="menu-subtitle" :class="{ 'subtitle-active': item.active }">
+                    <span class="text-[0.7rem] leading-none text-[#999]" :class="{ '!text-white/80': item.active }">
                       {{ item.subtitle }}
                     </span>
                   </div>
@@ -88,241 +88,41 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
       </SidebarGroup>
     </SidebarContent>
 
-    <SidebarFooter class="footer-container">
-      <div class="footer-buttons" :class="{ 'footer-collapsed': !isSidebarExpanded }">
-        
-        <SidebarMenuButton size="sm" class="footer-button" tooltip="알림">
-          <div class="footer-button-content">
-            <Bell class="footer-icon" />
-          </div>
+    <SidebarFooter class="border-t border-neutral-000 p-[0.75rem] bg-[#faf9f7]">
+      <div 
+        class="flex items-center justify-around gap-[0.5rem]" 
+        :class="{ 'flex-col': !isSidebarExpanded }"
+      >
+        <SidebarMenuButton 
+          size="sm" 
+          class="relative p-2 transition-colors !bg-transparent hover:!bg-[#f0eeeb] !border-none !shadow-none [--sidebar-accent:transparent]"
+          tooltip="알림"
+        >
+          <Bell class="w-5 h-5 text-[#666]" />
         </SidebarMenuButton>
         
-        <SidebarMenuButton size="sm" class="footer-button" tooltip="설정">
-          <Settings class="footer-icon" />
+        <SidebarMenuButton 
+          size="sm" 
+          class="relative p-2 transition-colors !bg-transparent hover:!bg-[#f0eeeb] !border-none !shadow-none [--sidebar-accent:transparent]"
+          tooltip="설정"
+        >
+          <Settings class="w-5 h-5 text-[#666]" />
         </SidebarMenuButton>
         
-        <SidebarMenuButton size="sm" class="footer-button" tooltip="도움말">
-          <CircleHelp class="footer-icon" />
+        <SidebarMenuButton 
+          size="sm" 
+          class="relative p-2 transition-colors !bg-transparent hover:!bg-[#f0eeeb] !border-none !shadow-none [--sidebar-accent:transparent]"
+          tooltip="도움말"
+        >
+          <CircleHelp class="w-5 h-5 text-[#666]" />
         </SidebarMenuButton>
-        
       </div>
     </SidebarFooter>
-    
   </Sidebar>
 </template>
 
-
 <style scoped>
-/* 사이드바 배경색 */
 :deep(.bg-sidebar) {
   background-color: #faf9f7 !important;
-}
-
-/* --- 헤더 섹션 스타일 --- */
-.header-section {
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  border-bottom: 1px solid #e8e6e3;
-  position: relative;
-  transition: all 0.2s ease;
-}
-
-/* 사이드바가 접혔을 때 헤더 패딩 */
-.collapsed-header {
-  padding: 1rem 0;
-  align-items: center;
-}
-
-.header-content {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  width: 100%;
-}
-
-/* 로고 이미지 스타일 */
-.logo-wrapper {
-  display: flex;
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.logo-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-/* 타이틀 텍스트 영역 */
-.title-text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-}
-
-.title-main {
-  font-size: 0.75rem;
-  font-weight: bold;
-  line-height: 1;
-  color: #666;
-}
-
-.title-sub {
-  font-size: 0.65rem;
-  line-height: 1;
-  color: #999;
-}
-
-/* 접기 버튼 위치 제어 */
-.collapse-button {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  color: #999;
-  background-color: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-/* 사이드바가 접혔을 때 로고 아래로 버튼 배치 */
-:deep(.collapsed-header) .collapse-button {
-  position: relative;
-  top: unset;
-  right: unset;
-  margin-top: 0.75rem; /* 로고 이미지와의 간격 */
-}
-
-/* 메뉴 및 푸터 공통 스타일 */
-.menu-category {
-  padding: 0.75rem 1rem 0.5rem 1rem;
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: #999;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.menu-link {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  width: 100%;
-  padding: 0.625rem 1rem;
-}
-
-.menu-button {
-  margin: 0 0.5rem;
-  border-radius: 0.5rem;
-  transition: all 0.2s;
-  background-color: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-.menu-button:hover {
-  background-color: #f0eeeb !important;
-}
-
-.menu-active {
-  background-color: #e8aa6f !important;
-}
-
-.menu-active:hover {
-  background-color: #e8aa6f !important;
-}
-
-.menu-icon {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  color: #666;
-}
-
-.icon-active {
-  color: white !important;
-}
-
-.menu-text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-}
-
-.menu-title {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #333;
-  line-height: 1.2;
-}
-
-.title-active {
-  color: white !important;
-}
-
-.menu-subtitle {
-  font-size: 0.7rem;
-  color: #999;
-  line-height: 1;
-}
-
-.subtitle-active {
-  color: rgba(255, 255, 255, 0.8) !important;
-}
-
-.footer-container {
-  border-top: 1px solid #e8e6e3;
-  padding: 0.75rem;
-  background-color: #faf9f7;
-}
-
-.footer-buttons {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  gap: 0.5rem;
-}
-
-.footer-collapsed {
-  flex-direction: column;
-}
-
-/* 푸터 버튼 스타일 수정 */
-.footer-button {
-  position: relative;
-  padding: 0.5rem;
-  transition: background-color 0.2s;
-  /* 기본 배경색 및 그림자 제거 */
-  background-color: transparent !important;
-  --sidebar-accent: transparent !important;
-  --sidebar-primary: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-/* 마우스 호버 시에만 연한 회색 배경 적용 */
-.footer-button:hover {
-  background-color: #f0eeeb !important;
-}
-
-/* shadcn 내부 버튼 구조까지 강제 투명화 */
-:deep(.footer-button) {
-  background-color: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-:deep(.footer-button:hover) {
-  background-color: #f0eeeb !important;
-}
-
-.footer-icon {
-  width: 20px;
-  height: 20px;
-  color: #666;
 }
 </style>
