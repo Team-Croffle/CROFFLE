@@ -35,10 +35,13 @@ class WindowService {
   private createTray(): void {
     try {
       const iconPath = app.isPackaged
-        ? path.join(process.resourcesPath, 'resources/icon.png')
-        : path.join(__dirname, '../../resources/icon.png');
+        ? path.join(process.resourcesPath, 'icons/Logo2Only.png')
+        : path.join(__dirname, '../../icons/Logo2Only.png');
 
       const icon = nativeImage.createFromPath(iconPath);
+      if (icon.isEmpty()) {
+        console.error('[WindowService] Failed to load tray icon. Check path.');
+      }
       this.tray = new Tray(icon);
       this.tray.setToolTip('CROFFLE');
 
