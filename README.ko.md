@@ -74,7 +74,7 @@ git clone [https://github.com/croffledev/croffle.git](https://github.com/croffle
 cd croffle
 
 # 2. 의존성 설치
-npm install
+npm ci
 
 # 3. 개발을 위해 Type 등을 정의하는 common 빌드
 npm run build --workspace=@croffledev/croffle-common
@@ -85,9 +85,11 @@ npm run dev
 # (4. 또는, renderer와 main 프로세스를 따로 실행)
 # 1번째 터미널
 cd ./app/renderer
+npm ci
 npm run dev
 # 2번째 터미널
 cd ./app/main
+npm ci
 npm run dev
 ```
 

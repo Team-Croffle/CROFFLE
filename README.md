@@ -70,7 +70,7 @@ git clone [https://github.com/croffledev/croffle.git](https://github.com/croffle
 cd croffle
 
 # 2. Install dependencies
-npm install
+npm ci
 
 # 3. Build 'common' workspace to define types for development
 npm run build --workspace=@croffledev/croffle-common
@@ -81,9 +81,11 @@ npm run dev
 # (4. Alternatively, run renderer and main processes separately)
 # Terminal 1
 cd ./app/renderer
+npm ci
 npm run dev
 # Terminal 2
 cd ./app/main
+npm i
 npm run dev
 ```
 
