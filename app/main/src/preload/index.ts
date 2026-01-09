@@ -5,6 +5,7 @@ import { pluginInfoApi } from './api/pluginInfo.api';
 import { settingsApi } from './api/settings.api';
 import { scheduleApi } from './api/schedule.api';
 import { osApi } from './api/os.api';
+import { pluginStorageApi } from './api/pluginStorage.api';
 
 const electronAPI = {
   ...windowApi,
@@ -15,6 +16,12 @@ const electronAPI = {
   ...osApi,
 };
 
+const appApi = {
+  ...pluginStorageApi,
+};
+
 export type ElectronAPI = typeof electronAPI;
+export type AppAPI = typeof appApi;
 
 contextBridge.exposeInMainWorld('electronAPI', electronAPI);
+contextBridge.exposeInMainWorld('appApi', appApi);
