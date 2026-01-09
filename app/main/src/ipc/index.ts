@@ -4,6 +4,7 @@ import { registerTagIpcHandlers } from './tag.handler';
 import { registerPluginInfoIpcHandlers } from './pluginInfo.handler';
 import { registerSettingsIpcHandlers } from './settings.handler';
 import { registerOsIpcHandlers } from './os.service.handler';
+import { registerPluginStorageIpcHandlers } from './pluginStorage.handler';
 
 export function registerAllIpcHandlers() {
   // Window IPC Handlers
@@ -29,4 +30,7 @@ export function registerAllIpcHandlers() {
 
   // OS Service IPC Handlers
   registerOsIpcHandlers();
+  // -------- app common IPC Handlers --------
+  // Plugin Storage IPC Handlers
+  registerPluginStorageIpcHandlers();
 }
