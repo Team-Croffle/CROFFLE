@@ -10,7 +10,7 @@ export class OsService {
   }
 
   // 2. 클립보드
-  //  읽기
+  // 2-1) 읽기
   public async getClipboard(): Promise<string> {
     const test  = clipboard.readText();
     console.log(' main 클립보드 읽기 완료', test) // test line
@@ -18,7 +18,7 @@ export class OsService {
     // return clipboard.readText(); // real line
   }
 
-  // 3. 쓰기
+  // 2-2) 쓰기
   public async setClipboard(text: string): Promise<void> {
     clipboard.writeText(text);
   }
