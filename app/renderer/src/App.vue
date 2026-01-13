@@ -20,34 +20,34 @@
   <div class="flex h-screen flex-col overflow-hidden bg-[#FDFBF7] font-sans text-[#4A4A4A]">
     <!-- 커스텀 타이틀 바 -->
     <header
-      class="drag-region z-50 flex h-12 shrink-0 items-center justify-between border-b border-[#F0EAD6] bg-[#FDFBF7] px-4"
+      class="drag-region z-50 flex h-12 shrink-0 justify-between border-b border-[#F0EAD6] bg-[#FDFBF7]"
     >
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 pl-4">
         <div class="h-3 w-3 rounded-full bg-[#DCA780]"></div>
         <span class="text-xs font-bold text-[#4A4A4A]">Croffle</span>
       </div>
 
-      <div class="no-drag flex gap-1">
+      <div class="no-drag flex h-full">
         <button
-          @click="minimizeWindow"
-          class="flex h-7 w-7 items-center justify-center rounded text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-900"
+          class="flex h-full w-12 items-center justify-center text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-900"
           aria-label="Minimize window"
+          @click="minimizeWindow"
         >
           <Minus class="h-4 w-4" />
         </button>
 
         <button
-          @click="maximizeWindow"
-          class="flex h-7 w-7 items-center justify-center rounded text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-900"
+          class="flex h-full w-12 items-center justify-center text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-900"
           aria-label="Maximize window"
+          @click="maximizeWindow"
         >
           <Square class="h-3 w-3" />
         </button>
 
         <button
-          @click="closeWindow"
-          class="flex h-7 w-7 items-center justify-center rounded text-gray-500 transition-colors hover:bg-red-100 hover:text-red-600"
+          class="flex h-full w-12 items-center justify-center text-gray-500 transition-colors hover:bg-red-100 hover:text-red-600"
           aria-label="Close window"
+          @click="closeWindow"
         >
           <X class="h-4 w-4" />
         </button>
