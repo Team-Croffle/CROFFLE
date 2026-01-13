@@ -32,6 +32,9 @@ defineProps<{
 
 const emit = defineEmits(['click-add-schedule'])
 const { toggleSidebar, state } = useSidebar()
+
+// 전역 상수(__APP_VERSION__) 사용
+const appVersion = __APP_VERSION__
 </script>
 
 <template>
@@ -39,6 +42,7 @@ const { toggleSidebar, state } = useSidebar()
     
     <SidebarHeader class="p-4 pb-0">
       <div class="flex justify-between items-center mb-2 h-10">
+        
         <div class="space-y-1 text-left overflow-hidden group-data-[collapsible=icon]:hidden transition-all duration-300">
           <h2 class="text-lg font-bold text-[#8B5E3C] whitespace-nowrap">
             일정 관리
@@ -127,14 +131,19 @@ const { toggleSidebar, state } = useSidebar()
         
         <div class="text-center group-data-[collapsible=icon]:hidden">
             <h4 class="font-bold text-[#8B5E3C] text-xs tracking-wider">CROFFLE</h4>
-            <span class="text-[10px] text-[#A89F91]">v1.0.0</span>
+            <span class="text-[10px] text-[#A89F91]">v{{ appVersion }}</span>
         </div>
       </div>
     </SidebarFooter>
     
-    <button class="absolute bottom-4 right-4 w-6 h-6 bg-[#2C2C2C] text-white rounded-full flex items-center justify-center hover:bg-black transition-colors shadow-md z-10 
-                  group-data-[collapsible=icon]:right-1/2 group-data-[collapsible=icon]:translate-x-1/2">
+    <Button
+      variant="ghost"
+      size="icon"
+      class="absolute bottom-4 right-4 w-6 h-6 rounded-full bg-[#2C2C2C] text-white hover:bg-black shadow-md z-10 p-0
+            group-data-[collapsible=icon]:right-1/2 group-data-[collapsible=icon]:translate-x-1/2"
+    >
       <span class="text-xs font-bold">?</span>
-    </button>
+    </Button>
+
   </Sidebar>
 </template>
