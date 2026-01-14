@@ -7,20 +7,18 @@ import { scheduleApi } from './api/schedule.api';
 import { osApi } from './api/os.api';
 import { pluginStorageApi } from './api/pluginStorage.api';
 
-const baseAPI = {
-  windows: windowApi,
-  tags: tagApi,
-  schedules: scheduleApi,
-  pluginInfo: pluginInfoApi,
-  settings: settingsApi,
-  os: osApi,
+const croffleApi = {
+  base: {
+    windows: windowApi,
+    tags: tagApi,
+    schedules: scheduleApi,
+    pluginInfo: pluginInfoApi,
+    settings: settingsApi,
+    os: osApi,
+  },
+  app: {
+    storage: pluginStorageApi,
+  },
 };
 
-const appAPI = {
-  storage: pluginStorageApi,
-};
-
-contextBridge.exposeInMainWorld('croffle', {
-  base: baseAPI,
-  app: appAPI,
-});
+contextBridge.exposeInMainWorld('croffle', croffleApi);
