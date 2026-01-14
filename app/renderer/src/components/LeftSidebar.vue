@@ -24,10 +24,10 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
 
 <template>
   <Sidebar 
-  collapsible="icon" class="border-r border-neutral-000 !bg-neutral-000">
+  collapsible="icon" class="border-r">
     
     <SidebarHeader 
-      class="flex flex-col border-b border-neutral-000 relative transition-all duration-200"
+      class="flex flex-col border-b relative transition-all duration-200"
       :class="[isSidebarExpanded ? 'p-4' : 'p-4 items-center']"
     >
       <div 
@@ -96,7 +96,7 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
       </SidebarGroup>
     </SidebarContent>
 
-    <SidebarFooter class="border-t border-neutral-000 p-3 bg-neutral-000">
+    <SidebarFooter class="border-t p-3">
       <div 
         class="flex items-center justify-around gap-2" 
         :class="{ 'flex-col': !isSidebarExpanded }"
