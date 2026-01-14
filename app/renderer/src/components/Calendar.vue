@@ -56,10 +56,18 @@
       return info.date.getDate().toString();
     },
 
-    events: events.value, // pinia store의 events 사용
-    editable: true,
-    selectable: true,
     height: '100%',
+    expandRows: true,
+    fixedWeekCount: true,
+
+    dayMaxEvents: true, // 하루에 표시할 수 있는 최대 이벤트 수
+
+    // 이벤트 시간 숨기기
+    displayEventTime: false,
+
+    events: events.value, // pinia store의 events 사용
+    editable: true, // 이벤트 드래그 가능
+    selectable: true, // 날짜 선택 가능
     windowResizeDelay: 0,
     handleWindowResize: true,
 
@@ -212,11 +220,40 @@
   /* 이벤트 스타일 */
   :deep(.fc-event) {
     border: none;
-    border-radius: 4px;
+    border-radius: 10px;
     box-shadow: none;
-    padding: 3px 5px;
-    margin-top: 5px;
+    padding: 1px 4px;
+    margin-top: 1px !important;
+    margin-bottom: 1px !important;
     background-color: #2dc12f;
     color: #374151;
+
+    display: flex;
+    align-items: center;
+  }
+
+  /* 이벤트 제목 (긴 제목 처리) */
+  :deep(.fc-event-title) {
+    white-space: nowrap;
+    overflow: hidden; /* 넘치면 숨김 */
+    text-overflow: ellipsis; /* ... 으로 표시 */
+
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  /* 더보기 링크 (+2 more) 디자인 */
+  :deep(.fc-more-link) {
+    color: #999;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: block;
+    margin-top: 2px;
+    padding-left: 4px;
+  }
+
+  :deep(.fc-more-link:hover) {
+    color: #dca780;
   }
 </style>
