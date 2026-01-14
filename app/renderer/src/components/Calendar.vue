@@ -86,10 +86,12 @@
   .calendar-card {
     background-color: white;
     padding: 15px;
+    border: 1px solid #f0ead6;
     border-radius: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   }
 
+  /* FullCalendar 본체 */
   :deep(.fc) {
     height: 100%;
     width: 100%;
@@ -117,26 +119,37 @@
   /* 개별 버튼 디자인 */
   :deep(.fc-button) {
     background-color: transparent;
-    border: 1px solid #f0f0f0 !important;
-    color: #666;
+    border: 1px solid #f0ead6 !important;
+    color: #8d7b68;
     font-weight: 500;
     border-radius: 8px !important;
     margin: 0 !important;
     box-shadow: none !important;
     padding: 6px 12px;
+    transition: all 0.2s ease;
   }
 
   :deep(.fc-button:hover) {
-    background-color: #fafafa;
-    color: #333;
+    background-color: #fff8f0;
+    color: #5c4b43;
+    border-color: #dca780 !important;
+  }
+
+  :deep(.fc-button:disabled) {
+    background-color: #e5e5e5 !important;
+    border-color: #e5e5e5 !important;
+    color: #a3a3a3 !important;
+    opacity: 1 !important;
+    cursor: not-allowed;
   }
 
   /* '오늘' 버튼 등 활성 상태 */
   :deep(.fc-button-primary:not(:disabled).fc-button-active),
   :deep(.fc-button-primary:not(:disabled):active) {
-    background-color: #fff8f0 !important;
+    background-color: #fdfbf7 !important;
     color: #dca780 !important;
     border-color: #dca780 !important;
+    box-shadow: inset 0 0 0 1px #dca780 !important;
   }
 
   /* 요일 헤더*/
