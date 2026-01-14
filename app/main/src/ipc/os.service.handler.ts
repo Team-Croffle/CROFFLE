@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import { osService } from '../services/OSService';
+import { osService } from '../core/native-os/service/OSService';
 
 export const registerOsIpcHandlers = (): void => {
   // 1. 알림 보내기 (받기만 하고 끝남)
