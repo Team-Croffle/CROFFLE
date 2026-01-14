@@ -40,17 +40,17 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
         
         <div v-if="isSidebarExpanded" class="flex flex-col gap-0.5">
           <span class="text-xs font-bold leading-none text-yellow-600">CROFFLE</span>
-          <span class="text-[10px] leading-none text-gray-400">할일 달력</span>
+          <span class="text-[10px] leading-none text-muted-foreground">할일 달력</span>
         </div>
 
         <SidebarTrigger 
-          class="text-gray-400 !bg-transparent !border-none !shadow-none !ring-0 !ring-offset-0 !outline-none focus:!ring-0 focus-visible:!ring-0 focus-visible:!ring-offset-0"
+          class="text-muted-foreground !bg-transparent !border-none !shadow-none !ring-0 !ring-offset-0 !outline-none focus:!ring-0 focus-visible:!ring-0 focus-visible:!ring-offset-0"
           :class="[isSidebarExpanded ? 'absolute top-3 right-3' : 'relative mt-3']" 
         />
       </div>
     </SidebarHeader>
 
-    <div v-if="isSidebarExpanded" class="pl-4 pr-0 pt-3 pb-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider text-left w-full">
+    <div v-if="isSidebarExpanded" class="pl-4 pr-0 pt-3 pb-2 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider text-left w-full">
       메인 메뉴
     </div>
 
@@ -76,7 +76,7 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
                 >
                   <component 
                     :is="item.icon" 
-                    class="w-5 h-5 shrink-0 text-gray-500" 
+                    class="w-5 h-5 shrink-0 text-muted-foreground" 
                     :class="{ '!text-white': item.active }" 
                   />
                   
@@ -84,7 +84,7 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
                     <span class="text-sm font-medium leading-tight text-gray-800" :class="{ '!text-white': item.active }">
                       {{ item.title }}
                     </span>
-                    <span class="text-[11px] leading-none text-gray-400" :class="{ '!text-white/80': item.active }">
+                    <span class="text-[11px] leading-none text-muted-foreground" :class="{ '!text-white/80': item.active }">
                       {{ item.subtitle }}
                     </span>
                   </div>
@@ -106,7 +106,7 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
           class="flex h-9 w-9 items-center justify-center aspect-square transition-colors !bg-transparent hover:!bg-gray-100 !border-none !shadow-none !ring-0 !ring-offset-0 !outline-none focus:!ring-0 focus-visible:!ring-0 [--sidebar-accent:transparent]"
           tooltip="알림"
         >
-          <Bell class="w-5 h-5 text-gray-500" />
+          <Bell class="w-5 h-5 text-muted-foreground" />
         </SidebarMenuButton>
         
         <SidebarMenuButton 
@@ -114,7 +114,7 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
           class="flex h-9 w-9 items-center justify-center aspect-square transition-colors !bg-transparent hover:!bg-gray-100 !border-none !shadow-none !ring-0 !ring-offset-0 !outline-none focus:!ring-0 focus-visible:!ring-0 [--sidebar-accent:transparent]"
           tooltip="설정"
         >
-          <Settings class="w-5 h-5 text-gray-500" />
+          <Settings class="w-5 h-5 text-muted-foreground" />
         </SidebarMenuButton>
         
         <SidebarMenuButton 
@@ -122,7 +122,7 @@ const menuItems = computed(() => DEFAULT_MENU_ITEMS);
           class="flex h-9 w-9 items-center justify-center aspect-square transition-colors !bg-transparent hover:!bg-gray-100 !border-none !shadow-none !ring-0 !ring-offset-0 !outline-none focus:!ring-0 focus-visible:!ring-0 [--sidebar-accent:transparent]"
           tooltip="도움말"
         >
-          <CircleHelp class="w-5 h-5 text-gray-500" />
+          <CircleHelp class="w-5 h-5 text-muted-foreground" />
         </SidebarMenuButton>
       </div>
     </SidebarFooter>
