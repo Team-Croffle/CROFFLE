@@ -4,6 +4,7 @@ import { registerTagIpcHandlers } from './tag.handler';
 import { registerPluginInfoIpcHandlers } from './pluginInfo.handler';
 import { registerSettingsIpcHandlers } from './settings.handler';
 import { registerOsIpcHandlers } from './os.service.handler';
+import { registerHttpIpcHandlers } from './http.handler';
 
 export function registerAllIpcHandlers() {
   // Window IPC Handlers
@@ -27,6 +28,11 @@ export function registerAllIpcHandlers() {
 
   // Schdule Import/Export IPC Handlers
 
+<<<<<<< HEAD
   // OS Service IPC Handlers
   registerOsIpcHandlers();
+=======
+  // HTTP IPC Handlers
+  registerHttpIpcHandlers();
+>>>>>>> be3b8e4 (Feat: HTTP 통신 API 구현)
 }

@@ -5,6 +5,7 @@ import { pluginInfoApi } from './api/pluginInfo.api';
 import { settingsApi } from './api/settings.api';
 import { scheduleApi } from './api/schedule.api';
 import { osApi } from './api/os.api';
+import { httpApi } from './api/http.api';
 
 const electronAPI = {
   ...windowApi,
@@ -13,6 +14,7 @@ const electronAPI = {
   ...settingsApi,
   ...scheduleApi,
   ...osApi,
+  ...httpApi,
 };
 
 export type ElectronAPI = typeof electronAPI;
