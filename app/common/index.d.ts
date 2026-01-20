@@ -115,6 +115,12 @@ declare module 'croffle' {
     value: Buffer;
   }
 
+  export interface Response<T = unknown> {
+    ok: boolean;
+    status: number;
+    data: T | null;
+  }
+
   export namespace windows {
     export function minimize(): Promise<void>;
     export function maximize(): Promise<void>;
