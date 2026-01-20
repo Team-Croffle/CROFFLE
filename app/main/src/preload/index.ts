@@ -5,6 +5,7 @@ import { pluginInfoApi } from './api/pluginInfo.api';
 import { settingsApi } from './api/settings.api';
 import { scheduleApi } from './api/schedule.api';
 import { osApi } from './api/os.api';
+import { httpApi } from './api/http.api';
 import { pluginStorageApi } from './api/pluginStorage.api';
 
 const croffleApi = {
@@ -15,6 +16,7 @@ const croffleApi = {
     pluginInfo: pluginInfoApi,
     settings: settingsApi,
     os: osApi,
+    http: httpApi,
   },
   app: {
     storage: pluginStorageApi,
