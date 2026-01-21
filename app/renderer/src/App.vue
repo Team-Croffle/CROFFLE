@@ -19,8 +19,8 @@
 <template>
   <div class="flex h-screen flex-col overflow-hidden bg-[#FDFBF7] font-sans text-[#4A4A4A]">
     <!-- 커스텀 타이틀 바 -->
-    <header
-      class="drag-region z-50 flex h-12 shrink-0 justify-between border-b border-[#F0EAD6] bg-[#FDFBF7]"
+    <div
+      class="drag-region z-50 flex h-8 shrink-0 justify-between border-b border-[#F0EAD6] bg-[#FDFBF7]"
     >
       <div class="flex items-center gap-2 pl-4">
         <div class="h-3 w-3 rounded-full bg-[#DCA780]"></div>
@@ -45,19 +45,19 @@
         </button>
 
         <button
-          class="flex h-full w-12 items-center justify-center text-gray-500 transition-colors hover:bg-red-100 hover:text-red-600"
+          class="flex h-full w-12 items-center justify-center text-gray-500 transition-colors hover:bg-red-600 hover:text-red-100"
           aria-label="Close window"
           @click="closeWindow"
         >
           <X class="h-4 w-4" />
         </button>
       </div>
-    </header>
+    </div>
 
     <!-- 메인 콘텐츠 영역 -->
     <div class="relative min-h-0 flex-1">
       <!-- 사이드바 및 캘린더 -->
-      <SidebarProvider class="h-full !min-h-full w-full">
+      <SidebarProvider class="h-full min-h-full w-full">
         <SidebarInset class="flex h-full flex-col bg-[#FDFBF7]">
           <!-- 캘린더 영역 -->
           <div class="flex-1 overflow-hidden p-4">
