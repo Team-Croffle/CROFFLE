@@ -79,7 +79,7 @@ class WindowService {
     try {
       const iconPath = app.isPackaged
         ? path.join(process.resourcesPath, 'icons/Logo2OnlyNoBorderIcon.png')
-        : path.join(__dirname, '../../../../../../icons/Logo2OnlyNoBorderIcon.png');
+        : path.join(app.getAppPath(), 'icons/Logo2OnlyNoBorderIcon.png');
 
       const icon = nativeImage.createFromPath(iconPath);
       if (icon.isEmpty()) {
