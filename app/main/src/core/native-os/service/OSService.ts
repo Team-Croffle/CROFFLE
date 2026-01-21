@@ -8,18 +8,27 @@ export type ClipboardResult = //클립보드 반환 타입 선언: 텍스트, �
 
 export class OsService {
   
-  // 1. 알림
-  public async showNotification(title: string, body: string): Promise<void> {
+public async showNotification(title?: string, body?: string): Promise<void> {
   try {
     if (!Notification.isSupported()) {
       console.warn('OS/ Notification 지원 X');
-      return; // 예외 내부 처리
+      return;
     }
 
-    new Notification({ title, body }).show();
-  } 
-  catch (error) {
-    console.error('OS/ 알림 Content 실패: ', error);
+    const Title = title?.trim();
+    const Body = body?.trim();
+
+    if (!Title && !Body) {
+      console.warn('OS/ Notification 내용 없음');
+      return;
+    }
+
+    new Notification({
+      title: Title || '알림',
+      body: Body || '',
+    }).show();
+  } catch (error) {
+    console.error('OS/ 알림 Content 실패:', error);
   }
 }
 
