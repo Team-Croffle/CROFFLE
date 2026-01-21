@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -76,6 +76,24 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  /* ---Croffle Design--- */
+  /* 배경 및 사이드바 */
+  --croffle-bg: oklch(0.987 0.007 83.6);
+  --croffle-sidebar: oklch(0.965 0.012 83.6);
+  /* 포인트 */
+  --croffle-primary: oklch(0.785 0.104 69.8);
+  /* 텍스트 */
+  --croffle-text: oklch(0.603 0.057 69.8);
+  /* 테두리 */
+  --croffle-border: oklch(0.941 0.024 93.6);
+  /* 기능성 색상 - 주말 및 상태 표시용 */
+  --croffle-red: oklch(0.64 0.22 26.6);
+  --croffle-blue: oklch(0.68 0.16 255);
+  --croffle-green: oklch(0.69 0.18 145);
+
+  /* 중립 색상 - 비활성화 및 보조 텍스트 */
+  --croffle-muted: oklch(0.7 0.02 83.6); /* 보조 텍스트 */
+  --croffle-disabled: oklch(0.92 0.01 83.6); /* 비활성 버튼 */
 }
 
 .dark {
