@@ -1,28 +1,34 @@
 import { ipcMain } from 'electron';
 import { osService } from '../core/native-os/service/OSService';
+import type { ClipboardResult } from '../core/native-os/service/OSService'; // export 필요
 
 export const registerOsIpcHandlers = (): void => {
-  // 1. 알림 보내기 (받기만 하고 끝남)
-  ipcMain.handle('os:showNotification', async (_, title: string, body: string): Promise<void> => {
-    await osService.showNotification(title, body);
-  });
+  // 1. 알림
+  ipcMain.handle(
+    'os:showNotification',
+    async (_, title: string, body: string): Promise<void> => {
+      osService.showNotification(title, body);
+    }
+  );
 
-  // 2. 클립보드 
-  // 2-1) 읽기
-  ipcMain.handle('os:getClipboard', async (): Promise<string> => {  
-    const text = await osService.getClipboard();
-    return text;
-  });
+  // 2. 클립보드 읽기
+  ipcMain.handle(
+    'os:getClipboard',
+    (): ClipboardResult => {
+      return osService.getClipboard();
+    }
+  );
 
-  // 2-2) 클립보드 쓰기
-  ipcMain.handle('os:setClipboard', async (_, text: string): Promise<void> => {
-    await osService.setClipboard(text);
-  });
+  // 3. 클립보드 쓰기
+  ipcMain.handle(
+    'os:setClipboard',
+    (
+      _,
+      data:
+        | { type: 'text'; value: string }
+        | { type: 'image'; value: Buffer }
+    ): void => {
+      osService.setClipboard(data);
+    }
+  );
 };
-
-
-export interface OsApi {
-  showNotification(title: string, body: string): Promise<void>;
-  getClipboard(): Promise<string>;
-  setClipboard(text: string): Promise<void>;
-}
