@@ -6,8 +6,7 @@ export const windowApi = {
   minimize: () => ipcRenderer.invoke('window:minimize'),
   maximize: () => ipcRenderer.invoke('window:maximize'),
   close: () => ipcRenderer.invoke('window:close'),
-
-  minimizeToTray: () => ipcRenderer.invoke('window:minimizeToTray'),
   exitApp: () => ipcRenderer.invoke('window:exitApp'),
   checkForUpdates: () => ipcRenderer.invoke('window:checkForUpdates'),
+  setCloseToTrayMode: (enabled: boolean) => ipcRenderer.invoke('window:setCloseToTrayMode', enabled),
 } satisfies WindowAPI;

@@ -1,47 +1,65 @@
-import { BrowserWindow, ipcMain } from 'electron';
+import { BrowserWindow, ipcMain, IpcMainInvokeEvent } from 'electron';
 import { windowService } from '../core/window/service/WindowService';
+
+const validateSender = (event: IpcMainInvokeEvent): BrowserWindow => {
+  const window = BrowserWindow.fromWebContents(event.sender);
+  const frameUrl = event.senderFrame?.url || '';
+
+  if (!window) {
+    throw new Error('[Security] Request from unknown window.');
+  }
+
+  const isSafeOrigin =
+    frameUrl?.startsWith('file://') || frameUrl === '' || /^http:\/\/localhost:\d+/.test(frameUrl);
+
+  if (!isSafeOrigin) {
+    console.error(`[Security] Blocked IPC from unauthorized origin: ${frameUrl}`);
+    throw new Error('Unauthorized IPC sender');
+  }
+  return window;
+};
 
 export function registerWindowIpcHandlers() {
   ipcMain.handle('window:minimize', (event) => {
-    const window = BrowserWindow.fromWebContents(event.sender);
-    if (window) window.minimize();
+    const window = validateSender(event);
+    window.minimize();
   });
 
   ipcMain.handle('window:maximize', (event) => {
-    const window = BrowserWindow.fromWebContents(event.sender);
-    if (window) {
-      if (window.isMaximized()) {
-        window.unmaximize();
-      } else {
-        window.maximize();
-      }
+    const window = validateSender(event);
+    if (window.isMaximized()) {
+      window.unmaximize();
+    } else {
+      window.maximize();
     }
   });
 
   ipcMain.handle('window:close', (event) => {
-    const window = BrowserWindow.fromWebContents(event.sender);
-    if (window) window.close();
+    const window = validateSender(event);
+    window.close();
   });
 
-  ipcMain.handle('window:minimizeToTray', (event) => {
-    const window = BrowserWindow.fromWebContents(event.sender);
-    if (window) window.hide();
-  });
-
-  ipcMain.handle('window:exitApp', () => {
+  ipcMain.handle('window:exitApp', (event) => {
+    validateSender(event);
     windowService.exitApp();
   });
 
-  ipcMain.handle('window:checkForUpdates', () => {
-    windowService.checkForUpdates();
+  ipcMain.handle('window:checkForUpdates', async (event) => {
+    validateSender(event);
+    await windowService.checkForUpdates();
+  });
+
+  ipcMain.handle('window:setCloseToTrayMode', (event, enabled: boolean) => {
+    validateSender(event);
+    windowService.setCloseToTrayMode(enabled);
   });
 }
 
 export interface WindowAPI {
-  minimize: () => void;
-  maximize: () => void;
-  close: () => void;
-  minimizeToTray: () => void;
-  exitApp: () => void;
-  checkForUpdates: () => void;
+  minimize: () => Promise<void>;
+  maximize: () => Promise<void>;
+  close: () => Promise<void>;
+  exitApp: () => Promise<void>;
+  checkForUpdates: () => Promise<void>;
+  setCloseToTrayMode: (enabled: boolean) => Promise<void>;
 }
