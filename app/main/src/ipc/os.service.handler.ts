@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { osService } from '../core/native-os/service/nativeOsService';
-import type { ClipboardResult } from '../core/native-os/service/nativeOsService';
+import type { ClipboardResult } from 'croffle';
 
 export const registerOsIpcHandlers = (): void => {
   // 1. 알림
