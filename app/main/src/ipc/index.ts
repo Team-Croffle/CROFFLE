@@ -3,6 +3,7 @@ import { registerScheduleIpcHandlers } from './schedule.handler';
 import { registerTagIpcHandlers } from './tag.handler';
 import { registerPluginInfoIpcHandlers } from './pluginInfo.handler';
 import { registerSettingsIpcHandlers } from './settings.handler';
+import { registerHttpIpcHandlers } from './http.handler';
 
 export function registerAllIpcHandlers() {
   // Window IPC Handlers
@@ -25,4 +26,7 @@ export function registerAllIpcHandlers() {
   registerSettingsIpcHandlers();
 
   // Schdule Import/Export IPC Handlers
+
+  // HTTP IPC Handlers
+  registerHttpIpcHandlers();
 }
