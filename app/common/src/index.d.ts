@@ -93,6 +93,28 @@ declare module 'croffle' {
     };
   }
 
+  export enum ClipboardDataType {
+    TEXT = 'text',
+    IMAGE = 'image',
+    EMPTY = 'empty',
+    ERROR = 'error',
+  }
+
+  export interface ClipboardResult {
+    type: ClipboardDataType;
+    value: string | Buffer | null;
+  }
+
+  export interface ClipboardTextData {
+    type: ClipboardDataType.TEXT;
+    value: string;
+  }
+
+  export interface ClipboardImageData {
+    type: ClipboardDataType.IMAGE;
+    value: Buffer;
+  }
+
   export namespace windows {
     export function minimize(): Promise<void>;
     export function maximize(): Promise<void>;
@@ -137,12 +159,19 @@ declare module 'croffle' {
     export function set(pluginId: string, key: string, value: string): Promise<void>;
   }
 
+  export namespace os {
+    export function showNotification(title: string, body: string): Promise<void>;
+    export function getClipboard(): Promise<ClipboardResult>;
+    export function setClipboard(data: ClipboardTextData | ClipboardImageData): Promise<void>;
+  }
+
   export const base: {
     windows: typeof windows;
     tags: typeof tags;
     schedules: typeof schedules;
     pluginInfo: typeof pluginInfo;
     settings: typeof settings;
+    os: typeof os;
   };
 
   export const app: {
