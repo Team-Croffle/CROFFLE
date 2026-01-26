@@ -1,10 +1,5 @@
+import { ClipboardDataType, ClipboardResult } from 'croffle';
 import { Notification, clipboard, nativeImage } from 'electron';
-
-export type ClipboardResult = //클립보드 반환 타입 선언: 텍스트, 이미지, 공백, 에러(실패)
-  | { type: 'text'; value: string }
-  | { type: 'image'; value: Buffer }
-  | { type: 'empty' }
-  | { type: 'error' };
 
 export class OsService {
   public showNotification(title?: string, body?: string): void {
@@ -43,7 +38,7 @@ export class OsService {
       if (formats.includes('text/plain')) {
         const text = clipboard.readText();
         if (text.length > 0) {
-          return { type: 'text', value: text };
+          return { type: ClipboardDataType.TEXT, value: text };
         }
       }
 
@@ -51,17 +46,17 @@ export class OsService {
         const image = clipboard.readImage();
         if (!image.isEmpty()) {
           return {
-            type: 'image',
+            type: ClipboardDataType.IMAGE,
             value: image.toPNG(),
           };
         }
       }
 
-      return { type: 'empty' };
+      return { type: ClipboardDataType.EMPTY, value: null };
     } catch (error) {
       // 향후 협업 Point
       console.error('OS/ Read Clipboard :', error);
-      return { type: 'error' };
+      return { type: ClipboardDataType.ERROR, value: null };
     }
   }
 

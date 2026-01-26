@@ -1,4 +1,4 @@
-import { PluginInfo } from '@croffledev/croffle-common';
+import type { PluginInfo } from 'croffle';
 
 /**
  * Validates the plugin data before installation.

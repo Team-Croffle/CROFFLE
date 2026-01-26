@@ -1,15 +1,14 @@
 import { ipcRenderer } from 'electron';
-import type { ClipboardResult } from '../../core/native-os/service/nativeOsService';
+import { ClipboardImageData, ClipboardResult, ClipboardTextData, os } from 'croffle';
+
+type OsApi = typeof os;
 
 export const osApi = {
-  os: {
-    showNotification: (title: string, body: string): Promise<void> =>
-      ipcRenderer.invoke('os:showNotification', title, body),
+  showNotification: (title: string, body: string): Promise<void> =>
+    ipcRenderer.invoke('os:showNotification', title, body),
 
-    getClipboard: (): Promise<ClipboardResult> => ipcRenderer.invoke('os:getClipboard'),
+  getClipboard: (): Promise<ClipboardResult> => ipcRenderer.invoke('os:getClipboard'),
 
-    setClipboard: (
-      data: { type: 'text'; value: string } | { type: 'image'; value: Buffer }
-    ): Promise<void> => ipcRenderer.invoke('os:setClipboard', data),
-  },
-};
+  setClipboard: (data: ClipboardTextData | ClipboardImageData): Promise<void> =>
+    ipcRenderer.invoke('os:setClipboard', data),
+} satisfies OsApi;
