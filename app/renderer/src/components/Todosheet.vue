@@ -126,11 +126,11 @@ const handleDelete = () => {
 
 <template>
   <Sheet :open="open" @update:open="(val) => emit('update:open', val)">
-    <SheetContent side="left" class="w-[440px] p-0 flex flex-col gap-0 z-[50] !bg-[var(--croffle-bg)] !border-r !border-[var(--croffle-border)]">
+    <SheetContent side="left" class="w-[440px] p-0 flex flex-col gap-0 z-50 bg-(--croffle-bg)! border-r! border-(--croffle-border)!">
       
-      <SheetHeader class="px-6 py-4 !border-b !border-[var(--croffle-border)] !bg-[var(--croffle-sidebar)] flex-shrink-0">
+      <SheetHeader class="px-6 py-4 border-b! border-(--croffle-border)! bg-(--croffle-sidebar)! shrink-0">
         <div class="flex items-center justify-between">
-          <SheetTitle class="text-xl text-[var(--croffle-text-dark)] font-bold">
+          <SheetTitle class="text-xl text-(--croffle-text-dark) font-bold">
             {{ editTodo ? '일정 수정' : '새 일정 추가' }}
           </SheetTitle>
         </div>
@@ -141,30 +141,30 @@ const handleDelete = () => {
         <div class="px-6 py-6 space-y-6">
           
           <div class="space-y-2"> <!-- 이부분 추후 chadcn textarea로 변경 해야함 -->
-            <Label for="title" class="text-sm font-medium text-[var(--croffle-text-dark)]">
+            <Label for="title" class="text-sm font-medium text-(--croffle-text-dark)">
               제목 <span class="text-red-400">*</span>
             </Label>
             <Input 
               id="title" 
               v-model="title" 
               placeholder="일정 제목을 입력하세요" 
-              class="h-11 bg-white !border-[var(--croffle-border)] focus-visible:!ring-[var(--croffle-primary)]" 
+              class="h-11 bg-white border-(--croffle-border)! focus-visible:ring-(--croffle-primary)!" 
             />
           </div>
 
           <div class="space-y-2"> <!-- 이부분도 추후 chadcn scroll-area로 변경 해야함 -->
-            <Label for="description" class="text-sm font-medium text-[var(--croffle-text-dark)]">설명</Label>
+            <Label for="description" class="text-sm font-medium text-(--croffle-text-dark)">설명</Label>
             <textarea 
               id="description" 
               v-model="description" 
               placeholder="일정에 대한 자세한 설명을 입력하세요 (선택사항)" 
               rows="4" 
-              class="flex w-full rounded-md border px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 resize-none bg-white !border-[var(--croffle-border)] focus-visible:!ring-[var(--croffle-primary)]" 
+              class="flex w-full rounded-md border px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 resize-none bg-white border-(--croffle-border)!" 
             ></textarea>
           </div>
 
           <div class="space-y-2 flex flex-col">
-            <Label class="text-sm font-medium text-[var(--croffle-text-dark)]">
+            <Label class="text-sm font-medium text-(--croffle-text-dark)">
               날짜 <span class="text-red-400">*</span>
             </Label>
             
@@ -173,20 +173,20 @@ const handleDelete = () => {
                 <Button
                   variant="outline"
                   :class="cn(
-                    'w-full justify-between text-left font-normal h-11 bg-white !border-[var(--croffle-border)] hover:!bg-[var(--croffle-sidebar)]', 
+                    'w-full justify-between text-left font-normal h-11 bg-white border-(--croffle-border)! hover:bg-(--croffle-sidebar)!', 
                     !date && 'text-muted-foreground'
                   )"
                 >
-                  <span class="text-[var(--croffle-text-dark)]">{{ formatCalendarDate(date) }}</span>
-                  <ChevronDown class="ml-2 h-4 w-4 opacity-50 text-[var(--croffle-text)]" />
+                  <span class="text-(--croffle-text-dark)">{{ formatCalendarDate(date) }}</span>
+                  <ChevronDown class="ml-2 h-4 w-4 opacity-50 text-(--croffle-text)" />
                 </Button>
               </PopoverTrigger>
               
-              <PopoverContent class="w-auto p-0 !z-[100] bg-white !border-[var(--croffle-border)]">
+              <PopoverContent class="w-auto p-0 z-100! bg-white border-(--croffle-border)!">
                 <Calendar
                   v-model="date"
                   mode="single"
-                  class="rounded-md !border-0" 
+                  class="rounded-md border-0!" 
                   @update:model-value="isCalendarOpen = false"
                 />
               </PopoverContent>
@@ -194,7 +194,7 @@ const handleDelete = () => {
           </div>
 
           <div class="space-y-2">
-            <Label class="text-sm font-medium text-[var(--croffle-text-dark)]">우선순위</Label>
+            <Label class="text-sm font-medium text-(--croffle-text-dark)">우선순위</Label>
             <div class="grid grid-cols-3 gap-2">
               <button
                 v-for="option in priorityOptions"
@@ -204,8 +204,8 @@ const handleDelete = () => {
                 class="p-3 rounded-lg border transition-all flex flex-col items-center gap-1 cursor-pointer"
                 :class="[
                   priority === option.value 
-                    ? `${option.color} ring-1 ring-offset-1 !ring-[var(--croffle-border)] shadow-sm` 
-                    : '!border-[var(--croffle-border)] bg-white hover:!bg-[var(--croffle-sidebar)] text-[var(--croffle-text)]'
+                    ? `${option.color} ring-1 ring-offset-1 ring-(--croffle-border)! shadow-sm` 
+                    : 'border-(--croffle-border)! bg-white hover:bg-(--croffle-sidebar)! text-(--croffle-text)'
                 ]"
               >
                 <span class="text-xl">{{ option.emoji }}</span>
@@ -217,7 +217,7 @@ const handleDelete = () => {
         </div>
       </div>
 
-      <div class="px-6 py-4 !border-t !border-[var(--croffle-border)] !bg-[var(--croffle-sidebar)] flex-shrink-0">
+      <div class="px-6 py-4 border-t! border-(--croffle-border)! bg-(--croffle-sidebar)! shrink-0">
         <div class="flex gap-2">
           <Button 
             v-if="editTodo" 
@@ -231,7 +231,7 @@ const handleDelete = () => {
           <Button 
             variant="outline" 
             @click="emit('update:open', false)" 
-            class="flex-1 bg-white !border-[var(--croffle-border)] text-[var(--croffle-text-dark)] hover:!bg-[var(--croffle-bg)]"
+            class="flex-1 bg-white border-(--croffle-border)! text-(--croffle-text-dark) hover:bg-(--croffle-bg)!"
           >
             <X class="h-4 w-4 mr-2" /> 닫기
           </Button>
@@ -239,7 +239,7 @@ const handleDelete = () => {
           <Button 
             @click="handleSave" 
             :disabled="!title.trim() || !date" 
-            class="flex-1 !bg-[var(--croffle-primary)] hover:!bg-[var(--croffle-primary-hover)] text-white"
+            class="flex-1 bg-(--croffle-primary)! hover:bg-(--croffle-primary-hover)! text-white"
           >
             <Save class="h-4 w-4 mr-2" /> {{ editTodo ? '수정' : '추가' }}
           </Button>
