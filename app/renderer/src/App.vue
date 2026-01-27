@@ -3,6 +3,7 @@
   import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
   import { Toaster } from '@/components/ui/sonner';
   import { Minus, Square, X } from 'lucide-vue-next';
+  import LeftSidebar from './components/LeftSidebar.vue';
 
   // Electron 윈도우 제어
   const minimizeWindow = async () => {
@@ -58,6 +59,7 @@
     <div class="relative min-h-0 flex-1">
       <!-- 사이드바 및 캘린더 -->
       <SidebarProvider class="h-full min-h-full w-full">
+        <LeftSidebar />
         <SidebarInset class="flex h-full flex-col bg-[#FDFBF7]">
           <!-- 캘린더 영역 -->
           <div class="flex-1 overflow-hidden p-4">
