@@ -4,12 +4,13 @@
   import interactionPlugin from '@fullcalendar/interaction';
   import { useCalendarStore } from '@/stores/calendarStore';
   import { storeToRefs } from 'pinia';
-  import { reactive, ref } from 'vue';
+  import { onMounted, reactive, ref } from 'vue';
   import type { CalendarOptions } from '@fullcalendar/core';
   import ContextMenu from './ui/context-menu/ContextMenu.vue';
   import ContextMenuTrigger from './ui/context-menu/ContextMenuTrigger.vue';
   import ContextMenuContent from './ui/context-menu/ContextMenuContent.vue';
   import ContextMenuItem from './ui/context-menu/ContextMenuItem.vue';
+  import { onBeforeUnmount } from 'vue';
 
   // pinia store 연결
   const store = useCalendarStore();
@@ -17,6 +18,26 @@
 
   // 날짜 위치 저장 변수(우클릭 시 컨텍스트 메뉴 위치 지정용)
   const selectedDate = ref<string | null>(null);
+
+  // 캘린더 화면 조정 메서드
+  const fullCalendarRef = ref<InstanceType<typeof FullCalendar> | null>(null);
+  const calendarContainerRef = ref<HTMLElement | null>(null);
+  let resizeObserver: ResizeObserver | null = null;
+
+  // 컨테이너 크기 변경 감지 및 캘린더 크기 조정
+  onMounted(() => {
+    if (calendarContainerRef.value && fullCalendarRef.value) {
+      resizeObserver = new ResizeObserver(() => {
+        requestAnimationFrame(() => fullCalendarRef.value?.getApi().updateSize());
+      });
+      resizeObserver.observe(calendarContainerRef.value);
+    }
+  });
+
+  // 메모리 정리
+  onBeforeUnmount(() => {
+    resizeObserver?.disconnect();
+  });
 
   // 우클릭 핸들러
   const handleContextMenu = (e: MouseEvent) => {
@@ -69,7 +90,7 @@
     editable: true, // 이벤트 드래그 가능
     selectable: true, // 날짜 선택 가능
     windowResizeDelay: 0,
-    handleWindowResize: true,
+    handleWindowResize: false, // 수동으로 크기 조정 처리
 
     locale: 'ko', // 한국어 설정
   });
@@ -78,8 +99,16 @@
 <template>
   <ContextMenu class="h-full">
     <ContextMenuTrigger class="block h-full w-full">
-      <div class="calendar-card flex h-full flex-col" @contextmenu="handleContextMenu">
-        <FullCalendar :options="calendarOptions" class="h-full w-full flex-1" />
+      <div
+        ref="calendarContainerRef"
+        class="calendar-card flex h-full flex-col"
+        @contextmenu="handleContextMenu"
+      >
+        <FullCalendar
+          ref="fullCalendarRef"
+          :options="calendarOptions"
+          class="h-full w-full flex-1"
+        />
       </div>
     </ContextMenuTrigger>
     <ContextMenuContent>
