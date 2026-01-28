@@ -4,8 +4,9 @@ import type { ClipboardResult } from '../core/native-os/service/nativeOsService'
 
 export const registerOsIpcHandlers = (): void => {
   // 1. 알림
-  ipcMain.handle('os:showNotification', (_, title: string, body: string): void => {
+  ipcMain.handle('os:showNotification', (_, title, body) => {
     osService.showNotification(title, body);
+    return;
   });
 
   // 2. 클립보드 읽기
