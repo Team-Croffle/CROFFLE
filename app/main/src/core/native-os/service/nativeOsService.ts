@@ -29,6 +29,7 @@ export class OsService {
         body: Body || '',
       }).show();
     } catch (error) {
+      // 향후 협업 Point
       console.error('OS/ Notification:', error);
     }
   }
@@ -58,6 +59,7 @@ export class OsService {
 
       return { type: 'empty' };
     } catch (error) {
+      // 향후 협업 Point
       console.error('OS/ Read Clipboard :', error);
       return { type: 'error' };
     }
@@ -78,6 +80,7 @@ export class OsService {
         clipboard.writeImage(image);
       }
     } catch (error) {
+      // 향후 협업 Point
       console.error('OS/ Write Clipboard:', error);
     }
   }
