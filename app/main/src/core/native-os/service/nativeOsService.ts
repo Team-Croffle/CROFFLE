@@ -10,6 +10,7 @@ export class OsService {
   public showNotification(title?: string, body?: string): void {
     try {
       if (!Notification.isSupported()) {
+        // 향후 협업 Point
         console.warn('OS/ Notification not supported X');
         return;
       }
@@ -18,6 +19,7 @@ export class OsService {
       const Body = body?.trim();
 
       if (!Title && !Body) {
+        // 향후 협업 Point
         console.warn('OS/ Notification content X');
         return;
       }
@@ -49,7 +51,7 @@ export class OsService {
         if (!image.isEmpty()) {
           return {
             type: 'image',
-            value: image.toPNG(), // Buffer (IPC-safe)
+            value: image.toPNG(),
           };
         }
       }
