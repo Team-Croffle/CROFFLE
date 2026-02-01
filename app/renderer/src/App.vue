@@ -24,7 +24,6 @@
       class="drag-region z-50 flex h-8 shrink-0 justify-between border-b border-[#F0EAD6] bg-[#FDFBF7]"
     >
       <div class="flex items-center gap-2 pl-4">
-        <div class="h-3 w-3 rounded-full bg-[#DCA780]"></div>
         <span class="text-xs font-bold text-[#4A4A4A]">Croffle</span>
       </div>
 
