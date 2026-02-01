@@ -4,6 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --font-sans: 'Pretendard', sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -163,6 +164,28 @@
   /* 중립 색상 - 비활성화 및 보조 텍스트 */
   --croffle-muted: oklch(0.7 0.02 83.6); /* 보조 텍스트 */
   --croffle-disabled: oklch(0.92 0.01 83.6); /* 비활성 버튼 */
+}
+
+/* 기본(Regular) 폰트 정의 */
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 400;
+  font-style: normal;
+  src:
+    url('/fonts/woff2/Pretendard-Regular.woff2') format('woff2'),
+    url('/fonts/woffPretendard-Regular.woff') format('woff');
+  font-display: swap;
+}
+
+/* 굵은(Bold) 폰트 정의 */
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 700;
+  font-style: normal;
+  src:
+    url('/fonts/woff2/Pretendard-Bold.woff2') format('woff2'),
+    url('/fonts/woff/Pretendard-Bold.woff') format('woff');
+  font-display: swap;
 }
 
 @layer base {
