@@ -31,6 +31,10 @@ function createWindow() {
   }
 }
 
+if (process.platform === 'win32') {
+  app.setAppUserModelId('CroffleApp');
+}
+
 app.whenReady().then(async () => {
   try {
     await databaseManager.initialize();
