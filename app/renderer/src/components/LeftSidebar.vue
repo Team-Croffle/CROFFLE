@@ -11,19 +11,26 @@
     SidebarMenuItem,
     SidebarGroup,
     SidebarGroupContent,
-    SidebarTrigger,
-    useSidebar,
   } from '@/components/ui/sidebar';
   import { Bell, CircleHelp, Settings } from 'lucide-vue-next';
   import logoImg from '@/assets/Logo2Only.png';
 
-  const { state } = useSidebar();
-  const isSidebarExpanded = computed(() => state.value === 'expanded');
+  const props = defineProps<{
+    open: boolean;
+  }>();
+
+  const isSidebarExpanded = computed(() => props.open);
+
   const menuItems = computed(() => DEFAULT_MENU_ITEMS);
 </script>
 
 <template>
-  <Sidebar collapsible="icon" class="border-croffle-border bg-croffle-sidebar border-r">
+  <Sidebar
+    side="left"
+    :open="open"
+    collapsible="icon"
+    class="border-croffle-border bg-croffle-sidebar border-r pt-8"
+  >
     <SidebarHeader
       class="border-croffle-border bg-croffle-sidebar relative flex flex-col border-b transition-all duration-200"
       :class="[isSidebarExpanded ? 'p-4' : 'items-center p-4']"
@@ -37,14 +44,9 @@
         </div>
 
         <div v-if="isSidebarExpanded" class="flex flex-col gap-0.5">
-          <span class="text-croffle-primary text-xs leading-none font-bold">CROFFLE</span>
+          <span class="font-logo text-croffle-primary text-xs leading-none font-bold">CROFFLE</span>
           <span class="text-croffle-text text-[10px] leading-none">할일 달력</span>
         </div>
-
-        <SidebarTrigger
-          class="text-muted-foreground border-none bg-transparent shadow-none ring-0 ring-offset-0 outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-          :class="[isSidebarExpanded ? 'absolute top-3 right-3' : 'relative mt-3']"
-        />
       </div>
     </SidebarHeader>
 

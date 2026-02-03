@@ -2,8 +2,11 @@
   import Calendar from '@/components/Calendar.vue';
   import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
   import { Toaster } from '@/components/ui/sonner';
-  import { Minus, Square, X } from 'lucide-vue-next';
+  import { Minus, PanelLeft, Square, X } from 'lucide-vue-next';
   import LeftSidebar from './components/LeftSidebar.vue';
+  import RightSidebar from './components/RightSidebar.vue';
+  import Button from './components/ui/button/Button.vue';
+  import { ref } from 'vue';
 
   // Electron 윈도우 제어 함수
   const minimizeWindow = async () => {
@@ -15,16 +18,33 @@
   const closeWindow = async () => {
     croffle.base.windows.close();
   };
+
+  // 사이드바 상태 관리
+  const leftOpen = ref(true);
+  const rightOpen = ref(false);
 </script>
 
 <template>
-  <div class="flex h-screen flex-col overflow-hidden bg-[#FDFBF7] font-sans text-[#4A4A4A]">
+  <div class="bg-croffle-bg flex h-screen flex-col overflow-hidden font-sans text-neutral-800">
     <!-- 커스텀 타이틀 바 -->
     <div
-      class="drag-region z-50 flex h-8 shrink-0 justify-between border-b border-[#F0EAD6] bg-[#FDFBF7]"
+      class="drag-region border-croffle-border bg-croffle-bg z-50 flex h-8 shrink-0 justify-between border-b"
     >
-      <div class="flex items-center gap-2 pl-4">
-        <span class="text-xs font-bold text-[#4A4A4A]">Croffle</span>
+      <div class="flex h-full items-center">
+        <div class="relative flex h-full w-12 items-center justify-center">
+          <Button
+            variant="ghost"
+            size="icon"
+            class="no-drag h-7 w-7 text-gray-500"
+            @click="leftOpen = !leftOpen"
+          >
+            <PanelLeft class="h-4 w-4" />
+          </Button>
+
+          <div class="absolute right-0 h-4 w-px bg-gray-300"></div>
+        </div>
+
+        <span class="font-logo ml-4 text-xs font-bold text-neutral-600">Croffle</span>
       </div>
 
       <div class="no-drag flex h-full">
@@ -58,13 +78,14 @@
     <div class="relative min-h-0 flex-1">
       <!-- 사이드바 및 캘린더 -->
       <SidebarProvider class="h-full min-h-full w-full">
-        <LeftSidebar />
-        <SidebarInset class="flex h-full flex-col bg-[#FDFBF7]">
+        <LeftSidebar :open="leftOpen" />
+        <SidebarInset class="bg-croffle-bg flex h-full flex-col">
           <!-- 캘린더 영역 -->
           <div class="flex-1 overflow-hidden p-4">
             <Calendar />
           </div>
         </SidebarInset>
+        <RightSidebar :open="rightOpen" @toggle="rightOpen = !rightOpen" />
       </SidebarProvider>
     </div>
     <Toaster />
