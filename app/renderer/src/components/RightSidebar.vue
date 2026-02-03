@@ -1,30 +1,31 @@
 <script setup lang="ts">
-  import { Calendar, Clock, Plus, Home } from 'lucide-vue-next';
+  import { Calendar, Clock, Plus, Home, PanelRight } from 'lucide-vue-next';
   import { Button } from '@/components/ui/button';
   import { Badge } from '@/components/ui/badge';
   import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-  import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
-    SidebarHeader,
-    SidebarTrigger,
-    useSidebar,
-  } from '@/components/ui/sidebar';
-  defineProps<{
+  import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from '@/components/ui/sidebar';
+  import { computed } from 'vue';
+
+  const props = defineProps<{
     todayCount?: number;
     hasTodayEvent?: boolean;
     hasUpcomingEvent?: boolean;
+    open: boolean;
   }>();
-  const emit = defineEmits(['click-add-schedule']);
-  const { state } = useSidebar();
+
+  const emit = defineEmits(['click-add-schedule', 'toggle']);
+
+  const state = computed(() => {
+    return props.open ? 'expanded' : 'collapsed';
+  });
 </script>
 
 <template>
   <Sidebar
     side="right"
     collapsible="icon"
-    class="border-croffle-border bg-croffle-sidebar w-[320px] border-l group-data-[collapsible=icon]:w-15"
+    :open="open"
+    class="border-croffle-border bg-croffle-sidebar w-[320px] border-l pt-8 group-data-[collapsible=icon]:w-15"
   >
     <SidebarHeader class="bg-croffle-sidebar p-4 pb-0">
       <div
@@ -38,9 +39,14 @@
           <p class="text-croffle-text text-xs whitespace-nowrap">오늘의 일정과 계획</p>
         </div>
 
-        <SidebarTrigger
-          class="text-muted-foreground border-none bg-transparent shadow-none ring-0 ring-offset-0 outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-        />
+        <Button
+          variant="ghost"
+          size="icon"
+          class="text-muted-foreground h-7 w-7"
+          @click="emit('toggle')"
+        >
+          <PanelRight class="h-4 w-4" />
+        </Button>
       </div>
 
       <div class="bg-croffle-border mb-2 h-px w-full group-data-[collapsible=icon]:hidden"></div>
