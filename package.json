@@ -57,10 +57,28 @@
     "files": [
       "./app/main/package.json",
       "./app/main/dist/",
-      "./app/renderer/dist/"
+      "./app/renderer/dist/",
+      {
+        "from": "./node_modules",
+        "to": "node_modules",
+        "filter": [
+          "**/*",
+          "!**/@types/**",
+          "!**/*.ts",
+          "!**/*.map",
+          "!**/test/**",
+          "!**/.bin/**",
+          "!**/@croffledev/**"
+        ]
+      }
+    ],
+    "asarUnpack": [
+      "**/node_modules/sqlite3",
+      "**/node_modules/reflect-metadata"
     ],
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "./icons/Logo2Only.png"
     },
     "mac": {
       "target": "dmg"
