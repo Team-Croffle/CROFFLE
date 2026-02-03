@@ -1,4 +1,4 @@
-import type { Schedule } from '@croffledev/croffle-common';
+import type { Schedule } from 'croffle';
 
 export const INITIAL_SCHEDULES: Schedule[] = [
   {
