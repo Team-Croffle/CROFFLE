@@ -5,6 +5,7 @@
 
 @theme inline {
   --font-sans: 'Pretendard', sans-serif;
+  --font-logo: 'Fredoka', sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -186,6 +187,23 @@
     url('/fonts/woff2/Pretendard-Bold.woff2') format('woff2'),
     url('/fonts/woff/Pretendard-Bold.woff') format('woff');
   font-display: swap;
+}
+
+/* fredoka-600 - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 600;
+  src: url('/fonts/woff2/Fredoka-SemiBold.woff2') format('woff2');
+}
+/* fredoka-700 - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/fonts/woff2/Fredoka-Bold.woff2') format('woff2');
 }
 
 @layer base {
