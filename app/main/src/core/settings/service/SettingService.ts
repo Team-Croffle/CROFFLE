@@ -1,12 +1,12 @@
+import { AppSettings } from 'croffle';
 import {
   AppSettingLanguage,
-  AppSettings,
   AppSettingStartupBehavior,
   AppSettingTheme,
   CalendarTimeFormat,
   CalendarView,
   CalendarWeekStartDay,
-} from 'croffle';
+} from '../../../shared/enums';
 import { app } from 'electron';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import path from 'path';

@@ -1,5 +1,7 @@
-import { ClipboardDataType, ClipboardResult } from 'croffle';
-import { Notification, clipboard, nativeImage } from 'electron';
+import { ClipboardResult } from 'croffle';
+import { ClipboardDataType } from '../../../shared/enums';
+import { Notification, app, clipboard, nativeImage } from 'electron';
+import path from 'path';
 
 export class OsService {
   public showNotification(title?: string, body?: string): void {
@@ -20,6 +22,7 @@ export class OsService {
       }
 
       new Notification({
+        icon: path.join(app.getAppPath(), '../../icons/Logo2OnlyNoBorderIcon.png'),
         title: Title || 'Notification',
         body: Body || '',
       }).show();
