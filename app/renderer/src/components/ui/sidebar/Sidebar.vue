@@ -12,6 +12,7 @@
     inheritAttrs: false,
   });
 
+  // 기본 props에 'open'을 추가하여 외부에서 사이드바 열림/닫힘 상태를 제어할 수 있도록 함
   const props = withDefaults(defineProps<SidebarProps & { open?: boolean }>(), {
     side: 'left',
     variant: 'sidebar',
@@ -20,6 +21,8 @@
 
   const { isMobile, state: providerState, openMobile, setOpenMobile } = useSidebar();
 
+  // 내부 상태보다 외부에서 전달된 'open' prop이 우선시되도록 함
+  // props.open이 undefined가 아닌 경우 해당 값을 사용하고, 그렇지 않으면 기존처럼 내부 로직을 사용
   const state = computed(() => {
     if (props.open !== undefined) {
       return props.open ? 'expanded' : 'collapsed';
