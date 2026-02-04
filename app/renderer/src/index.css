@@ -52,6 +52,7 @@
   --color-croffle-red: var(--croffle-red);
   --color-croffle-blue: var(--croffle-blue);
   --color-croffle-green: var(--croffle-green);
+  --color-croffle-today-bg: var(--croffle-today-bg);
   --color-croffle-muted: var(--croffle-muted);
   --color-croffle-disabled: var(--croffle-disabled);
 }
@@ -106,6 +107,7 @@
   --croffle-red: oklch(0.64 0.22 26.6);
   --croffle-blue: oklch(0.68 0.16 255);
   --croffle-green: oklch(0.69 0.18 145);
+  --croffle-today-bg: oklch(0.975 0.0181 70.25);
 
   /* 중립 색상 - 비활성화 및 보조 텍스트 */
   --croffle-muted: oklch(0.7 0.02 83.6); /* 보조 텍스트 */
@@ -161,6 +163,7 @@
   --croffle-red: oklch(0.64 0.22 26.6);
   --croffle-blue: oklch(0.68 0.16 255);
   --croffle-green: oklch(0.69 0.18 145);
+  --croffle-today-bg: oklch(0.975 0.0181 70.25);
 
   /* 중립 색상 - 비활성화 및 보조 텍스트 */
   --croffle-muted: oklch(0.7 0.02 83.6); /* 보조 텍스트 */
