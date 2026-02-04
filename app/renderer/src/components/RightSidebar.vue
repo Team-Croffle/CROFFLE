@@ -25,9 +25,9 @@
     side="right"
     collapsible="icon"
     :open="open"
-    class="border-croffle-border bg-croffle-sidebar w-[320px] border-l pt-8 group-data-[collapsible=icon]:w-15"
+    class="border-croffle-border bg-croffle-sidebar relative h-full border-l pt-2 [--sidebar-width:20rem] group-data-[collapsible=icon]:w-15"
   >
-    <SidebarHeader class="bg-croffle-sidebar p-4 pb-0">
+    <SidebarHeader class="bg-croffle-sidebar px-4 pb-0">
       <div
         class="mb-2 flex h-10 items-center group-data-[collapsible=icon]:justify-center"
         :class="state === 'expanded' ? 'justify-between' : 'justify-center'"
