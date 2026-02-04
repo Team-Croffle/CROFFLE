@@ -177,7 +177,7 @@
   font-style: normal;
   src:
     url('/fonts/woff2/Pretendard-Regular.woff2') format('woff2'),
-    url('/fonts/woffPretendard-Regular.woff') format('woff');
+    url('/fonts/woff/Pretendard-Regular.woff') format('woff');
   font-display: swap;
 }
 

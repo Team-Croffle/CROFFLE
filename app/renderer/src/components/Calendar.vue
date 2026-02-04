@@ -1,16 +1,15 @@
 <script setup lang="ts">
-  import FullCalendar from '@fullcalendar/vue3';
-  import dayGridPlugin from '@fullcalendar/daygrid';
-  import interactionPlugin from '@fullcalendar/interaction';
-  import { useCalendarStore } from '@/stores/calendarStore';
-  import { storeToRefs } from 'pinia';
-  import { onMounted, reactive, ref } from 'vue';
+  import { onMounted, onBeforeUnmount, reactive, ref } from 'vue';
   import type { CalendarOptions } from '@fullcalendar/core';
   import ContextMenu from './ui/context-menu/ContextMenu.vue';
   import ContextMenuTrigger from './ui/context-menu/ContextMenuTrigger.vue';
   import ContextMenuContent from './ui/context-menu/ContextMenuContent.vue';
   import ContextMenuItem from './ui/context-menu/ContextMenuItem.vue';
-  import { onBeforeUnmount } from 'vue';
+  import FullCalendar from '@fullcalendar/vue3';
+  import dayGridPlugin from '@fullcalendar/daygrid';
+  import interactionPlugin from '@fullcalendar/interaction';
+  import { useCalendarStore } from '@/stores/calendarStore';
+  import { storeToRefs } from 'pinia';
 
   // pinia store 연결
   const store = useCalendarStore();
