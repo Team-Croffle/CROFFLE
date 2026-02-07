@@ -37,7 +37,7 @@ export interface PluginInfo {
   enabled: boolean;
 }
 
-export interface Response<T = unknown> {
+export interface HttpResponse<T = unknown> {
   ok: boolean;
   status: number;
   data: T | null;
