@@ -115,7 +115,7 @@ declare module 'croffle' {
     value: Buffer;
   }
 
-  export interface Response<T = unknown> {
+  export interface HttpResponse<T = unknown> {
     ok: boolean;
     status: number;
     data: T | null;
