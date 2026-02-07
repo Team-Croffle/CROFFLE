@@ -28,11 +28,9 @@ export function registerAllIpcHandlers() {
 
   // Schdule Import/Export IPC Handlers
 
-<<<<<<< HEAD
   // OS Service IPC Handlers
   registerOsIpcHandlers();
-=======
+  
   // HTTP IPC Handlers
   registerHttpIpcHandlers();
->>>>>>> be3b8e4 (Feat: HTTP 통신 API 구현)
 }
