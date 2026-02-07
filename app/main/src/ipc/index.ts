@@ -33,6 +33,7 @@ export function registerAllIpcHandlers() {
   registerOsIpcHandlers();
   // Plugin Storage IPC Handlers
   registerPluginStorageIpcHandlers();
+
   // HTTP IPC Handlers
   registerHttpIpcHandlers();
 }
