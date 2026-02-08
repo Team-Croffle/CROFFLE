@@ -106,7 +106,7 @@
         />
         <div class="text-center group-data-[collapsible=icon]:hidden">
           <h4 class="text-croffle-text-dark text-xs font-bold tracking-wider">CROFFLE</h4>
-          <span class="text-croffle-text text-[10px]">v 버전 추가해야함</span>
+          <span class="text-croffle-text text-xs">v 버전 추가해야함</span>
         </div>
       </div>
     </SidebarFooter>
