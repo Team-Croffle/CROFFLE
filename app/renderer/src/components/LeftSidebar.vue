@@ -33,26 +33,33 @@
   >
     <SidebarHeader
       class="border-croffle-border bg-croffle-sidebar relative flex flex-col border-b transition-all duration-200"
-      :class="[isSidebarExpanded ? 'p-4' : 'items-center p-4']"
+      :class="[isSidebarExpanded ? 'p-4' : 'items-center py-4']"
     >
       <div
-        class="flex w-full items-center gap-3"
+        class="flex w-full shrink-0 items-center gap-3"
         :class="{ 'flex-col justify-center': !isSidebarExpanded }"
       >
-        <div class="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden">
-          <img :src="logoImg" alt="Croffle Logo" class="h-full w-full object-contain" />
+        <div class="flex shrink-0 items-center justify-center">
+          <img
+            :src="logoImg"
+            alt="Croffle Logo"
+            class="object-contain transition-all duration-200"
+            :class="isSidebarExpanded ? 'h-12 w-12' : 'h-8 w-8'"
+          />
         </div>
 
         <div v-if="isSidebarExpanded" class="flex flex-col gap-0.5">
-          <span class="font-logo text-croffle-primary text-xs leading-none font-bold">CROFFLE</span>
-          <span class="text-croffle-text text-[10px] leading-none">할일 달력</span>
+          <span class="font-logo text-croffle-primary text-2xl leading-none font-bold"
+            >CROFFLE</span
+          >
+          <span class="text-croffle-text text-xs leading-none">할일 달력</span>
         </div>
       </div>
     </SidebarHeader>
 
     <div
       v-if="isSidebarExpanded"
-      class="bg-croffle-sidebar text-croffle-text w-full pt-3 pr-0 pb-2 pl-4 text-left text-[10px] font-semibold tracking-wider uppercase"
+      class="bg-croffle-sidebar text-croffle-text w-full pt-3 pr-0 pb-2 pl-4 text-left text-xs font-semibold tracking-wider uppercase"
     >
       메인 메뉴
     </div>
@@ -91,7 +98,7 @@
                       {{ item.title }}
                     </span>
                     <span
-                      class="text-croffle-text text-[11px] leading-none"
+                      class="text-croffle-text text-xs leading-none"
                       :class="{ 'text-white/80': item.active }"
                     >
                       {{ item.subtitle }}
