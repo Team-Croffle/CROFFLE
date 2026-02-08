@@ -4,6 +4,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --font-sans: 'Pretendard', sans-serif;
+  --font-logo: 'Fredoka', sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -50,6 +52,7 @@
   --color-croffle-red: var(--croffle-red);
   --color-croffle-blue: var(--croffle-blue);
   --color-croffle-green: var(--croffle-green);
+  --color-croffle-today-bg: var(--croffle-today-bg);
   --color-croffle-muted: var(--croffle-muted);
   --color-croffle-disabled: var(--croffle-disabled);
 }
@@ -104,6 +107,7 @@
   --croffle-red: oklch(0.64 0.22 26.6);
   --croffle-blue: oklch(0.68 0.16 255);
   --croffle-green: oklch(0.69 0.18 145);
+  --croffle-today-bg: oklch(0.975 0.0181 70.25);
 
   /* 중립 색상 - 비활성화 및 보조 텍스트 */
   --croffle-muted: oklch(0.7 0.02 83.6); /* 보조 텍스트 */
@@ -159,10 +163,50 @@
   --croffle-red: oklch(0.64 0.22 26.6);
   --croffle-blue: oklch(0.68 0.16 255);
   --croffle-green: oklch(0.69 0.18 145);
+  --croffle-today-bg: oklch(0.975 0.0181 70.25);
 
   /* 중립 색상 - 비활성화 및 보조 텍스트 */
   --croffle-muted: oklch(0.7 0.02 83.6); /* 보조 텍스트 */
   --croffle-disabled: oklch(0.92 0.01 83.6); /* 비활성 버튼 */
+}
+
+/* 기본(Regular) 폰트 정의 */
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 400;
+  font-style: normal;
+  src:
+    url('/fonts/woff2/Pretendard-Regular.woff2') format('woff2'),
+    url('/fonts/woff/Pretendard-Regular.woff') format('woff');
+  font-display: swap;
+}
+
+/* 굵은(Bold) 폰트 정의 */
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 700;
+  font-style: normal;
+  src:
+    url('/fonts/woff2/Pretendard-Bold.woff2') format('woff2'),
+    url('/fonts/woff/Pretendard-Bold.woff') format('woff');
+  font-display: swap;
+}
+
+/* fredoka-600 - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 600;
+  src: url('/fonts/woff2/Fredoka-SemiBold.woff2') format('woff2');
+}
+/* fredoka-700 - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/fonts/woff2/Fredoka-Bold.woff2') format('woff2');
 }
 
 @layer base {

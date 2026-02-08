@@ -1,15 +1,15 @@
 <script setup lang="ts">
-  import FullCalendar from '@fullcalendar/vue3';
-  import dayGridPlugin from '@fullcalendar/daygrid';
-  import interactionPlugin from '@fullcalendar/interaction';
-  import { useCalendarStore } from '@/stores/calendarStore';
-  import { storeToRefs } from 'pinia';
-  import { reactive, ref } from 'vue';
+  import { onMounted, onBeforeUnmount, reactive, ref } from 'vue';
   import type { CalendarOptions } from '@fullcalendar/core';
   import ContextMenu from './ui/context-menu/ContextMenu.vue';
   import ContextMenuTrigger from './ui/context-menu/ContextMenuTrigger.vue';
   import ContextMenuContent from './ui/context-menu/ContextMenuContent.vue';
   import ContextMenuItem from './ui/context-menu/ContextMenuItem.vue';
+  import FullCalendar from '@fullcalendar/vue3';
+  import dayGridPlugin from '@fullcalendar/daygrid';
+  import interactionPlugin from '@fullcalendar/interaction';
+  import { useCalendarStore } from '@/stores/calendarStore';
+  import { storeToRefs } from 'pinia';
 
   // pinia store 연결
   const store = useCalendarStore();
@@ -17,6 +17,34 @@
 
   // 날짜 위치 저장 변수(우클릭 시 컨텍스트 메뉴 위치 지정용)
   const selectedDate = ref<string | null>(null);
+
+  // 캘린더 화면 조정 메서드
+  const fullCalendarRef = ref<InstanceType<typeof FullCalendar> | null>(null);
+  const calendarContainerRef = ref<HTMLElement | null>(null);
+  let resizeObserver: ResizeObserver | null = null;
+
+  // 캘린더 리사이징 최적화
+  onMounted(() => {
+    if (calendarContainerRef.value && fullCalendarRef.value) {
+      let animationFrameId: number | null = null;
+
+      resizeObserver = new ResizeObserver(() => {
+        if (animationFrameId !== null) return;
+
+        animationFrameId = requestAnimationFrame(() => {
+          fullCalendarRef.value?.getApi().updateSize();
+          animationFrameId = null;
+        });
+      });
+
+      resizeObserver.observe(calendarContainerRef.value);
+    }
+  });
+
+  // 메모리 정리
+  onBeforeUnmount(() => {
+    resizeObserver?.disconnect();
+  });
 
   // 우클릭 핸들러
   const handleContextMenu = (e: MouseEvent) => {
@@ -69,7 +97,7 @@
     editable: true, // 이벤트 드래그 가능
     selectable: true, // 날짜 선택 가능
     windowResizeDelay: 0,
-    handleWindowResize: true,
+    handleWindowResize: false, // 수동으로 크기 조정 처리
 
     locale: 'ko', // 한국어 설정
   });
@@ -78,8 +106,16 @@
 <template>
   <ContextMenu class="h-full">
     <ContextMenuTrigger class="block h-full w-full">
-      <div class="calendar-card flex h-full flex-col" @contextmenu="handleContextMenu">
-        <FullCalendar :options="calendarOptions" class="h-full w-full flex-1" />
+      <div
+        ref="calendarContainerRef"
+        class="calendar-card flex h-full flex-col"
+        @contextmenu="handleContextMenu"
+      >
+        <FullCalendar
+          ref="fullCalendarRef"
+          :options="calendarOptions"
+          class="h-full w-full flex-1"
+        />
       </div>
     </ContextMenuTrigger>
     <ContextMenuContent>
@@ -92,9 +128,9 @@
 <style scoped>
   /* 캘린더 전체 틀 */
   .calendar-card {
-    background-color: white;
+    background-color: var(--card);
     padding: 15px;
-    border: 1px solid #f0ead6;
+    border: 1px solid var(--croffle-border);
     border-radius: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   }
@@ -115,7 +151,7 @@
   :deep(.fc-toolbar-title) {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #dca780;
+    color: var(--croffle-primary);
   }
 
   /* 버튼 그룹 */
@@ -127,8 +163,8 @@
   /* 개별 버튼 디자인 */
   :deep(.fc-button) {
     background-color: transparent;
-    border: 1px solid #f0ead6 !important;
-    color: #8d7b68;
+    border: 1px solid var(--croffle-border) !important;
+    color: var(--croffle-text);
     font-weight: 500;
     border-radius: 8px !important;
     margin: 0 !important;
@@ -138,15 +174,15 @@
   }
 
   :deep(.fc-button:hover) {
-    background-color: #fff8f0;
-    color: #5c4b43;
-    border-color: #dca780 !important;
+    background-color: var(--croffle-bg);
+    color: var(--croffle-primary);
+    border-color: var(--croffle-primary) !important;
   }
 
   :deep(.fc-button:disabled) {
-    background-color: #e5e5e5 !important;
-    border-color: #e5e5e5 !important;
-    color: #a3a3a3 !important;
+    background-color: var(--croffle-disabled) !important;
+    border-color: var(--croffle-border) !important;
+    color: var(--croffle-muted) !important;
     opacity: 1 !important;
     cursor: not-allowed;
   }
@@ -154,33 +190,33 @@
   /* '오늘' 버튼 등 활성 상태 */
   :deep(.fc-button-primary:not(:disabled).fc-button-active),
   :deep(.fc-button-primary:not(:disabled):active) {
-    background-color: #fdfbf7 !important;
-    color: #dca780 !important;
-    border-color: #dca780 !important;
-    box-shadow: inset 0 0 0 1px #dca780 !important;
+    background-color: var(--croffle-hover) !important;
+    color: var(--croffle-primary) !important;
+    border-color: var(--croffle-primary) !important;
+    box-shadow: inset 0 0 0 1px var(--croffle-primary) !important;
   }
 
   /* 요일 헤더*/
   :deep(.fc-col-header-cell) {
-    background-color: #fffcf9;
+    background-color: var(--croffle-bg);
     padding: 8px 0;
     border: none !important;
     /* 요일 아래쪽 구분선 */
-    border-bottom: 1px solid #f5f5f5 !important;
+    border-bottom: 1px solid var(--croffle-border) !important;
   }
 
   /* 요일 텍스트 스타일 */
   :deep(.fc-col-header-cell-cushion) {
-    color: #8d7b68; /* 따뜻한 갈색 텍스트 */
+    color: var(--croffle-text);
     font-weight: 600;
     text-decoration: none;
   }
   /* 공휴일 컬러 */
   :deep(.fc-day-sun .fc-col-header-cell-cushion) {
-    color: #ff6b6b;
+    color: var(--croffle-red);
   }
   :deep(.fc-day-sat .fc-col-header-cell-cushion) {
-    color: #4d96ff;
+    color: var(--croffle-blue);
   }
 
   /* 날짜 칸 테두리 (가로선만 표시) */
@@ -190,27 +226,27 @@
     border-left: none !important;
     border-right: none !important;
     border-top: none !important;
-    border-bottom: 1px solid #f0ead6 !important;
+    border-bottom: 1px solid var(--croffle-border) !important;
   }
 
   /* 오늘 날짜 표시 (칸 전체 하이라이트) */
   :deep(.fc-day-today) {
-    background-color: #fff5ea !important;
+    background-color: var(--croffle-today-bg) !important;
   }
 
   /* 오늘 날짜 숫자 스타일 */
   :deep(.fc-day-today .fc-daygrid-day-number) {
     background-color: transparent !important;
-    color: #dca780; /* 진한 주황색 글씨 */
-    font-weight: 800;
+    color: var(--croffle-primary);
+    font-weight: bold;
     border-radius: 0;
   }
 
   /* 일반 날짜 숫자 스타일 */
   :deep(.fc-daygrid-day-number) {
-    font-size: 0.95rem;
-    font-weight: 800;
-    color: #777;
+    font-size: 0.8rem;
+    font-weight: normal;
+    color: var(--muted-foreground);
     text-decoration: none;
     padding: 8px;
     width: 100%;
@@ -225,9 +261,7 @@
     padding: 1px 4px;
     margin-top: 1px !important;
     margin-bottom: 1px !important;
-    background-color: #2dc12f;
-    color: #374151;
-
+    color: var(--foreground);
     display: flex;
     align-items: center;
   }
@@ -237,14 +271,13 @@
     white-space: nowrap;
     overflow: hidden; /* 넘치면 숨김 */
     text-overflow: ellipsis; /* ... 으로 표시 */
-
     font-weight: 500;
     line-height: 1.2;
   }
 
   /* 더보기 링크 (+2 more) 디자인 */
   :deep(.fc-more-link) {
-    color: #999;
+    color: var(--croffle-muted);
     font-size: 0.75rem;
     font-weight: 600;
     text-decoration: none;
@@ -254,6 +287,6 @@
   }
 
   :deep(.fc-more-link:hover) {
-    color: #dca780;
+    color: var(--croffle-primary);
   }
 </style>
