@@ -171,6 +171,19 @@ declare module 'croffle' {
     export function setClipboard(data: ClipboardTextData | ClipboardImageData): Promise<void>;
   }
 
+  export namespace http {
+    export function get(
+      url: string,
+      params?: Record<string, string>,
+      headers?: Record<string, string>
+    ): Promise<HttpResponse>;
+    export function post(
+      url: string,
+      body?: unknown,
+      headers?: Record<string, string>
+    ): Promise<HttpResponse>;
+  }
+
   export const base: {
     windows: typeof windows;
     tags: typeof tags;

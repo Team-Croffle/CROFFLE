@@ -1,5 +1,5 @@
 import { net } from 'electron';
-import { HttpResponse } from '@croffledev/croffle-common';
+import { HttpResponse } from 'croffle';
 
 class HttpService {
   private readonly TIMEOUT = 10000;

@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import { HttpResponse } from '@croffledev/croffle-common';
+import { HttpResponse } from 'croffle';
 import { httpService } from '../core/http/service/HttpService';
 
 export const registerHttpIpcHandlers = (): void => {
@@ -35,12 +35,3 @@ export const registerHttpIpcHandlers = (): void => {
     }
   );
 };
-
-export interface HttpAPI {
-  get: (
-    url: string,
-    params?: Record<string, string>,
-    headers?: Record<string, string>
-  ) => Promise<HttpResponse>;
-  post: (url: string, body?: unknown, headers?: Record<string, string>) => Promise<HttpResponse>;
-}
