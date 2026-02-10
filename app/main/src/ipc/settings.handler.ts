@@ -1,10 +1,16 @@
 import { ipcMain } from 'electron';
 import { settingService } from '../core/settings/service/SettingService';
 import { AppSettings } from 'croffle';
+import { eventService } from '../core/events/service/EventService';
+import { AppEventType } from '../shared/enums';
 
 export const registerSettingsIpcHandlers = (): void => {
   ipcMain.handle('settings:getAll', async (): Promise<AppSettings> => {
-    return settingService.get();
+    const result = settingService.get();
+    // Add app event emit
+    eventService.emit(AppEventType.SETTINGS_GET, result);
+
+    return result;
   });
 
   ipcMain.handle(
@@ -14,14 +20,24 @@ export const registerSettingsIpcHandlers = (): void => {
         throw new Error('[Settings] Key must be a string.');
       }
 
-      return settingService.getOf(key);
+      const result = settingService.getOf(key);
+
+      // Add app event emit
+      eventService.emit(AppEventType.SETTINGS_GET_OF, key, result);
+
+      return result;
     }
   );
 
   ipcMain.handle(
     'settings:update',
     async (_, partialSettings: Partial<AppSettings>): Promise<AppSettings> => {
-      return settingService.update(partialSettings);
+      const newSettings = settingService.update(partialSettings);
+
+      // Add app event emit
+      eventService.emit(AppEventType.SETTINGS_UPDATE, newSettings);
+
+      return newSettings;
     }
   );
 };
