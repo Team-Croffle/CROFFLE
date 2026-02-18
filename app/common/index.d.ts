@@ -213,6 +213,31 @@ declare module 'croffle' {
     UI_CONTEXT_MENU_ADD_ITEM = 'ui:contextMenu:addItem',
   }
 
+  export interface PluginContext {
+    core: typeof base;
+
+    enums: {
+      AppSettingLanguage: typeof AppSettingLanguage;
+      AppSettingTheme: typeof AppSettingTheme;
+      AppSettingStartupBehavior: typeof AppSettingStartupBehavior;
+      CalendarView: typeof CalendarView;
+      CalendarWeekStartDay: typeof CalendarWeekStartDay;
+      CalendarTimeFormat: typeof CalendarTimeFormat;
+      ClipboardDataType: typeof ClipboardDataType;
+      AppEventType: typeof AppEventType;
+    };
+
+    ui: {
+      registerView: (viewId: string, renderFn: (container: HTMLElement) => void) => void;
+      registerContextMenu: (
+        target: string,
+        command: string,
+        label: string,
+        onClick: () => void
+      ) => void;
+    };
+  }
+
   export namespace windows {
     export function minimize(): Promise<void>;
     export function maximize(): Promise<void>;
