@@ -14,6 +14,9 @@
     ContextMenuItem,
   } from '@/components/ui/context-menu';
   import { useContextMenuStore } from './stores/contextMenuStore';
+  // import { computed, ref } from 'vue';
+  // import { usePluginStore } from './stores/pluginStore';
+  // import PluginViewContainer from './components/PluginViewContainer.vue';
 
   const uiStore = useUiStore();
   const contextMenuStore = useContextMenuStore();
@@ -28,6 +31,17 @@
   const closeWindow = async () => {
     croffle.base.windows.close();
   };
+
+  // 사이드바 상태 관리
+  // const leftOpen = ref(true);
+  // const rightOpen = ref(false);
+
+  // const pluginStore = usePluginStore();
+
+  // // const contextMenus = pluginStore.getContextMenusForTarget('main-area');
+  // const currentPluginRenderFn = computed(() => {
+  //   return pluginStore.views.get(pluginStore.activeViewId);
+  // });
 </script>
 
 <template>
@@ -91,6 +105,12 @@
               <!-- 캘린더 영역 -->
               <div class="flex-1 overflow-hidden p-4">
                 <Calendar />
+                <!-- <Calendar v-if="pluginStore.activeViewId === 'default'" /> -->
+                <!-- <PluginViewContainer
+                  v-else-if="currentPluginRenderFn"
+                  :view-id="pluginStore.activeViewId"
+                  :render-fn="currentPluginRenderFn"
+                /> -->
               </div>
             </ContextMenuTrigger>
             <ContextMenuContent>

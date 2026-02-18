@@ -3,6 +3,7 @@
 
   import { DEFAULT_MENU_ITEMS } from '@/data/dummyMenu';
 
+  // import { usePluginStore } from '@/stores/pluginStore';
   import {
     Sidebar,
     SidebarContent,
@@ -28,6 +29,26 @@
   const menuItems = computed(() => DEFAULT_MENU_ITEMS);
 
   const isHelpModalOpen = ref(false);
+  // const pluginStore = usePluginStore();
+
+  // const menuItems = computed(() => {
+  //   const baseMenus = DEFAULT_MENU_ITEMS.map((item) => ({
+  //     ...item,
+  //     viewId: 'default',
+  //     active: pluginStore.activeViewId === 'default',
+  //   }));
+
+  //   const pluginMenus = pluginStore.menus.map((menu) => ({
+  //     title: menu.title,
+  //     subtitle: menu.subtitle,
+  //     icon: menu.icon,
+  //     viewId: menu.viewId,
+  //     active: pluginStore.activeViewId === menu.viewId,
+  //     url: '#',
+  //   }));
+
+  //   return [...baseMenus, ...pluginMenus];
+  // });
 </script>
 
 <template>
