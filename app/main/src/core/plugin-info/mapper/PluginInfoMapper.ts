@@ -6,6 +6,10 @@ export const PluginInfoMapper = {
     return {
       ...entity,
       description: entity.description || '',
+      features: {
+        views: [],
+        contextMenus: [],
+      },
     };
   },
 

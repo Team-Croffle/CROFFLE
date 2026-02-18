@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import { pluginService } from '../core/plugin-info/service/PluginInfoService';
+import { pluginInfoService } from '../core/plugin-info/service/PluginInfoService';
 import { PluginInfo } from 'croffle';
 import { validatePluginName } from '../core/helper/pluginValidator';
 import { PluginInfoMapper } from '../core/plugin-info/mapper/PluginInfoMapper';
@@ -8,7 +8,7 @@ import { AppEventType } from '../shared/enums';
 
 export const registerPluginInfoIpcHandlers = (): void => {
   ipcMain.handle('pluginInfo:getInstalledPlugins', async (): Promise<PluginInfo[]> => {
-    const entity = await pluginService.getInstalledPlugins();
+    const entity = await pluginInfoService.getInstalledPlugins();
 
     // Add app event emit
     eventService.emit(AppEventType.PLUGIN_INFO_GET_INSTALLED, entity);
@@ -17,7 +17,7 @@ export const registerPluginInfoIpcHandlers = (): void => {
   });
 
   ipcMain.handle('pluginInfo:getEnabledPlugins', async (): Promise<PluginInfo[]> => {
-    const entity = await pluginService.getEnabledPlugins();
+    const entity = await pluginInfoService.getEnabledPlugins();
 
     // Add app event emit
     eventService.emit(AppEventType.PLUGIN_INFO_GET_ENABLED, entity);
@@ -29,7 +29,7 @@ export const registerPluginInfoIpcHandlers = (): void => {
     'pluginInfo:getPluginByName',
     async (_, name: string): Promise<PluginInfo | null> => {
       validatePluginName(name);
-      const entity = await pluginService.getPluginByName(name);
+      const entity = await pluginInfoService.getPluginByName(name);
 
       // Add app event emit
       eventService.emit(AppEventType.PLUGIN_INFO_GET_BY_NAME, entity);
@@ -41,7 +41,7 @@ export const registerPluginInfoIpcHandlers = (): void => {
   ipcMain.handle(
     'pluginInfo:installPlugin',
     async (_, pluginData: Partial<PluginInfo>): Promise<PluginInfo> => {
-      const entity = await pluginService.installPlugin(pluginData);
+      const entity = await pluginInfoService.installPlugin(pluginData);
 
       // Add app event emit
       eventService.emit(AppEventType.PLUGIN_INFO_INSTALL, entity);
@@ -58,7 +58,7 @@ export const registerPluginInfoIpcHandlers = (): void => {
         throw new Error('[PluginInfo] Invalid enable value provided.');
       }
 
-      const entity = await pluginService.togglePlugin(name, enable);
+      const entity = await pluginInfoService.togglePlugin(name, enable);
 
       // Add app event emit
       eventService.emit(AppEventType.PLUGIN_INFO_TOGGLE, entity);
@@ -69,7 +69,7 @@ export const registerPluginInfoIpcHandlers = (): void => {
 
   ipcMain.handle('pluginInfo:uninstallPlugin', async (_, name: string): Promise<boolean> => {
     validatePluginName(name);
-    const result = await pluginService.uninstallPlugin(name);
+    const result = await pluginInfoService.uninstallPlugin(name);
 
     // Add app event emit
     eventService.emit(AppEventType.PLUGIN_INFO_UNINSTALL, result);

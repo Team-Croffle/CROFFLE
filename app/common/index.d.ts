@@ -215,27 +215,9 @@ declare module 'croffle' {
 
   export interface PluginContext {
     core: typeof base;
-
-    enums: {
-      AppSettingLanguage: typeof AppSettingLanguage;
-      AppSettingTheme: typeof AppSettingTheme;
-      AppSettingStartupBehavior: typeof AppSettingStartupBehavior;
-      CalendarView: typeof CalendarView;
-      CalendarWeekStartDay: typeof CalendarWeekStartDay;
-      CalendarTimeFormat: typeof CalendarTimeFormat;
-      ClipboardDataType: typeof ClipboardDataType;
-      AppEventType: typeof AppEventType;
-    };
-
-    ui: {
-      registerView: (viewId: string, renderFn: (container: HTMLElement) => void) => void;
-      registerContextMenu: (
-        target: string,
-        command: string,
-        label: string,
-        onClick: () => void
-      ) => void;
-    };
+    app: typeof app;
+    enums: typeof enums;
+    ui: typeof ui;
   }
 
   export namespace windows {
@@ -352,4 +334,25 @@ declare module 'croffle' {
     clear: (pluginId: string) => Promise<void>;
     clearAll: () => Promise<void>;
   }
+
+  export const enums: {
+    AppSettingLanguage: typeof AppSettingLanguage;
+    AppSettingTheme: typeof AppSettingTheme;
+    AppSettingStartupBehavior: typeof AppSettingStartupBehavior;
+    CalendarView: typeof CalendarView;
+    CalendarWeekStartDay: typeof CalendarWeekStartDay;
+    CalendarTimeFormat: typeof CalendarTimeFormat;
+    ClipboardDataType: typeof ClipboardDataType;
+    AppEventType: typeof AppEventType;
+  };
+
+  export const ui: {
+    registerView: (viewId: string, renderFn: (container: HTMLElement) => void) => void;
+    registerContextMenu: (
+      target: string,
+      command: string,
+      label: string,
+      callback: (target: string) => void
+    ) => void;
+  };
 }
