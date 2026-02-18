@@ -29,13 +29,30 @@ declare module 'croffle' {
     tags?: Tag[];
   }
 
+  export interface PluginFeatureView {
+    id: string;
+    name: string;
+    icon: string;
+  }
+
+  export interface PluginFeatureContextMenu {
+    target: string;
+    command: string;
+    label: string;
+  }
+
   export interface PluginInfo {
+    enabled: boolean;
     id: string;
     name: string;
     version: string;
     author: string;
-    description: string;
-    enabled: boolean;
+    main?: string;
+    description?: string;
+    features: {
+      views?: PluginFeatureView[];
+      contextMenus?: PluginFeatureContextMenu[];
+    };
   }
 
   export enum AppSettingLanguage {

@@ -1,8 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class PluginInfo {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn('varchar')
   id: string;
 
   @Column()
@@ -17,6 +17,9 @@ export class PluginInfo {
   @Column({ type: 'text', nullable: true })
   description?: string;
 
-  @Column({ default: false })
+  @Column({ default: true })
   enabled: boolean;
+
+  @Column({ nullable: true })
+  main?: string;
 }

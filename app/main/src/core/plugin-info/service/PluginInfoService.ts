@@ -1,7 +1,7 @@
 import { databaseManager } from '../../../services/DatabaseManager';
 import { PluginInfo } from '../model/PluginInfo';
 
-export const pluginService = {
+export const pluginInfoService = {
   getInstalledPlugins: async (): Promise<PluginInfo[]> => {
     const repo = databaseManager.getRepository(PluginInfo);
     return repo.find({
@@ -44,19 +44,19 @@ export const pluginService = {
     return repo.save(plugin);
   },
 
-  togglePlugin: async (name: string, enable: boolean): Promise<PluginInfo | null> => {
+  togglePlugin: async (id: string, enable: boolean): Promise<PluginInfo | null> => {
     const repo = databaseManager.getRepository(PluginInfo);
-    const plugin = await repo.findOne({ where: { name } });
+    const plugin = await repo.findOne({ where: { id } });
     if (!plugin) {
-      throw new Error(`Plugin "${name}" not found.`);
+      throw new Error(`Plugin "${id}" not found.`);
     }
     plugin.enabled = enable;
     return repo.save(plugin);
   },
 
-  uninstallPlugin: async (name: string): Promise<boolean> => {
+  uninstallPlugin: async (id: string): Promise<boolean> => {
     const repo = databaseManager.getRepository(PluginInfo);
-    const result = await repo.delete({ name });
+    const result = await repo.delete({ id });
     return result.affected !== undefined && result.affected !== null && result.affected > 0;
   },
 };
