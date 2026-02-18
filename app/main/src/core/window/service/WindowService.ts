@@ -106,14 +106,14 @@ class WindowService {
     this.mainWindow?.show();
 
     // Add app event emit
-    eventService.emit(AppEventType.WINDOW_SHOW, this.mainWindow);
+    eventService.emit(AppEventType.WINDOW_SHOW);
   }
 
   public hideWindow(): void {
     this.mainWindow?.hide();
 
     // Add app event emit
-    eventService.emit(AppEventType.WINDOW_HIDE, this.mainWindow);
+    eventService.emit(AppEventType.WINDOW_HIDE);
   }
 
   public exitApp(): void {
@@ -121,14 +121,14 @@ class WindowService {
     app.quit();
 
     // Add app event emit
-    eventService.emit(AppEventType.WINDOW_EXIT, this.mainWindow);
+    eventService.emit(AppEventType.WINDOW_EXIT);
   }
 
   public async checkForUpdates(): Promise<void> {
     if (!app.isPackaged) return;
     await autoUpdater.checkForUpdatesAndNotify();
 
-    eventService.emit(AppEventType.WINDOW_CHECK_FOR_UPDATES, this.mainWindow);
+    eventService.emit(AppEventType.WINDOW_CHECK_FOR_UPDATES);
   }
 }
 

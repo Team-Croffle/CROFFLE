@@ -27,7 +27,7 @@ export function registerWindowIpcHandlers() {
     window.minimize();
 
     // Add app event emit
-    eventService.emit(AppEventType.WINDOW_MINIMIZE, window);
+    eventService.emit(AppEventType.WINDOW_MINIMIZE);
   });
 
   ipcMain.handle('window:maximize', (event) => {
@@ -36,12 +36,12 @@ export function registerWindowIpcHandlers() {
       window.unmaximize();
 
       // Add app event emit
-      eventService.emit(AppEventType.WINDOW_RESTORE, window);
+      eventService.emit(AppEventType.WINDOW_RESTORE);
     } else {
       window.maximize();
 
       // Add app event emit
-      eventService.emit(AppEventType.WINDOW_MAXIMIZE, window);
+      eventService.emit(AppEventType.WINDOW_MAXIMIZE);
     }
   });
 
@@ -50,7 +50,7 @@ export function registerWindowIpcHandlers() {
     window.close();
 
     // Add app event emit
-    eventService.emit(AppEventType.WINDOW_CLOSE, window);
+    eventService.emit(AppEventType.WINDOW_CLOSE);
   });
 
   ipcMain.handle('window:exitApp', (event) => {

@@ -19,7 +19,7 @@ class PluginLoader {
     try {
       const entryUrl = `plugin://${plugin.id}/${plugin.main}`;
 
-      const pluginModule = await import(entryUrl);
+      const pluginModule = await import(/* @vite-ignore */ entryUrl);
 
       if (pluginModule && typeof pluginModule.activated === 'function') {
         const context = this.createContext(plugin);
