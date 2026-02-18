@@ -34,21 +34,24 @@
   // const menuItems = computed(() => {
   //   const baseMenus = DEFAULT_MENU_ITEMS.map((item) => ({
   //     ...item,
-  //     viewId: 'default',
-  //     active: pluginStore.activeViewId === 'default',
+  //     active: pluginStore.activeViewId === item.id,
   //   }));
 
   //   const pluginMenus = pluginStore.menus.map((menu) => ({
   //     title: menu.title,
   //     subtitle: menu.subtitle,
   //     icon: menu.icon,
-  //     viewId: menu.viewId,
-  //     active: pluginStore.activeViewId === menu.viewId,
+  //     id: menu.id,
+  //     active: pluginStore.activeViewId === menu.id,
   //     url: '#',
   //   }));
 
   //   return [...baseMenus, ...pluginMenus];
   // });
+
+  // const handleMenuClick = (viewId: string) => {
+  //   pluginStore.setActiveView(viewId);
+  // };
 </script>
 
 <template>
@@ -97,6 +100,11 @@
         <SidebarGroupContent>
           <SidebarMenu>
             <SidebarMenuItem v-for="item in menuItems" :key="item.title">
+              <!-- <SidebarMenuItem
+              v-for="item in menuItems"
+              :key="item.title"
+              @click="handleMenuClick(item.id)"
+            > -->
               <SidebarMenuButton
                 as-child
                 size="lg"

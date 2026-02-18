@@ -105,7 +105,7 @@
               <!-- 캘린더 영역 -->
               <div class="flex-1 overflow-hidden p-4">
                 <Calendar />
-                <!-- <Calendar v-if="pluginStore.activeViewId === 'default'" /> -->
+                <!-- <Calendar v-if="pluginStore.activeViewId === 'calendar'" /> -->
                 <!-- <PluginViewContainer
                   v-else-if="currentPluginRenderFn"
                   :view-id="pluginStore.activeViewId"

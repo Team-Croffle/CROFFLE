@@ -2,10 +2,10 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
 export interface PluginMenu {
+  id: string;
   title: string;
   subtitle?: string;
   icon: unknown;
-  viewId: string;
 }
 
 export interface PluginContextMenu {
@@ -18,7 +18,7 @@ export const usePluginStore = defineStore('plugin', () => {
   const menus = ref<PluginMenu[]>([]);
   const views = ref<Map<string, (container: HTMLElement) => void>>(new Map());
   const contextMenus = ref<PluginContextMenu[]>([]);
-  const activeViewId = ref<string>('default');
+  const activeViewId = ref<string>('calendar');
 
   const registerMenu = (menu: PluginMenu) => {
     menus.value.push(menu);
