@@ -1,9 +1,7 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue';
-
   import { DEFAULT_MENU_ITEMS } from '@/data/dummyMenu';
-
-  // import { usePluginStore } from '@/stores/pluginStore';
+  import { useViewStore } from '@/stores/viewStore';
   import {
     Sidebar,
     SidebarContent,
@@ -26,32 +24,32 @@
   const uiStore = useUiStore();
   const { leftSidebarOpen } = storeToRefs(uiStore);
 
-  const menuItems = computed(() => DEFAULT_MENU_ITEMS);
+  // const menuItems = computed(() => DEFAULT_MENU_ITEMS);
 
   const isHelpModalOpen = ref(false);
-  // const pluginStore = usePluginStore();
+  const pluginStore = useViewStore();
 
-  // const menuItems = computed(() => {
-  //   const baseMenus = DEFAULT_MENU_ITEMS.map((item) => ({
-  //     ...item,
-  //     active: pluginStore.activeViewId === item.id,
-  //   }));
+  const menuItems = computed(() => {
+    const baseMenus = DEFAULT_MENU_ITEMS.map((item) => ({
+      ...item,
+      active: pluginStore.activeViewId === item.id,
+    }));
 
-  //   const pluginMenus = pluginStore.menus.map((menu) => ({
-  //     title: menu.title,
-  //     subtitle: menu.subtitle,
-  //     icon: menu.icon,
-  //     id: menu.id,
-  //     active: pluginStore.activeViewId === menu.id,
-  //     url: '#',
-  //   }));
+    const pluginMenus = pluginStore.menus.map((menu) => ({
+      title: menu.title,
+      subtitle: menu.subtitle,
+      icon: menu.icon,
+      id: menu.id,
+      active: pluginStore.activeViewId === menu.id,
+      url: '#',
+    }));
 
-  //   return [...baseMenus, ...pluginMenus];
-  // });
+    return [...baseMenus, ...pluginMenus];
+  });
 
-  // const handleMenuClick = (viewId: string) => {
-  //   pluginStore.setActiveView(viewId);
-  // };
+  const handleMenuClick = (viewId: string) => {
+    pluginStore.setActiveView(viewId);
+  };
 </script>
 
 <template>
@@ -99,12 +97,12 @@
       <SidebarGroup>
         <SidebarGroupContent>
           <SidebarMenu>
-            <SidebarMenuItem v-for="item in menuItems" :key="item.title">
-              <!-- <SidebarMenuItem
+            <!-- <SidebarMenuItem v-for="item in menuItems" :key="item.title"> -->
+            <SidebarMenuItem
               v-for="item in menuItems"
               :key="item.title"
               @click="handleMenuClick(item.id)"
-            > -->
+            >
               <SidebarMenuButton
                 as-child
                 size="lg"

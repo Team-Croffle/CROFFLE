@@ -1,8 +1,8 @@
-import { usePluginStore } from '@/stores/pluginStore';
+import { useViewStore } from '@/stores/viewStore';
 import { Box } from 'lucide-vue-next';
 
 export const initTestPlugin = () => {
-  const pluginStore = usePluginStore();
+  const pluginStore = useViewStore();
 
   const pluginId = 'com.test.plugin-test';
   const viewId = `${pluginId}.main-view`;
