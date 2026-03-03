@@ -14,12 +14,14 @@
     ContextMenuItem,
   } from '@/components/ui/context-menu';
   import { useContextMenuStore } from './stores/contextMenuStore';
-  import { computed } from 'vue';
+  import { computed, onMounted, onUnmounted } from 'vue';
   import { useViewStore } from './stores/viewStore';
   import PluginViewContainer from './components/PluginViewContainer.vue';
+  // import { mockPluginsList } from './test/testPluginMenu';
 
   const uiStore = useUiStore();
   const contextMenuStore = useContextMenuStore();
+  const viewStore = useViewStore();
 
   // Electron 윈도우 제어 함수
   const minimizeWindow = async () => {
@@ -32,10 +34,46 @@
     croffle.base.windows.close();
   };
 
-  const pluginStore = useViewStore();
-
   const currentPluginRenderFn = computed(() => {
-    return pluginStore.views.get(pluginStore.activeViewId);
+    return viewStore.views.get(viewStore.activeViewId);
+  });
+
+  const handleRegisterView = (event: Event) => {
+    const customEvent = event as CustomEvent<{
+      pluginId: string;
+      viewId: string;
+      renderFn: (container: HTMLElement) => void;
+    }>;
+    const { viewId, renderFn } = customEvent.detail;
+
+    viewStore.registerView(viewId, renderFn);
+  };
+
+  onMounted(async () => {
+    // 이벤트로 플러그인 호출 동작 매핑
+    window.addEventListener('plugin:register-view', handleRegisterView);
+
+    // 일단 껍데기만 확인
+    const pluginList = await croffle.base.pluginInfo.getEnabled();
+
+    // test용
+    // const pluginList = mockPluginsList;
+
+    pluginList.forEach((p) => {
+      const views = p.features.views;
+      if (views) {
+        views.forEach((v) => {
+          // 메뉴만 register. 실제 view는 PluginLoader에서 등록됨.
+          // 이후, 사용자가 해당 메뉴를 클릭하면, 등록된 렌더링 함수가 호출됨.
+          viewStore.registerMenu(v);
+        });
+      }
+    });
+  });
+
+  onUnmounted(() => {
+    // 메모리 누수 방지용
+    window.removeEventListener('plugin:register-view', handleRegisterView);
   });
 </script>
 
@@ -100,10 +138,10 @@
               <!-- 캘린더 영역 -->
               <div class="flex-1 overflow-hidden p-4">
                 <!-- <Calendar /> -->
-                <Calendar v-if="pluginStore.activeViewId === 'calendar'" />
+                <Calendar v-if="viewStore.activeViewId === 'calendar'" />
                 <PluginViewContainer
                   v-else-if="currentPluginRenderFn"
-                  :view-id="pluginStore.activeViewId"
+                  :view-id="viewStore.activeViewId"
                   :render-fn="currentPluginRenderFn"
                 />
               </div>

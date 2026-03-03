@@ -31,7 +31,8 @@ declare module 'croffle' {
 
   export interface PluginFeatureView {
     id: string;
-    name: string;
+    title: string;
+    subtitle: string;
     icon: string;
   }
 
@@ -214,7 +215,7 @@ declare module 'croffle' {
   }
 
   export interface PluginContext {
-    core: typeof base;
+    base: typeof base;
     app: typeof app;
     enums: typeof enums;
     ui: typeof ui;

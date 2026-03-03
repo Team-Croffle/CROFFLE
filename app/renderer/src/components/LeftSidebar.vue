@@ -13,22 +13,20 @@
     SidebarGroup,
     SidebarGroupContent,
   } from '@/components/ui/sidebar';
-
   import { Bell, CircleHelp, Settings } from 'lucide-vue-next';
-
   import logoImg from '@/assets/Logo2Only.png';
   import { storeToRefs } from 'pinia';
   import { useUiStore } from '@/stores/uiStore';
   import HelpModal from './HelpModal.vue';
+  // import { testMockPlugin } from '@/test/testPluginMenu';
 
   const uiStore = useUiStore();
   const { leftSidebarOpen } = storeToRefs(uiStore);
 
-  // const menuItems = computed(() => DEFAULT_MENU_ITEMS);
-
   const isHelpModalOpen = ref(false);
   const pluginStore = useViewStore();
 
+  // 메뉴 아이템을 computed로 정의하여, store된 state를 반영하도록 함.
   const menuItems = computed(() => {
     const baseMenus = DEFAULT_MENU_ITEMS.map((item) => ({
       ...item,
@@ -48,7 +46,11 @@
   });
 
   const handleMenuClick = (viewId: string) => {
+    // 메뉴 클릭 시, store된 state를 변경하여, 해당 view를 화면에 표시하도록 함.
     pluginStore.setActiveView(viewId);
+    // if (viewId === 'com.test.dummy.main-view1') {
+    //   testMockPlugin();
+    // }
   };
 </script>
 

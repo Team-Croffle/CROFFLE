@@ -14,14 +14,23 @@ export const useViewStore = defineStore('plugin', () => {
   const activeViewId = ref<string>('calendar');
 
   const registerMenu = (menu: ViewMenu) => {
+    if (menus.value.find((m) => m.id === menu.id)) {
+      return;
+    }
     menus.value.push(menu);
   };
 
   const registerView = (viewId: string, renderFn: (container: HTMLElement) => void) => {
+    if (views.value.has(viewId)) {
+      return;
+    }
     views.value.set(viewId, renderFn);
   };
 
   const setActiveView = (viewId: string) => {
+    if (!views.value.has(viewId)) {
+      return;
+    }
     activeViewId.value = viewId;
   };
 

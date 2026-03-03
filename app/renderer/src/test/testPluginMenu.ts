@@ -1,11 +1,12 @@
 import { useViewStore } from '@/stores/viewStore';
 import { Box } from 'lucide-vue-next';
+import type { PluginInfo } from 'croffle';
+
+const pluginId = 'com.test.dummy';
+const viewId = `${pluginId}.main-view1`;
 
 export const initTestPlugin = () => {
   const pluginStore = useViewStore();
-
-  const pluginId = 'com.test.plugin-test';
-  const viewId = `${pluginId}.main-view`;
 
   pluginStore.registerMenu({
     title: '테스트 플러그인',
@@ -39,4 +40,62 @@ export const initTestPlugin = () => {
       );
     });
   });
+};
+
+export const mockPluginsList: PluginInfo[] = [
+  {
+    id: pluginId,
+    name: 'My Dummy Plugin',
+    enabled: true,
+    version: 'v1.0.0',
+    author: 'BlueNyang',
+    description: 'test plugin',
+    features: {
+      views: [
+        {
+          id: viewId,
+          title: '더미 플러그인',
+          subtitle: '테스트용',
+          icon: 'icon',
+        },
+      ],
+      contextMenus: [],
+    },
+  },
+];
+
+export const testMockPlugin = () => {
+  setTimeout(() => {
+    console.log('[Test Plugin] 가짜 등록 이벤트 발송 준비 완료');
+
+    window.dispatchEvent(
+      new CustomEvent('plugin:register-view', {
+        detail: {
+          pluginId: pluginId,
+          viewId: viewId,
+          renderFn: (container: HTMLElement) => {
+            container.innerHTML = `
+              <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; font-family: sans-serif;">
+                <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 1rem; color: #4F46E5;">
+                  가짜 플러그인이 로드되었습니다!
+                </h1>
+                <p>뷰 ID: com.test.dummy.view1</p>
+                <button id="plugin-btn">
+                  플러그인 버튼 액션
+                </button>
+              </div>
+            `;
+
+            const btn = container.querySelector('#plugin-btn');
+            btn?.addEventListener('click', () => {
+              croffle.app.os.showNotification(
+                '플러그인 버튼이 클릭되었습니다!',
+                '이 이벤트는 순수 JS로 작동합니다.'
+              );
+            });
+          },
+        },
+      })
+    );
+  }, 2000);
 };
