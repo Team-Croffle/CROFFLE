@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
   import { Toaster } from '@/components/ui/sonner';
-  import { Minus, PanelLeft, Square, X } from 'lucide-vue-next';
+  import { Minus, Moon, PanelLeft, Square, Sun, X } from 'lucide-vue-next';
   import LeftSidebar from './components/LeftSidebar.vue';
   import RightSidebar from './components/RightSidebar.vue';
   import Button from './components/ui/button/Button.vue';
@@ -16,11 +16,14 @@
   import { onMounted, onUnmounted } from 'vue';
   import { useViewStore } from './stores/viewStore';
   import { defaultMenus } from './data/defaultContextMenus';
+  import { Separator } from './components/ui/separator';
+  import { useThemeStore } from './stores/themeStore';
   // import { mockPluginsList } from './test/testPluginMenu';
 
   const uiStore = useUiStore();
   const contextMenuStore = useContextMenuStore();
   const viewStore = useViewStore();
+  const themeStore = useThemeStore();
 
   // Electron 윈도우 제어 함수
   const minimizeWindow = async () => {
@@ -108,7 +111,16 @@
         <span class="font-logo ml-4 text-xs font-bold text-neutral-600">Croffle</span>
       </div>
 
-      <div class="no-drag flex h-full">
+      <div class="no-drag flex h-full items-center">
+        <button
+          class="flex h-6 w-6 items-center justify-center rounded-full text-neutral-500 transition-colors hover:bg-neutral-200 hover:text-neutral-900 dark:hover:bg-neutral-500"
+          aria-label="Minimize window"
+          @click="themeStore.changeTheme"
+        >
+          <Sun v-if="themeStore.isDark" class="h-4 w-4" />
+          <Moon v-else class="h-4 w-4" />
+        </button>
+        <Separator orientation="vertical" class="mr-6 ml-4 bg-neutral-300 dark:bg-neutral-700" />
         <button
           class="flex h-full w-12 items-center justify-center text-neutral-500 transition-colors hover:bg-neutral-200 hover:text-neutral-900 dark:hover:bg-neutral-500"
           aria-label="Minimize window"
