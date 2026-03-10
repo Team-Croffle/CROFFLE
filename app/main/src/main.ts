@@ -9,8 +9,10 @@ const DEV_URL = 'http://localhost:5173';
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
-    width: 1200,
+    width: 1500,
     height: 800,
+    minWidth: 960,
+    minHeight: 600,
     frame: false,
     autoHideMenuBar: true,
     webPreferences: {

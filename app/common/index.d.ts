@@ -42,7 +42,7 @@ declare module 'croffle' {
   export interface FeatureContextMenu {
     id: string; // 메뉴의 고유 식별자 ex) add-schedule, delete-schedule
     label: string; // 메뉴에 표시될 텍스트
-    action: (...args) => void; // 메뉴 클릭 시 실행될 함수
+    action: (targetElement: HTMLElement | null) => void; // 메뉴 클릭 시 실행될 함수
     condition?: (targetElement: HTMLElement | null) => boolean;
     disabled?: boolean; // 메뉴 활성화 여부 (선택 사항)
     targetView?: string[]; // 메뉴가 표시될 대상 (viewId)

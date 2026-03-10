@@ -165,7 +165,7 @@
                 v-for="item in contextMenuStore.currentItems"
                 :key="item.id"
                 :disabled="item.disabled"
-                @click="item.action"
+                @click="item.action(contextMenuStore.activeElement)"
               >
                 {{ item.label }}
               </ContextMenuItem>

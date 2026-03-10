@@ -44,6 +44,11 @@ export function useCalendarLogic() {
     return dayCell ? dayCell.getAttribute('data-date') : null;
   };
 
+  const getClickedDateFromTarget = (target: HTMLElement): string | null => {
+    const dayCell = target.closest('.fc-daygrid-day');
+    return dayCell ? dayCell.getAttribute('data-date') : null;
+  };
+
   // 더블클릭 핸들러
   let clickCount = 0;
   let clickTimer: ReturnType<typeof setTimeout> | null = null;
@@ -81,6 +86,7 @@ export function useCalendarLogic() {
   };
   return {
     getClickedDate,
+    getClickedDateFromTarget,
     startResizeObserver,
     stopResizeObserver,
     handleDoubleClick,

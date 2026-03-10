@@ -105,7 +105,7 @@
         class="animate-in fade-in flex flex-col gap-4 duration-300 group-data-[collapsible=icon]:hidden"
       >
         <Card
-          class="border-croffle-border bg-croffle-sidebar-content overflow-hidden rounded-xl border shadow-sm"
+          class="border-croffle-border bg-croffle-sidebar-content gap-0 overflow-hidden rounded-xl border shadow-sm"
         >
           <CardHeader class="space-y-0 px-4 pt-0 pb-2">
             <CardTitle class="text-croffle-text-dark flex items-center gap-2 text-sm font-bold">
@@ -118,13 +118,16 @@
               </Badge>
             </CardTitle>
           </CardHeader>
-          <CardContent class="text-croffle-text flex min-h-25 items-center justify-center text-sm">
+          <CardContent
+            class="text-croffle-text flex min-h-25 justify-center text-sm"
+            :class="selectedSchedules.length === 0 ? 'items-center' : 'items-start'"
+          >
             <span v-if="selectedSchedules.length === 0">오늘 일정이 없습니다</span>
             <div v-else class="mt-2 flex w-full flex-col gap-1">
               <div
                 v-for="schedule in selectedSchedules"
                 :key="schedule.id"
-                class="flex cursor-pointer items-center gap-2 rounded-md p-2 transition-colors hover:bg-slate-100"
+                class="flex cursor-pointer items-center gap-2 rounded-md p-2 transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800"
                 @click="handleEditTodo(schedule.id)"
               >
                 <CheckSquare
@@ -132,13 +135,13 @@
                   @click.stop="handleToggleTodo(schedule.id)"
                 />
 
-                <span class="flex-1 truncate text-sm text-slate-700">
+                <span class="text-foreground flex-1 truncate text-sm">
                   {{ schedule.title }}
                 </span>
 
                 <Badge
                   variant="outline"
-                  class="h-4 shrink-0 px-1.5 py-0 text-[10px] text-slate-500"
+                  class="text-foreground border-sidebar-ring text-2xs h-4 shrink-0 px-1.5 py-0"
                 >
                   보통
                 </Badge>
