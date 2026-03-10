@@ -79,5 +79,10 @@ export function useCalendarLogic() {
       uiStore.openRightSidebarWithDate(dateStr);
     }
   };
-  return { getClickedDate, startResizeObserver, stopResizeObserver, handleDoubleClick };
+  return {
+    getClickedDate,
+    startResizeObserver,
+    stopResizeObserver,
+    handleDoubleClick,
+  };
 }

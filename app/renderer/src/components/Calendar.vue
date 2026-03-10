@@ -7,27 +7,20 @@
   import { useScheduleStore } from '@/stores/scheduleStore';
   import { storeToRefs } from 'pinia';
   import { useCalendarLogic } from '@/composables/useCalendarLogic';
-  // import { useContextMenuStore } from '@/stores/contextMenuStore';
-  // import { useUiStore } from '@/stores/uiStore';
+  import { useContextMenuStore } from '@/stores/contextMenuStore';
 
   // pinia store 연결
   const scheduleStore = useScheduleStore();
   const { events } = storeToRefs(scheduleStore);
-  // const contextMenuStore = useContextMenuStore();
-  // const uiStore = useUiStore();
 
-  // // 날짜 위치 저장 변수(우클릭 시 컨텍스트 메뉴 위치 지정용)
-  // const selectedDate = ref<string | null>(null);
-
+  // 캘린더 ref
   const fullCalendarRef = ref<InstanceType<typeof FullCalendar> | null>(null);
   const calendarContainerRef = ref<HTMLElement | null>(null);
 
-  const {
-    startResizeObserver,
-    stopResizeObserver,
-    handleDoubleClick,
-    // getClickedDate
-  } = useCalendarLogic();
+  const contextMenuStore = useContextMenuStore();
+
+  const { startResizeObserver, stopResizeObserver, handleDoubleClick, getClickedDate } =
+    useCalendarLogic();
 
   // 캘린더 리사이징
   onMounted(() => {
@@ -39,44 +32,15 @@
   });
 
   // 우클릭 핸들러
-  // const handleContextMenu = (e: MouseEvent) => {
-  //   // 클릭된 요소가 날짜인지 확인
-  //   const date = getClickedDate(e);
-
-  //   if (date) {
-  //     contextMenuStore.registerMenus([
-  //       {
-  //         id: 'add-schedule',
-  //         label: `${date} 일정 추가`,
-  //         action: () => {
-  //           uiStore.openRightSidebarWithDate(date); // 추후 일정 추가 폼으로 연결하도록 수정 예정
-  //         },
-  //       },
-  //       {
-  //         id: 'view-schedule',
-  //         label: '해당 일자 보기',
-  //         action: () => {
-  //           uiStore.openRightSidebarWithDate(date);
-  //         },
-  //       },
-  //       {
-  //         id: 'delete-schedule',
-  //         label: '일정 삭제 (준비중)',
-  //         action: () => {
-  //           // 추후 일정 삭제 기능 구현 시 연결
-  //         },
-  //         disabled: true, // 아직 기능이 없으니 비활성화 처리 예시
-  //       },
-  //     ]);
-  //   } else {
-  //     // 날짜 영역 밖은 컨텍스트 메뉴 비활성화
-  //     selectedDate.value = null;
-  //     contextMenuStore.unregisterMenus('add-schedule', 'view-schedule', 'delete-schedule');
-  //     // 컨텍스트 메뉴 초기화
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //   }
-  // };
+  const handleContextMenu = (e: MouseEvent) => {
+    // 클릭된 날짜 가져오기
+    const dateStr = getClickedDate(e);
+    if (dateStr && fullCalendarRef.value) {
+      // 우클릭한 날짜를 선택 상태로 변경
+      const calendarApi = fullCalendarRef.value.getApi();
+      calendarApi.select(dateStr);
+    }
+  };
 
   // fullCalendar 옵션 설정
   const calendarOptions = reactive<CalendarOptions>({
@@ -112,6 +76,22 @@
     selectable: true, // 날짜 선택 가능
     dateClick: (info) => handleDoubleClick(info.dateStr), // 날짜 클릭 핸들러
     eventClick: (info) => handleDoubleClick(info.event.startStr), // 이벤트 클릭 핸들러
+    eventDidMount: (info) => {
+      info.el.addEventListener('contextmenu', () => {
+        contextMenuStore.registerMenu({
+          id: 'delete-schedule',
+          label: '일정 삭제 (준비중)',
+          action: () => {
+            // 추후 일정 삭제 기능 구현 시 연결
+          },
+          condition: () => {
+            return !info.event.extendedProps.id;
+          },
+          targetView: ['calendar'],
+          disabled: true, // 아직 기능이 없으니 비활성화 처리 예시
+        });
+      });
+    },
 
     windowResizeDelay: 0,
     handleWindowResize: false, // 수동으로 크기 조정 처리
@@ -129,7 +109,11 @@
 </script>
 
 <template>
-  <div ref="calendarContainerRef" class="calendar-card flex h-full flex-col">
+  <div
+    ref="calendarContainerRef"
+    class="calendar-card flex h-full flex-col"
+    @contextmenu="handleContextMenu"
+  >
     <FullCalendar ref="fullCalendarRef" :options="calendarOptions" class="h-full w-full flex-1" />
   </div>
 </template>
@@ -221,10 +205,12 @@
     text-decoration: none;
   }
   /* 공휴일 컬러 */
-  :deep(.fc-day-sun .fc-col-header-cell-cushion) {
+  :deep(.fc-day-sun .fc-col-header-cell-cushion),
+  :deep(.fc-day-sun .fc-daygrid-day-number) {
     color: var(--croffle-red);
   }
-  :deep(.fc-day-sat .fc-col-header-cell-cushion) {
+  :deep(.fc-day-sat .fc-col-header-cell-cushion),
+  :deep(.fc-day-sat .fc-daygrid-day-number) {
     color: var(--croffle-blue);
   }
 
@@ -275,6 +261,10 @@
     align-items: center;
     cursor: default;
     user-select: none;
+  }
+
+  :deep(.fc-event::after) {
+    border-radius: 10px;
   }
 
   :deep(.fc-event-main) {

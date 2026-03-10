@@ -26,17 +26,4 @@ export const defaultMenus: FeatureContextMenu[] = [
     },
     targetView: ['calendar'],
   },
-  {
-    id: 'delete-schedule',
-    label: '일정 삭제 (준비중)',
-    action: () => {
-      // 추후 일정 삭제 기능 구현 시 연결
-    },
-    condition: (target) => {
-      if (!target) return false;
-      return target.closest('[data-date]') !== null;
-    },
-    targetView: ['calendar'],
-    disabled: true, // 아직 기능이 없으니 비활성화 처리 예시
-  },
 ];
