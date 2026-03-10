@@ -46,8 +46,8 @@
   });
 
   // 화면에 보여줄 상태값들을 computed로 자동 계산
-  const todayCount = computed(() => selectedSchedules.value.length);
-  const hasTodayEvent = computed(() => todayCount.value > 0);
+  // const todayCount = computed(() => selectedSchedules.value.length);
+  // const hasTodayEvent = computed(() => todayCount.value > 0);
 
   // 더미 핸들러 - 실제로는 일정 토글/편집 로직이 들어가야 함
   const handleToggleTodo = (scheduleId: string) => {
@@ -112,12 +112,12 @@
               <Badge
                 class="bg-croffle-sidebar text-croffle-text-dark ml-auto h-5 rounded-md px-1.5"
               >
-                {{ todayCount || 0 }}
+                {{ selectedSchedules.length }}
               </Badge>
             </CardTitle>
           </CardHeader>
           <CardContent class="text-croffle-text flex min-h-25 items-center justify-center text-sm">
-            <span v-if="!hasTodayEvent">오늘 일정이 없습니다</span>
+            <span v-if="selectedSchedules.length === 0">오늘 일정이 없습니다</span>
             <div v-else class="mt-2 flex w-full flex-col gap-1">
               <div
                 v-for="schedule in selectedSchedules"
