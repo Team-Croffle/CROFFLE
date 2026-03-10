@@ -7,7 +7,6 @@
   import { useScheduleStore } from '@/stores/scheduleStore';
   import { storeToRefs } from 'pinia';
   import { useCalendarLogic } from '@/composables/useCalendarLogic';
-  import { useContextMenuStore } from '@/stores/contextMenuStore';
 
   // pinia store 연결
   const scheduleStore = useScheduleStore();
@@ -16,8 +15,6 @@
   // 캘린더 ref
   const fullCalendarRef = ref<InstanceType<typeof FullCalendar> | null>(null);
   const calendarContainerRef = ref<HTMLElement | null>(null);
-
-  const contextMenuStore = useContextMenuStore();
 
   const { startResizeObserver, stopResizeObserver, handleDoubleClick, getClickedDate } =
     useCalendarLogic();
@@ -76,22 +73,6 @@
     selectable: true, // 날짜 선택 가능
     dateClick: (info) => handleDoubleClick(info.dateStr), // 날짜 클릭 핸들러
     eventClick: (info) => handleDoubleClick(info.event.startStr), // 이벤트 클릭 핸들러
-    eventDidMount: (info) => {
-      info.el.addEventListener('contextmenu', () => {
-        contextMenuStore.registerMenu({
-          id: 'delete-schedule',
-          label: '일정 삭제 (준비중)',
-          action: () => {
-            // 추후 일정 삭제 기능 구현 시 연결
-          },
-          condition: () => {
-            return !info.event.extendedProps.id;
-          },
-          targetView: ['calendar'],
-          disabled: true, // 아직 기능이 없으니 비활성화 처리 예시
-        });
-      });
-    },
 
     windowResizeDelay: 0,
     handleWindowResize: false, // 수동으로 크기 조정 처리
