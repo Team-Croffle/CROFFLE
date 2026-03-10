@@ -18,40 +18,36 @@
   import { storeToRefs } from 'pinia';
   import { useUiStore } from '@/stores/uiStore';
   import HelpModal from './HelpModal.vue';
+  import { useRoute } from 'vue-router';
   // import { testMockPlugin } from '@/test/testPluginMenu';
 
   const uiStore = useUiStore();
   const { leftSidebarOpen } = storeToRefs(uiStore);
 
   const isHelpModalOpen = ref(false);
-  const pluginStore = useViewStore();
+
+  const route = useRoute();
+  const viewStore = useViewStore();
 
   // 메뉴 아이템을 computed로 정의하여, store된 state를 반영하도록 함.
   const menuItems = computed(() => {
+    console.log(route.path);
+
     const baseMenus = DEFAULT_MENU_ITEMS.map((item) => ({
       ...item,
-      active: pluginStore.activeViewId === item.id,
+      // calendar 메뉴 활성화 체크
+      active: route.path.includes(item.url),
     }));
 
-    const pluginMenus = pluginStore.menus.map((menu) => ({
-      title: menu.title,
-      subtitle: menu.subtitle,
-      icon: menu.icon,
-      id: menu.id,
-      active: pluginStore.activeViewId === menu.id,
-      url: '#',
+    const additionalMenus = viewStore.menus.map((menu) => ({
+      ...menu,
+      // 현재 URL의 viewId 파라미터가 메뉴의 id와 같으면 활성화
+      active: route.params.viewId === `${menu.id}`,
+      url: `/plugin/${menu.id}`,
     }));
 
-    return [...baseMenus, ...pluginMenus];
+    return [...baseMenus, ...additionalMenus];
   });
-
-  const handleMenuClick = (viewId: string) => {
-    // 메뉴 클릭 시, store된 state를 변경하여, 해당 view를 화면에 표시하도록 함.
-    pluginStore.setActiveView(viewId);
-    // if (viewId === 'com.test.dummy.main-view1') {
-    //   testMockPlugin();
-    // }
-  };
 </script>
 
 <template>
@@ -100,11 +96,7 @@
         <SidebarGroupContent>
           <SidebarMenu>
             <!-- <SidebarMenuItem v-for="item in menuItems" :key="item.title"> -->
-            <SidebarMenuItem
-              v-for="item in menuItems"
-              :key="item.title"
-              @click="handleMenuClick(item.id)"
-            >
+            <SidebarMenuItem v-for="item in menuItems" :key="item.title">
               <SidebarMenuButton
                 as-child
                 size="lg"
@@ -115,8 +107,8 @@
                 ]"
                 :tooltip="item.title"
               >
-                <a
-                  :href="item.url"
+                <router-link
+                  :to="item.url"
                   class="text-croffle-text flex w-full items-center py-2.5"
                   :class="[leftSidebarOpen ? 'gap-3 px-4' : 'justify-center px-0']"
                 >
@@ -141,7 +133,7 @@
                       {{ item.subtitle }}
                     </span>
                   </div>
-                </a>
+                </router-link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

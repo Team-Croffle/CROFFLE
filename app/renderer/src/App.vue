@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import Calendar from '@/components/Calendar.vue';
   import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
   import { Toaster } from '@/components/ui/sonner';
   import { Minus, PanelLeft, Square, X } from 'lucide-vue-next';
@@ -14,9 +13,8 @@
     ContextMenuItem,
   } from '@/components/ui/context-menu';
   import { useContextMenuStore } from './stores/contextMenuStore';
-  import { computed, onMounted, onUnmounted } from 'vue';
+  import { onMounted, onUnmounted } from 'vue';
   import { useViewStore } from './stores/viewStore';
-  import PluginViewContainer from './components/PluginViewContainer.vue';
   // import { mockPluginsList } from './test/testPluginMenu';
 
   const uiStore = useUiStore();
@@ -33,10 +31,6 @@
   const closeWindow = async () => {
     croffle.base.windows.close();
   };
-
-  const currentPluginRenderFn = computed(() => {
-    return viewStore.views.get(viewStore.activeViewId);
-  });
 
   const handleRegisterView = (event: Event) => {
     const customEvent = event as CustomEvent<{
@@ -135,15 +129,9 @@
         <SidebarInset class="bg-croffle-bg flex h-full flex-col">
           <ContextMenu>
             <ContextMenuTrigger as-child>
-              <!-- 캘린더 영역 -->
+              <!-- 메인 영역 -->
               <div class="flex-1 overflow-hidden p-4">
-                <!-- <Calendar /> -->
-                <Calendar v-if="viewStore.activeViewId === 'calendar'" />
-                <PluginViewContainer
-                  v-else-if="currentPluginRenderFn"
-                  :view-id="viewStore.activeViewId"
-                  :render-fn="currentPluginRenderFn"
-                />
+                <router-view />
               </div>
             </ContextMenuTrigger>
             <ContextMenuContent>
