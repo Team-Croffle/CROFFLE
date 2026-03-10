@@ -7,23 +7,27 @@
   import { useScheduleStore } from '@/stores/scheduleStore';
   import { storeToRefs } from 'pinia';
   import { useCalendarLogic } from '@/composables/useCalendarLogic';
-  import { useContextMenuStore } from '@/stores/contextMenuStore';
-  import { useUiStore } from '@/stores/uiStore';
+  // import { useContextMenuStore } from '@/stores/contextMenuStore';
+  // import { useUiStore } from '@/stores/uiStore';
 
   // pinia store 연결
   const scheduleStore = useScheduleStore();
   const { events } = storeToRefs(scheduleStore);
-  const contextMenuStore = useContextMenuStore();
-  const uiStore = useUiStore();
+  // const contextMenuStore = useContextMenuStore();
+  // const uiStore = useUiStore();
 
-  // 날짜 위치 저장 변수(우클릭 시 컨텍스트 메뉴 위치 지정용)
-  const selectedDate = ref<string | null>(null);
+  // // 날짜 위치 저장 변수(우클릭 시 컨텍스트 메뉴 위치 지정용)
+  // const selectedDate = ref<string | null>(null);
 
   const fullCalendarRef = ref<InstanceType<typeof FullCalendar> | null>(null);
   const calendarContainerRef = ref<HTMLElement | null>(null);
 
-  const { startResizeObserver, stopResizeObserver, handleDoubleClick, getClickedDate } =
-    useCalendarLogic();
+  const {
+    startResizeObserver,
+    stopResizeObserver,
+    handleDoubleClick,
+    // getClickedDate
+  } = useCalendarLogic();
 
   // 캘린더 리사이징
   onMounted(() => {
@@ -35,44 +39,44 @@
   });
 
   // 우클릭 핸들러
-  const handleContextMenu = (e: MouseEvent) => {
-    // 클릭된 요소가 날짜인지 확인
-    const date = getClickedDate(e);
+  // const handleContextMenu = (e: MouseEvent) => {
+  //   // 클릭된 요소가 날짜인지 확인
+  //   const date = getClickedDate(e);
 
-    if (date) {
-      contextMenuStore.setMenu([
-        {
-          id: 'add-schedule',
-          label: `${date} 일정 추가`,
-          action: () => {
-            uiStore.openRightSidebarWithDate(date); // 추후 일정 추가 폼으로 연결하도록 수정 예정
-          },
-        },
-        {
-          id: 'view-schedule',
-          label: '해당 일자 보기',
-          action: () => {
-            uiStore.openRightSidebarWithDate(date);
-          },
-        },
-        {
-          id: 'delete-schedule',
-          label: '일정 삭제 (준비중)',
-          action: () => {
-            // 추후 일정 삭제 기능 구현 시 연결
-          },
-          disabled: true, // 아직 기능이 없으니 비활성화 처리 예시
-        },
-      ]);
-    } else {
-      // 날짜 영역 밖은 컨텍스트 메뉴 비활성화
-      selectedDate.value = null;
-      // 컨텍스트 메뉴 초기화
-      contextMenuStore.clearMenu();
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  };
+  //   if (date) {
+  //     contextMenuStore.registerMenus([
+  //       {
+  //         id: 'add-schedule',
+  //         label: `${date} 일정 추가`,
+  //         action: () => {
+  //           uiStore.openRightSidebarWithDate(date); // 추후 일정 추가 폼으로 연결하도록 수정 예정
+  //         },
+  //       },
+  //       {
+  //         id: 'view-schedule',
+  //         label: '해당 일자 보기',
+  //         action: () => {
+  //           uiStore.openRightSidebarWithDate(date);
+  //         },
+  //       },
+  //       {
+  //         id: 'delete-schedule',
+  //         label: '일정 삭제 (준비중)',
+  //         action: () => {
+  //           // 추후 일정 삭제 기능 구현 시 연결
+  //         },
+  //         disabled: true, // 아직 기능이 없으니 비활성화 처리 예시
+  //       },
+  //     ]);
+  //   } else {
+  //     // 날짜 영역 밖은 컨텍스트 메뉴 비활성화
+  //     selectedDate.value = null;
+  //     contextMenuStore.unregisterMenus('add-schedule', 'view-schedule', 'delete-schedule');
+  //     // 컨텍스트 메뉴 초기화
+  //     e.preventDefault();
+  //     e.stopPropagation();
+  //   }
+  // };
 
   // fullCalendar 옵션 설정
   const calendarOptions = reactive<CalendarOptions>({
@@ -125,11 +129,7 @@
 </script>
 
 <template>
-  <div
-    ref="calendarContainerRef"
-    class="calendar-card flex h-full flex-col"
-    @contextmenu="handleContextMenu"
-  >
+  <div ref="calendarContainerRef" class="calendar-card flex h-full flex-col">
     <FullCalendar ref="fullCalendarRef" :options="calendarOptions" class="h-full w-full flex-1" />
   </div>
 </template>

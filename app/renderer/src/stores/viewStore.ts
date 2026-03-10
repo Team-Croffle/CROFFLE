@@ -1,22 +1,22 @@
+import type { FeatureView } from 'croffle';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
-export interface ViewMenu {
-  id: string;
-  title: string;
-  subtitle?: string;
-  icon: unknown;
-}
-
 export const useViewStore = defineStore('plugin', () => {
-  const menus = ref<ViewMenu[]>([]);
+  const menuRegistry = ref<FeatureView[]>([]);
   const views = ref<Map<string, (container: HTMLElement) => void>>(new Map());
 
-  const registerMenu = (menu: ViewMenu) => {
-    if (menus.value.find((m) => m.id === menu.id)) {
+  const registerMenu = (menu: FeatureView) => {
+    if (menuRegistry.value.find((m) => m.id === menu.id)) {
       return;
     }
-    menus.value.push(menu);
+    menuRegistry.value.push(menu);
+  };
+
+  const registerMenus = (menus: FeatureView[]) => {
+    menus.forEach((m) => {
+      registerMenu(m);
+    });
   };
 
   const registerView = (viewId: string, renderFn: (container: HTMLElement) => void) => {
@@ -27,9 +27,10 @@ export const useViewStore = defineStore('plugin', () => {
   };
 
   return {
-    menus,
+    menus: menuRegistry,
     views,
     registerMenu,
+    registerMenus,
     registerView,
   };
 });

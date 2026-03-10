@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue';
-  import { DEFAULT_MENU_ITEMS } from '@/data/dummyMenu';
+  import { DEFAULT_MENU_ITEMS } from '@/data/defaultMenus';
   import { useViewStore } from '@/stores/viewStore';
   import {
     Sidebar,
@@ -19,6 +19,7 @@
   import { useUiStore } from '@/stores/uiStore';
   import HelpModal from './HelpModal.vue';
   import { useRoute } from 'vue-router';
+  import type { FeatureView } from 'croffle';
   // import { testMockPlugin } from '@/test/testPluginMenu';
 
   const uiStore = useUiStore();
@@ -30,16 +31,14 @@
   const viewStore = useViewStore();
 
   // 메뉴 아이템을 computed로 정의하여, store된 state를 반영하도록 함.
-  const menuItems = computed(() => {
-    console.log(route.path);
-
-    const baseMenus = DEFAULT_MENU_ITEMS.map((item) => ({
+  const menuItems = computed<FeatureView[]>(() => {
+    const baseMenus: FeatureView[] = DEFAULT_MENU_ITEMS.map((item) => ({
       ...item,
       // calendar 메뉴 활성화 체크
       active: route.path.includes(item.url),
     }));
 
-    const additionalMenus = viewStore.menus.map((menu) => ({
+    const additionalMenus: FeatureView[] = viewStore.menus.map((menu) => ({
       ...menu,
       // 현재 URL의 viewId 파라미터가 메뉴의 id와 같으면 활성화
       active: route.params.viewId === `${menu.id}`,
@@ -96,7 +95,7 @@
         <SidebarGroupContent>
           <SidebarMenu>
             <!-- <SidebarMenuItem v-for="item in menuItems" :key="item.title"> -->
-            <SidebarMenuItem v-for="item in menuItems" :key="item.title">
+            <SidebarMenuItem v-for="item in menuItems" :key="item.id">
               <SidebarMenuButton
                 as-child
                 size="lg"

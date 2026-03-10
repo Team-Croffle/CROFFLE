@@ -1,7 +1,7 @@
-import type { MenuItem } from '@/types/menuitem';
+import type { FeatureView } from 'croffle';
 import { CalendarDays, ChartLine, Pencil, Users } from 'lucide-vue-next';
 
-export const DEFAULT_MENU_ITEMS: MenuItem[] = [
+export const DEFAULT_MENU_ITEMS: FeatureView[] = [
   {
     id: 'calendar',
     title: '캘린더',

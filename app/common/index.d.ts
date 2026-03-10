@@ -29,17 +29,23 @@ declare module 'croffle' {
     tags?: Tag[];
   }
 
-  export interface PluginFeatureView {
-    id: string;
-    title: string;
-    subtitle: string;
-    icon: string;
+  export interface FeatureView {
+    id: string; // 각 메뉴를 식별할 고유 ID (플러그인별 고유값)
+    title: string; // 사용자에게 보여줄 한글 제목
+    subtitle: string; // 디자인을 위한 영문 부제목
+    icon: Component; // 표시할 아이콘 컴포넌트
+    url: string; // 클릭 시 이동할 경로
+    active?: boolean; // 현재 활성화 상태 여부 (선택적)
+    pluginName?: string; // 해당 메뉴를 제공하는 플러그인 이름 (관리용)
   }
 
-  export interface PluginFeatureContextMenu {
-    target: string;
-    command: string;
-    label: string;
+  export interface FeatureContextMenu {
+    id: string; // 메뉴의 고유 식별자 ex) add-schedule, delete-schedule
+    label: string; // 메뉴에 표시될 텍스트
+    action: (...args) => void; // 메뉴 클릭 시 실행될 함수
+    condition?: (targetElement: HTMLElement | null) => boolean;
+    disabled?: boolean; // 메뉴 활성화 여부 (선택 사항)
+    targetView?: string[]; // 메뉴가 표시될 대상 (viewId)
   }
 
   export interface PluginInfo {
@@ -51,8 +57,8 @@ declare module 'croffle' {
     main?: string;
     description?: string;
     features: {
-      views?: PluginFeatureView[];
-      contextMenus?: PluginFeatureContextMenu[];
+      views?: FeatureView[];
+      contextMenus?: FeatureContextMenu[];
     };
   }
 

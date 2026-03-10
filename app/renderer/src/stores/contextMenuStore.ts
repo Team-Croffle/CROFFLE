@@ -1,34 +1,76 @@
+import type { FeatureContextMenu } from 'croffle';
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
-
-export interface ContextMenuItem {
-  id: string; // 메뉴의 고유 식별자 ex) add-schedule, delete-schedule
-  label: string; // 메뉴에 표시될 텍스트
-  action: () => void; // 메뉴 클릭 시 실행될 함수
-  disabled?: boolean; // 메뉴 활성화 여부 (선택 사항)
-}
+import { computed, ref, shallowRef } from 'vue';
+import { useRoute } from 'vue-router';
 
 export const useContextMenuStore = defineStore('contextMenu', () => {
   // 현재 열려 있는 컨텍스트 메뉴의 아이템 목록
-  const items = ref<ContextMenuItem[]>([]);
+  const menuRegistry = ref<FeatureContextMenu[]>([]);
 
-  const setMenu = (newItems: ContextMenuItem[]) => {
-    items.value = newItems;
+  const route = useRoute();
+  const activeElement = shallowRef<HTMLElement | null>(null);
+
+  const currentItems = computed(() => {
+    let currentTarget = 'calendar'; // default;
+
+    if (route.path.startsWith('/plugin/') && route.params.viewId) {
+      currentTarget = route.params.viewId as string;
+    } else if (route.name) {
+      currentTarget = route.name as string;
+    }
+
+    return menuRegistry.value.filter((item) => {
+      if (!item.targetView || item.targetView.length === 0) {
+        return true;
+      }
+
+      const viewMatch = item.targetView.includes(currentTarget);
+      // targetViews가 없거나 global이 있으면 전역 메뉴로 취급
+      if (!viewMatch) {
+        return false;
+      }
+
+      if (item.condition) {
+        return item.condition(activeElement.value);
+      }
+
+      return true;
+    });
+  });
+
+  const registerMenu = (menu: FeatureContextMenu) => {
+    const existingIndex = menuRegistry.value.findIndex((m) => m.id === menu.id);
+    if (existingIndex !== -1) {
+      menuRegistry.value[existingIndex] = menu;
+    } else {
+      menuRegistry.value.push(menu);
+    }
   };
 
-  const clearMenu = () => {
-    items.value = [];
+  const registerMenus = (menus: FeatureContextMenu[]) => {
+    menus.forEach((m) => registerMenu(m));
   };
 
-  // 기존 메뉴는 유지하면서 항목만 추가할 때 사용 (추후 플러그인 확장용)
-  const addItems = (newItems: ContextMenuItem[]) => {
-    items.value = [...items.value, ...newItems];
+  const unregisterMenu = (menuId: string) => {
+    menuRegistry.value = menuRegistry.value.filter((m) => m.id !== menuId);
+  };
+
+  const unregisterMenus = (...menuId: string[]) => {
+    menuRegistry.value = menuRegistry.value.filter((m) => !menuId.includes(m.id));
+  };
+
+  const setActiveElement = (el: HTMLElement | null) => {
+    activeElement.value = el;
   };
 
   return {
-    items,
-    setMenu,
-    clearMenu,
-    addItems,
+    menuRegistry,
+    currentItems,
+    activeElement,
+    registerMenu,
+    registerMenus,
+    unregisterMenu,
+    unregisterMenus,
+    setActiveElement,
   };
 });

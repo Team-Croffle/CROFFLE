@@ -15,6 +15,7 @@
   import { useContextMenuStore } from './stores/contextMenuStore';
   import { onMounted, onUnmounted } from 'vue';
   import { useViewStore } from './stores/viewStore';
+  import { defaultMenus } from './data/defaultContextMenus';
   // import { mockPluginsList } from './test/testPluginMenu';
 
   const uiStore = useUiStore();
@@ -43,26 +44,39 @@
     viewStore.registerView(viewId, renderFn);
   };
 
-  onMounted(async () => {
+  const registerDefaultContextMenu = () => {
+    contextMenuStore.registerMenus(defaultMenus);
+  };
+
+  const setPluginMenus = async () => {
     // 이벤트로 플러그인 호출 동작 매핑
     window.addEventListener('plugin:register-view', handleRegisterView);
 
     // 일단 껍데기만 확인
     const pluginList = await croffle.base.pluginInfo.getEnabled();
-
     // test용
     // const pluginList = mockPluginsList;
 
     pluginList.forEach((p) => {
       const views = p.features.views;
       if (views) {
-        views.forEach((v) => {
-          // 메뉴만 register. 실제 view는 PluginLoader에서 등록됨.
-          // 이후, 사용자가 해당 메뉴를 클릭하면, 등록된 렌더링 함수가 호출됨.
-          viewStore.registerMenu(v);
-        });
+        viewStore.registerMenus(views);
+      }
+
+      const contextMenus = p.features.contextMenus;
+      if (contextMenus) {
+        contextMenuStore.registerMenus(contextMenus);
       }
     });
+  };
+
+  const handleContextMenuEvent = (e: MouseEvent) => {
+    contextMenuStore.setActiveElement(e.target as HTMLElement);
+  };
+
+  onMounted(async () => {
+    registerDefaultContextMenu();
+    await setPluginMenus();
   });
 
   onUnmounted(() => {
@@ -130,19 +144,22 @@
           <ContextMenu>
             <ContextMenuTrigger as-child>
               <!-- 메인 영역 -->
-              <div class="flex-1 overflow-hidden p-4">
+              <div class="flex-1 overflow-hidden p-4" @contextmenu="handleContextMenuEvent">
                 <router-view />
               </div>
             </ContextMenuTrigger>
-            <ContextMenuContent>
+            <ContextMenuContent v-if="contextMenuStore.currentItems.length > 0">
               <ContextMenuItem
-                v-for="item in contextMenuStore.items"
+                v-for="item in contextMenuStore.currentItems"
                 :key="item.id"
                 :disabled="item.disabled"
                 @click="item.action"
               >
                 {{ item.label }}
               </ContextMenuItem>
+            </ContextMenuContent>
+            <ContextMenuContent v-else>
+              <ContextMenuItem disabled>등록된 동작이 없습니다.</ContextMenuItem>
             </ContextMenuContent>
           </ContextMenu>
         </SidebarInset>
