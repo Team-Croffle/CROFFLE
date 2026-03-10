@@ -107,9 +107,9 @@
   <Dialog :open="open" @update:open="handleClose">
     <DialogContent
       v-if="currentStepData"
-      class="border-croffle-border overflow-hidden rounded-xl bg-white p-0 shadow-lg sm:max-w-md"
+      class="border-croffle-border bg-croffle-bg overflow-hidden rounded-xl p-0 shadow-lg sm:max-w-md"
     >
-      <div class="h-1.5 w-full overflow-hidden bg-gray-100">
+      <div class="h-1.5 w-full overflow-hidden bg-neutral-100 dark:bg-neutral-500">
         <div
           class="bg-croffle-primary h-full transition-all duration-500 ease-in-out"
           :style="{ width: `${((currentStep + 1) / totalSteps) * 100}%` }"
@@ -128,13 +128,13 @@
             {{ currentStepData.title }}
           </DialogTitle>
 
-          <DialogDescription class="pt-1 font-medium text-gray-500">
+          <DialogDescription class="text-croffle-text pt-1 font-medium">
             {{ currentStepData.description }}
           </DialogDescription>
         </DialogHeader>
 
         <div
-          class="my-6 flex min-h-20 items-center justify-center text-center text-sm leading-relaxed whitespace-pre-line text-gray-600"
+          class="my-6 flex min-h-20 items-center justify-center text-center text-sm leading-relaxed whitespace-pre-line text-neutral-400"
         >
           {{ currentStepData.content }}
         </div>
@@ -142,7 +142,7 @@
         <div class="flex items-center justify-between pt-2">
           <button
             v-if="currentStep > 0"
-            class="flex items-center gap-1 text-sm font-medium text-gray-400 transition-colors hover:text-gray-600"
+            class="text-croffle-text flex items-center gap-1 text-sm font-medium transition-colors hover:text-neutral-600"
             @click="prevStep"
           >
             <ChevronLeft class="h-4 w-4" />
@@ -153,7 +153,7 @@
           <div v-else></div>
 
           <button
-            class="bg-croffle-primary hover:bg-opacity-90 flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-bold text-white shadow-md transition-all"
+            class="bg-croffle-primary hover:bg-opacity-90 hover:bg-croffle-hover flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-bold text-white shadow-md transition-all"
             @click="nextStep"
           >
             {{ currentStep === totalSteps - 1 ? '확인' : '다음' }}

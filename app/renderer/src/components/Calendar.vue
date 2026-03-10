@@ -122,10 +122,10 @@
   /* 캘린더 전체 틀 */
   .calendar-card {
     background-color: var(--card);
-    padding: 15px;
+    padding: calc(var(--spacing) * 4);
     border: 1px solid var(--croffle-border);
-    border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border-radius: var(--radius-3xl);
+    box-shadow: 0 var(--spacing) calc(var(--spacing) * 5) rgba(0, 0, 0, 0.05);
   }
 
   /* FullCalendar 본체 */
@@ -135,67 +135,76 @@
   }
 
   /* 헤더(제목+버튼) */
-  :deep(.fc-header-toolbar) {
-    margin-bottom: 10px !important;
-    padding: 0 10px;
+  :deep(.fc .fc-toolbar.fc-header-toolbar) {
+    margin-bottom: calc(var(--spacing) * 2.5);
+    padding: 0 calc(var(--spacing) * 2.5);
   }
 
   /* 제목 스타일 */
   :deep(.fc-toolbar-title) {
-    font-size: 1.5rem;
+    font-size: var(--text-2xl);
     font-weight: 700;
     color: var(--croffle-primary);
   }
 
   /* 버튼 그룹 */
   :deep(.fc-button-group) {
-    display: flex !important;
-    gap: 8px !important;
+    display: flex;
+    gap: calc(var(--spacing) * 2);
   }
 
   /* 개별 버튼 디자인 */
   :deep(.fc-button) {
     background-color: transparent;
-    border: 1px solid var(--croffle-border) !important;
+    border: 1px solid var(--croffle-border);
     color: var(--croffle-text);
     font-weight: 500;
-    border-radius: 8px !important;
-    margin: 0 !important;
-    box-shadow: none !important;
-    padding: 6px 12px;
+    border-radius: var(--radius-lg) !important;
+    margin: 0;
+    box-shadow: none;
+    padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 3);
     transition: all 0.2s ease;
+  }
+
+  :deep(.fc-button:first-child),
+  :deep(.fc-button:last-child) {
+    padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 1.5);
   }
 
   :deep(.fc-button:hover) {
     background-color: var(--croffle-bg);
     color: var(--croffle-primary);
-    border-color: var(--croffle-primary) !important;
+    border-color: var(--croffle-primary);
   }
 
   :deep(.fc-button:disabled) {
-    background-color: var(--croffle-disabled) !important;
-    border-color: var(--croffle-border) !important;
-    color: var(--croffle-muted) !important;
-    opacity: 1 !important;
+    background-color: var(--croffle-disabled);
+    border-color: var(--croffle-border);
+    color: var(--croffle-muted);
+    opacity: 1;
     cursor: not-allowed;
   }
 
   /* '오늘' 버튼 등 활성 상태 */
   :deep(.fc-button-primary:not(:disabled).fc-button-active),
   :deep(.fc-button-primary:not(:disabled):active) {
-    background-color: var(--croffle-hover) !important;
-    color: var(--croffle-primary) !important;
-    border-color: var(--croffle-primary) !important;
+    background-color: var(--croffle-hover);
+    color: var(--croffle-primary);
+    border-color: var(--croffle-primary);
     box-shadow: inset 0 0 0 1px var(--croffle-primary) !important;
+  }
+
+  :deep(.fc-button-primary:focus) {
+    box-shadow: none;
   }
 
   /* 요일 헤더*/
   :deep(.fc-col-header-cell) {
     background-color: var(--croffle-bg);
-    padding: 8px 0;
-    border: none !important;
+    padding: calc(var(--spacing) * 2) 0;
+    border: none;
     /* 요일 아래쪽 구분선 */
-    border-bottom: 1px solid var(--croffle-border) !important;
+    border-bottom: 1px solid var(--croffle-border);
   }
 
   /* 요일 텍스트 스타일 */
@@ -218,15 +227,19 @@
   :deep(.fc-theme-standard td),
   :deep(.fc-theme-standard th),
   :deep(.fc-scrollgrid) {
-    border-left: none !important;
-    border-right: none !important;
-    border-top: none !important;
-    border-bottom: 1px solid var(--croffle-border) !important;
+    border: none;
+    border-bottom: 1px solid var(--croffle-border);
   }
 
   /* 오늘 날짜 표시 (칸 전체 하이라이트) */
-  :deep(.fc-day-today) {
-    background-color: var(--croffle-today-bg) !important;
+  :deep(.fc .fc-daygrid-day.fc-day-today) {
+    background-color: var(--croffle-today-bg);
+    border-radius: var(--radius-2xl);
+  }
+
+  :deep(.fc-highlight) {
+    background-color: var(--croffle-day-select-bg);
+    border-radius: var(--radius-2xl);
   }
 
   /* 오늘 날짜 숫자 스타일 */

@@ -104,7 +104,9 @@
       <div
         class="animate-in fade-in flex flex-col gap-4 duration-300 group-data-[collapsible=icon]:hidden"
       >
-        <Card class="border-croffle-border overflow-hidden rounded-xl border bg-white/80 shadow-sm">
+        <Card
+          class="border-croffle-border bg-croffle-sidebar-content overflow-hidden rounded-xl border shadow-sm"
+        >
           <CardHeader class="space-y-0 px-4 pt-0 pb-2">
             <CardTitle class="text-croffle-text-dark flex items-center gap-2 text-sm font-bold">
               <Calendar class="h-4 w-4" />
@@ -145,7 +147,9 @@
           </CardContent>
         </Card>
 
-        <Card class="border-croffle-border overflow-hidden rounded-xl border bg-white/80 shadow-sm">
+        <Card
+          class="border-croffle-border bg-croffle-sidebar-content overflow-hidden rounded-xl border shadow-sm"
+        >
           <CardHeader class="space-y-0 px-4 pt-0 pb-2">
             <CardTitle class="text-croffle-text-dark flex items-center gap-2 text-sm font-bold">
               <Clock class="h-4 w-4" />
@@ -161,7 +165,7 @@
 
     <SidebarFooter class="bg-croffle-sidebar shrink-0 flex-col items-center justify-center pb-4">
       <div
-        class="border-croffle-border mb-4 flex w-full flex-col items-center justify-center rounded-xl border bg-white/50 p-4 shadow-sm group-data-[collapsible=icon]:border-none group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:shadow-none"
+        class="border-croffle-border bg-croffle-sidebar-content-disabled mb-4 flex w-full flex-col items-center justify-center rounded-xl border p-4 shadow-sm group-data-[collapsible=icon]:border-none group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:shadow-none"
       >
         <Home
           class="text-croffle-primary mb-1 h-6 w-6 group-data-[collapsible=icon]:h-5 group-data-[collapsible=icon]:w-5"

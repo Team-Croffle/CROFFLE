@@ -96,13 +96,13 @@
           <Button
             variant="ghost"
             size="icon"
-            class="no-drag h-7 w-7 text-gray-500"
+            class="no-drag h-7 w-7 text-neutral-500"
             @click="uiStore.toggleLeftSidebar()"
           >
             <PanelLeft class="h-4 w-4" />
           </Button>
 
-          <div class="absolute right-0 h-4 w-px bg-gray-300"></div>
+          <div class="absolute right-0 h-4 w-px bg-neutral-300"></div>
         </div>
 
         <span class="font-logo ml-4 text-xs font-bold text-neutral-600">Croffle</span>
@@ -110,7 +110,7 @@
 
       <div class="no-drag flex h-full">
         <button
-          class="flex h-full w-12 items-center justify-center text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-900"
+          class="flex h-full w-12 items-center justify-center text-neutral-500 transition-colors hover:bg-neutral-200 hover:text-neutral-900 dark:hover:bg-neutral-500"
           aria-label="Minimize window"
           @click="minimizeWindow"
         >
@@ -118,7 +118,7 @@
         </button>
 
         <button
-          class="flex h-full w-12 items-center justify-center text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-900"
+          class="flex h-full w-12 items-center justify-center text-neutral-500 transition-colors hover:bg-neutral-200 hover:text-neutral-900 dark:hover:bg-neutral-500"
           aria-label="Maximize window"
           @click="maximizeWindow"
         >
@@ -126,7 +126,7 @@
         </button>
 
         <button
-          class="flex h-full w-12 items-center justify-center text-gray-500 transition-colors hover:bg-red-600 hover:text-red-100"
+          class="flex h-full w-12 items-center justify-center text-neutral-500 transition-colors hover:bg-red-600 hover:text-red-100 dark:hover:bg-red-700"
           aria-label="Close window"
           @click="closeWindow"
         >
