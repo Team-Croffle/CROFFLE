@@ -4,6 +4,7 @@
   import { Minus, Moon, PanelLeft, Square, Sun, X } from 'lucide-vue-next';
   import LeftSidebar from './components/LeftSidebar.vue';
   import RightSidebar from './components/RightSidebar.vue';
+  import SettingsModal from './components/SettingsModal.vue';
   import Button from './components/ui/button/Button.vue';
   import { useUiStore } from './stores/uiStore';
   import {
@@ -13,7 +14,7 @@
     ContextMenuItem,
   } from '@/components/ui/context-menu';
   import { useContextMenuStore } from './stores/contextMenuStore';
-  import { onMounted, onUnmounted } from 'vue';
+  import { ref, onMounted, onUnmounted } from 'vue';
   import { useViewStore } from './stores/viewStore';
   import { defaultMenus } from './data/defaultContextMenus';
   import { Separator } from './components/ui/separator';
@@ -24,6 +25,9 @@
   const contextMenuStore = useContextMenuStore();
   const viewStore = useViewStore();
   const themeStore = useThemeStore();
+
+  // 설정 모달 상태
+  const isSettingsOpen = ref(false);
 
   // Electron 윈도우 제어 함수
   const minimizeWindow = async () => {
@@ -151,7 +155,7 @@
     <div class="relative min-h-0 flex-1">
       <!-- 사이드바 및 캘린더 -->
       <SidebarProvider class="h-full min-h-full w-full">
-        <LeftSidebar />
+        <LeftSidebar @open-settings="isSettingsOpen = true" />
         <SidebarInset class="bg-croffle-bg flex h-full flex-col">
           <ContextMenu>
             <ContextMenuTrigger as-child>
@@ -178,6 +182,10 @@
         <RightSidebar />
       </SidebarProvider>
     </div>
+
+    <!-- 설정 모달 -->
+    <SettingsModal :open="isSettingsOpen" @update:open="isSettingsOpen = $event" />
+
     <Toaster />
   </div>
 </template>

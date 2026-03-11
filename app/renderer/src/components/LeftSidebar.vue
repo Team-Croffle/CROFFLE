@@ -47,6 +47,9 @@
 
     return [...baseMenus, ...additionalMenus];
   });
+  const emit = defineEmits<{
+    (e: 'open-settings'): void;
+  }>();
 </script>
 
 <template>
@@ -154,6 +157,7 @@
           size="sm"
           class="hover:bg-croffle-hover flex aspect-square h-9 w-9 items-center justify-center border-none bg-transparent shadow-none ring-0 ring-offset-0 transition-colors outline-none [--sidebar-accent:transparent] focus:ring-0 focus-visible:ring-0"
           tooltip="설정"
+          @click="emit('open-settings')"
         >
           <Settings class="text-croffle-text h-5 w-5" />
         </SidebarMenuButton>
