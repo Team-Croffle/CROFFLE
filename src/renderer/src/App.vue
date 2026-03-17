@@ -81,6 +81,12 @@
     contextMenuStore.setActiveElement(e.target as HTMLElement);
   };
 
+  const handleMenuOpenChange = (isOpen: boolean) => {
+    if (!isOpen) {
+      contextMenuStore.setActiveElement(null); // 우클릭 메뉴가 닫힐 때 activeElement 초기화
+    }
+  };
+
   onMounted(async () => {
     registerDefaultContextMenu();
     await setPluginMenus();
@@ -157,7 +163,7 @@
       <SidebarProvider class="h-full min-h-full w-full">
         <LeftSidebar @open-settings="isSettingsOpen = true" />
         <SidebarInset class="bg-croffle-bg flex h-full flex-col">
-          <ContextMenu>
+          <ContextMenu @update:open="handleMenuOpenChange">
             <ContextMenuTrigger as-child>
               <!-- 메인 영역 -->
               <div class="flex-1 overflow-hidden p-4" @contextmenu="handleContextMenuEvent">
