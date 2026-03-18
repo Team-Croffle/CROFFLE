@@ -5,6 +5,7 @@ dist
 out
 .pnp
 .pnp.js
+.yarn/install-state.gz
 
 # Local env files
 .env
@@ -23,10 +24,7 @@ coverage
 .vercel
 
 # Build Outputs
-.next/
 out/
-build
-dist
 
 
 # Debug
