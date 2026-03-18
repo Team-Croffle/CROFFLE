@@ -236,8 +236,8 @@
 .fc .fc-button .fc-icon-chevron-left,
 .fc .fc-button .fc-icon-chevron-right {
   display: inline-block;
-  width: 2.5rem;
-  height: 2.5em;
+  width: calc(var(--spacing) * 5);
+  height: calc(var(--spacing) * 5);
   background-color: currentColor;
   -webkit-mask-size: contain;
   -webkit-mask-repeat: no-repeat;
