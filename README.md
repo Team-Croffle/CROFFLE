@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./icons/Logo2Only.png" width="150" />
+  <img src="./.github/contents/icon.png" width="150" />
 
 # CROFFLE
 
@@ -62,7 +62,7 @@ Download the installer for your operating system from the [Latest Release Page](
 
 ### Build and Run
 
-This project is managed using `npm` and `TurboRepo`.
+This project is managed using Yarn. Make sure you have it installed before proceeding.
 
 ```bash
 # 1. Clone the repository
@@ -70,23 +70,10 @@ git clone [https://github.com/croffledev/croffle.git](https://github.com/croffle
 cd croffle
 
 # 2. Install dependencies
-npm ci
+yarn install --immutable
 
-# 3. Build 'common' workspace to define types for development
-npm run build --workspace=@croffledev/croffle-common
-
-# 4. Run in development mode
-npm run dev
-
-# (4. Alternatively, run renderer and main processes separately)
-# Terminal 1
-cd ./app/renderer
-npm ci
-npm run dev
-# Terminal 2
-cd ./app/main
-npm i
-npm run dev
+# 3. Run in development mode
+yarn dev
 ```
 
 ### Plugin Development
