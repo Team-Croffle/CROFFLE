@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import { windows } from 'croffle';
+import { windows } from '@croffledev/croffle-types';
 
 type WindowAPI = typeof windows;
 
@@ -10,5 +10,6 @@ export const windowApi = {
   close: () => ipcRenderer.invoke('window:close'),
   exitApp: () => ipcRenderer.invoke('window:exitApp'),
   checkForUpdates: () => ipcRenderer.invoke('window:checkForUpdates'),
-  setCloseToTrayMode: (enabled: boolean) => ipcRenderer.invoke('window:setCloseToTrayMode', enabled),
+  setCloseToTrayMode: (enabled: boolean) =>
+    ipcRenderer.invoke('window:setCloseToTrayMode', enabled),
 } satisfies WindowAPI;

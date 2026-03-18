@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import { Tag, tags } from 'croffle';
+import { Tag, tags } from '@croffledev/croffle-types';
 
 type TagAPI = typeof tags;
 

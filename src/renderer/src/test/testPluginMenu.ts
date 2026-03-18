@@ -1,6 +1,6 @@
 import { useViewStore } from '@/stores/viewStore';
 import { Box } from 'lucide-vue-next';
-import type { PluginInfo } from 'croffle';
+import type { PluginInfo } from '@croffledev/croffle-types';
 
 const pluginId = 'com.test.dummy';
 const viewId = `${pluginId}.main-view1`;
@@ -13,6 +13,7 @@ export const initTestPlugin = () => {
     subtitle: 'test',
     icon: Box,
     id: viewId,
+    url: '',
   });
 
   pluginStore.registerView(viewId, (container: HTMLElement) => {
@@ -57,6 +58,7 @@ export const mockPluginsList: PluginInfo[] = [
           title: '더미 플러그인',
           subtitle: '테스트용',
           icon: 'icon',
+          url: '',
         },
       ],
       contextMenus: [],

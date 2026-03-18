@@ -1,4 +1,4 @@
-import { AppSettings, settings } from 'croffle';
+import { AppSettings, settings } from '@croffledev/croffle-types';
 import { ipcRenderer } from 'electron';
 
 type SettingsAPI = typeof settings;

@@ -1,5 +1,10 @@
 import { ipcRenderer } from 'electron';
-import { ClipboardImageData, ClipboardResult, ClipboardTextData, os } from 'croffle';
+import {
+  ClipboardImageData,
+  ClipboardResult,
+  ClipboardTextData,
+  os,
+} from '@croffledev/croffle-types';
 
 type OsApi = typeof os;
 

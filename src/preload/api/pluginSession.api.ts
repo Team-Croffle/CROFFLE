@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import { PluginSessionAPI } from 'croffle';
+import { PluginSessionAPI } from '@croffledev/croffle-types';
 
 export const pluginSessionApi = {
   get: <T = unknown>(pluginId: string, key: string): Promise<T | null> => {

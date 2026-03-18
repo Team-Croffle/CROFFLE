@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import { PluginInfo, pluginInfo } from 'croffle';
+import { PluginInfo, pluginInfo } from '@croffledev/croffle-types';
 
 type PluginInfoAPI = typeof pluginInfo;
 
