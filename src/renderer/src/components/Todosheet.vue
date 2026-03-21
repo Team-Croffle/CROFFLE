@@ -18,7 +18,7 @@
   import { useUiStore } from '@/stores/uiStore';
   import { storeToRefs } from 'pinia';
   import { useScheduleStore } from '@/stores/scheduleStore';
-  import type { Schedule } from 'croffle';
+  import type { Schedule } from '@croffledev/croffle-types';
   // import type { Tag } from 'croffle';
 
   // 스토어 연결
