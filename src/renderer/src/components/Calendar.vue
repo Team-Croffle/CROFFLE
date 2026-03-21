@@ -7,6 +7,7 @@
   import { useScheduleStore } from '@/stores/scheduleStore';
   import { storeToRefs } from 'pinia';
   import { useCalendarLogic } from '@/composables/useCalendarLogic';
+  import dayjs from 'dayjs';
 
   // pinia store 연결
   const scheduleStore = useScheduleStore();
@@ -16,8 +17,13 @@
   const fullCalendarRef = ref<InstanceType<typeof FullCalendar> | null>(null);
   const calendarContainerRef = ref<HTMLElement | null>(null);
 
-  const { startResizeObserver, stopResizeObserver, handleDoubleClick, getClickedDate } =
-    useCalendarLogic();
+  const {
+    startResizeObserver,
+    stopResizeObserver,
+    handleDateDoubleClick,
+    handleEventDoubleClick,
+    getClickedDate,
+  } = useCalendarLogic();
 
   // 캘린더 리사이징
   onMounted(() => {
@@ -71,8 +77,18 @@
 
     editable: false, // 이벤트 드래그 가능
     selectable: true, // 날짜 선택 가능
-    dateClick: (info) => handleDoubleClick(info.dateStr), // 날짜 클릭 핸들러
-    eventClick: (info) => handleDoubleClick(info.event.startStr), // 이벤트 클릭 핸들러
+    dateClick: (info) => handleDateDoubleClick(info.dateStr), // 날짜 클릭 핸들러
+    eventClick: (info) => handleEventDoubleClick(info.event.id || info.event.startStr), // 이벤트 클릭 핸들러
+    eventDidMount: (info) => {
+      info.el.setAttribute('data-event-id', info.event.id);
+    },
+
+    datesSet: (info) => {
+      // 월이 변경될 때마다 호출됨
+      const start = dayjs(info.start).subtract(1, 'month').startOf('month').toISOString();
+      const end = dayjs(info.end).add(1, 'month').endOf('month').toISOString();
+      scheduleStore.loadSchedules(start, end);
+    },
 
     windowResizeDelay: 0,
     handleWindowResize: false, // 수동으로 크기 조정 처리

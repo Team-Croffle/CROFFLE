@@ -52,17 +52,17 @@ export function useCalendarLogic() {
   // 더블클릭 핸들러
   let clickCount = 0;
   let clickTimer: ReturnType<typeof setTimeout> | null = null;
-  let lastClickedDate: string | null = null; // 추가
+  let lastClickedKey: string | null = null; // 추가
 
-  const handleDoubleClick = (dateStr: string) => {
+  const handleDoubleClick = (clickKey: string, onDoubleClick: () => void) => {
     // 이전 클릭과 다른 날짜를 누르면 카운트 초기화
-    if (lastClickedDate !== dateStr) {
+    if (lastClickedKey !== clickKey) {
       if (clickTimer) {
         clearTimeout(clickTimer);
         clickTimer = null;
       }
       clickCount = 0;
-      lastClickedDate = dateStr;
+      lastClickedKey = clickKey;
     }
 
     clickCount++;
@@ -70,7 +70,7 @@ export function useCalendarLogic() {
     if (clickCount === 1) {
       clickTimer = setTimeout(() => {
         clickCount = 0;
-        lastClickedDate = null;
+        lastClickedKey = null;
         clickTimer = null;
       }, 300);
     } else if (clickCount === 2) {
@@ -79,16 +79,31 @@ export function useCalendarLogic() {
         clickTimer = null;
       }
       clickCount = 0;
-      lastClickedDate = null;
-
-      uiStore.openRightSidebarWithDate(dateStr);
+      lastClickedKey = null;
+      onDoubleClick();
     }
   };
+
+  // 날짜를 더블 클릭했을 때
+  const handleDateDoubleClick = (dateStr: string) => {
+    handleDoubleClick(`date:${dateStr}`, () => {
+      uiStore.openRightSidebarWithDate(dateStr);
+    });
+  };
+
+  // 이벤트를 더블 클릭했을 때
+  const handleEventDoubleClick = (eventId: string) => {
+    handleDoubleClick(`event:${eventId}`, () => {
+      uiStore.openTodoSheet('edit', eventId);
+    });
+  };
+
   return {
     getClickedDate,
     getClickedDateFromTarget,
     startResizeObserver,
     stopResizeObserver,
-    handleDoubleClick,
+    handleDateDoubleClick,
+    handleEventDoubleClick,
   };
 }
