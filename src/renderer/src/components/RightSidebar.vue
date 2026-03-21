@@ -12,8 +12,6 @@
   import isBetween from 'dayjs/plugin/isBetween';
   dayjs.extend(isBetween);
 
-  const emit = defineEmits(['click-add-schedule']);
-
   const uiStore = useUiStore();
   const scheduleStore = useScheduleStore();
 
@@ -49,13 +47,8 @@
   // const todayCount = computed(() => selectedSchedules.value.length);
   // const hasTodayEvent = computed(() => todayCount.value > 0);
 
-  // 더미 핸들러 - 실제로는 일정 토글/편집 로직이 들어가야 함
-  const handleToggleTodo = (scheduleId: string) => {
-    console.log('일정 토글:', scheduleId);
-  };
-
   const handleEditTodo = (scheduleId: string) => {
-    console.log('일정 편집:', scheduleId);
+    uiStore.openTodoSheet('edit', scheduleId);
   };
 </script>
 
@@ -95,7 +88,7 @@
       <div class="mt-2 flex justify-center">
         <Button
           class="bg-croffle-primary hover:bg-croffle-hover h-11 w-full rounded-lg border-none font-medium text-white shadow-sm transition-all duration-300 group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:rounded-full group-data-[collapsible=icon]:p-0"
-          @click="emit('click-add-schedule')"
+          @click="uiStore.openTodoSheet('add')"
         >
           <Plus class="h-5 w-5 transition-all" :class="rightSidebarOpen ? 'mr-1' : ''" />
           <span class="group-data-[collapsible=icon]:hidden">새 일정 추가</span>
@@ -130,10 +123,7 @@
                 class="flex cursor-pointer items-center gap-2 rounded-md p-2 transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800"
                 @click="handleEditTodo(schedule.id)"
               >
-                <CheckSquare
-                  class="text-muted-foreground h-4 w-4 shrink-0"
-                  @click.stop="handleToggleTodo(schedule.id)"
-                />
+                <CheckSquare class="text-muted-foreground h-4 w-4 shrink-0" />
 
                 <span class="text-foreground flex-1 truncate text-sm">
                   {{ schedule.title }}
