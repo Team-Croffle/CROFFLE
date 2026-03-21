@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import { ref, watch } from 'vue';
-  import { Trash2, Save, X, ChevronDown } from 'lucide-vue-next';
-  // Shadcn UI Components
+  import { Save, X, ChevronDown } from 'lucide-vue-next';
   import {
     Sheet,
     SheetContent,
@@ -12,37 +11,177 @@
   import { Button } from '@/components/ui/button';
   import { Input } from '@/components/ui/input';
   import { Label } from '@/components/ui/label';
-  // Textarea, ScrollArea 제거됨
   import { Calendar } from '@/components/ui/calendar';
   import { cn } from '@/lib/utils';
   import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-  import { CalendarDate, getLocalTimeZone, today } from '@internationalized/date';
-  // Types
-  export interface Todo {
-    id: string;
-    title: string;
-    description?: string;
-    date: string;
-    priority: 'low' | 'medium' | 'high';
-    completed: boolean;
-  }
-  interface Props {
-    open: boolean;
-    initialDate?: Date;
-    editTodo?: Todo | null;
-  }
-  const props = defineProps<Props>();
-  const emit = defineEmits<{
-    (e: 'update:open', value: boolean): void;
-    (e: 'save', todo: Omit<Todo, 'id'>): void;
-    (e: 'delete', id: string): void;
-  }>();
-  // State
+  import { CalendarDate, getLocalTimeZone } from '@internationalized/date';
+  import { useUiStore } from '@/stores/uiStore';
+  import { storeToRefs } from 'pinia';
+  import { useScheduleStore } from '@/stores/scheduleStore';
+  import type { Schedule } from 'croffle';
+  // import type { Tag } from 'croffle';
+
+  // 스토어 연결
+  const uiStore = useUiStore();
+  const scheduleStore = useScheduleStore();
+  const { isTodoSheetOpen, todoSheetMode, selectedScheduleId } = storeToRefs(uiStore);
+
+  // 우선순위 태그 관련 상수
+  // const PRIORITY_TAG_PREFIX = 'sys:priority:';
+
+  // const PRIORITY_TAG_META: Record<'low' | 'medium' | 'high', { name: string; color: string }> = {
+  //   low: { name: 'sys:priority:low', color: '#10b981' },
+  //   medium: { name: 'sys:priority:medium', color: '#f59e0b' },
+  //   high: { name: 'sys:priority:high', color: '#f43f5e' },
+  // };
+
+  const toCalendarDate = (iso: string) => {
+    const d = new Date(iso);
+    return new CalendarDate(d.getFullYear(), d.getMonth() + 1, d.getDate());
+  };
+
+  // 달력 컴포넌트에서 사용할 상태값과 함수들을 정의
+  const formatCalendarDate = (cd: CalendarDate | undefined) => {
+    if (!cd) return '날짜를 선택하세요';
+    const jsDate = cd.toDate(getLocalTimeZone());
+    return new Intl.DateTimeFormat('ko-KR', {
+      month: 'long',
+      day: 'numeric',
+      weekday: 'long',
+    }).format(jsDate);
+  };
+
+  // 태그 배열에서 우선순위 태그를 찾아 반환하는 함수
+  // const getPriorityFromTags = (tags: Tag[] | undefined): 'low' | 'medium' | 'high' => {
+  //   if (!tags || tags.length === 0) return 'medium';
+  //   const found = tags.find((t) => t.name?.startsWith(PRIORITY_TAG_PREFIX));
+  //   if (!found) return 'medium';
+
+  //   if (found.name === PRIORITY_TAG_META.low.name) return 'low';
+  //   if (found.name === PRIORITY_TAG_META.high.name) return 'high';
+  //   return 'medium';
+  // };
+
+  // const applyPriorityTag = (
+  //   tags: Tag[] | undefined,
+  //   selected: 'low' | 'medium' | 'high'
+  // ): Tag[] => {
+  //   const base = (tags ?? []).filter((t) => !t.name?.startsWith(PRIORITY_TAG_PREFIX));
+  //   const meta = PRIORITY_TAG_META[selected];
+
+  //   const priorityTag: Tag = {
+  //     id: `system-priority-${selected}`,
+  //     name: meta.name,
+  //     color: meta.color,
+  //   };
+
+  //   return [...base, priorityTag];
+  // };
+
   const title = ref('');
   const description = ref('');
+  const location = ref('');
   const priority = ref<'low' | 'medium' | 'high'>('medium');
-  const isCalendarOpen = ref(false);
-  const date = ref<CalendarDate | undefined>();
+
+  const isAllDay = ref(true);
+  const recurrenceRule = ref('');
+  const colorLabel = ref('#DCA780');
+
+  const isStartCalendarOpen = ref(false);
+  const isEndCalendarOpen = ref(false);
+  const startDate = ref<CalendarDate | undefined>();
+  const endDate = ref<CalendarDate | undefined>();
+
+  // 일정 시트가 열릴 때마다 모드에 따라 상태 초기화
+  watch(
+    () => ({
+      open: isTodoSheetOpen.value,
+      mode: todoSheetMode.value,
+      scheduleId: selectedScheduleId.value,
+    }),
+    ({ open, mode, scheduleId }) => {
+      if (!open) return;
+      // add 모드일 때는 모든 필드를 초기값으로 설정
+      if (mode === 'add') {
+        title.value = '';
+        description.value = '';
+        location.value = '';
+        priority.value = 'medium';
+        isAllDay.value = true;
+        recurrenceRule.value = '';
+        colorLabel.value = '#DCA780';
+        startDate.value = undefined;
+        endDate.value = undefined;
+        return;
+      }
+
+      // edit 모드일 때는 선택된 일정의 데이터를 불러와 상태에 반영
+      if (!scheduleId) return;
+      const schedule = scheduleStore.getScheduleById(scheduleId);
+      if (!schedule) return;
+
+      title.value = schedule.title ?? '';
+      description.value = schedule.description ?? '';
+      location.value = schedule.location ?? '';
+      isAllDay.value = schedule.isAllDay ?? true;
+      recurrenceRule.value = schedule.recurrenceRule ?? '';
+      colorLabel.value = schedule.colorLabel ?? '#DCA780';
+      startDate.value = schedule.startDate ? toCalendarDate(schedule.startDate) : undefined;
+      endDate.value = schedule.endDate ? toCalendarDate(schedule.endDate) : startDate.value;
+
+      priority.value = 'medium';
+    },
+    { immediate: true }
+  );
+
+  // 저장 버튼 핸들러
+  const handleSave = async () => {
+    if (!title.value.trim() || !startDate.value || !endDate.value) return;
+
+    const selectedStart = startDate.value.toString();
+    const selectedEnd = endDate.value.toString();
+
+    if (selectedEnd < selectedStart) return;
+
+    const payload: Partial<Schedule> = {
+      title: title.value.trim(),
+      description: description.value.trim(),
+      location: location.value.trim(),
+      startDate: selectedStart,
+      endDate: selectedEnd,
+      isAllDay: isAllDay.value,
+      recurrenceRule: undefined,
+      colorLabel: colorLabel.value || '#DCA780',
+      tags: [],
+    };
+
+    try {
+      if (todoSheetMode.value === 'add') {
+        await scheduleStore.createSchedule(payload);
+      } else {
+        if (!selectedScheduleId.value) return;
+        await scheduleStore.updateScheduleById(selectedScheduleId.value, payload);
+      }
+
+      uiStore.closeTodoSheet();
+    } catch (error) {
+      console.error('일정 저장 실패:', error);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (todoSheetMode.value !== 'edit' || !selectedScheduleId.value) return;
+
+    try {
+      const ok = await scheduleStore.removeScheduleById(selectedScheduleId.value);
+      if (ok) {
+        uiStore.closeTodoSheet();
+      }
+    } catch (error) {
+      console.error('일정 삭제 실패:', error);
+    }
+  };
+
   // Priority Options
   const priorityOptions = [
     {
@@ -64,81 +203,25 @@
       emoji: '🔴',
     },
   ] as const;
-  // Helper: JS Date -> CalendarDate
-  const toCalendarDate = (jsDate: Date): CalendarDate => {
-    return new CalendarDate(jsDate.getFullYear(), jsDate.getMonth() + 1, jsDate.getDate());
-  };
-  // Helper: Format Date
-  const formatCalendarDate = (cd: CalendarDate | undefined) => {
-    if (!cd) return '날짜를 선택하세요';
-    const jsDate = cd.toDate(getLocalTimeZone());
-    return new Intl.DateTimeFormat('ko-KR', {
-      month: 'long',
-      day: 'numeric',
-      weekday: 'long',
-    }).format(jsDate);
-  };
-  // Logic: Reset & Init
-  watch(
-    () => [props.open, props.editTodo],
-    ([isOpen]) => {
-      if (isOpen) {
-        if (props.editTodo) {
-          title.value = props.editTodo.title;
-          description.value = props.editTodo.description || '';
-          priority.value = props.editTodo.priority;
-
-          if (props.editTodo.date) {
-            const jsDate = new Date(props.editTodo.date);
-            date.value = toCalendarDate(jsDate);
-          } else {
-            date.value = today(getLocalTimeZone());
-          }
-        } else {
-          title.value = '';
-          description.value = '';
-          priority.value = 'medium';
-
-          if (props.initialDate) {
-            date.value = toCalendarDate(props.initialDate);
-          } else {
-            date.value = today(getLocalTimeZone());
-          }
-        }
-      }
-    },
-    { immediate: true }
-  );
-  const handleSave = () => {
-    if (!title.value.trim() || !date.value) return;
-    const jsDate = date.value.toDate(getLocalTimeZone());
-    emit('save', {
-      title: title.value.trim(),
-      description: description.value.trim(),
-      date: jsDate.toISOString(),
-      priority: priority.value,
-      completed: props.editTodo?.completed || false,
-    });
-    emit('update:open', false);
-  };
-  const handleDelete = () => {
-    if (props.editTodo) {
-      emit('delete', props.editTodo.id);
-      emit('update:open', false);
-    }
-  };
 </script>
 
 <template>
-  <Sheet :open="open" @update:open="(val) => emit('update:open', val)">
+  <Sheet
+    :open="isTodoSheetOpen"
+    @update:open="
+      (val) => {
+        if (!val) uiStore.closeTodoSheet();
+      }
+    "
+  >
     <SheetContent
       side="left"
-      class="bg-croffle-bg! border-croffle-border! z-50 flex w-110 flex-col gap-0 border-r p-0"
+      class="bg-croffle-bg border-croffle-border z-50 flex w-110 flex-col gap-0 border-r p-0"
     >
       <SheetHeader class="border-croffle-border bg-croffle-sidebar shrink-0 border-b px-6 py-4">
         <div class="flex items-center justify-between">
           <SheetTitle class="text-croffle-text-dark text-xl font-bold">
-            {{ editTodo ? '일정 수정' : '새 일정 추가' }}
+            {{ todoSheetMode === 'edit' ? '일정 수정' : '새 일정 추가' }}
           </SheetTitle>
         </div>
         <SheetDescription class="sr-only">일정 입력</SheetDescription>
@@ -155,7 +238,7 @@
               id="title"
               v-model="title"
               placeholder="일정 제목을 입력하세요"
-              class="border-croffle-border focus-visible:ring-croffle-primary h-11 bg-white"
+              class="border-croffle-border focus-visible:ring-croffle-primary bg-background h-11"
             />
           </div>
 
@@ -167,8 +250,43 @@
               v-model="description"
               placeholder="일정에 대한 자세한 설명을 입력하세요 (선택사항)"
               rows="4"
-              class="placeholder:text-muted-foreground focus-visible:ring-croffle-primary border-croffle-border flex w-full resize-none rounded-md border bg-white px-3 py-2 text-sm shadow-sm focus-visible:ring-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+              class="placeholder:text-muted-foreground focus-visible:ring-croffle-primary border-croffle-border bg-background flex w-full resize-none rounded-md border px-3 py-2 text-sm shadow-sm focus-visible:ring-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
             ></textarea>
+          </div>
+
+          <div class="space-y-2">
+            <Label for="location" class="text-croffle-text-dark text-sm font-medium">장소</Label>
+            <Input
+              id="location"
+              v-model="location"
+              placeholder="장소를 입력하세요 (선택사항)"
+              class="border-croffle-border focus-visible:ring-croffle-primary bg-background h-11"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <Label class="text-croffle-text-dark text-sm font-medium">종일 일정</Label>
+            <div class="flex items-center gap-2">
+              <input id="isAllDay" v-model="isAllDay" type="checkbox" class="h-4 w-4" />
+              <Label for="isAllDay" class="text-croffle-text text-sm">하루 종일</Label>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <Label for="recurrenceRule" class="text-croffle-text-dark text-sm font-medium"
+              >반복 규칙</Label
+            >
+            <Input
+              id="recurrenceRule"
+              v-model="recurrenceRule"
+              placeholder="예: FREQ=WEEKLY;BYDAY=FR"
+              class="border-croffle-border focus-visible:ring-croffle-primary bg-background h-11"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <Label for="colorLabel" class="text-croffle-text-dark text-sm font-medium">색상</Label>
+            <Input id="colorLabel" v-model="colorLabel" type="color" class="h-11 w-20 p-1" />
           </div>
 
           <div class="flex flex-col space-y-2">
@@ -176,31 +294,63 @@
               날짜 <span class="text-red-400">*</span>
             </Label>
 
-            <Popover v-model:open="isCalendarOpen">
-              <PopoverTrigger as-child>
-                <Button
-                  variant="outline"
-                  :class="
-                    cn(
-                      'border-croffle-border hover:bg-croffle-sidebar h-11 w-full justify-between bg-white text-left font-normal',
-                      !date && 'text-muted-foreground'
-                    )
-                  "
-                >
-                  <span class="text-croffle-text-dark">{{ formatCalendarDate(date) }}</span>
-                  <ChevronDown class="text-croffle-text ml-2 h-4 w-4 opacity-50" />
-                </Button>
-              </PopoverTrigger>
+            <div class="grid grid-cols-2 gap-2">
+              <Popover v-model:open="isStartCalendarOpen">
+                <PopoverTrigger as-child>
+                  <Button
+                    variant="outline"
+                    :class="
+                      cn(
+                        'border-croffle-border hover:bg-croffle-sidebar bg-background h-11 w-full justify-between text-left font-normal',
+                        !startDate && 'text-muted-foreground'
+                      )
+                    "
+                  >
+                    <span class="text-croffle-text-dark">{{ formatCalendarDate(startDate) }}</span>
+                    <ChevronDown class="text-croffle-text ml-2 h-4 w-4 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
 
-              <PopoverContent class="border-croffle-border z-100 w-auto bg-white p-0">
-                <Calendar
-                  v-model="date"
-                  mode="single"
-                  class="rounded-md border-0"
-                  @update:model-value="isCalendarOpen = false"
-                />
-              </PopoverContent>
-            </Popover>
+                <PopoverContent
+                  class="border-croffle-border bg-popover text-popover-foreground z-50 w-auto p-0"
+                >
+                  <Calendar
+                    v-model="startDate"
+                    mode="single"
+                    class="rounded-md border-0"
+                    @update:model-value="isStartCalendarOpen = false"
+                  />
+                </PopoverContent>
+              </Popover>
+
+              <Popover v-model:open="isEndCalendarOpen">
+                <PopoverTrigger as-child>
+                  <Button
+                    variant="outline"
+                    :class="
+                      cn(
+                        'border-croffle-border hover:bg-croffle-sidebar bg-background h-11 w-full justify-between text-left font-normal',
+                        !endDate && 'text-muted-foreground'
+                      )
+                    "
+                  >
+                    <span class="text-croffle-text-dark">{{ formatCalendarDate(endDate) }}</span>
+                    <ChevronDown class="text-croffle-text ml-2 h-4 w-4 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+
+                <PopoverContent
+                  class="border-croffle-border bg-popover text-popover-foreground z-50 w-auto p-0"
+                >
+                  <Calendar
+                    v-model="endDate"
+                    mode="single"
+                    class="rounded-md border-0"
+                    @update:model-value="isEndCalendarOpen = false"
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
 
           <div class="space-y-2">
@@ -214,7 +364,7 @@
                 :class="[
                   priority === option.value
                     ? `${option.color} ring-croffle-border shadow-sm ring-1 ring-offset-1`
-                    : 'border-croffle-border hover:bg-croffle-sidebar text-croffle-text bg-white',
+                    : 'border-croffle-border hover:bg-croffle-sidebar text-croffle-text bg-background',
                 ]"
                 @click="priority = option.value"
               >
@@ -229,28 +379,29 @@
       <div class="border-croffle-border bg-croffle-sidebar shrink-0 border-t px-6 py-4">
         <div class="flex gap-2">
           <Button
-            v-if="editTodo"
-            variant="destructive"
-            class="flex-1 border border-red-100 bg-white text-red-500 hover:border-red-200 hover:bg-red-50"
-            @click="handleDelete"
-          >
-            <Trash2 class="mr-2 h-4 w-4" /> 삭제
-          </Button>
-
-          <Button
             variant="outline"
-            class="border-croffle-border text-croffle-text-dark hover:bg-croffle-hover flex-1 bg-white"
-            @click="emit('update:open', false)"
+            class="border-croffle-border text-croffle-text-dark hover:bg-croffle-hover bg-background flex-1"
+            @click="uiStore.closeTodoSheet()"
           >
             <X class="mr-2 h-4 w-4" /> 닫기
           </Button>
 
           <Button
-            :disabled="!title.trim() || !date"
+            :disabled="!title.trim() || !startDate || !endDate"
             class="bg-croffle-primary hover:bg-croffle-hover flex-1 text-white"
             @click="handleSave"
           >
-            <Save class="mr-2 h-4 w-4" /> {{ editTodo ? '수정' : '추가' }}
+            <Save class="mr-2 h-4 w-4" />
+            {{ todoSheetMode === 'edit' ? '수정' : '추가' }}
+          </Button>
+
+          <Button
+            v-if="todoSheetMode === 'edit'"
+            variant="destructive"
+            class="flex-1"
+            @click="handleDelete"
+          >
+            삭제
           </Button>
         </div>
       </div>
