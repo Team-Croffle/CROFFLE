@@ -19,6 +19,7 @@
   import { defaultMenus } from './data/defaultContextMenus';
   import { Separator } from './components/ui/separator';
   import { useThemeStore } from './stores/themeStore';
+  import Todosheet from './components/Todosheet.vue';
   // import { mockPluginsList } from './test/testPluginMenu';
 
   const uiStore = useUiStore();
@@ -186,6 +187,7 @@
           </ContextMenu>
         </SidebarInset>
         <RightSidebar />
+        <Todosheet />
       </SidebarProvider>
     </div>
 
