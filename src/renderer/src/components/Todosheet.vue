@@ -137,6 +137,14 @@
       // add 모드일 때는 모든 필드를 초기값으로 설정
       if (mode === 'add') {
         resetForm();
+        if (uiStore.selectedDate) {
+          startDate.value = toCalendarDate(uiStore.selectedDate);
+          endDate.value = toCalendarDate(uiStore.selectedDate);
+        } else {
+          const today = new Date().toISOString().slice(0, 10);
+          startDate.value = toCalendarDate(today);
+          endDate.value = toCalendarDate(today);
+        }
         return;
       }
 
@@ -166,26 +174,26 @@
     let selectedStart = startDate.value.toString();
     let selectedEnd = endDate.value.toString();
 
+    // 임시 패치 - 시간 설정 ui 추가 시 삭제 예정
+    if (!form.isAllDay) {
+      const originalSchedule =
+        todoSheetMode.value === 'edit' && selectedScheduleId.value
+          ? scheduleStore.getScheduleById(selectedScheduleId.value)
+          : null;
+
+      selectedStart += originalSchedule?.startDate?.includes('T')
+        ? originalSchedule.startDate.substring(originalSchedule.startDate.indexOf('T'))
+        : 'T00:00:00.000Z';
+
+      selectedEnd += originalSchedule?.endDate?.includes('T')
+        ? originalSchedule.endDate.substring(originalSchedule.endDate.indexOf('T'))
+        : 'T23:59:59.999Z';
+    }
+
     // 시작일이 종료일보다 늦을 수 없도록 검증
     if (selectedEnd < selectedStart) {
       toast.error('종료일은 시작일보다 빠를 수 없습니다.');
       return;
-    }
-
-    // 임시 패치 - 시간 설정 ui 추가 시 삭제 예정
-    const originalSchedule =
-      todoSheetMode.value === 'edit' && selectedScheduleId.value
-        ? scheduleStore.getScheduleById(selectedScheduleId.value)
-        : null;
-
-    if (originalSchedule && !form.isAllDay) {
-      selectedStart += originalSchedule.startDate?.includes('T')
-        ? originalSchedule.startDate.substring(originalSchedule.startDate.indexOf('T'))
-        : 'T00:00:00.000Z';
-
-      selectedEnd += originalSchedule.endDate?.includes('T')
-        ? originalSchedule.endDate.substring(originalSchedule.endDate.indexOf('T'))
-        : 'T23:59:59.999Z';
     }
 
     const payload: Partial<Schedule> = {
