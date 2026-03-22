@@ -25,6 +25,7 @@ export const useUiStore = defineStore('ui', () => {
   };
 
   const openTodoSheet = (mode: 'add' | 'edit' = 'add', scheduleId?: string) => {
+    if (mode === 'edit' && !scheduleId) return;
     todoSheetMode.value = mode;
     selectedScheduleId.value = scheduleId ?? null;
     isTodoSheetOpen.value = true;

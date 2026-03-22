@@ -20,7 +20,8 @@ export const defaultMenus: FeatureContextMenu[] = [
     action: (targetElement: HTMLElement | null) => {
       if (!targetElement) return;
       const date = useCalendarLogic().getClickedDateFromTarget(targetElement);
-      useUiStore().openRightSidebarWithDate(date || '');
+      if (!date) return;
+      useUiStore().openRightSidebarWithDate(date);
     },
     condition: (target) => !target?.closest('.fc-event'),
     targetView: ['calendar'],
@@ -30,8 +31,8 @@ export const defaultMenus: FeatureContextMenu[] = [
     label: '일정 수정',
     action: (targetElement: HTMLElement | null) => {
       if (!targetElement) return;
-      const eventId =
-        targetElement?.closest('.fc-event')?.getAttribute('data-event-id') || undefined;
+      const eventId = targetElement.closest('.fc-event')?.getAttribute('data-event-id');
+      if (!eventId || eventId === 'undefined') return;
       useUiStore().openTodoSheet('edit', eventId);
     },
     condition: (target) => !!target?.closest('.fc-event'),

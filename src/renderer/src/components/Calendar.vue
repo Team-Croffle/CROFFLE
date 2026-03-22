@@ -78,9 +78,18 @@
     editable: false, // 이벤트 드래그 가능
     selectable: true, // 날짜 선택 가능
     dateClick: (info) => handleDateDoubleClick(info.dateStr), // 날짜 클릭 핸들러
-    eventClick: (info) => handleEventDoubleClick(info.event.id || info.event.startStr), // 이벤트 클릭 핸들러
+    eventClick: (info) => {
+      const eventId = info.event.id;
+      if (!eventId) return;
+      handleEventDoubleClick(eventId);
+    },
     eventDidMount: (info) => {
-      info.el.setAttribute('data-event-id', info.event.id);
+      const eventId = info.event.id;
+      if (eventId) {
+        info.el.setAttribute('data-event-id', eventId);
+        return;
+      }
+      info.el.removeAttribute('data-event-id');
     },
 
     datesSet: (info) => {

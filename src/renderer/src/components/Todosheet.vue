@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { reactive, ref, shallowRef, watch } from 'vue';
+  import { reactive, ref, shallowRef, toRaw, watch } from 'vue';
   import { Save, X, ChevronDown } from 'lucide-vue-next';
   import {
     Sheet,
@@ -110,7 +110,7 @@
 
   const fillFormFromSchedule = (schedule: Schedule) => {
     // 스토어의 원본 데이터를 보호하기 위해 깊은 복사 사용
-    const cloned = structuredClone(schedule);
+    const cloned = structuredClone(toRaw(schedule));
 
     form.title = cloned.title ?? '';
     form.description = cloned.description ?? '';
@@ -141,9 +141,18 @@
       }
 
       // edit 모드일 때는 선택된 일정의 데이터를 불러와 상태에 반영
-      if (!scheduleId) return;
+      if (!scheduleId) {
+        resetForm();
+        uiStore.closeTodoSheet();
+        return;
+      }
+
       const schedule = scheduleStore.getScheduleById(scheduleId);
-      if (!schedule) return;
+      if (!schedule) {
+        resetForm();
+        uiStore.closeTodoSheet();
+        return;
+      }
 
       fillFormFromSchedule(schedule);
     },
