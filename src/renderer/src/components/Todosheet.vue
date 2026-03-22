@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, watch } from 'vue';
+  import { reactive, ref, shallowRef, watch } from 'vue';
   import { Save, X, ChevronDown } from 'lucide-vue-next';
   import {
     Sheet,
@@ -19,6 +19,7 @@
   import { storeToRefs } from 'pinia';
   import { useScheduleStore } from '@/stores/scheduleStore';
   import type { Schedule } from '@croffledev/croffle-types';
+  import { toast } from 'vue-sonner';
   // import type { Tag } from 'croffle';
 
   // 스토어 연결
@@ -41,9 +42,9 @@
   };
 
   // 달력 컴포넌트에서 사용할 상태값과 함수들을 정의
-  const formatCalendarDate = (cd: CalendarDate | undefined) => {
-    if (!cd) return '날짜를 선택하세요';
-    const jsDate = cd.toDate(getLocalTimeZone());
+  const formatCalendarDate = (calendarDate: CalendarDate | undefined) => {
+    if (!calendarDate) return '날짜를 선택하세요';
+    const jsDate = calendarDate.toDate(getLocalTimeZone());
     return new Intl.DateTimeFormat('ko-KR', {
       month: 'long',
       day: 'numeric',
@@ -78,19 +79,51 @@
   //   return [...base, priorityTag];
   // };
 
-  const title = ref('');
-  const description = ref('');
-  const location = ref('');
-  const priority = ref<'low' | 'medium' | 'high'>('medium');
+  const form = reactive({
+    title: '',
+    description: '',
+    location: '',
+    priority: 'medium' as 'low' | 'medium' | 'high',
+    isAllDay: true,
+    recurrenceRule: '',
+    colorLabel: '#DCA780',
+  });
 
-  const isAllDay = ref(true);
-  const recurrenceRule = ref('');
-  const colorLabel = ref('#DCA780');
-
+  // CalendarDate 객체 내부의 #private 필드가 Vue Proxy와 충돌하는 것을 막기 위해
+  // 반드시 ref가 아닌 shallowRef를 사용해야 함
+  const startDate = shallowRef<CalendarDate | undefined>(undefined);
+  const endDate = shallowRef<CalendarDate | undefined>(undefined);
   const isStartCalendarOpen = ref(false);
   const isEndCalendarOpen = ref(false);
-  const startDate = ref<CalendarDate | undefined>();
-  const endDate = ref<CalendarDate | undefined>();
+
+  const resetForm = () => {
+    form.title = '';
+    form.description = '';
+    form.location = '';
+    form.priority = 'medium';
+    form.isAllDay = true;
+    form.recurrenceRule = '';
+    form.colorLabel = '#DCA780';
+    startDate.value = undefined;
+    endDate.value = undefined;
+  };
+
+  const fillFormFromSchedule = (schedule: Schedule) => {
+    // 스토어의 원본 데이터를 보호하기 위해 깊은 복사 사용
+    const cloned = structuredClone(schedule);
+
+    form.title = cloned.title ?? '';
+    form.description = cloned.description ?? '';
+    form.location = cloned.location ?? '';
+    form.isAllDay = cloned.isAllDay ?? true;
+    form.recurrenceRule = cloned.recurrenceRule ?? '';
+    form.colorLabel = cloned.colorLabel ?? '#DCA780';
+    startDate.value = cloned.startDate ? toCalendarDate(cloned.startDate) : undefined;
+    endDate.value = cloned.endDate ? toCalendarDate(cloned.endDate) : startDate.value;
+
+    // 우선순위는 현재 미연결 정책 유지
+    form.priority = 'medium';
+  };
 
   // 일정 시트가 열릴 때마다 모드에 따라 상태 초기화
   watch(
@@ -103,15 +136,7 @@
       if (!open) return;
       // add 모드일 때는 모든 필드를 초기값으로 설정
       if (mode === 'add') {
-        title.value = '';
-        description.value = '';
-        location.value = '';
-        priority.value = 'medium';
-        isAllDay.value = true;
-        recurrenceRule.value = '';
-        colorLabel.value = '#DCA780';
-        startDate.value = undefined;
-        endDate.value = undefined;
+        resetForm();
         return;
       }
 
@@ -120,38 +145,34 @@
       const schedule = scheduleStore.getScheduleById(scheduleId);
       if (!schedule) return;
 
-      title.value = schedule.title ?? '';
-      description.value = schedule.description ?? '';
-      location.value = schedule.location ?? '';
-      isAllDay.value = schedule.isAllDay ?? true;
-      recurrenceRule.value = schedule.recurrenceRule ?? '';
-      colorLabel.value = schedule.colorLabel ?? '#DCA780';
-      startDate.value = schedule.startDate ? toCalendarDate(schedule.startDate) : undefined;
-      endDate.value = schedule.endDate ? toCalendarDate(schedule.endDate) : startDate.value;
-
-      priority.value = 'medium';
+      fillFormFromSchedule(schedule);
     },
     { immediate: true }
   );
 
   // 저장 버튼 핸들러
   const handleSave = async () => {
-    if (!title.value.trim() || !startDate.value || !endDate.value) return;
+    if (!form.title.trim() || !startDate.value || !endDate.value) return;
 
     const selectedStart = startDate.value.toString();
     const selectedEnd = endDate.value.toString();
 
-    if (selectedEnd < selectedStart) return;
+    // 시작일이 종료일보다 늦을 수 없도록 검증
+    if (selectedEnd < selectedStart) {
+      toast.error('종료일은 시작일보다 빠를 수 없습니다.');
+      return;
+    }
 
     const payload: Partial<Schedule> = {
-      title: title.value.trim(),
-      description: description.value.trim(),
-      location: location.value.trim(),
+      title: form.title.trim(),
+      description: form.description.trim(),
+      location: form.location.trim(),
       startDate: selectedStart,
       endDate: selectedEnd,
-      isAllDay: isAllDay.value,
-      recurrenceRule: undefined,
-      colorLabel: colorLabel.value || '#DCA780',
+      isAllDay: form.isAllDay,
+      recurrenceRule: form.recurrenceRule.trim() || undefined,
+      colorLabel: form.colorLabel || '#DCA780',
+      // TODO 태그 시스템 미완성이라 현재 빈 배열로 고정
       tags: [],
     };
 
@@ -173,8 +194,8 @@
     if (todoSheetMode.value !== 'edit' || !selectedScheduleId.value) return;
 
     try {
-      const ok = await scheduleStore.removeScheduleById(selectedScheduleId.value);
-      if (ok) {
+      const isSuccess = await scheduleStore.removeScheduleById(selectedScheduleId.value);
+      if (isSuccess) {
         uiStore.closeTodoSheet();
       }
     } catch (error) {
@@ -236,7 +257,7 @@
             </Label>
             <Input
               id="title"
-              v-model="title"
+              v-model="form.title"
               placeholder="일정 제목을 입력하세요"
               class="border-croffle-border focus-visible:ring-croffle-primary bg-background h-11"
             />
@@ -247,7 +268,7 @@
             <Label for="description" class="text-croffle-text-dark text-sm font-medium">설명</Label>
             <textarea
               id="description"
-              v-model="description"
+              v-model="form.description"
               placeholder="일정에 대한 자세한 설명을 입력하세요 (선택사항)"
               rows="4"
               class="placeholder:text-muted-foreground focus-visible:ring-croffle-primary border-croffle-border bg-background flex w-full resize-none rounded-md border px-3 py-2 text-sm shadow-sm focus-visible:ring-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
@@ -258,7 +279,7 @@
             <Label for="location" class="text-croffle-text-dark text-sm font-medium">장소</Label>
             <Input
               id="location"
-              v-model="location"
+              v-model="form.location"
               placeholder="장소를 입력하세요 (선택사항)"
               class="border-croffle-border focus-visible:ring-croffle-primary bg-background h-11"
             />
@@ -267,7 +288,7 @@
           <div class="space-y-2">
             <Label class="text-croffle-text-dark text-sm font-medium">종일 일정</Label>
             <div class="flex items-center gap-2">
-              <input id="isAllDay" v-model="isAllDay" type="checkbox" class="h-4 w-4" />
+              <input id="isAllDay" v-model="form.isAllDay" type="checkbox" class="h-4 w-4" />
               <Label for="isAllDay" class="text-croffle-text text-sm">하루 종일</Label>
             </div>
           </div>
@@ -278,7 +299,7 @@
             >
             <Input
               id="recurrenceRule"
-              v-model="recurrenceRule"
+              v-model="form.recurrenceRule"
               placeholder="예: FREQ=WEEKLY;BYDAY=FR"
               class="border-croffle-border focus-visible:ring-croffle-primary bg-background h-11"
             />
@@ -286,7 +307,7 @@
 
           <div class="space-y-2">
             <Label for="colorLabel" class="text-croffle-text-dark text-sm font-medium">색상</Label>
-            <Input id="colorLabel" v-model="colorLabel" type="color" class="h-11 w-20 p-1" />
+            <Input id="colorLabel" v-model="form.colorLabel" type="color" class="h-11 w-20 p-1" />
           </div>
 
           <div class="flex flex-col space-y-2">
@@ -362,11 +383,11 @@
                 type="button"
                 class="flex cursor-pointer flex-col items-center gap-1 rounded-lg border p-3 transition-all"
                 :class="[
-                  priority === option.value
+                  form.priority === option.value
                     ? `${option.color} ring-croffle-border shadow-sm ring-1 ring-offset-1`
                     : 'border-croffle-border hover:bg-croffle-sidebar text-croffle-text bg-background',
                 ]"
-                @click="priority = option.value"
+                @click="form.priority = option.value"
               >
                 <span class="text-xl">{{ option.emoji }}</span>
                 <span class="text-xs font-medium">{{ option.label }}</span>
@@ -387,7 +408,7 @@
           </Button>
 
           <Button
-            :disabled="!title.trim() || !startDate || !endDate"
+            :disabled="!form.title.trim() || !startDate || !endDate"
             class="bg-croffle-primary hover:bg-croffle-hover flex-1 text-white"
             @click="handleSave"
           >
