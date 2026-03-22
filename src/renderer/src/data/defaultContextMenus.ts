@@ -43,9 +43,8 @@ export const defaultMenus: FeatureContextMenu[] = [
     label: '일정 삭제',
     action: (targetElement: HTMLElement | null) => {
       if (!targetElement) return;
-      const eventId =
-        targetElement?.closest('.fc-event')?.getAttribute('data-event-id') || undefined;
-      if (!eventId) return;
+      const eventId = targetElement?.closest('.fc-event')?.getAttribute('data-event-id');
+      if (!eventId || eventId === 'undefined') return;
 
       const ok = window.confirm('이 일정을 삭제하시겠습니까?');
       if (!ok) return;

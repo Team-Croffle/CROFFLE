@@ -163,13 +163,29 @@
   const handleSave = async () => {
     if (!form.title.trim() || !startDate.value || !endDate.value) return;
 
-    const selectedStart = startDate.value.toString();
-    const selectedEnd = endDate.value.toString();
+    let selectedStart = startDate.value.toString();
+    let selectedEnd = endDate.value.toString();
 
     // 시작일이 종료일보다 늦을 수 없도록 검증
     if (selectedEnd < selectedStart) {
       toast.error('종료일은 시작일보다 빠를 수 없습니다.');
       return;
+    }
+
+    // 임시 패치 - 시간 설정 ui 추가 시 삭제 예정
+    const originalSchedule =
+      todoSheetMode.value === 'edit' && selectedScheduleId.value
+        ? scheduleStore.getScheduleById(selectedScheduleId.value)
+        : null;
+
+    if (originalSchedule && !form.isAllDay) {
+      selectedStart += originalSchedule.startDate?.includes('T')
+        ? originalSchedule.startDate.substring(originalSchedule.startDate.indexOf('T'))
+        : 'T00:00:00.000Z';
+
+      selectedEnd += originalSchedule.endDate?.includes('T')
+        ? originalSchedule.endDate.substring(originalSchedule.endDate.indexOf('T'))
+        : 'T23:59:59.999Z';
     }
 
     const payload: Partial<Schedule> = {
