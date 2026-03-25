@@ -292,7 +292,7 @@
               :class="[
                 'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors',
                 activeTab === tab.id
-                  ? 'bg-[#F2EBE3] text-[#8C6A4D]'
+                  ? 'bg-croffle-sidebar-selected text-croffle-primary'
                   : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
               ]"
               @click="activeTab = tab.id"
@@ -304,9 +304,9 @@
         </div>
 
         <!-- 우측 콘텐츠 -->
-        <div class="flex min-w-0 flex-1 flex-col bg-white">
+        <div class="flex min-w-0 flex-1 flex-col">
           <div class="px-6 py-6 md:px-8">
-            <h3 class="text-2xl font-bold wrap-break-word text-neutral-900">
+            <h3 class="text-2xl font-bold wrap-break-word">
               {{ tabs.find((t) => t.id === activeTab)?.label }}
             </h3>
           </div>

@@ -48,6 +48,7 @@
   --color-croffle-sidebar: var(--croffle-sidebar);
   --color-croffle-sidebar-content: var(--croffle-sidebar-content);
   --color-croffle-sidebar-content-disabled: var(--croffle-sidebar-content-disabled);
+  --color-croffle-sidebar-selected: var(--croffle-sidebar-selected);
   --color-croffle-primary: var(--croffle-primary);
   --color-croffle-hover: var(--croffle-hover);
   --color-croffle-text: var(--croffle-text);
@@ -101,6 +102,7 @@
   --croffle-sidebar: oklch(0.965 0.012 83.6);
   --croffle-sidebar-content: oklch(1 0 0 / 0.8);
   --croffle-sidebar-content-disabled: oklch(1 0 0 / 0.5);
+  --croffle-sidebar-selected: oklch(0.9433 0.0131 71.33);
   /* 포인트 */
   --croffle-primary: oklch(0.785 0.104 69.8);
   /* 호버 */
@@ -160,6 +162,7 @@
   --croffle-sidebar: oklch(0.3 0.012 83.6);
   --croffle-sidebar-content: oklch(0.4 0 0);
   --croffle-sidebar-content-disabled: oklch(0.5 0 0);
+  --croffle-sidebar-selected: oklch(0.35 0.0131 71.33);
   /* 포인트 */
   --croffle-primary: oklch(0.685 0.104 69.8);
   /* 호버 */
