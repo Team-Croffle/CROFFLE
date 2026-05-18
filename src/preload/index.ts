@@ -9,6 +9,7 @@ import { pluginSessionApi } from './api/pluginSession.api';
 import { pluginStorageApi } from './api/pluginStorage.api';
 import { scheduleApi } from './api/schedule.api';
 import { settingsApi } from './api/settings.api';
+import { pluginSettingsApi } from './api/pluginSettings.api';
 import { tagApi } from './api/tag.api';
 import { windowApi } from './api/window.api';
 import { searchApi } from './api/search.api';
@@ -21,6 +22,7 @@ const api = {
     schedules: scheduleApi,
     pluginInfo: pluginInfoApi,
     settings: settingsApi,
+    pluginSettings: pluginSettingsApi,
     search: searchApi,
   },
   app: {
