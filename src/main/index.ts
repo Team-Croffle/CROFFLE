@@ -1,11 +1,14 @@
 import 'reflect-metadata';
 import { app, shell, BrowserWindow } from 'electron';
+import { AppSettingStartupBehavior } from '@croffledev/croffle-types';
 import { autoUpdater } from 'electron-updater';
 import { databaseManager } from './core/database/DatabaseManager';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { join } from 'path';
 import { registerAllIpcHandlers } from './ipc';
 import { windowService } from './core/window/WindowService';
+import { settingService } from './modules/settings/service/SettingService';
+import { settingsApplyService } from './modules/settings/service/SettingsApplyService';
 import icon from '../../resources/Logo2Only.png?asset';
 import log from 'electron-log';
 
@@ -36,7 +39,20 @@ function createWindow(): void {
   windowService.init(mainWindow);
 
   mainWindow.on('ready-to-show', () => {
-    mainWindow.show();
+    const settings = settingService.get();
+    settingsApplyService.applyStartupPresentation(settings);
+
+    const loginSettings = app.getLoginItemSettings();
+    const wasOpenedAtLogin = loginSettings.wasOpenedAtLogin ?? false;
+    const shouldHideOnLogin =
+      wasOpenedAtLogin &&
+      (settings.general.startupBehavior === AppSettingStartupBehavior.DO_NOTHING ||
+        settings.general.startMinimized ||
+        loginSettings.wasOpenedAsHidden);
+
+    if (!shouldHideOnLogin) {
+      mainWindow.show();
+    }
   });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -75,7 +91,7 @@ app.whenReady().then(async () => {
     registerAllIpcHandlers();
     createWindow();
 
-    if (!is.dev) {
+    if (!is.dev && settingsApplyService.shouldCheckForUpdates(settingService.get())) {
       autoUpdater.checkForUpdatesAndNotify();
     }
   } catch (error) {

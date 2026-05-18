@@ -10,6 +10,7 @@ import {
 import { app } from 'electron';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import path from 'path';
+import { settingsApplyService } from './SettingsApplyService';
 
 const DEFAULT_SETTINGS: AppSettings = {
   general: {
@@ -50,9 +51,17 @@ class SettingService {
       }
 
       const data = readFileSync(this.filePath, 'utf-8');
-      const parsed = JSON.parse(data);
+      const parsed = JSON.parse(data) as Partial<AppSettings>;
 
-      return { ...DEFAULT_SETTINGS, ...parsed };
+      const merged: AppSettings = {
+        ...DEFAULT_SETTINGS,
+        ...parsed,
+        general: { ...DEFAULT_SETTINGS.general, ...parsed.general },
+        calendar: { ...DEFAULT_SETTINGS.calendar, ...parsed.calendar },
+        notifications: { ...DEFAULT_SETTINGS.notifications, ...parsed.notifications },
+      };
+      settingsApplyService.applyLoginItem(merged);
+      return merged;
     } catch (err) {
       console.error('[Settings] Failed to load settings, using default settings.', err);
       return DEFAULT_SETTINGS;
@@ -103,6 +112,7 @@ class SettingService {
     };
 
     this.saveSettings(updatedSettings);
+    settingsApplyService.applyPersisted(updatedSettings);
     return updatedSettings;
   }
 }

@@ -6,7 +6,7 @@ import {
   CalendarView,
   CalendarWeekStartDay,
 } from '@croffledev/croffle-types';
-import { AppSettingLanguage } from '../../../shared/enums';
+import { AppSettingLanguage } from '@croffledev/croffle-types';
 
 function isValidEnum<T extends object>(value: unknown, enumObj: T): value is T[keyof T] {
   const validValues = Object.values(enumObj);

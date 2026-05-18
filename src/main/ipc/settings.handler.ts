@@ -3,6 +3,7 @@ import { settingService } from '../modules/settings/service/SettingService';
 import { AppSettings } from '@croffledev/croffle-types';
 import { eventService } from '../core/event-bus/EventService';
 import { AppEventType } from '../../shared/enums';
+import { validateSettings } from '../modules/helper/settingsValidator';
 
 export const registerSettingsIpcHandlers = (): void => {
   ipcMain.handle('settings:getAll', async (): Promise<AppSettings> => {
@@ -32,6 +33,7 @@ export const registerSettingsIpcHandlers = (): void => {
   ipcMain.handle(
     'settings:update',
     async (_, partialSettings: Partial<AppSettings>): Promise<AppSettings> => {
+      validateSettings(partialSettings);
       const newSettings = settingService.update(partialSettings);
 
       // Add app event emit
