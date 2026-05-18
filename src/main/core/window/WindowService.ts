@@ -2,6 +2,7 @@ import { app, BrowserWindow, Menu, Tray, shell } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import { eventService } from '../event-bus/EventService';
 import { AppEventType } from '../../../shared/enums';
+import { settingService } from '../../modules/settings/service/SettingService';
 import icon from '../../../../resources/Logo2OnlyNoBorderIcon.png?asset';
 
 class WindowService {
@@ -119,6 +120,7 @@ class WindowService {
 
   public async checkForUpdates(): Promise<void> {
     if (!app.isPackaged) return;
+    if (!settingService.get().general.autoUpdate) return;
     await autoUpdater.checkForUpdatesAndNotify();
 
     eventService.emit(AppEventType.WINDOW_CHECK_FOR_UPDATES);
