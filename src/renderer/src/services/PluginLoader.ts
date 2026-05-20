@@ -1,4 +1,8 @@
-import type { PluginContext, PluginInfo } from '@croffledev/croffle-types';
+import type {
+  PluginContext,
+  PluginInfo,
+  RegisterSettingsTabOptions,
+} from '@croffledev/croffle-types';
 
 class PluginLoader {
   private activePlugins = new Map<string, unknown>();
@@ -64,6 +68,18 @@ class PluginLoader {
           window.dispatchEvent(
             new CustomEvent('plugin:register-context-menu', {
               detail: { pluginId: plugin.id, target, command, label, callback },
+            })
+          );
+        },
+        registerSettingsTab: (tabId: string, options: RegisterSettingsTabOptions) => {
+          window.dispatchEvent(
+            new CustomEvent('plugin:register-settings-tab', {
+              detail: {
+                pluginId: plugin.id,
+                pluginName: plugin.name,
+                tabId,
+                ...options,
+              },
             })
           );
         },
