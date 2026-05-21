@@ -1,8 +1,6 @@
 import { app } from 'electron';
-import {
-  AppSettings,
-  AppSettingStartupBehavior,
-} from '@croffledev/croffle-types';
+import type { AppSettings } from '@croffledev/croffle-types';
+import { AppSettingStartupBehavior } from '../../../../shared/enums';
 import { eventService } from '../../../core/event-bus/EventService';
 import { windowService } from '../../../core/window/WindowService';
 

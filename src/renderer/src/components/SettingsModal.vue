@@ -8,7 +8,7 @@
     CalendarTimeFormat,
     CalendarView,
     CalendarWeekStartDay,
-  } from '@croffledev/croffle-types';
+  } from '../../../shared/enums';
   import { useAppSettingsStore } from '@/stores/appSettingsStore';
   import { useSettingsStore } from '@/stores/settingsStore';
   import SettingsExtensionPanel from '@/components/settings/SettingsExtensionPanel.vue';
