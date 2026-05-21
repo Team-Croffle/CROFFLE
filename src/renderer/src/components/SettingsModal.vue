@@ -353,16 +353,16 @@
   <Dialog :open="open" @update:open="(val) => emit('update:open', val)">
     <!-- 반응형 모달 크기 -->
     <DialogContent
-      class="h-[90vh] max-h-[940px] w-[96vw]! max-w-none! gap-0 overflow-hidden border-none p-0 shadow-2xl sm:w-[94vw]! lg:w-[92vw]!"
+      class="h-[90vh] max-h-[940px] w-[96vw] sm:max-w-none gap-0 overflow-hidden border-none p-0 shadow-2xl sm:w-[94vw] lg:w-[92vw]"
     >
       <DialogHeader class="sr-only">
         <DialogTitle>설정</DialogTitle>
         <DialogDescription>설정을 관리하고 업데이트하세요.</DialogDescription>
       </DialogHeader>
 
-      <div class="bg-background text-foreground flex h-full">
+      <div class="bg-background text-foreground absolute inset-0 flex overflow-hidden">
         <!-- 좌측 탭 -->
-        <div class="border-border bg-muted/20 w-60 shrink-0 border-r p-4">
+        <div class="border-border bg-muted/20 w-60 shrink-0 border-r p-4 overflow-y-auto">
           <h2 class="text-foreground mb-6 px-2 text-xl font-bold">설정</h2>
           <nav class="space-y-1">
             <button
@@ -388,8 +388,8 @@
         </div>
 
         <!-- 우측 콘텐츠 -->
-        <div class="flex min-w-0 flex-1 flex-col">
-          <div class="px-6 py-6 md:px-8">
+        <div class="flex min-w-0 flex-1 flex-col min-h-0">
+          <div class="shrink-0 px-6 py-6 md:px-8">
             <h3 class="text-2xl font-bold wrap-break-word">
               {{ activeTabLabel }}
             </h3>
@@ -753,7 +753,7 @@
             </div>
           </div>
 
-          <div class="bg-muted/10 mt-auto flex justify-end gap-3 border-t px-6 py-4 md:px-8">
+          <div class="bg-muted/10 mt-auto flex shrink-0 justify-end gap-3 border-t px-6 py-4 md:px-8">
             <Button
               type="button"
               variant="outline"
