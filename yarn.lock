@@ -254,12 +254,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@croffledev/croffle-types@file:../croffle-types::locator=%40croffledev%2Fcroffle%40workspace%3A.":
+"@croffledev/croffle-types@npm:1.1.0":
   version: 1.1.0
-  resolution: "@croffledev/croffle-types@file:../croffle-types#../croffle-types::hash=6bbe2e&locator=%40croffledev%2Fcroffle%40workspace%3A."
+  resolution: "@croffledev/croffle-types@npm:1.1.0"
   dependencies:
     "@types/node": "npm:^25.5.0"
-  checksum: 10c0/b8f3890800c54b166a39506a44630ba61756d0a7a217a20ea24878cbe5efe51d1422ec8fb3f360415009565461ffa5923cbf25d55c00115b22d62f450fe08545
+  checksum: 10c0/0899df0e00433034da368cdb15a4e210881ff94268da547f2e8d3828646a0cca0bc01e820d214f75318eb9b915de1bf3c04dc70002cbd9f49e9ed7b53e2d036a
   languageName: node
   linkType: hard
 
@@ -267,7 +267,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@croffledev/croffle@workspace:."
   dependencies:
-    "@croffledev/croffle-types": "file:../croffle-types"
+    "@croffledev/croffle-types": "npm:1.1.0"
     "@electron-toolkit/eslint-config-prettier": "npm:3.0.0"
     "@electron-toolkit/eslint-config-ts": "npm:^3.1.0"
     "@electron-toolkit/preload": "npm:^3.0.2"
