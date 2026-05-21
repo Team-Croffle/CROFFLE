@@ -29,7 +29,11 @@ class WindowService {
 
     autoUpdater.on('checking-for-update', () => console.info('[Updater] Checking...'));
     autoUpdater.on('update-available', () => console.info('[Updater] Available.'));
-    autoUpdater.on('update-downloaded', () => console.info('[Updater] Downloaded.'));
+    autoUpdater.on('update-downloaded', () => {
+      console.info('[Updater] Downloaded. Restarting and installing update...');
+      this.isQuitting = true;
+      autoUpdater.quitAndInstall();
+    });
     autoUpdater.on('error', (err) => console.error('[Updater] Error:', err));
   }
 
