@@ -5,16 +5,30 @@ import { eventService } from '../../../core/event-bus/EventService';
 import { windowService } from '../../../core/window/WindowService';
 
 export const LOGIN_HIDDEN_ARG = '--croffle-start-hidden';
+export const STARTUP_ARG = '--startup';
 
 class SettingsApplyService {
   /** 로그인 항목(시작 프로그램) 등록 상태 반영 */
   public applyLoginItem(settings: AppSettings): void {
+    if (!app.isPackaged) {
+      return;
+    }
+
     const { startOnSystemBoot, startMinimized } = settings.general;
+    const args: string[] = [];
+
+    if (startOnSystemBoot) {
+      args.push(STARTUP_ARG);
+      if (startMinimized) {
+        args.push(LOGIN_HIDDEN_ARG);
+      }
+    }
 
     app.setLoginItemSettings({
       openAtLogin: startOnSystemBoot,
       openAsHidden: startMinimized,
-      args: startMinimized ? [LOGIN_HIDDEN_ARG] : [],
+      path: process.execPath,
+      args: args,
     });
   }
 
@@ -27,9 +41,10 @@ class SettingsApplyService {
     this.applyLoginItem(settings);
 
     const loginSettings = app.getLoginItemSettings();
-    const wasOpenedAtLogin = loginSettings.wasOpenedAtLogin ?? false;
+    const wasOpenedAtLogin =
+      loginSettings.wasOpenedAtLogin || process.argv.includes(STARTUP_ARG);
     const wasOpenedAsHidden =
-      loginSettings.wasOpenedAsHidden ?? process.argv.includes(LOGIN_HIDDEN_ARG);
+      loginSettings.wasOpenedAsHidden || process.argv.includes(LOGIN_HIDDEN_ARG);
 
     if (!wasOpenedAtLogin) {
       return;
