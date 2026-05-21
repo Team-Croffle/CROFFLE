@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, onMounted, watch, computed } from 'vue';
-  import { Settings, User, Bell, Pencil, Puzzle, CalendarDays } from 'lucide-vue-next';
+  import { Settings, Bell, Puzzle, CalendarDays } from 'lucide-vue-next';
   import {
     AppSettingLanguage,
     AppSettingStartupBehavior,
@@ -32,7 +32,7 @@
     SelectItem,
   } from '@/components/ui/select';
   import { Switch } from '@/components/ui/switch';
-  import { Input } from '@/components/ui/input';
+
   import { Separator } from '@/components/ui/separator';
   import type { AppSettings } from '@croffledev/croffle-types';
 
@@ -40,23 +40,11 @@
     open: boolean;
   }
 
-  // 계정 탭 UI 전용 스키마
-  interface AccountDraft {
-    username: string;
-    email: string;
-  }
-
   // 알림 탭 UI 전용 스키마
   interface NotificationDraft {
     emailAlert: boolean;
     dndStart: string;
     dndEnd: string;
-  }
-
-  // UI draft 저장 스키마
-  interface SettingsUiDraftStorage {
-    account: AccountDraft;
-    notifications: NotificationDraft;
   }
 
   const props = defineProps<Props>();
@@ -75,14 +63,6 @@
   const isLoadingSettings = ref(true);
   const loadError = ref<string | null>(null);
 
-  // 비밀번호 입력 상태
-  const currentPassword = ref('');
-  const newPassword = ref('');
-
-  const accountDraft = ref<AccountDraft>({
-    username: 'testuser',
-    email: 'testuser@example.com',
-  });
   const notificationDraft = ref<NotificationDraft>({
     emailAlert: true,
     dndStart: '22:00',
@@ -90,10 +70,6 @@
   });
 
   // 취소 복원용 원본(UI draft)
-  const originalAccountDraft = ref<AccountDraft>({
-    username: 'testuser',
-    email: 'testuser@example.com',
-  });
   const originalNotificationDraft = ref<NotificationDraft>({
     emailAlert: true,
     dndStart: '22:00',
@@ -108,7 +84,6 @@
   const builtinTabs = [
     { id: 'general', label: '일반', icon: Settings },
     { id: 'calendar', label: '캘린더', icon: CalendarDays },
-    { id: 'account', label: '계정', icon: User },
     { id: 'notifications', label: '알림', icon: Bell },
   ] as const;
 
@@ -139,8 +114,6 @@
 
   // 깊은 복사 유틸
   const cloneSettings = (value: AppSettings) => JSON.parse(JSON.stringify(value)) as AppSettings;
-  const cloneAccountDraft = (value: AccountDraft) =>
-    JSON.parse(JSON.stringify(value)) as AccountDraft;
   const cloneNotificationDraft = (value: NotificationDraft) =>
     JSON.parse(JSON.stringify(value)) as NotificationDraft;
   const cloneExtensionDrafts = (value: Record<string, Record<string, unknown>>) =>
@@ -172,11 +145,11 @@
     originalExtensionDrafts.value = originals;
   };
 
-  const loadUiDraftFromStorage = (): SettingsUiDraftStorage | null => {
+  const loadUiDraftFromStorage = (): { notifications: NotificationDraft } | null => {
     try {
       const raw = localStorage.getItem(UI_DRAFT_STORAGE_KEY);
       if (!raw) return null;
-      return JSON.parse(raw) as SettingsUiDraftStorage;
+      return JSON.parse(raw) as { notifications: NotificationDraft };
     } catch (error) {
       console.error('UI draft 로드 실패:', error);
       return null;
@@ -185,8 +158,7 @@
 
   const saveUiDraftToStorage = () => {
     try {
-      const payload: SettingsUiDraftStorage = {
-        account: cloneAccountDraft(accountDraft.value),
+      const payload = {
         notifications: cloneNotificationDraft(notificationDraft.value),
       };
       localStorage.setItem(UI_DRAFT_STORAGE_KEY, JSON.stringify(payload));
@@ -199,10 +171,6 @@
   const syncUiDraft = () => {
     const saved = loadUiDraftFromStorage();
 
-    accountDraft.value = saved?.account
-      ? cloneAccountDraft(saved.account)
-      : { username: 'testuser', email: 'testuser@example.com' };
-
     notificationDraft.value = saved?.notifications
       ? cloneNotificationDraft(saved.notifications)
       : {
@@ -212,7 +180,6 @@
         };
 
     // 취소 복원용 원본 갱신
-    originalAccountDraft.value = cloneAccountDraft(accountDraft.value);
     originalNotificationDraft.value = cloneNotificationDraft(notificationDraft.value);
   };
 
@@ -248,8 +215,7 @@
       } else {
         void reloadSettings();
       }
-      currentPassword.value = '';
-      newPassword.value = '';
+
     }
   );
 
@@ -274,7 +240,6 @@
 
       saveUiDraftToStorage();
 
-      originalAccountDraft.value = cloneAccountDraft(accountDraft.value);
       originalNotificationDraft.value = cloneNotificationDraft(notificationDraft.value);
       originalExtensionDrafts.value = cloneExtensionDrafts(extensionDrafts.value);
 
@@ -288,12 +253,9 @@
     if (originalSettings.value) {
       settings.value = cloneSettings(originalSettings.value);
     }
-    accountDraft.value = cloneAccountDraft(originalAccountDraft.value);
     notificationDraft.value = cloneNotificationDraft(originalNotificationDraft.value);
     extensionDrafts.value = cloneExtensionDrafts(originalExtensionDrafts.value);
 
-    currentPassword.value = '';
-    newPassword.value = '';
     emit('update:open', false);
   };
 
@@ -673,64 +635,6 @@
                 </div>
               </div>
 
-              <!-- 계정 -->
-              <div v-if="activeTab === 'account'" class="space-y-6">
-                <section class="space-y-4">
-                  <p class="text-muted-foreground text-sm">계정 설정을 조정하세요.</p>
-                  <h4 class="text-base font-bold text-neutral-900">사용자 정보</h4>
-
-                  <div class="space-y-2">
-                    <Label class="text-xs font-semibold text-neutral-500 uppercase"
-                      >사용자 이름</Label
-                    >
-                    <Input v-model="accountDraft.username" class="h-10 border-neutral-200" />
-                  </div>
-
-                  <div class="space-y-2">
-                    <Label class="text-xs font-semibold text-neutral-500 uppercase">이메일</Label>
-                    <div class="relative">
-                      <Input
-                        v-model="accountDraft.email"
-                        readonly
-                        class="h-10 border-neutral-200 pr-10"
-                      />
-                      <Pencil
-                        class="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 cursor-pointer text-neutral-400"
-                      />
-                    </div>
-                  </div>
-                </section>
-
-                <Separator class="my-6" />
-
-                <section class="space-y-4">
-                  <h4 class="text-base font-bold text-neutral-900">비밀번호 변경</h4>
-
-                  <div class="space-y-2">
-                    <Label class="text-xs font-semibold text-neutral-500 uppercase"
-                      >현재 비밀번호</Label
-                    >
-                    <Input
-                      v-model="currentPassword"
-                      type="password"
-                      placeholder="현재 비밀번호"
-                      class="h-10 border-neutral-200"
-                    />
-                  </div>
-
-                  <div class="space-y-2">
-                    <Label class="text-xs font-semibold text-neutral-500 uppercase"
-                      >새 비밀번호</Label
-                    >
-                    <Input
-                      v-model="newPassword"
-                      type="password"
-                      placeholder="새 비밀번호"
-                      class="h-10 border-neutral-200"
-                    />
-                  </div>
-                </section>
-              </div>
 
               <!-- 알림 -->
               <div v-if="activeTab === 'notifications'" class="space-y-6">
