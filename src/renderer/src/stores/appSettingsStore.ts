@@ -1,4 +1,5 @@
-import { AppSettingTheme, type AppSettings } from '@croffledev/croffle-types';
+import { type AppSettings } from '@croffledev/croffle-types';
+import { AppSettingTheme } from '../../../shared/enums';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useThemeStore } from './themeStore';

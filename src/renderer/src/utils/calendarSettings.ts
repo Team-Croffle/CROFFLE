@@ -1,9 +1,9 @@
+import { type AppSettings } from '@croffledev/croffle-types';
 import {
   CalendarTimeFormat,
   CalendarView,
   CalendarWeekStartDay,
-  type AppSettings,
-} from '@croffledev/croffle-types';
+} from '../../../shared/enums';
 
 export const calendarViewToFullCalendar = (view: CalendarView): string => {
   const map: Record<CalendarView, string> = {

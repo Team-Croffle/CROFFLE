@@ -1,12 +1,12 @@
+import type { AppSettings } from '@croffledev/croffle-types';
 import {
-  AppSettings,
+  AppSettingLanguage,
   AppSettingStartupBehavior,
   AppSettingTheme,
   CalendarTimeFormat,
   CalendarView,
   CalendarWeekStartDay,
-} from '@croffledev/croffle-types';
-import { AppSettingLanguage } from '@croffledev/croffle-types';
+} from '../../../shared/enums';
 
 function isValidEnum<T extends object>(value: unknown, enumObj: T): value is T[keyof T] {
   const validValues = Object.values(enumObj);

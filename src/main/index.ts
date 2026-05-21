@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { app, shell, BrowserWindow } from 'electron';
-import { AppSettingStartupBehavior } from '@croffledev/croffle-types';
+import { AppSettingStartupBehavior } from '../shared/enums';
 import { autoUpdater } from 'electron-updater';
 import { databaseManager } from './core/database/DatabaseManager';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
