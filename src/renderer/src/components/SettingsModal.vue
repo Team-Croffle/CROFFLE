@@ -1,6 +1,20 @@
 <script setup lang="ts">
-  import { ref, onMounted, watch } from 'vue';
-  import { Settings, User, Bell, Pencil } from 'lucide-vue-next';
+  import { ref, onMounted, watch, computed } from 'vue';
+  import { Settings, User, Bell, Pencil, Puzzle, CalendarDays } from 'lucide-vue-next';
+  import {
+    AppSettingLanguage,
+    AppSettingStartupBehavior,
+    AppSettingTheme,
+    CalendarTimeFormat,
+    CalendarView,
+    CalendarWeekStartDay,
+  } from '@croffledev/croffle-types';
+  import { useAppSettingsStore } from '@/stores/appSettingsStore';
+  import { useSettingsStore } from '@/stores/settingsStore';
+  import SettingsExtensionPanel from '@/components/settings/SettingsExtensionPanel.vue';
+  import ConfigSchemaForm from '@/components/settings/ConfigSchemaForm.vue';
+  import { mergeWithSchemaDefaults } from '@/utils/pluginSettingsSchema';
+  import type { SettingsTabContribution } from '@croffledev/croffle-types';
   import {
     Dialog,
     DialogContent,
@@ -26,11 +40,6 @@
     open: boolean;
   }
 
-  // 일반 탭 UI 전용 스키마
-  interface GeneralDraft {
-    timezone: string;
-  }
-
   // 계정 탭 UI 전용 스키마
   interface AccountDraft {
     username: string;
@@ -46,7 +55,6 @@
 
   // UI draft 저장 스키마
   interface SettingsUiDraftStorage {
-    general: GeneralDraft;
     account: AccountDraft;
     notifications: NotificationDraft;
   }
@@ -56,8 +64,10 @@
     (e: 'update:open', value: boolean): void;
   }>();
 
-  // 실제 저장 상태
-  const activeTab = ref<'general' | 'account' | 'notifications'>('general');
+  const settingsStore = useSettingsStore();
+  const appSettingsStore = useAppSettingsStore();
+
+  const activeTab = ref<string>('general');
   const originalSettings = ref<AppSettings | null>(null);
   const settings = ref<AppSettings | null>(null);
 
@@ -69,8 +79,6 @@
   const currentPassword = ref('');
   const newPassword = ref('');
 
-  // UI draft 상태
-  const generalDraft = ref<GeneralDraft>({ timezone: 'Asia/Seoul' });
   const accountDraft = ref<AccountDraft>({
     username: 'testuser',
     email: 'testuser@example.com',
@@ -82,7 +90,6 @@
   });
 
   // 취소 복원용 원본(UI draft)
-  const originalGeneralDraft = ref<GeneralDraft>({ timezone: 'Asia/Seoul' });
   const originalAccountDraft = ref<AccountDraft>({
     username: 'testuser',
     email: 'testuser@example.com',
@@ -93,16 +100,77 @@
     dndEnd: '07:00',
   });
 
+  const extensionDrafts = ref<Record<string, Record<string, unknown>>>({});
+  const originalExtensionDrafts = ref<Record<string, Record<string, unknown>>>({});
+
   const UI_DRAFT_STORAGE_KEY = 'croffle:settings-ui-draft';
+
+  const builtinTabs = [
+    { id: 'general', label: '일반', icon: Settings },
+    { id: 'calendar', label: '캘린더', icon: CalendarDays },
+    { id: 'account', label: '계정', icon: User },
+    { id: 'notifications', label: '알림', icon: Bell },
+  ] as const;
+
+  const isBootEnabled = computed(() => settings.value?.general.startOnSystemBoot ?? false);
+
+  const allTabs = computed(() => {
+    const extension = settingsStore.sortedExtensionTabs.map((tab) => ({
+      id: settingsStore.getTabCompositeId(tab),
+      label: tab.label,
+      icon: (tab.icon as typeof Puzzle) ?? Puzzle,
+      extensionTab: tab,
+    }));
+    return [...builtinTabs, ...extension];
+  });
+
+  const activeExtensionTab = computed(() => settingsStore.findExtensionTab(activeTab.value));
+
+  const activeExtensionDraft = computed({
+    get: () => extensionDrafts.value[activeTab.value] ?? {},
+    set: (value: Record<string, unknown>) => {
+      extensionDrafts.value[activeTab.value] = value;
+    },
+  });
+
+  const activeTabLabel = computed(
+    () => allTabs.value.find((t) => t.id === activeTab.value)?.label ?? '설정',
+  );
 
   // 깊은 복사 유틸
   const cloneSettings = (value: AppSettings) => JSON.parse(JSON.stringify(value)) as AppSettings;
-  const cloneGeneralDraft = (value: GeneralDraft) =>
-    JSON.parse(JSON.stringify(value)) as GeneralDraft;
   const cloneAccountDraft = (value: AccountDraft) =>
     JSON.parse(JSON.stringify(value)) as AccountDraft;
   const cloneNotificationDraft = (value: NotificationDraft) =>
     JSON.parse(JSON.stringify(value)) as NotificationDraft;
+  const cloneExtensionDrafts = (value: Record<string, Record<string, unknown>>) =>
+    JSON.parse(JSON.stringify(value)) as Record<string, Record<string, unknown>>;
+
+  const loadExtensionTabSettings = async (tab: SettingsTabContribution) => {
+    if (!tab.sections?.length) return;
+    const compositeId = settingsStore.getTabCompositeId(tab);
+    const stored = await croffle.base.pluginSettings.get<Record<string, unknown>>(tab.pluginId);
+    const merged = mergeWithSchemaDefaults(tab.sections, stored);
+    extensionDrafts.value[compositeId] = merged;
+    originalExtensionDrafts.value[compositeId] = JSON.parse(JSON.stringify(merged));
+  };
+
+  const loadAllExtensionSettings = async () => {
+    const drafts: Record<string, Record<string, unknown>> = {};
+    const originals: Record<string, Record<string, unknown>> = {};
+
+    for (const tab of settingsStore.sortedExtensionTabs) {
+      if (!tab.sections?.length) continue;
+      const compositeId = settingsStore.getTabCompositeId(tab);
+      const stored = await croffle.base.pluginSettings.get<Record<string, unknown>>(tab.pluginId);
+      const merged = mergeWithSchemaDefaults(tab.sections, stored);
+      drafts[compositeId] = merged;
+      originals[compositeId] = JSON.parse(JSON.stringify(merged));
+    }
+
+    extensionDrafts.value = drafts;
+    originalExtensionDrafts.value = originals;
+  };
 
   const loadUiDraftFromStorage = (): SettingsUiDraftStorage | null => {
     try {
@@ -118,7 +186,6 @@
   const saveUiDraftToStorage = () => {
     try {
       const payload: SettingsUiDraftStorage = {
-        general: cloneGeneralDraft(generalDraft.value),
         account: cloneAccountDraft(accountDraft.value),
         notifications: cloneNotificationDraft(notificationDraft.value),
       };
@@ -131,10 +198,6 @@
   // 저장본 우선 동기화
   const syncUiDraft = () => {
     const saved = loadUiDraftFromStorage();
-
-    generalDraft.value = saved?.general
-      ? cloneGeneralDraft(saved.general)
-      : { timezone: 'Asia/Seoul' };
 
     accountDraft.value = saved?.account
       ? cloneAccountDraft(saved.account)
@@ -149,7 +212,6 @@
         };
 
     // 취소 복원용 원본 갱신
-    originalGeneralDraft.value = cloneGeneralDraft(generalDraft.value);
     originalAccountDraft.value = cloneAccountDraft(accountDraft.value);
     originalNotificationDraft.value = cloneNotificationDraft(notificationDraft.value);
   };
@@ -162,6 +224,7 @@
       originalSettings.value = loaded;
       settings.value = cloneSettings(loaded);
       syncUiDraft();
+      await loadAllExtensionSettings();
     } catch (error) {
       console.error('설정 로드 실패:', error);
       loadError.value = '설정을 불러오지 못했습니다.';
@@ -181,6 +244,7 @@
       if (originalSettings.value) {
         settings.value = cloneSettings(originalSettings.value);
         syncUiDraft();
+        extensionDrafts.value = cloneExtensionDrafts(originalExtensionDrafts.value);
       } else {
         void reloadSettings();
       }
@@ -194,6 +258,15 @@
     try {
       await croffle.base.settings.update(cloneSettings(settings.value));
 
+      for (const tab of settingsStore.sortedExtensionTabs) {
+        if (!tab.sections?.length) continue;
+        const compositeId = settingsStore.getTabCompositeId(tab);
+        const draft = extensionDrafts.value[compositeId];
+        if (draft) {
+          await croffle.base.pluginSettings.set(tab.pluginId, draft);
+        }
+      }
+
       // 저장 후 재조회(실제 반영값 동기화)
       const reloaded = await croffle.base.settings.getAll();
       originalSettings.value = reloaded;
@@ -201,9 +274,9 @@
 
       saveUiDraftToStorage();
 
-      originalGeneralDraft.value = cloneGeneralDraft(generalDraft.value);
       originalAccountDraft.value = cloneAccountDraft(accountDraft.value);
       originalNotificationDraft.value = cloneNotificationDraft(notificationDraft.value);
+      originalExtensionDrafts.value = cloneExtensionDrafts(extensionDrafts.value);
 
       emit('update:open', false);
     } catch (error) {
@@ -215,9 +288,9 @@
     if (originalSettings.value) {
       settings.value = cloneSettings(originalSettings.value);
     }
-    generalDraft.value = cloneGeneralDraft(originalGeneralDraft.value);
     accountDraft.value = cloneAccountDraft(originalAccountDraft.value);
     notificationDraft.value = cloneNotificationDraft(originalNotificationDraft.value);
+    extensionDrafts.value = cloneExtensionDrafts(originalExtensionDrafts.value);
 
     currentPassword.value = '';
     newPassword.value = '';
@@ -231,9 +304,20 @@
     return !!v;
   };
 
-  const onAutoSaveSwitch = (v: unknown) => {
+  const setGeneralBool = (key: 'autoUpdate' | 'startOnSystemBoot' | 'startMinimized', v: unknown) => {
     if (!settings.value) return;
-    settings.value.general.autoUpdate = asBool(v);
+    settings.value.general[key] = asBool(v);
+  };
+
+  const onThemeChange = (theme: unknown) => {
+    if (!settings.value || typeof theme !== 'string') return;
+    settings.value.general.theme = theme as AppSettingTheme;
+    appSettingsStore.setThemeDraft(theme as AppSettingTheme);
+  };
+
+  const onReminderMinutesChange = (v: unknown) => {
+    if (!settings.value || v == null) return;
+    settings.value.notifications.defaultReminderMinutes = Number(v);
   };
 
   const onEmailAlertSwitch = (v: unknown) => {
@@ -245,23 +329,57 @@
     settings.value.notifications.enabled = asBool(v);
   };
 
-  const tabs = [
-    { id: 'general', label: '일반', icon: Settings },
-    { id: 'account', label: '계정', icon: User },
-    { id: 'notifications', label: '알림', icon: Bell },
-  ] as const;
+  const onShowWeekNumbersSwitch = (v: unknown) => {
+    if (!settings.value) return;
+    settings.value.calendar.showWeekNumbers = asBool(v);
+  };
 
   const languageOptions = [
-    { value: 'ko', label: '한국어' },
-    { value: 'en', label: 'English' },
+    { value: AppSettingLanguage.KO, label: '한국어' },
+    { value: AppSettingLanguage.EN, label: 'English' },
   ] as const;
 
-  const timezoneOptions = [
-    { value: 'Asia/Seoul', label: '서울 (GMT+9)' },
-    { value: 'Asia/Tokyo', label: '도쿄 (GMT+9)' },
-    { value: 'UTC', label: 'UTC (GMT+0)' },
-    { value: 'America/Los_Angeles', label: '로스앤젤레스 (GMT-8)' },
+  const themeOptions = [
+    { value: AppSettingTheme.LIGHT, label: '라이트' },
+    { value: AppSettingTheme.DARK, label: '다크' },
+    { value: AppSettingTheme.SYSTEM, label: '시스템 설정 따름' },
   ] as const;
+
+  const startupBehaviorOptions = [
+    { value: AppSettingStartupBehavior.OPEN_LAST_SESSION, label: '마지막에 열었던 화면' },
+    { value: AppSettingStartupBehavior.OPEN_NEW_WINDOW, label: '캘린더 기본 화면' },
+    { value: AppSettingStartupBehavior.DO_NOTHING, label: '열지 않음 (백그라운드)' },
+  ] as const;
+
+  const calendarViewOptions = [
+    { value: CalendarView.DAY, label: '일' },
+    { value: CalendarView.WEEK, label: '주' },
+    { value: CalendarView.MONTH, label: '월' },
+    { value: CalendarView.YEAR, label: '연' },
+  ] as const;
+
+  const weekStartOptions = [
+    { value: CalendarWeekStartDay.SUNDAY, label: '일요일' },
+    { value: CalendarWeekStartDay.MONDAY, label: '월요일' },
+  ] as const;
+
+  const timeFormatOptions = [
+    { value: CalendarTimeFormat.H12, label: '12시간 (AM/PM)' },
+    { value: CalendarTimeFormat.H24, label: '24시간' },
+  ] as const;
+
+  const reminderMinuteOptions = [5, 10, 15, 30, 60].map((m) => ({
+    value: String(m),
+    label: `${m}분 전`,
+  }));
+
+  const onExtensionTabClick = async (tab: SettingsTabContribution) => {
+    const compositeId = settingsStore.getTabCompositeId(tab);
+    activeTab.value = compositeId;
+    if (tab.sections?.length && !extensionDrafts.value[compositeId]) {
+      await loadExtensionTabSettings(tab);
+    }
+  };
 
   const timeOptions = Array.from({ length: 24 }, (_, i) => {
     const hour = `${String(i).padStart(2, '0')}:00`;
@@ -286,7 +404,7 @@
           <h2 class="text-foreground mb-6 px-2 text-xl font-bold">설정</h2>
           <nav class="space-y-1">
             <button
-              v-for="tab in tabs"
+              v-for="tab in allTabs"
               :key="tab.id"
               type="button"
               :class="[
@@ -295,7 +413,11 @@
                   ? 'bg-croffle-sidebar-selected text-croffle-primary'
                   : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
               ]"
-              @click="activeTab = tab.id"
+              @click="
+                'extensionTab' in tab && tab.extensionTab
+                  ? onExtensionTabClick(tab.extensionTab)
+                  : (activeTab = tab.id)
+              "
             >
               <component :is="tab.icon" class="h-4 w-4" />
               {{ tab.label }}
@@ -307,7 +429,7 @@
         <div class="flex min-w-0 flex-1 flex-col">
           <div class="px-6 py-6 md:px-8">
             <h3 class="text-2xl font-bold wrap-break-word">
-              {{ tabs.find((t) => t.id === activeTab)?.label }}
+              {{ activeTabLabel }}
             </h3>
           </div>
 
@@ -326,20 +448,167 @@
 
             <div v-else-if="settings" class="w-full max-w-none space-y-8">
               <!-- 일반 -->
-              <div v-if="activeTab === 'general'" class="space-y-6">
-                <p class="text-muted-foreground text-sm">기본 설정을 조정하세요.</p>
+              <div v-if="activeTab === 'general'" class="space-y-8">
+                <p class="text-muted-foreground text-sm">앱 전역 기본 설정입니다.</p>
+
+                <section class="space-y-4">
+                  <h4 class="text-base font-bold text-neutral-900">표시</h4>
+
+                  <div class="space-y-2">
+                    <Label for="settings-language" class="text-foreground text-sm font-medium"
+                      >언어</Label
+                    >
+                    <Select v-model="settings.general.language">
+                      <SelectTrigger id="settings-language" class="w-full">
+                        <SelectValue placeholder="언어 선택" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem
+                          v-for="option in languageOptions"
+                          :key="option.value"
+                          :value="option.value"
+                        >
+                          {{ option.label }}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div class="space-y-2">
+                    <Label for="settings-theme" class="text-foreground text-sm font-medium"
+                      >테마</Label
+                    >
+                    <Select
+                      :model-value="settings.general.theme"
+                      @update:model-value="onThemeChange"
+                    >
+                      <SelectTrigger id="settings-theme" class="w-full">
+                        <SelectValue placeholder="테마 선택" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem
+                          v-for="option in themeOptions"
+                          :key="option.value"
+                          :value="option.value"
+                        >
+                          {{ option.label }}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </section>
+
+                <Separator />
+
+                <section class="space-y-4">
+                  <h4 class="text-base font-bold text-neutral-900">업데이트</h4>
+                  <div class="flex items-center justify-between">
+                    <div class="space-y-0.5">
+                      <Label class="text-foreground text-sm font-medium">자동 업데이트</Label>
+                      <p class="text-muted-foreground text-xs">
+                        새 버전이 있으면 자동으로 확인하고 알립니다.
+                      </p>
+                    </div>
+                    <Switch
+                      :checked="settings.general.autoUpdate"
+                      :model-value="settings.general.autoUpdate"
+                      aria-label="자동 업데이트"
+                      @update:checked="(v) => setGeneralBool('autoUpdate', v)"
+                      @update:model-value="(v) => setGeneralBool('autoUpdate', v)"
+                    />
+                  </div>
+                </section>
+
+                <Separator />
+
+                <section class="space-y-4">
+                  <h4 class="text-base font-bold text-neutral-900">시작 프로그램</h4>
+
+                  <div class="flex items-center justify-between">
+                    <div class="space-y-0.5">
+                      <Label class="text-foreground text-sm font-medium"
+                        >OS 시작 시 실행</Label
+                      >
+                      <p class="text-muted-foreground text-xs">
+                        켜면 로그인 시 Croffle이 자동으로 실행됩니다.
+                      </p>
+                    </div>
+                    <Switch
+                      :checked="settings.general.startOnSystemBoot"
+                      :model-value="settings.general.startOnSystemBoot"
+                      aria-label="OS 시작 시 실행"
+                      @update:checked="(v) => setGeneralBool('startOnSystemBoot', v)"
+                      @update:model-value="(v) => setGeneralBool('startOnSystemBoot', v)"
+                    />
+                  </div>
+
+                  <div
+                    class="space-y-4 rounded-lg border border-neutral-100 bg-neutral-50/50 p-4"
+                    :class="{ 'pointer-events-none opacity-50': !isBootEnabled }"
+                  >
+                    <div class="space-y-2">
+                      <Label
+                        for="settings-startup-behavior"
+                        class="text-foreground text-sm font-medium"
+                        >시작 시 동작</Label
+                      >
+                      <Select
+                        v-model="settings.general.startupBehavior"
+                        :disabled="!isBootEnabled"
+                      >
+                        <SelectTrigger id="settings-startup-behavior" class="w-full">
+                          <SelectValue placeholder="시작 동작 선택" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem
+                            v-for="option in startupBehaviorOptions"
+                            :key="option.value"
+                            :value="option.value"
+                          >
+                            {{ option.label }}
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <p class="text-muted-foreground text-xs">
+                        OS 시작으로 앱이 실행될 때의 초기 화면 동작입니다.
+                      </p>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                      <div class="space-y-0.5">
+                        <Label class="text-foreground text-sm font-medium">최소화로 시작</Label>
+                        <p class="text-muted-foreground text-xs">
+                          시작 시 창을 표시하지 않고 트레이에서 실행합니다.
+                        </p>
+                      </div>
+                      <Switch
+                        :checked="settings.general.startMinimized"
+                        :model-value="settings.general.startMinimized"
+                        :disabled="!isBootEnabled"
+                        aria-label="최소화로 시작"
+                        @update:checked="(v) => setGeneralBool('startMinimized', v)"
+                        @update:model-value="(v) => setGeneralBool('startMinimized', v)"
+                      />
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <!-- 캘린더 -->
+              <div v-if="activeTab === 'calendar'" class="space-y-6">
+                <p class="text-muted-foreground text-sm">캘린더 표시 방식을 설정합니다.</p>
 
                 <div class="space-y-2">
-                  <Label for="settings-language" class="text-foreground text-sm font-medium"
-                    >언어</Label
+                  <Label for="settings-default-view" class="text-foreground text-sm font-medium"
+                    >기본 뷰</Label
                   >
-                  <Select v-model="settings.general.language">
-                    <SelectTrigger id="settings-language" class="w-full">
-                      <SelectValue placeholder="언어 선택" />
+                  <Select v-model="settings.calendar.defaultView">
+                    <SelectTrigger id="settings-default-view" class="w-full">
+                      <SelectValue placeholder="기본 뷰 선택" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem
-                        v-for="option in languageOptions"
+                        v-for="option in calendarViewOptions"
                         :key="option.value"
                         :value="option.value"
                       >
@@ -347,37 +616,59 @@
                       </SelectItem>
                     </SelectContent>
                   </Select>
-                  <p class="text-muted-foreground text-xs">애플리케이션이 언어를 설정합니다.</p>
                 </div>
 
                 <div class="space-y-2">
-                  <Label for="settings-timezone" class="text-foreground text-sm font-medium"
-                    >시간대</Label
+                  <Label for="settings-week-start" class="text-foreground text-sm font-medium"
+                    >한 주의 시작 요일</Label
                   >
-                  <Select v-model="generalDraft.timezone">
-                    <SelectTrigger id="settings-timezone" class="w-full">
-                      <SelectValue placeholder="시간대 선택" />
+                  <Select v-model="settings.calendar.weekStartDay">
+                    <SelectTrigger id="settings-week-start" class="w-full">
+                      <SelectValue placeholder="시작 요일" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem v-for="tz in timezoneOptions" :key="tz.value" :value="tz.value">
-                        {{ tz.label }}
+                      <SelectItem
+                        v-for="option in weekStartOptions"
+                        :key="option.value"
+                        :value="option.value"
+                      >
+                        {{ option.label }}
                       </SelectItem>
                     </SelectContent>
                   </Select>
-                  <p class="text-muted-foreground text-xs">올바른 시간대가 표시되도록 합니다.</p>
+                </div>
+
+                <div class="space-y-2">
+                  <Label for="settings-time-format" class="text-foreground text-sm font-medium"
+                    >시간 형식</Label
+                  >
+                  <Select v-model="settings.calendar.timeFormat">
+                    <SelectTrigger id="settings-time-format" class="w-full">
+                      <SelectValue placeholder="시간 형식" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem
+                        v-for="option in timeFormatOptions"
+                        :key="option.value"
+                        :value="option.value"
+                      >
+                        {{ option.label }}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div class="flex items-center justify-between">
                   <div class="space-y-0.5">
-                    <Label class="text-foreground text-sm font-medium">자동 저장</Label>
-                    <p class="text-muted-foreground text-xs">변경 사항을 자동으로 저장합니다.</p>
+                    <Label class="text-foreground text-sm font-medium">주차 표시</Label>
+                    <p class="text-muted-foreground text-xs">캘린더에 주차 번호를 표시합니다.</p>
                   </div>
                   <Switch
-                    :checked="settings.general.autoUpdate"
-                    :model-value="settings.general.autoUpdate"
-                    aria-label="자동 저장"
-                    @update:checked="onAutoSaveSwitch"
-                    @update:model-value="onAutoSaveSwitch"
+                    :checked="settings.calendar.showWeekNumbers"
+                    :model-value="settings.calendar.showWeekNumbers"
+                    aria-label="주차 표시"
+                    @update:checked="onShowWeekNumbersSwitch"
+                    @update:model-value="onShowWeekNumbersSwitch"
                   />
                 </div>
               </div>
@@ -443,51 +734,68 @@
 
               <!-- 알림 -->
               <div v-if="activeTab === 'notifications'" class="space-y-6">
-                <section class="space-y-4">
-                  <p class="text-muted-foreground text-sm">알림 설정을 조정하세요.</p>
+                <p class="text-muted-foreground text-sm">일정 알림 설정입니다.</p>
 
-                  <div class="flex items-center justify-between border-b border-neutral-100 py-2">
-                    <div class="min-w-0 space-y-0.5">
-                      <Label class="text-sm font-semibold">이메일 알림</Label>
-                      <p class="text-muted-foreground wrap-break-words text-xs">
-                        새로운 업데이트 및 중요 공지사항에 대한 이메일을 받습니다.
-                      </p>
-                    </div>
+                <div class="flex items-center justify-between border-b border-neutral-100 py-2">
+                  <div class="min-w-0 space-y-0.5">
+                    <Label class="text-sm font-semibold">알림 사용</Label>
+                    <p class="text-muted-foreground wrap-break-words text-xs">
+                      일정 알림을 받을지 설정합니다.
+                    </p>
+                  </div>
+                  <Switch
+                    :checked="settings.notifications.enabled"
+                    :model-value="settings.notifications.enabled"
+                    aria-label="알림 사용"
+                    @update:checked="onAppAlertSwitch"
+                    @update:model-value="onAppAlertSwitch"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <Label
+                    for="settings-reminder-minutes"
+                    class="text-foreground text-sm font-medium"
+                    >기본 알림 시간</Label
+                  >
+                  <Select
+                    :model-value="String(settings.notifications.defaultReminderMinutes)"
+                    @update:model-value="onReminderMinutesChange"
+                  >
+                    <SelectTrigger id="settings-reminder-minutes" class="w-full">
+                      <SelectValue placeholder="알림 시점" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem
+                        v-for="option in reminderMinuteOptions"
+                        :key="option.value"
+                        :value="option.value"
+                      >
+                        {{ option.label }}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p class="text-muted-foreground text-xs">
+                    새 일정 생성 시 기본으로 적용되는 알림 시점입니다.
+                  </p>
+                </div>
+
+                <Separator class="my-4" />
+
+                <section class="space-y-4 opacity-80">
+                  <p class="text-muted-foreground text-xs">
+                    아래 항목은 추후 계정/알림 고도화용 UI입니다 (현재 AppSettings에 미포함).
+                  </p>
+                  <div class="flex items-center justify-between py-2">
+                    <Label class="text-sm font-semibold">이메일 알림 (준비 중)</Label>
                     <Switch
                       :checked="notificationDraft.emailAlert"
                       :model-value="notificationDraft.emailAlert"
-                      aria-label="이메일 알림"
                       @update:checked="onEmailAlertSwitch"
                       @update:model-value="onEmailAlertSwitch"
                     />
                   </div>
-
-                  <div
-                    class="flex items-center justify-between border-b border-neutral-100 py-2 last:border-0"
-                  >
-                    <div class="min-w-0 space-y-0.5">
-                      <Label class="text-sm font-semibold">앱 알림</Label>
-                      <p class="text-muted-foreground wrap-break-words text-xs">
-                        앱 내에서 직접 알림을 받습니다.
-                      </p>
-                    </div>
-                    <Switch
-                      :checked="settings.notifications.enabled"
-                      :model-value="settings.notifications.enabled"
-                      aria-label="앱 알림"
-                      @update:checked="onAppAlertSwitch"
-                      @update:model-value="onAppAlertSwitch"
-                    />
-                  </div>
-                </section>
-
-                <section class="space-y-4 pt-4">
-                  <h4 class="text-sm font-bold text-neutral-900 uppercase">방해 금지 시간</h4>
-                  <p class="text-muted-foreground text-xs">
-                    이 시간 동안에는 알림을 받지 않습니다.
-                  </p>
-
-                  <div class="flex flex-wrap items-center gap-3 pt-2">
+                  <div class="flex flex-wrap items-center gap-3">
                     <Select v-model="notificationDraft.dndStart">
                       <SelectTrigger class="w-32 border-none bg-neutral-100 shadow-none">
                         <SelectValue />
@@ -498,9 +806,7 @@
                         </SelectItem>
                       </SelectContent>
                     </Select>
-
-                    <span class="text-sm font-medium text-neutral-500">부터</span>
-
+                    <span class="text-sm font-medium text-neutral-500">~</span>
                     <Select v-model="notificationDraft.dndEnd">
                       <SelectTrigger class="w-32 border-none bg-neutral-100 shadow-none">
                         <SelectValue />
@@ -511,14 +817,34 @@
                         </SelectItem>
                       </SelectContent>
                     </Select>
-
-                    <span class="text-sm font-medium text-neutral-500">까지</span>
+                    <span class="text-sm text-neutral-500">방해 금지 (준비 중)</span>
                   </div>
-
-                  <p class="text-[11px] text-neutral-400">
-                    알림 설정은 기기의 시스템 설정에 따라 달라질 수 있습니다.
-                  </p>
                 </section>
+              </div>
+
+              <!-- Extension: custom render -->
+              <SettingsExtensionPanel
+                v-else-if="activeExtensionTab?.render"
+                :render-fn="activeExtensionTab.render"
+                :panel-key="activeTab"
+              />
+
+              <!-- Extension: schema sections -->
+              <div
+                v-else-if="activeExtensionTab?.sections?.length"
+                class="space-y-8"
+              >
+                <p v-if="activeExtensionTab.pluginName" class="text-muted-foreground text-sm">
+                  {{ activeExtensionTab.pluginName }} 확장 설정
+                </p>
+                <ConfigSchemaForm
+                  v-for="section in activeExtensionTab.sections"
+                  :key="section.id"
+                  v-model:values="activeExtensionDraft"
+                  :items="section.items"
+                  :section-title="section.title"
+                  :section-description="section.description"
+                />
               </div>
             </div>
           </div>
