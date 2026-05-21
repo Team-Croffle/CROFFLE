@@ -16,16 +16,21 @@
   import { useContextMenuStore } from './stores/contextMenuStore';
   import { ref, onMounted, onUnmounted } from 'vue';
   import { useViewStore } from './stores/viewStore';
+  import { useSettingsStore } from './stores/settingsStore';
   import { defaultMenus } from './data/defaultContextMenus';
   import { Separator } from './components/ui/separator';
   import { useThemeStore } from './stores/themeStore';
+  import { useAppSettingsStore } from './stores/appSettingsStore';
+  import router from './router';
   import Todosheet from './components/Todosheet.vue';
   // import { mockPluginsList } from './test/testPluginMenu';
 
   const uiStore = useUiStore();
   const contextMenuStore = useContextMenuStore();
   const viewStore = useViewStore();
+  const settingsStore = useSettingsStore();
   const themeStore = useThemeStore();
+  const appSettingsStore = useAppSettingsStore();
 
   // 설정 모달 상태
   const isSettingsOpen = ref(false);
@@ -52,6 +57,38 @@
     viewStore.registerView(viewId, renderFn);
   };
 
+  const handleRegisterSettingsTab = (event: Event) => {
+    const customEvent = event as CustomEvent<{
+      pluginId: string;
+      pluginName: string;
+      tabId: string;
+      label: string;
+      icon?: unknown;
+      order?: number;
+      render?: (container: HTMLElement) => void;
+      sections?: import('@croffledev/croffle-types').SettingsSectionContribution[];
+    }>;
+    const { pluginId, pluginName, tabId, label, icon, order, render, sections } =
+      customEvent.detail;
+
+    if (render && sections) {
+      console.warn(
+        `[Plugin ${pluginName}] registerSettingsTab: render와 sections는 동시에 사용할 수 없습니다. render가 우선됩니다.`,
+      );
+    }
+
+    settingsStore.registerTab({
+      id: tabId,
+      label,
+      icon,
+      order,
+      pluginId,
+      pluginName,
+      render,
+      sections: render ? undefined : sections,
+    });
+  };
+
   const registerDefaultContextMenu = () => {
     contextMenuStore.registerMenus(defaultMenus);
   };
@@ -59,8 +96,8 @@
   const setPluginMenus = async () => {
     // 이벤트로 플러그인 호출 동작 매핑
     window.addEventListener('plugin:register-view', handleRegisterView);
+    window.addEventListener('plugin:register-settings-tab', handleRegisterSettingsTab);
 
-    // 일단 껍데기만 확인
     const pluginList = await croffle.base.pluginInfo.getEnabled();
     // test용
     // const pluginList = mockPluginsList;
@@ -75,6 +112,8 @@
       if (contextMenus) {
         contextMenuStore.registerMenus(contextMenus);
       }
+
+      settingsStore.registerManifestTabs(p.id, p.name, p.features.settingsTabs);
     });
   };
 
@@ -88,14 +127,22 @@
     }
   };
 
+  let unsubscribeStartupNav: (() => void) | null = null;
+
   onMounted(async () => {
     registerDefaultContextMenu();
+    await appSettingsStore.initialize();
     await setPluginMenus();
+    unsubscribeStartupNav = croffle.app.event.on('settings:startup-navigate', (path) => {
+      void router.push(typeof path === 'string' ? path : '/calendar');
+    });
   });
 
   onUnmounted(() => {
-    // 메모리 누수 방지용
     window.removeEventListener('plugin:register-view', handleRegisterView);
+    window.removeEventListener('plugin:register-settings-tab', handleRegisterSettingsTab);
+    unsubscribeStartupNav?.();
+    appSettingsStore.dispose();
   });
 </script>
 

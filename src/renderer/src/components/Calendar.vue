@@ -3,15 +3,27 @@
   import type { CalendarOptions } from '@fullcalendar/core';
   import FullCalendar from '@fullcalendar/vue3';
   import dayGridPlugin from '@fullcalendar/daygrid';
+  import timeGridPlugin from '@fullcalendar/timegrid';
+  import multiMonthPlugin from '@fullcalendar/multimonth';
   import interactionPlugin from '@fullcalendar/interaction';
   import { useScheduleStore } from '@/stores/scheduleStore';
+  import { useAppSettingsStore } from '@/stores/appSettingsStore';
   import { storeToRefs } from 'pinia';
   import { useCalendarLogic } from '@/composables/useCalendarLogic';
+  import {
+    calendarViewToFullCalendar,
+    languageToLocale,
+    timeFormatToHour12,
+    weekStartDayToFirstDay,
+  } from '@/utils/calendarSettings';
+  import { AppEventType } from '../../../shared/enums';
   import dayjs from 'dayjs';
 
   // pinia store 연결
   const scheduleStore = useScheduleStore();
+  const appSettingsStore = useAppSettingsStore();
   const { events } = storeToRefs(scheduleStore);
+  const { settings } = storeToRefs(appSettingsStore);
 
   // 캘린더 ref
   const fullCalendarRef = ref<InstanceType<typeof FullCalendar> | null>(null);
@@ -25,14 +37,7 @@
     getClickedDate,
   } = useCalendarLogic();
 
-  // 캘린더 리사이징
-  onMounted(() => {
-    startResizeObserver(calendarContainerRef, fullCalendarRef);
-  });
-
-  onBeforeUnmount(() => {
-    stopResizeObserver();
-  });
+  let unsubscribeSettings: (() => void) | null = null;
 
   // 우클릭 핸들러
   const handleContextMenu = (e: MouseEvent) => {
@@ -45,10 +50,13 @@
     }
   };
 
-  // fullCalendar 옵션 설정
-  const calendarOptions = reactive<CalendarOptions>({
-    plugins: [dayGridPlugin, interactionPlugin],
-    initialView: 'dayGridMonth',
+  const buildCalendarOptions = (): CalendarOptions => {
+    const cal = settings.value?.calendar;
+    const lang = settings.value?.general.language;
+
+    return {
+    plugins: [dayGridPlugin, timeGridPlugin, multiMonthPlugin, interactionPlugin],
+    initialView: cal ? calendarViewToFullCalendar(cal.defaultView) : 'dayGridMonth',
     initialDate: new Date().toISOString().slice(0, 10),
     headerToolbar: {
       start: 'title',
@@ -100,8 +108,74 @@
     },
 
     windowResizeDelay: 0,
-    handleWindowResize: false, // 수동으로 크기 조정 처리
-    locale: 'ko', // 한국어 설정
+    handleWindowResize: false,
+    locale: lang ? languageToLocale(lang) : 'ko',
+    firstDay: cal ? weekStartDayToFirstDay(cal.weekStartDay) : 0,
+    weekNumbers: cal?.showWeekNumbers ?? false,
+    eventTimeFormat: {
+      hour: 'numeric',
+      minute: '2-digit',
+      meridiem: cal ? timeFormatToHour12(cal.timeFormat) : false,
+    },
+    slotLabelFormat: {
+      hour: 'numeric',
+      minute: '2-digit',
+      meridiem: cal ? timeFormatToHour12(cal.timeFormat) : false,
+    },
+  };
+  };
+
+  const calendarOptions = reactive<CalendarOptions>(buildCalendarOptions());
+
+  const applyCalendarSettings = () => {
+    const api = fullCalendarRef.value?.getApi();
+    const cal = settings.value?.calendar;
+    const lang = settings.value?.general.language;
+    if (!cal) return;
+
+    const patch: Partial<CalendarOptions> = {
+      locale: lang ? languageToLocale(lang) : 'ko',
+      firstDay: weekStartDayToFirstDay(cal.weekStartDay),
+      weekNumbers: cal.showWeekNumbers,
+      eventTimeFormat: {
+        hour: 'numeric',
+        minute: '2-digit',
+        meridiem: timeFormatToHour12(cal.timeFormat),
+      },
+      slotLabelFormat: {
+        hour: 'numeric',
+        minute: '2-digit',
+        meridiem: timeFormatToHour12(cal.timeFormat),
+      },
+    };
+
+    Object.assign(calendarOptions, patch);
+
+    if (api) {
+      api.setOption('locale', patch.locale);
+      api.setOption('firstDay', patch.firstDay);
+      api.setOption('weekNumbers', patch.weekNumbers);
+      api.setOption('eventTimeFormat', patch.eventTimeFormat);
+      api.setOption('slotLabelFormat', patch.slotLabelFormat);
+      api.changeView(calendarViewToFullCalendar(cal.defaultView));
+    }
+  };
+
+  watch(settings, () => applyCalendarSettings(), { deep: true });
+
+  onMounted(() => {
+    startResizeObserver(calendarContainerRef, fullCalendarRef);
+    unsubscribeSettings = croffle.app.event.on(AppEventType.SETTINGS_UPDATE, () => {
+      applyCalendarSettings();
+    });
+    if (settings.value) {
+      applyCalendarSettings();
+    }
+  });
+
+  onBeforeUnmount(() => {
+    stopResizeObserver();
+    unsubscribeSettings?.();
   });
 
   // 스토어의 일정 데이터가 변경될 때마다 캘린더에 반영
