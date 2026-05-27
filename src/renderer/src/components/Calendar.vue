@@ -55,74 +55,74 @@
     const lang = settings.value?.general.language;
 
     return {
-    plugins: [dayGridPlugin, timeGridPlugin, multiMonthPlugin, interactionPlugin],
-    initialView: cal ? calendarViewToFullCalendar(cal.defaultView) : 'dayGridMonth',
-    initialDate: new Date().toISOString().slice(0, 10),
-    headerToolbar: {
-      start: 'title',
-      center: '',
-      end: 'prev,today,next',
-    },
+      plugins: [dayGridPlugin, timeGridPlugin, multiMonthPlugin, interactionPlugin],
+      initialView: cal ? calendarViewToFullCalendar(cal.defaultView) : 'dayGridMonth',
+      initialDate: new Date().toISOString().slice(0, 10),
+      headerToolbar: {
+        start: 'title',
+        center: '',
+        end: 'prev,today,next',
+      },
 
-    // 제목 형식
-    titleFormat: { year: 'numeric', month: 'long' },
+      // 제목 형식
+      titleFormat: { year: 'numeric', month: 'long' },
 
-    // 날짜 숫자 형식
-    dayCellContent: (info) => {
-      return info.date.getDate().toString();
-    },
+      // 날짜 숫자 형식
+      dayCellContent: (info) => {
+        return info.date.getDate().toString();
+      },
 
-    height: '100%',
-    expandRows: true,
-    fixedWeekCount: true,
+      height: '100%',
+      expandRows: true,
+      fixedWeekCount: true,
 
-    dayMaxEvents: true, // 하루에 표시할 수 있는 최대 이벤트 수
+      dayMaxEvents: true, // 하루에 표시할 수 있는 최대 이벤트 수
 
-    // 이벤트 시간 숨기기
-    displayEventTime: false,
+      // 이벤트 시간 숨기기
+      displayEventTime: false,
 
-    events: [],
+      events: [],
 
-    editable: false, // 이벤트 드래그 가능
-    selectable: true, // 날짜 선택 가능
-    dateClick: (info) => handleDateDoubleClick(info.dateStr), // 날짜 클릭 핸들러
-    eventClick: (info) => {
-      const eventId = info.event.id;
-      if (!eventId) return;
-      handleEventDoubleClick(eventId);
-    },
-    eventDidMount: (info) => {
-      const eventId = info.event.id;
-      if (eventId) {
-        info.el.setAttribute('data-event-id', eventId);
-        return;
-      }
-      info.el.removeAttribute('data-event-id');
-    },
+      editable: false, // 이벤트 드래그 가능
+      selectable: true, // 날짜 선택 가능
+      dateClick: (info) => handleDateDoubleClick(info.dateStr), // 날짜 클릭 핸들러
+      eventClick: (info) => {
+        const eventId = info.event.id;
+        if (!eventId) return;
+        handleEventDoubleClick(eventId);
+      },
+      eventDidMount: (info) => {
+        const eventId = info.event.id;
+        if (eventId) {
+          info.el.setAttribute('data-event-id', eventId);
+          return;
+        }
+        info.el.removeAttribute('data-event-id');
+      },
 
-    datesSet: (info) => {
-      // 월이 변경될 때마다 호출됨
-      const start = dayjs(info.start).subtract(1, 'month').startOf('month').toISOString();
-      const end = dayjs(info.end).add(1, 'month').endOf('month').toISOString();
-      scheduleStore.loadSchedules(start, end);
-    },
+      datesSet: (info) => {
+        // 월이 변경될 때마다 호출됨
+        const start = dayjs(info.start).subtract(1, 'month').startOf('month').toISOString();
+        const end = dayjs(info.end).add(1, 'month').endOf('month').toISOString();
+        scheduleStore.loadSchedules(start, end);
+      },
 
-    windowResizeDelay: 0,
-    handleWindowResize: false,
-    locale: lang ? languageToLocale(lang) : 'ko',
-    firstDay: cal ? weekStartDayToFirstDay(cal.weekStartDay) : 0,
-    weekNumbers: cal?.showWeekNumbers ?? false,
-    eventTimeFormat: {
-      hour: 'numeric',
-      minute: '2-digit',
-      meridiem: cal ? timeFormatToHour12(cal.timeFormat) : false,
-    },
-    slotLabelFormat: {
-      hour: 'numeric',
-      minute: '2-digit',
-      meridiem: cal ? timeFormatToHour12(cal.timeFormat) : false,
-    },
-  };
+      windowResizeDelay: 0,
+      handleWindowResize: false,
+      locale: lang ? languageToLocale(lang) : 'ko',
+      firstDay: cal ? weekStartDayToFirstDay(cal.weekStartDay) : 0,
+      weekNumbers: cal?.showWeekNumbers ?? false,
+      eventTimeFormat: {
+        hour: 'numeric',
+        minute: '2-digit',
+        meridiem: cal ? timeFormatToHour12(cal.timeFormat) : false,
+      },
+      slotLabelFormat: {
+        hour: 'numeric',
+        minute: '2-digit',
+        meridiem: cal ? timeFormatToHour12(cal.timeFormat) : false,
+      },
+    };
   };
 
   const calendarOptions = reactive<CalendarOptions>(buildCalendarOptions());

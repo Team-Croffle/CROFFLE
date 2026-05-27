@@ -22,7 +22,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const registerManifestTabs = (
     pluginId: string,
     pluginName: string,
-    manifests: SettingsTabManifest[] | undefined,
+    manifests: SettingsTabManifest[] | undefined
   ) => {
     if (!manifests?.length) return;
     for (const manifest of manifests) {
@@ -35,7 +35,7 @@ export const useSettingsStore = defineStore('settings', () => {
   };
 
   const sortedExtensionTabs = computed(() =>
-    [...extensionTabs.value].sort((a, b) => (a.order ?? 100) - (b.order ?? 100)),
+    [...extensionTabs.value].sort((a, b) => (a.order ?? 100) - (b.order ?? 100))
   );
 
   const findExtensionTab = (compositeId: string) =>
