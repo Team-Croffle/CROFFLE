@@ -109,7 +109,7 @@
   });
 
   const activeTabLabel = computed(
-    () => allTabs.value.find((t) => t.id === activeTab.value)?.label ?? '설정',
+    () => allTabs.value.find((t) => t.id === activeTab.value)?.label ?? '설정'
   );
 
   // 깊은 복사 유틸
@@ -215,7 +215,6 @@
       } else {
         void reloadSettings();
       }
-
     }
   );
 
@@ -266,7 +265,10 @@
     return !!v;
   };
 
-  const setGeneralBool = (key: 'autoUpdate' | 'startOnSystemBoot' | 'startMinimized', v: unknown) => {
+  const setGeneralBool = (
+    key: 'autoUpdate' | 'startOnSystemBoot' | 'startMinimized',
+    v: unknown
+  ) => {
     if (!settings.value) return;
     settings.value.general[key] = asBool(v);
   };
@@ -353,7 +355,7 @@
   <Dialog :open="open" @update:open="(val) => emit('update:open', val)">
     <!-- 반응형 모달 크기 -->
     <DialogContent
-      class="h-[90vh] max-h-[940px] w-[96vw] sm:max-w-none gap-0 overflow-hidden border-none p-0 shadow-2xl sm:w-[94vw] lg:w-[92vw]"
+      class="h-[90vh] max-h-[940px] w-[96vw] gap-0 overflow-hidden border-none p-0 shadow-2xl sm:w-[94vw] sm:max-w-none lg:w-[92vw]"
     >
       <DialogHeader class="sr-only">
         <DialogTitle>설정</DialogTitle>
@@ -362,7 +364,7 @@
 
       <div class="bg-background text-foreground absolute inset-0 flex overflow-hidden">
         <!-- 좌측 탭 -->
-        <div class="border-border bg-muted/20 w-60 shrink-0 border-r p-4 overflow-y-auto">
+        <div class="border-border bg-muted/20 w-60 shrink-0 overflow-y-auto border-r p-4">
           <h2 class="text-foreground mb-6 px-2 text-xl font-bold">설정</h2>
           <nav class="space-y-1">
             <button
@@ -388,7 +390,7 @@
         </div>
 
         <!-- 우측 콘텐츠 -->
-        <div class="flex min-w-0 flex-1 flex-col min-h-0">
+        <div class="flex min-h-0 min-w-0 flex-1 flex-col">
           <div class="shrink-0 px-6 py-6 md:px-8">
             <h3 class="text-2xl font-bold wrap-break-word">
               {{ activeTabLabel }}
@@ -488,9 +490,7 @@
 
                   <div class="flex items-center justify-between">
                     <div class="space-y-0.5">
-                      <Label class="text-foreground text-sm font-medium"
-                        >OS 시작 시 실행</Label
-                      >
+                      <Label class="text-foreground text-sm font-medium">OS 시작 시 실행</Label>
                       <p class="text-muted-foreground text-xs">
                         켜면 로그인 시 Croffle이 자동으로 실행됩니다.
                       </p>
@@ -514,10 +514,7 @@
                         class="text-foreground text-sm font-medium"
                         >시작 시 동작</Label
                       >
-                      <Select
-                        v-model="settings.general.startupBehavior"
-                        :disabled="!isBootEnabled"
-                      >
+                      <Select v-model="settings.general.startupBehavior" :disabled="!isBootEnabled">
                         <SelectTrigger id="settings-startup-behavior" class="w-full">
                           <SelectValue placeholder="시작 동작 선택" />
                         </SelectTrigger>
@@ -635,7 +632,6 @@
                 </div>
               </div>
 
-
               <!-- 알림 -->
               <div v-if="activeTab === 'notifications'" class="space-y-6">
                 <p class="text-muted-foreground text-sm">일정 알림 설정입니다.</p>
@@ -657,9 +653,7 @@
                 </div>
 
                 <div class="space-y-2">
-                  <Label
-                    for="settings-reminder-minutes"
-                    class="text-foreground text-sm font-medium"
+                  <Label for="settings-reminder-minutes" class="text-foreground text-sm font-medium"
                     >기본 알림 시간</Label
                   >
                   <Select
@@ -734,10 +728,7 @@
               />
 
               <!-- Extension: schema sections -->
-              <div
-                v-else-if="activeExtensionTab?.sections?.length"
-                class="space-y-8"
-              >
+              <div v-else-if="activeExtensionTab?.sections?.length" class="space-y-8">
                 <p v-if="activeExtensionTab.pluginName" class="text-muted-foreground text-sm">
                   {{ activeExtensionTab.pluginName }} 확장 설정
                 </p>
@@ -753,7 +744,9 @@
             </div>
           </div>
 
-          <div class="bg-muted/10 mt-auto flex shrink-0 justify-end gap-3 border-t px-6 py-4 md:px-8">
+          <div
+            class="bg-muted/10 mt-auto flex shrink-0 justify-end gap-3 border-t px-6 py-4 md:px-8"
+          >
             <Button
               type="button"
               variant="outline"

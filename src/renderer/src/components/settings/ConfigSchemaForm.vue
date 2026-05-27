@@ -38,7 +38,9 @@
   <section class="space-y-4">
     <div v-if="sectionTitle || sectionDescription" class="space-y-1">
       <h4 v-if="sectionTitle" class="text-base font-bold text-neutral-900">{{ sectionTitle }}</h4>
-      <p v-if="sectionDescription" class="text-muted-foreground text-sm">{{ sectionDescription }}</p>
+      <p v-if="sectionDescription" class="text-muted-foreground text-sm">
+        {{ sectionDescription }}
+      </p>
     </div>
 
     <div v-for="(schema, key) in items" :key="key" class="space-y-2">
@@ -93,9 +95,7 @@
           :model-value="String(values[key] ?? '')"
           :type="schema.type === 'number' ? 'number' : 'text'"
           class="h-10 border-neutral-200"
-          @update:model-value="
-            (v) => updateValue(key, schema.type === 'number' ? Number(v) : v)
-          "
+          @update:model-value="(v) => updateValue(key, schema.type === 'number' ? Number(v) : v)"
         />
         <p v-if="schema.description" class="text-muted-foreground text-xs">
           {{ schema.description }}

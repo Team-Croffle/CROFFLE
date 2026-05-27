@@ -8,7 +8,11 @@ import { join } from 'path';
 import { registerAllIpcHandlers } from './ipc';
 import { windowService } from './core/window/WindowService';
 import { settingService } from './modules/settings/service/SettingService';
-import { settingsApplyService, STARTUP_ARG, LOGIN_HIDDEN_ARG } from './modules/settings/service/SettingsApplyService';
+import {
+  settingsApplyService,
+  STARTUP_ARG,
+  LOGIN_HIDDEN_ARG,
+} from './modules/settings/service/SettingsApplyService';
 import icon from '../../resources/Logo2Only.png?asset';
 import log from 'electron-log';
 
@@ -44,8 +48,7 @@ function createWindow(): void {
     settingsApplyService.applyStartupPresentation(settings);
 
     const loginSettings = app.getLoginItemSettings();
-    const wasOpenedAtLogin =
-      loginSettings.wasOpenedAtLogin || process.argv.includes(STARTUP_ARG);
+    const wasOpenedAtLogin = loginSettings.wasOpenedAtLogin || process.argv.includes(STARTUP_ARG);
     const shouldHideOnLogin =
       wasOpenedAtLogin &&
       (settings.general.startupBehavior === AppSettingStartupBehavior.DO_NOTHING ||

@@ -73,7 +73,7 @@
 
     if (render && sections) {
       console.warn(
-        `[Plugin ${pluginName}] registerSettingsTab: render와 sections는 동시에 사용할 수 없습니다. render가 우선됩니다.`,
+        `[Plugin ${pluginName}] registerSettingsTab: render와 sections는 동시에 사용할 수 없습니다. render가 우선됩니다.`
       );
     }
 

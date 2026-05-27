@@ -34,9 +34,7 @@ export const useThemeStore = defineStore('darkTheme', () => {
   /** 타이틀 바 빠른 전환 (light ↔ dark) */
   const changeTheme = (): void => {
     const next =
-      currentTheme.value === AppSettingTheme.DARK
-        ? AppSettingTheme.LIGHT
-        : AppSettingTheme.DARK;
+      currentTheme.value === AppSettingTheme.DARK ? AppSettingTheme.LIGHT : AppSettingTheme.DARK;
     applyFromSettings(next);
   };
 
