@@ -2,13 +2,13 @@ import { ClipboardResult } from '@croffledev/croffle-types';
 import { ClipboardDataType } from '../../../../shared/enums';
 import { Notification, app, clipboard, nativeImage } from 'electron';
 import path from 'path';
+import log from 'electron-log';
 
 export class OsService {
   public showNotification(title?: string, body?: string): void {
     try {
       if (!Notification.isSupported()) {
-        // 향후 협업 Point
-        console.warn('OS/ Notification not supported X');
+        log.warn('OS/ Notification not supported');
         return;
       }
 
@@ -16,8 +16,7 @@ export class OsService {
       const Body = body?.trim();
 
       if (!Title && !Body) {
-        // 향후 협업 Point
-        console.warn('OS/ Notification content X');
+        log.warn('OS/ Notification content is empty');
         return;
       }
 
@@ -27,8 +26,8 @@ export class OsService {
         body: Body || '',
       }).show();
     } catch (error) {
-      // 향후 협업 Point
-      console.error('OS/ Notification:', error);
+      log.error('OS/ Notification error:', error);
+      throw error;
     }
   }
 
@@ -57,9 +56,9 @@ export class OsService {
 
       return { type: ClipboardDataType.EMPTY, value: null };
     } catch (error) {
-      // 향후 협업 Point
-      console.error('OS/ Read Clipboard :', error);
-      return { type: ClipboardDataType.ERROR, value: null };
+      log.error('OS/ Read Clipboard error:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      return { type: ClipboardDataType.ERROR, value: errorMessage };
     }
   }
 
@@ -78,8 +77,8 @@ export class OsService {
         clipboard.writeImage(image);
       }
     } catch (error) {
-      // 향후 협업 Point
-      console.error('OS/ Write Clipboard:', error);
+      log.error('OS/ Write Clipboard error:', error);
+      throw error;
     }
   }
 }
