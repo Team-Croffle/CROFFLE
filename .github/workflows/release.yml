@@ -11,48 +11,45 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest, fedora-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    # GITHUB_TOKEN이 Release 노트를 생성하고 파일을 업로드할 수 있도록 쓰기 권한 부여
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: 'yarn'
 
       - name: Install dependencies
-        run: npm install
+        run: yarn install --immutable
 
-      - name: Build project
-        run: npm run build
+      - name: Build Vite App
+        run: yarn build
 
-      - name: Create Release and Upload Assets
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            dist/**/*.exe
-            dist/**/*.dmg
-            dist/**/*.AppImage
-            dist/**/*.deb
-            dist/**/*.snap
-            dist/**/*.tar.gz
-            dist/**/*.rpm
+      - name: Package and Publish (macOS)
+        if: matrix.os == 'macos-latest'
+        run: yarn electron-builder --mac -p always
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_TAG: ${{ github.ref_name }}
-          RELEASE_NAME: Release ${{ github.ref_name }}
-          RELEASE_BODY: |
-            ## What's New
-            - Automated release for version ${{ github.ref_name }}
-            - Built on ${{ matrix.os }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-            ## Assets
-            - Windows Installer (.exe)
-            - macOS Installer (.dmg)
-            - Linux AppImage (.AppImage)
-            - Linux Debian Package (.deb)
-            - Linux Snap Package (.snap)
-            - Linux Tarball (.tar.gz)
-            - Linux RPM Package (.rpm)
+      - name: Package and Publish (Windows)
+        if: matrix.os == 'windows-latest'
+        run: yarn electron-builder --win -p always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Package and Publish (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: yarn electron-builder --linux -p always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
