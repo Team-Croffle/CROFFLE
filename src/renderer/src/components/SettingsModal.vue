@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, onMounted, watch, computed } from 'vue';
-  import { Settings, Bell, Puzzle, CalendarDays } from 'lucide-vue-next';
+  import { Settings, Bell, Puzzle, CalendarDays, Trash2, Github, Download, Loader2 } from 'lucide-vue-next';
   import {
     AppSettingLanguage,
     AppSettingStartupBehavior,
@@ -34,7 +34,7 @@
   import { Switch } from '@/components/ui/switch';
 
   import { Separator } from '@/components/ui/separator';
-  import type { AppSettings } from '@croffledev/croffle-types';
+  import type { AppSettings, PluginInfo } from '@croffledev/croffle-types';
 
   interface Props {
     open: boolean;
@@ -63,6 +63,11 @@
   const isLoadingSettings = ref(true);
   const loadError = ref<string | null>(null);
 
+  // 플러그인 관리 상태
+  const installedPlugins = ref<PluginInfo[]>([]);
+  const installUrl = ref<string>('');
+  const isInstalling = ref<boolean>(false);
+
   const notificationDraft = ref<NotificationDraft>({
     emailAlert: true,
     dndStart: '22:00',
@@ -85,6 +90,7 @@
     { id: 'general', label: '일반', icon: Settings },
     { id: 'calendar', label: '캘린더', icon: CalendarDays },
     { id: 'notifications', label: '알림', icon: Bell },
+    { id: 'plugins', label: '플러그인 관리', icon: Puzzle },
   ] as const;
 
   const isBootEnabled = computed(() => settings.value?.general.startOnSystemBoot ?? false);
@@ -200,8 +206,50 @@
     }
   };
 
+  const fetchInstalledPlugins = async () => {
+    try {
+      installedPlugins.value = await croffle.base.pluginInfo.getInstalled();
+    } catch (err) {
+      console.error('Failed to fetch installed plugins', err);
+    }
+  };
+
+  const onInstallPlugin = async () => {
+    if (!installUrl.value) return;
+    isInstalling.value = true;
+    try {
+      await croffle.base.pluginInfo.install({ id: installUrl.value });
+      installUrl.value = '';
+      await fetchInstalledPlugins();
+    } catch (err) {
+      console.error('Failed to install plugin', err);
+    } finally {
+      isInstalling.value = false;
+    }
+  };
+
+  const onTogglePlugin = async (plugin: PluginInfo) => {
+    try {
+      await croffle.base.pluginInfo.toggle(plugin.id, plugin.enabled);
+      await fetchInstalledPlugins();
+    } catch (err) {
+      console.error('Failed to toggle plugin', err);
+    }
+  };
+
+  const onUninstallPlugin = async (plugin: PluginInfo) => {
+    if (!confirm(`'${plugin.name}' 플러그인을 삭제하시겠습니까?`)) return;
+    try {
+      await croffle.base.pluginInfo.uninstall(plugin.id);
+      await fetchInstalledPlugins();
+    } catch (err) {
+      console.error('Failed to uninstall plugin', err);
+    }
+  };
+
   onMounted(() => {
     void reloadSettings();
+    void fetchInstalledPlugins();
   });
 
   watch(
@@ -215,8 +263,17 @@
       } else {
         void reloadSettings();
       }
+      if (activeTab.value === 'plugins') {
+        void fetchInstalledPlugins();
+      }
     }
   );
+
+  watch(activeTab, (tab) => {
+    if (tab === 'plugins') {
+      void fetchInstalledPlugins();
+    }
+  });
 
   const handleSave = async () => {
     if (!settings.value) return;
@@ -718,6 +775,95 @@
                     <span class="text-sm text-neutral-500">방해 금지 (준비 중)</span>
                   </div>
                 </section>
+              </div>
+
+              <!-- 플러그인 관리 -->
+              <div v-if="activeTab === 'plugins'" class="space-y-6">
+                <p class="text-muted-foreground text-sm">확장 플러그인을 설치하고 관리합니다.</p>
+
+                <!-- 설치 폼 -->
+                <div class="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+                  <h4 class="mb-3 text-sm font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-2">
+                    <Github class="h-4 w-4" />
+                    GitHub에서 설치
+                  </h4>
+                  <div class="flex items-center gap-3">
+                    <input
+                      v-model="installUrl"
+                      type="text"
+                      placeholder="https://github.com/username/repo"
+                      class="flex-1 rounded-lg border border-neutral-300 bg-transparent px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-[#A68A64] focus:outline-none focus:ring-1 focus:ring-[#A68A64] dark:border-neutral-700"
+                      @keydown.enter="onInstallPlugin"
+                    />
+                    <Button
+                      type="button"
+                      :disabled="!installUrl || isInstalling"
+                      class="h-9 gap-2 border-none bg-[#A68A64] text-white hover:bg-[#8E7554]"
+                      @click="onInstallPlugin"
+                    >
+                      <Loader2 v-if="isInstalling" class="h-4 w-4 animate-spin" />
+                      <Download v-else class="h-4 w-4" />
+                      설치
+                    </Button>
+                  </div>
+                </div>
+
+                <!-- 플러그인 목록 -->
+                <div class="space-y-4">
+                  <h4 class="text-base font-bold text-neutral-900 dark:text-neutral-100">설치된 플러그인</h4>
+                  
+                  <div v-if="installedPlugins.length === 0" class="flex flex-col items-center justify-center rounded-xl border border-dashed border-neutral-300 bg-neutral-50 py-12 text-center dark:border-neutral-800 dark:bg-neutral-950">
+                    <div class="mb-4 rounded-full bg-neutral-200/50 p-3 dark:bg-neutral-800/50">
+                      <Puzzle class="h-6 w-6 text-neutral-500" />
+                    </div>
+                    <p class="text-sm font-medium text-neutral-900 dark:text-neutral-100">설치된 플러그인이 없습니다.</p>
+                    <p class="mt-1 text-xs text-neutral-500">위쪽 설치 폼에 GitHub URL을 입력하여 플러그인을 추가해보세요.</p>
+                  </div>
+
+                  <div v-else class="grid gap-4 sm:grid-cols-2">
+                    <div
+                      v-for="plugin in installedPlugins"
+                      :key="plugin.id"
+                      class="flex flex-col rounded-xl border border-neutral-200 bg-white shadow-sm transition-colors hover:border-neutral-300 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-neutral-700"
+                    >
+                      <div class="flex items-start justify-between p-4">
+                        <div class="min-w-0 flex-1">
+                          <div class="flex items-center gap-2">
+                            <h5 class="truncate font-semibold text-neutral-900 dark:text-neutral-100" :title="plugin.name">{{ plugin.name }}</h5>
+                            <span class="rounded bg-neutral-100 px-1.5 py-0.5 text-[10px] font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">v{{ plugin.version }}</span>
+                          </div>
+                          <p class="mt-1 text-xs text-neutral-500">by {{ plugin.author }}</p>
+                          <p class="mt-2 line-clamp-2 text-sm text-neutral-600 dark:text-neutral-300" :title="plugin.description">{{ plugin.description }}</p>
+                        </div>
+                      </div>
+                      
+                      <div class="mt-auto flex items-center justify-between border-t border-neutral-100 bg-neutral-50/50 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-950/50">
+                        <div class="flex items-center gap-2">
+                          <Switch
+                            :checked="plugin.enabled"
+                            :model-value="plugin.enabled"
+                            aria-label="플러그인 활성화"
+                            @update:checked="(v) => { plugin.enabled = v; onTogglePlugin(plugin); }"
+                            @update:model-value="(v) => { plugin.enabled = v; onTogglePlugin(plugin); }"
+                          />
+                          <span class="text-xs font-medium" :class="plugin.enabled ? 'text-[#A68A64]' : 'text-neutral-500'">
+                            {{ plugin.enabled ? '사용 중' : '사용 안 함' }}
+                          </span>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          class="h-8 w-8 text-neutral-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/50"
+                          @click="onUninstallPlugin(plugin)"
+                        >
+                          <Trash2 class="h-4 w-4" />
+                          <span class="sr-only">삭제</span>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <!-- Extension: custom render -->

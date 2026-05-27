@@ -5,6 +5,7 @@ import { validatePluginName } from '../modules/helper/pluginValidator';
 import { PluginInfoMapper } from '../modules/plugin-info/mapper/PluginInfoMapper';
 import { eventService } from '../core/event-bus/EventService';
 import { AppEventType } from '../../shared/enums';
+import { pluginManager } from '../core/plugin-manager/PluginManager';
 
 export const registerPluginInfoIpcHandlers = (): void => {
   ipcMain.handle('pluginInfo:getInstalledPlugins', async (): Promise<PluginInfo[]> => {
@@ -41,7 +42,11 @@ export const registerPluginInfoIpcHandlers = (): void => {
   ipcMain.handle(
     'pluginInfo:installPlugin',
     async (_, pluginData: Partial<PluginInfo>): Promise<PluginInfo> => {
-      const entity = await pluginInfoService.installPlugin(pluginData);
+      if (!pluginData.id) {
+        throw new Error('[PluginInfo] Invalid plugin id (GitHub URL) provided.');
+      }
+
+      const entity = await pluginManager.installFromGitHub(pluginData.id);
 
       // Add app event emit
       eventService.emit(AppEventType.PLUGIN_INFO_INSTALL, entity);
