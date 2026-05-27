@@ -35,6 +35,7 @@ linux:
     - rpm
   maintainer: croffle dev.
   category: Utility
+  artifactName: ${productName}-${version}.${ext}
 appImage:
   artifactName: ${productName}-${version}.${ext}
 npmRebuild: false
