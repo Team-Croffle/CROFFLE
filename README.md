@@ -41,11 +41,11 @@ We provide a **powerful plugin system** that allows you to build your own produc
 
 ### Installation
 
-Download the installer for your operating system from the [Latest Release Page](#).
+Download the installer for your operating system from the [Latest Release Page](https://github.com/team-croffle/croffle/releases/latest).
 
-- [Windows Download (.exe)](#)
-- [macOS Download (.dmg)](#)
-- [Linux Download (.AppImage)](#)
+- [Windows Download (.exe)](https://github.com/team-croffle/croffle/releases/download/v1.0.0/croffle-1.0.0-setup.exe)
+- [macOS Download (.dmg)](https://github.com/team-croffle/croffle/releases/download/v1.0.0/croffle-1.0.0.dmg)
+- [Linux Download (.AppImage)](https://github.com/team-croffle/croffle/releases/download/v1.0.0/croffle-1.0.0.AppImage)
 
 ### How to Use Plugins
 
@@ -66,7 +66,7 @@ This project is managed using Yarn. Make sure you have it installed before proce
 
 ```bash
 # 1. Clone the repository
-git clone [https://github.com/croffledev/croffle.git](https://github.com/croffledev/croffle.git)
+git clone https://github.com/team-croffle/croffle.git
 cd croffle
 
 # 2. Install dependencies

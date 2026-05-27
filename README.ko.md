@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./icons/Logo2Only.png" width="150" />
+  <img src="./.github/contents/icon.png" width="150" />
 
 # CROFFLE
 
@@ -12,10 +12,6 @@
 </div>
 
 **Croffle**은 단순한 일정 관리 도구를 넘어, 사용자가 직접 필요한 기능을 추가하고, 업무 흐름을 자동화할 수 있는 **오픈소스 데스크톱 애플리케이션**입니다.
-
-우리는 사용자가 자신만의 생산성 환경을 구축할 수 있도록 **강력한 플러그인 시스템**을 제공합니다. 캘린더와 할 일 관리(To-Do)를 기본으로, 여러분의 상상력에 따라 무한히 확장해 보세요. Electron을 기반으로 Windows, macOS, Linux 어디서나 동일하고 강력한 경험을 제공합니다.
-
-**Croffle**은 단순한 일정 관리 도구를 넘어, 사용자가 직접 필요한 기능을 추가하고 업무 흐름을 자동화할 수 있는 **오픈소스 데스크톱 애플리케이션**입니다.
 
 우리는 사용자가 자신만의 생산성 환경을 구축할 수 있도록 **강력한 플러그인 시스템**을 제공합니다. 캘린더와 할 일 관리(To-Do)를 기본으로, 여러분의 상상력에 따라 무한히 확장해 보세요. Electron을 기반으로 Windows, macOS, Linux 어디서나 동일하고 강력한 경험을 제공합니다.
 
@@ -45,11 +41,11 @@
 
 ### 설치 (Installation)
 
-최신 릴리즈 페이지에서 운영체제에 맞는 설치 파일을 다운로드하세요.
+최신 릴리즈 페이지([Latest Release Page](https://github.com/team-croffle/croffle/releases/latest))에서 운영체제에 맞는 설치 파일을 다운로드하세요.
 
-- [Windows 다운로드 (.exe)](#)
-- [macOS 다운로드 (.dmg)](#)
-- [Linux 다운로드 (.AppImage)](#)
+- [Windows 다운로드 (.exe)](https://github.com/team-croffle/croffle/releases/download/v1.0.0/croffle-1.0.0-setup.exe)
+- [macOS 다운로드 (.dmg)](https://github.com/team-croffle/croffle/releases/download/v1.0.0/croffle-1.0.0.dmg)
+- [Linux 다운로드 (.AppImage)](https://github.com/team-croffle/croffle/releases/download/v1.0.0/croffle-1.0.0.AppImage)
 
 ### 플러그인 사용 방법
 
@@ -64,33 +60,20 @@
 
 ## 👩‍💻 개발자 가이드 (For Developers)
 
-### 프로젝트 빌드
+### 프로젝트 빌드 및 실행
 
-이 프로젝트는 `npm`과 `TurboRepo`를 사용하여 관리됩니다.
+이 프로젝트는 Yarn을 사용하여 관리됩니다. 진행하기 전에 Yarn이 설치되어 있는지 확인하세요.
 
 ```bash
 # 1. 저장소 클론
-git clone [https://github.com/croffledev/croffle.git](https://github.com/croffledev/croffle.git)
+git clone https://github.com/team-croffle/croffle.git
 cd croffle
 
 # 2. 의존성 설치
-npm ci
+yarn install --immutable
 
-# 3. 개발을 위해 Type 등을 정의하는 common 빌드
-npm run build --workspace=@croffledev/croffle-common
-
-# 4. 개발 모드 실행
-npm run dev
-
-# (4. 또는, renderer와 main 프로세스를 따로 실행)
-# 1번째 터미널
-cd ./app/renderer
-npm ci
-npm run dev
-# 2번째 터미널
-cd ./app/main
-npm ci
-npm run dev
+# 3. 개발 모드 실행
+yarn dev
 ```
 
 ### 플러그인 개발
