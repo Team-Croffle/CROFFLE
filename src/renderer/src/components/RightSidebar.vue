@@ -10,6 +10,8 @@
   import { useScheduleStore } from '@/stores/scheduleStore';
   import dayjs from 'dayjs';
   import isBetween from 'dayjs/plugin/isBetween';
+  import pkg from '../../../../package.json';
+  
   dayjs.extend(isBetween);
 
   const uiStore = useUiStore();
@@ -50,6 +52,8 @@
   const handleEditTodo = (scheduleId: string) => {
     uiStore.openTodoSheet('edit', scheduleId);
   };
+
+  const packageVersion = `v${pkg.version}`;
 </script>
 
 <template>
@@ -165,7 +169,7 @@
         />
         <div class="text-center group-data-[collapsible=icon]:hidden">
           <h4 class="text-croffle-text-dark text-xs font-bold tracking-wider">CROFFLE</h4>
-          <span class="text-croffle-text text-xs">v 버전 추가해야함</span>
+          <span class="text-croffle-text text-xs">{{ packageVersion }}</span>
         </div>
       </div>
     </SidebarFooter>
