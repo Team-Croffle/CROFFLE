@@ -9,7 +9,9 @@ class PluginManager {
   private pluginDir = path.join(app.getPath('userData'), 'plugins');
 
   constructor() {
-    this.registerProtocol();
+    app.whenReady().then(() => {
+      this.registerProtocol();
+    });
   }
 
   private registerProtocol() {
