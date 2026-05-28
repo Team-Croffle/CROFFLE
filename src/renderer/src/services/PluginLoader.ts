@@ -25,7 +25,9 @@ class PluginLoader {
   // 설치 직후 단일 플러그인을 즉시 로드
   public async loadPluginById(pluginId: string) {
     try {
-      const plugin = await croffle.base.pluginInfo.getByName(pluginId);
+      // IPC의 getByName은 name 기반 조회이므로, id 기반 검색을 위해 전체 목록을 순회합니다.
+      const plugins = await croffle.base.pluginInfo.getInstalled();
+      const plugin = plugins.find(p => p.id === pluginId);
       if (plugin && plugin.enabled) {
         await this.loadPlugin(plugin);
       }
@@ -36,31 +38,55 @@ class PluginLoader {
 
   private async loadPlugin(plugin: PluginInfo) {
     try {
-      // main file = bootstrap
       if (this.activePlugins.has(plugin.id)) return;
-      if (!plugin.main) return;
 
-      // file path = plugin://~~
-      const entryUrl = `plugin://${plugin.id}/${plugin.main}`;
-      // import
-      const pluginModule = await import(/* @vite-ignore */ entryUrl);
+      if (plugin.main) {
+        // 캐시를 방지하기 위해 타임스탬프를 추가 (플러그인 재설치/업데이트 시 이전 코드 실행 방지)
+        const entryUrl = `plugin://${plugin.id}/${plugin.main}?t=${Date.now()}`;
+        const pluginModule = await import(/* @vite-ignore */ entryUrl);
 
-      // activate = like onMount()
-      if (pluginModule && typeof pluginModule.activated === 'function') {
-        const context = this.createContext(plugin);
-        // 재밌는 것은, activated에서 registerView나 registerContextMenu를 호출하면,
-        // 여러개의 view나 menu가 등록될 수 있음.
-        // 하지만, rendering이 되는 것이 아니라, 렌더링을하는 "함수"를 등록하는 것임.
-        // 즉, 이 작업이 SW가 시작될 때 전부 등록되더라도, 실제 렌더링은 사용자가 해당 메뉴를 클릭했을 때 일어남.
-        await pluginModule.activated(context);
-
-        // memory. 향후 Extension간 API 확장 시 사용하거나, 비활성화 시 메모리에서 해제하기 위해 사용
-        this.activePlugins.set(plugin.id, { module: pluginModule });
-        console.log(`Plugin ${plugin.name} loaded successfully`);
+        if (pluginModule && typeof pluginModule.activated === 'function') {
+          const context = this.createContext(plugin);
+          await pluginModule.activated(context);
+          this.activePlugins.set(plugin.id, { module: pluginModule, context });
+          console.log(`Plugin ${plugin.name} loaded successfully`);
+        }
+      } else {
+        // 스크립트가 없는 manifest 전용 플러그인의 경우
+        this.activePlugins.set(plugin.id, { module: null, context: null });
+        console.log(`Plugin ${plugin.name} (manifest only) loaded successfully`);
       }
+
+      window.dispatchEvent(
+        new CustomEvent('plugin:loaded', {
+          detail: { plugin },
+        })
+      );
     } catch (error) {
       console.error(`Failed to load plugin ${plugin.name}`, error);
     }
+  }
+
+  public async unloadPlugin(pluginId: string) {
+    const active = this.activePlugins.get(pluginId) as { module: any, context: PluginContext } | undefined;
+    if (active) {
+      if (typeof active.module?.deactivated === 'function') {
+        try {
+          await active.module.deactivated(active.context);
+        } catch (error) {
+          console.error(`Error during plugin ${pluginId} deactivation:`, error);
+        }
+      }
+      this.activePlugins.delete(pluginId);
+      console.log(`Plugin ${pluginId} unloaded successfully`);
+    }
+
+    // SettingsStore 등에서 관련 탭을 제거하도록 이벤트를 발생시킵니다.
+    window.dispatchEvent(
+      new CustomEvent('plugin:unloaded', {
+        detail: { pluginId },
+      })
+    );
   }
 
   // context = API Bridge.

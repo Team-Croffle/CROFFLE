@@ -72,8 +72,6 @@
     const { pluginId, pluginName, tabId, label, icon, order, render, sections } =
       customEvent.detail;
 
-    console.log(`[App.vue] handleRegisterSettingsTab event received for pluginId: ${pluginId}, tabId: ${tabId}, hasRender: ${!!render}`);
-
     if (render && sections) {
       console.warn(
         `[Plugin ${pluginName}] registerSettingsTab: render와 sections는 동시에 사용할 수 없습니다. render가 우선됩니다.`
@@ -92,6 +90,27 @@
     });
   };
 
+  const handlePluginUnloaded = (event: Event) => {
+    const customEvent = event as CustomEvent<{ pluginId: string }>;
+    const { pluginId } = customEvent.detail;
+    settingsStore.unregisterPluginTabs(pluginId);
+    // TODO: viewStore 및 contextMenuStore에서도 pluginId 기반으로 제거하도록 추가 필요
+  };
+
+  const handlePluginLoaded = (event: Event) => {
+    const customEvent = event as CustomEvent<{ plugin: import('@croffledev/croffle-types').PluginInfo }>;
+    const { plugin } = customEvent.detail;
+    
+    // 플러그인 로드 시 매니페스트 정보(views, contextMenus, settingsTabs) 동적 등록
+    if (plugin.features.views) {
+      viewStore.registerMenus(plugin.features.views);
+    }
+    if (plugin.features.contextMenus) {
+      contextMenuStore.registerMenus(plugin.features.contextMenus);
+    }
+    settingsStore.registerManifestTabs(plugin.id, plugin.name, plugin.features.settingsTabs);
+  };
+
   const registerDefaultContextMenu = () => {
     contextMenuStore.registerMenus(defaultMenus);
   };
@@ -100,24 +119,12 @@
     // 이벤트로 플러그인 호출 동작 매핑
     window.addEventListener('plugin:register-view', handleRegisterView);
     window.addEventListener('plugin:register-settings-tab', handleRegisterSettingsTab);
+    window.addEventListener('plugin:loaded', handlePluginLoaded);
+    window.addEventListener('plugin:unloaded', handlePluginUnloaded);
 
-    const pluginList = await croffle.base.pluginInfo.getEnabled();
-    // test용
-    // const pluginList = mockPluginsList;
-
-    pluginList.forEach((p) => {
-      const views = p.features.views;
-      if (views) {
-        viewStore.registerMenus(views);
-      }
-
-      const contextMenus = p.features.contextMenus;
-      if (contextMenus) {
-        contextMenuStore.registerMenus(contextMenus);
-      }
-
-      settingsStore.registerManifestTabs(p.id, p.name, p.features.settingsTabs);
-    });
+    // 최초 로드 시 활성화된 플러그인들의 매니페스트는 pluginLoader.init()에서 plugin:loaded 이벤트를 쏴주므로
+    // 여기서 직접 registerManifestTabs를 순회해서 호출할 필요가 없어짐.
+    // pluginLoader.init() 내부에서 플러그인을 로딩할 때 plugin:loaded를 쏘면 자동으로 handlePluginLoaded가 처리함.
   };
 
   const handleContextMenuEvent = (e: MouseEvent) => {
@@ -145,6 +152,8 @@
   onUnmounted(() => {
     window.removeEventListener('plugin:register-view', handleRegisterView);
     window.removeEventListener('plugin:register-settings-tab', handleRegisterSettingsTab);
+    window.removeEventListener('plugin:loaded', handlePluginLoaded);
+    window.removeEventListener('plugin:unloaded', handlePluginUnloaded);
     unsubscribeStartupNav?.();
     appSettingsStore.dispose();
   });

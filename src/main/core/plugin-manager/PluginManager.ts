@@ -14,9 +14,16 @@ class PluginManager {
     });
   }
 
-  private registerProtocol() {
+    private registerProtocol() {
     protocol.handle('plugin', async (req) => {
-      const url = req.url.replace('plugin://', '');
+      let url = req.url.replace('plugin://', '');
+      
+      // 쿼리 스트링 제거
+      const queryIndex = url.indexOf('?');
+      if (queryIndex !== -1) {
+        url = url.substring(0, queryIndex);
+      }
+      
       const safePath = path.normalize(url).replace(/^(\.\.(\/|\\|$))+/, '');
       const localPath = path.join(this.pluginDir, safePath);
 
