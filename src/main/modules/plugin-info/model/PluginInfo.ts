@@ -22,4 +22,7 @@ export class PluginInfo {
 
   @Column({ nullable: true })
   main?: string;
+
+  @Column({ type: 'simple-json', nullable: true })
+  features?: any;
 }
