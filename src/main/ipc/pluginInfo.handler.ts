@@ -56,6 +56,22 @@ export const registerPluginInfoIpcHandlers = (): void => {
   );
 
   ipcMain.handle(
+    'pluginInfo:installFromLocal',
+    async (_, zipPath: string): Promise<PluginInfo> => {
+      if (!zipPath) {
+        throw new Error('[PluginInfo] Invalid local zip path provided.');
+      }
+
+      const entity = await pluginManager.installFromLocalZip(zipPath);
+
+      // Add app event emit
+      eventService.emit(AppEventType.PLUGIN_INFO_INSTALL, entity);
+
+      return PluginInfoMapper.toInterface(entity);
+    }
+  );
+
+  ipcMain.handle(
     'pluginInfo:togglePlugin',
     async (_, name: string, enable: boolean): Promise<PluginInfo | null> => {
       validatePluginName(name);
