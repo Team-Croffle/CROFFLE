@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { app, shell, BrowserWindow } from 'electron';
+import { app, shell, BrowserWindow, protocol } from 'electron';
 import { AppSettingStartupBehavior } from '../shared/enums';
 import { autoUpdater } from 'electron-updater';
 import { databaseManager } from './core/database/DatabaseManager';
@@ -15,6 +15,20 @@ import {
 } from './modules/settings/service/SettingsApplyService';
 import icon from '../../resources/Logo2Only.png?asset';
 import log from 'electron-log';
+
+// Must be called before app is ready
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: 'plugin',
+    privileges: {
+      standard: true,
+      secure: true,
+      corsEnabled: true,
+      supportFetchAPI: true,
+      allowServiceWorkers: false,
+    },
+  },
+]);
 
 const DEV_URL = 'http://localhost:5173';
 

@@ -15,12 +15,23 @@ class PluginManager {
   }
 
   private registerProtocol() {
-    protocol.handle('plugin', (req) => {
+    protocol.handle('plugin', async (req) => {
       const url = req.url.replace('plugin://', '');
       const safePath = path.normalize(url).replace(/^(\.\.(\/|\\|$))+/, '');
       const localPath = path.join(this.pluginDir, safePath);
 
-      return net.fetch('file://' + localPath);
+      const response = await net.fetch('file://' + localPath);
+
+      const headers = new Headers(response.headers);
+      headers.set('Access-Control-Allow-Origin', '*');
+      headers.set('Access-Control-Allow-Methods', 'GET');
+      headers.set('Cross-Origin-Resource-Policy', 'cross-origin');
+
+      return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+      });
     });
   }
 
