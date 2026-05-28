@@ -95,7 +95,7 @@
     const { pluginId } = customEvent.detail;
     settingsStore.unregisterPluginTabs(pluginId);
     viewStore.unregisterPluginMenus(pluginId);
-    // TODO: contextMenuStore에서도 pluginId 기반으로 제거하도록 추가 필요
+    contextMenuStore.unregisterPluginMenus(pluginId);
   };
 
   const handlePluginLoaded = (event: Event) => {
@@ -110,7 +110,8 @@
       viewStore.registerMenus(views);
     }
     if (plugin.features?.contextMenus) {
-      contextMenuStore.registerMenus(plugin.features.contextMenus);
+      const contextMenus = plugin.features.contextMenus.map(c => ({ ...c, pluginName: plugin.name, pluginId: plugin.id }));
+      contextMenuStore.registerMenus(contextMenus);
     }
     if (plugin.features?.settingsTabs) {
       settingsStore.registerManifestTabs(plugin.id, plugin.name, plugin.features.settingsTabs);

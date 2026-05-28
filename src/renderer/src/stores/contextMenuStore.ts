@@ -1,11 +1,11 @@
-import type { FeatureContextMenu } from '@croffledev/croffle-types';
+import type { PluginFeatureContextMenu } from '@/types';
 import { defineStore } from 'pinia';
 import { computed, ref, shallowRef } from 'vue';
 import { useRoute } from 'vue-router';
 
 export const useContextMenuStore = defineStore('contextMenu', () => {
   // 현재 열려 있는 컨텍스트 메뉴의 아이템 목록
-  const menuRegistry = ref<FeatureContextMenu[]>([]);
+  const menuRegistry = ref<PluginFeatureContextMenu[]>([]);
 
   const route = useRoute();
   const activeElement = shallowRef<HTMLElement | null>(null);
@@ -38,7 +38,7 @@ export const useContextMenuStore = defineStore('contextMenu', () => {
     });
   });
 
-  const registerMenu = (menu: FeatureContextMenu) => {
+  const registerMenu = (menu: PluginFeatureContextMenu) => {
     const existingIndex = menuRegistry.value.findIndex((m) => m.id === menu.id);
     if (existingIndex !== -1) {
       menuRegistry.value[existingIndex] = menu;
@@ -47,7 +47,7 @@ export const useContextMenuStore = defineStore('contextMenu', () => {
     }
   };
 
-  const registerMenus = (menus: FeatureContextMenu[]) => {
+  const registerMenus = (menus: PluginFeatureContextMenu[]) => {
     menus.forEach((m) => registerMenu(m));
   };
 
@@ -57,6 +57,10 @@ export const useContextMenuStore = defineStore('contextMenu', () => {
 
   const unregisterMenus = (...menuId: string[]) => {
     menuRegistry.value = menuRegistry.value.filter((m) => !menuId.includes(m.id));
+  };
+
+  const unregisterPluginMenus = (pluginId: string) => {
+    menuRegistry.value = menuRegistry.value.filter((m) => m.pluginId !== pluginId);
   };
 
   const setActiveElement = (el: HTMLElement | null) => {
@@ -71,6 +75,7 @@ export const useContextMenuStore = defineStore('contextMenu', () => {
     registerMenus,
     unregisterMenu,
     unregisterMenus,
+    unregisterPluginMenus,
     setActiveElement,
   };
 });

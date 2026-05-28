@@ -1,4 +1,4 @@
-import { type FeatureContextMenu } from '@croffledev/croffle-types';
+import { type PluginFeatureContextMenu } from '@/types';
 import { useUiStore } from '../stores/uiStore';
 import { useCalendarLogic } from '@/composables/useCalendarLogic';
 import { useScheduleStore } from '@/stores/scheduleStore';
@@ -8,7 +8,7 @@ const isDateElement = (target: HTMLElement | null) => {
   return !!target?.closest('[data-date], .fc-daygrid-day') && !target?.closest('.fc-event');
 };
 
-export const defaultMenus: FeatureContextMenu[] = [
+export const defaultMenus: PluginFeatureContextMenu[] = [
   {
     id: 'add-schedule',
     label: '일정 추가',
