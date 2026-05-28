@@ -20,6 +20,10 @@ export const pluginInfoApi = {
     return ipcRenderer.invoke('pluginInfo:installPlugin', pluginData);
   },
 
+  installFromLocal: async (zipPath: string): Promise<PluginInfo> => {
+    return ipcRenderer.invoke('pluginInfo:installFromLocal', zipPath);
+  },
+
   toggle: async (name: string, enable: boolean): Promise<PluginInfo | null> => {
     return ipcRenderer.invoke('pluginInfo:togglePlugin', name, enable);
   },

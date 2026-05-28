@@ -67,6 +67,7 @@
   const installedPlugins = ref<PluginInfo[]>([]);
   const installUrl = ref<string>('');
   const isInstalling = ref<boolean>(false);
+  const fileInput = ref<HTMLInputElement | null>(null);
 
   const notificationDraft = ref<NotificationDraft>({
     emailAlert: true,
@@ -225,6 +226,28 @@
       console.error('Failed to install plugin', err);
     } finally {
       isInstalling.value = false;
+    }
+  };
+
+  const onLocalZipSelect = async (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
+    if (!file) return;
+
+    // In Electron, File objects have a 'path' property
+    const zipPath = (file as any).path;
+    if (!zipPath) return;
+    
+    isInstalling.value = true;
+    try {
+      await croffle.base.pluginInfo.installFromLocal(zipPath);
+      await fetchInstalledPlugins();
+    } catch (err) {
+      console.error('Failed to install local plugin', err);
+      alert(`플러그인 설치 중 오류가 발생했습니다.\n${err}`);
+    } finally {
+      isInstalling.value = false;
+      target.value = ''; // Reset input
     }
   };
 
@@ -804,6 +827,32 @@
                       <Loader2 v-if="isInstalling" class="h-4 w-4 animate-spin" />
                       <Download v-else class="h-4 w-4" />
                       설치
+                    </Button>
+                  </div>
+                  
+                  <Separator class="my-5" />
+                  
+                  <h4 class="mb-3 text-sm font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-2">
+                    <Download class="h-4 w-4" />
+                    로컬 Zip 파일로 설치
+                  </h4>
+                  <div class="flex items-center gap-3">
+                    <input
+                      type="file"
+                      accept=".zip"
+                      class="hidden"
+                      ref="fileInput"
+                      @change="onLocalZipSelect"
+                    />
+                    <Button
+                      type="button"
+                      :disabled="isInstalling"
+                      class="h-9 gap-2 border-none bg-neutral-200 text-neutral-900 hover:bg-neutral-300 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-700"
+                      @click="fileInput?.click()"
+                    >
+                      <Loader2 v-if="isInstalling" class="h-4 w-4 animate-spin" />
+                      <Download v-else class="h-4 w-4" />
+                      파일 선택 및 설치
                     </Button>
                   </div>
                 </div>
