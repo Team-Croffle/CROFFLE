@@ -35,6 +35,7 @@
 
   import { Separator } from '@/components/ui/separator';
   import type { AppSettings, PluginInfo } from '@croffledev/croffle-types';
+  import { pluginLoader } from '@/services/PluginLoader';
 
   interface Props {
     open: boolean;
@@ -219,9 +220,10 @@
     if (!installUrl.value) return;
     isInstalling.value = true;
     try {
-      await croffle.base.pluginInfo.install({ id: installUrl.value });
+      const plugin = await croffle.base.pluginInfo.install({ id: installUrl.value });
       installUrl.value = '';
       await fetchInstalledPlugins();
+      await pluginLoader.loadPluginById(plugin.id);
     } catch (err) {
       console.error('Failed to install plugin', err);
     } finally {
@@ -235,6 +237,7 @@
       const result = await croffle.base.pluginInfo.installFromLocal();
       if (result) {
         await fetchInstalledPlugins();
+        await pluginLoader.loadPluginById(result.id);
       }
     } catch (err) {
       console.error('Failed to install local plugin', err);

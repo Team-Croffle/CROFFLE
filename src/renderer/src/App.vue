@@ -23,6 +23,7 @@
   import { useAppSettingsStore } from './stores/appSettingsStore';
   import router from './router';
   import Todosheet from './components/Todosheet.vue';
+  import { pluginLoader } from './services/PluginLoader';
   // import { mockPluginsList } from './test/testPluginMenu';
 
   const uiStore = useUiStore();
@@ -133,6 +134,7 @@
     registerDefaultContextMenu();
     await appSettingsStore.initialize();
     await setPluginMenus();
+    await pluginLoader.init();
     unsubscribeStartupNav = croffle.app.event.on('settings:startup-navigate', (path) => {
       void router.push(typeof path === 'string' ? path : '/calendar');
     });
