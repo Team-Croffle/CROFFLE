@@ -108,6 +108,7 @@ class PluginManager {
       author: manifest.author,
       description: manifest.description,
       main: manifest.main,
+      features: manifest.features || {},
       enabled: true,
     });
   }
