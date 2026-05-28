@@ -13,7 +13,7 @@
     SidebarGroup,
     SidebarGroupContent,
   } from '@/components/ui/sidebar';
-  import { Bell, CircleHelp, Settings } from 'lucide-vue-next';
+  import { Bell, CircleHelp, Settings, Puzzle } from 'lucide-vue-next';
   import logoImg from '@/assets/Logo2Only.png';
   import { storeToRefs } from 'pinia';
   import { useUiStore } from '@/stores/uiStore';
@@ -40,6 +40,7 @@
 
     const additionalMenus: FeatureView[] = viewStore.menus.map((menu) => ({
       ...menu,
+      icon: menu.icon || Puzzle,
       // 현재 URL의 viewId 파라미터가 메뉴의 id와 같으면 활성화
       active: route.params.viewId === `${menu.id}`,
       url: `/plugin/${menu.id}`,
