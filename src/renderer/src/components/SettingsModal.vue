@@ -68,7 +68,6 @@
   const installedPlugins = ref<PluginInfo[]>([]);
   const installUrl = ref<string>('');
   const isInstalling = ref<boolean>(false);
-  const fileInput = ref<HTMLInputElement | null>(null);
 
   const notificationDraft = ref<NotificationDraft>({
     emailAlert: true,
