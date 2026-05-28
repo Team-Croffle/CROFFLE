@@ -90,6 +90,25 @@
     });
   };
 
+  const handleRegisterContextMenu = (event: Event) => {
+    const customEvent = event as CustomEvent<{
+      pluginId: string;
+      target: string;
+      command: string;
+      label: string;
+      callback: (element: HTMLElement | null) => void;
+    }>;
+    const { pluginId, target, command, label, callback } = customEvent.detail;
+    
+    contextMenuStore.registerMenu({
+      id: `${pluginId}-${command}`,
+      targetView: [target],
+      label,
+      action: callback,
+      pluginId,
+    });
+  };
+
   const handlePluginUnloaded = (event: Event) => {
     const customEvent = event as CustomEvent<{ pluginId: string }>;
     const { pluginId } = customEvent.detail;
@@ -126,6 +145,7 @@
     // 이벤트로 플러그인 호출 동작 매핑
     window.addEventListener('plugin:register-view', handleRegisterView);
     window.addEventListener('plugin:register-settings-tab', handleRegisterSettingsTab);
+    window.addEventListener('plugin:register-context-menu', handleRegisterContextMenu);
     window.addEventListener('plugin:loaded', handlePluginLoaded);
     window.addEventListener('plugin:unloaded', handlePluginUnloaded);
 
@@ -159,6 +179,7 @@
   onUnmounted(() => {
     window.removeEventListener('plugin:register-view', handleRegisterView);
     window.removeEventListener('plugin:register-settings-tab', handleRegisterSettingsTab);
+    window.removeEventListener('plugin:register-context-menu', handleRegisterContextMenu);
     window.removeEventListener('plugin:loaded', handlePluginLoaded);
     window.removeEventListener('plugin:unloaded', handlePluginUnloaded);
     unsubscribeStartupNav?.();

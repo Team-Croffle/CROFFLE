@@ -1,19 +1,19 @@
-import type { PLuginFeatureView } from '@/types';
+import { FeatureView } from '@croffledev/croffle-types';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 export const useViewStore = defineStore('plugin', () => {
-  const menuRegistry = ref<PLuginFeatureView[]>([]);
+  const menuRegistry = ref<FeatureView[]>([]);
   const views = ref<Map<string, (container: HTMLElement) => void>>(new Map());
 
-  const registerMenu = (menu: PLuginFeatureView) => {
+  const registerMenu = (menu: FeatureView) => {
     if (menuRegistry.value.find((m) => m.id === menu.id)) {
       return;
     }
     menuRegistry.value.push(menu);
   };
 
-  const registerMenus = (menus: PLuginFeatureView[]) => {
+  const registerMenus = (menus: FeatureView[]) => {
     menus.forEach((m) => {
       registerMenu(m);
     });

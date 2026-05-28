@@ -1,11 +1,11 @@
-import type { PluginFeatureContextMenu } from '@/types';
+import type { FeatureContextMenu } from '@croffledev/croffle-types';
 import { defineStore } from 'pinia';
 import { computed, ref, shallowRef } from 'vue';
 import { useRoute } from 'vue-router';
 
 export const useContextMenuStore = defineStore('contextMenu', () => {
   // 현재 열려 있는 컨텍스트 메뉴의 아이템 목록
-  const menuRegistry = ref<PluginFeatureContextMenu[]>([]);
+  const menuRegistry = ref<FeatureContextMenu[]>([]);
 
   const route = useRoute();
   const activeElement = shallowRef<HTMLElement | null>(null);
@@ -38,7 +38,7 @@ export const useContextMenuStore = defineStore('contextMenu', () => {
     });
   });
 
-  const registerMenu = (menu: PluginFeatureContextMenu) => {
+  const registerMenu = (menu: FeatureContextMenu) => {
     const existingIndex = menuRegistry.value.findIndex((m) => m.id === menu.id);
     if (existingIndex !== -1) {
       menuRegistry.value[existingIndex] = menu;
@@ -47,7 +47,7 @@ export const useContextMenuStore = defineStore('contextMenu', () => {
     }
   };
 
-  const registerMenus = (menus: PluginFeatureContextMenu[]) => {
+  const registerMenus = (menus: FeatureContextMenu[]) => {
     menus.forEach((m) => registerMenu(m));
   };
 
