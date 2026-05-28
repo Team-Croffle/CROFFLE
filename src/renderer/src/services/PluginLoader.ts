@@ -22,6 +22,18 @@ class PluginLoader {
     }
   }
 
+  // 설치 직후 단일 플러그인을 즉시 로드
+  public async loadPluginById(pluginId: string) {
+    try {
+      const plugin = await croffle.base.pluginInfo.getByName(pluginId);
+      if (plugin && plugin.enabled) {
+        await this.loadPlugin(plugin);
+      }
+    } catch (error) {
+      console.error(`Failed to load plugin by id ${pluginId}`, error);
+    }
+  }
+
   private async loadPlugin(plugin: PluginInfo) {
     try {
       // main file = bootstrap
