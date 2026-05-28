@@ -250,6 +250,12 @@
     try {
       await croffle.base.pluginInfo.toggle(plugin.id, plugin.enabled);
       await fetchInstalledPlugins();
+      
+      if (plugin.enabled) {
+        await pluginLoader.loadPluginById(plugin.id);
+      } else {
+        await pluginLoader.unloadPlugin(plugin.id);
+      }
     } catch (err) {
       console.error('Failed to toggle plugin', err);
     }
@@ -258,6 +264,7 @@
   const onUninstallPlugin = async (plugin: PluginInfo) => {
     if (!confirm(`'${plugin.name}' 플러그인을 삭제하시겠습니까?`)) return;
     try {
+      await pluginLoader.unloadPlugin(plugin.id);
       await croffle.base.pluginInfo.uninstall(plugin.id);
       await fetchInstalledPlugins();
     } catch (err) {
@@ -877,10 +884,8 @@
                       <div class="mt-auto flex items-center justify-between border-t border-neutral-100 bg-neutral-50/50 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-950/50">
                         <div class="flex items-center gap-2">
                           <Switch
-                            :checked="plugin.enabled"
                             :model-value="plugin.enabled"
                             aria-label="플러그인 활성화"
-                            @update:checked="(v) => { plugin.enabled = v; onTogglePlugin(plugin); }"
                             @update:model-value="(v) => { plugin.enabled = v; onTogglePlugin(plugin); }"
                           />
                           <span class="text-xs font-medium" :class="plugin.enabled ? 'text-[#A68A64]' : 'text-neutral-500'">

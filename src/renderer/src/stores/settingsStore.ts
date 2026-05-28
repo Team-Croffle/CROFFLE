@@ -34,6 +34,10 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   };
 
+  const unregisterPluginTabs = (pluginId: string) => {
+    extensionTabs.value = extensionTabs.value.filter((t) => t.pluginId !== pluginId);
+  };
+
   const sortedExtensionTabs = computed(() =>
     [...extensionTabs.value].sort((a, b) => (a.order ?? 100) - (b.order ?? 100))
   );
@@ -46,6 +50,7 @@ export const useSettingsStore = defineStore('settings', () => {
     sortedExtensionTabs,
     registerTab,
     registerManifestTabs,
+    unregisterPluginTabs,
     getTabCompositeId,
     findExtensionTab,
     isBuiltinTab: (id: string): id is BuiltinSettingsTabId =>
