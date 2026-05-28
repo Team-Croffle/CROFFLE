@@ -48,7 +48,7 @@ class PluginManager {
 
         extractPromise.push(
           zipEntry.async('nodebuffer').then((content) => {
-            fs.promises.writeFile(targetPath, content);
+            return fs.promises.writeFile(targetPath, content);
           })
         );
       }
@@ -77,6 +77,8 @@ class PluginManager {
       fs.rmSync(finalPluginDir, { recursive: true, force: true });
     }
 
+    // ensure plugins directory exists before rename
+    fs.mkdirSync(this.pluginDir, { recursive: true });
     fs.renameSync(extractedPluginPath, finalPluginDir);
 
     fs.rmSync(tempDir, { recursive: true, force: true });
@@ -125,7 +127,7 @@ class PluginManager {
 
         extractPromise.push(
           zipEntry.async('nodebuffer').then((content) => {
-            fs.promises.writeFile(targetPath, content);
+            return fs.promises.writeFile(targetPath, content);
           })
         );
       }
@@ -154,6 +156,8 @@ class PluginManager {
       fs.rmSync(finalPluginDir, { recursive: true, force: true });
     }
 
+    // ensure plugins directory exists before rename
+    fs.mkdirSync(this.pluginDir, { recursive: true });
     fs.renameSync(extractedPluginPath, finalPluginDir);
 
     fs.rmSync(tempDir, { recursive: true, force: true });
