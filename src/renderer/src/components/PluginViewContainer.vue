@@ -35,6 +35,6 @@
 <template>
   <div
     ref="containerRef"
-    class="border-croffle-border h-full w-full overflow-y-auto rounded-xl border bg-white p-6 shadow-sm"
+    class="border-croffle-border h-full w-full overflow-y-auto rounded-xl border p-6 shadow-sm"
   ></div>
 </template>

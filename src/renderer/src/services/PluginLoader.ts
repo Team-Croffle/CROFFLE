@@ -40,6 +40,21 @@ class PluginLoader {
     try {
       if (this.activePlugins.has(plugin.id)) return;
 
+      // CSS 자동 주입 (style.css가 존재할 경우)
+      try {
+        const styleUrl = `plugin://${plugin.id}/style.css`;
+        const res = await fetch(styleUrl, { method: 'HEAD' });
+        if (res.ok) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = `${styleUrl}?t=${Date.now()}`;
+          link.id = `plugin-style-${plugin.id}`;
+          document.head.appendChild(link);
+        }
+      } catch (e) {
+        // ignore
+      }
+
       if (plugin.main) {
         // 캐시를 방지하기 위해 타임스탬프를 추가 (플러그인 재설치/업데이트 시 이전 코드 실행 방지)
         const entryUrl = `plugin://${plugin.id}/${plugin.main}?t=${Date.now()}`;
@@ -63,30 +78,36 @@ class PluginLoader {
         })
       );
     } catch (error) {
-      console.error(`Failed to load plugin ${plugin.name}`, error);
+      console.error(`Failed to execute plugin ${plugin.name}`, error);
     }
   }
 
   public async unloadPlugin(pluginId: string) {
-    const active = this.activePlugins.get(pluginId) as { module: any, context: PluginContext } | undefined;
-    if (active) {
-      if (typeof active.module?.deactivated === 'function') {
-        try {
+    try {
+      const active = this.activePlugins.get(pluginId) as { module: any, context: PluginContext } | undefined;
+      if (active) {
+        if (active.module && typeof active.module.deactivated === 'function') {
           await active.module.deactivated(active.context);
-        } catch (error) {
-          console.error(`Error during plugin ${pluginId} deactivation:`, error);
         }
+        this.activePlugins.delete(pluginId);
+        
+        // 플러그인 CSS 제거
+        const link = document.getElementById(`plugin-style-${pluginId}`);
+        if (link) {
+          link.remove();
+        }
+        
+        console.log(`Plugin ${pluginId} unloaded successfully`);
+        
+        window.dispatchEvent(
+          new CustomEvent('plugin:unloaded', {
+            detail: { pluginId },
+          })
+        );
       }
-      this.activePlugins.delete(pluginId);
-      console.log(`Plugin ${pluginId} unloaded successfully`);
+    } catch (error) {
+      console.error(`Failed to unload plugin ${pluginId}`, error);
     }
-
-    // SettingsStore 등에서 관련 탭을 제거하도록 이벤트를 발생시킵니다.
-    window.dispatchEvent(
-      new CustomEvent('plugin:unloaded', {
-        detail: { pluginId },
-      })
-    );
   }
 
   // context = API Bridge.
