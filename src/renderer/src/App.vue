@@ -94,7 +94,8 @@
     const customEvent = event as CustomEvent<{ pluginId: string }>;
     const { pluginId } = customEvent.detail;
     settingsStore.unregisterPluginTabs(pluginId);
-    // TODO: viewStore 및 contextMenuStore에서도 pluginId 기반으로 제거하도록 추가 필요
+    viewStore.unregisterPluginMenus(pluginId);
+    // TODO: contextMenuStore에서도 pluginId 기반으로 제거하도록 추가 필요
   };
 
   const handlePluginLoaded = (event: Event) => {
@@ -102,13 +103,18 @@
     const { plugin } = customEvent.detail;
     
     // 플러그인 로드 시 매니페스트 정보(views, contextMenus, settingsTabs) 동적 등록
-    if (plugin.features.views) {
-      viewStore.registerMenus(plugin.features.views);
+    console.log(`[App.vue] handlePluginLoaded: ${plugin.id}`, plugin.features);
+    if (plugin.features?.views) {
+      const views = plugin.features.views.map(v => ({ ...v, pluginName: plugin.name, pluginId: plugin.id }));
+      console.log(`[App.vue] registerMenus views:`, views);
+      viewStore.registerMenus(views);
     }
-    if (plugin.features.contextMenus) {
+    if (plugin.features?.contextMenus) {
       contextMenuStore.registerMenus(plugin.features.contextMenus);
     }
-    settingsStore.registerManifestTabs(plugin.id, plugin.name, plugin.features.settingsTabs);
+    if (plugin.features?.settingsTabs) {
+      settingsStore.registerManifestTabs(plugin.id, plugin.name, plugin.features.settingsTabs);
+    }
   };
 
   const registerDefaultContextMenu = () => {
