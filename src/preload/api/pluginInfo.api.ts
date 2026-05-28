@@ -20,8 +20,8 @@ export const pluginInfoApi = {
     return ipcRenderer.invoke('pluginInfo:installPlugin', pluginData);
   },
 
-  installFromLocal: async (zipPath: string): Promise<PluginInfo> => {
-    return ipcRenderer.invoke('pluginInfo:installFromLocal', zipPath);
+  installFromLocal: async (): Promise<PluginInfo | null> => {
+    return ipcRenderer.invoke('pluginInfo:installFromLocal');
   },
 
   toggle: async (name: string, enable: boolean): Promise<PluginInfo | null> => {
