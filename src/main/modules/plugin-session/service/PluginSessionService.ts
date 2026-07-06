@@ -1,3 +1,5 @@
+import { logger } from '../../../core/logger/loggerService';
+
 const storage: Map<string, Map<string, unknown>> = new Map();
 
 const getStore = (pluginId: string, autoCreate = false): Map<string, unknown> | undefined => {
@@ -15,7 +17,7 @@ export const PluginSessionService = {
   set: <T = unknown>(pluginId: string, key: string, value: T): void => {
     const store = getStore(pluginId, true)!;
     store.set(key, value);
-    console.info(`[PluginSession] Set: [${pluginId}] ${key}`);
+    logger.info('PluginSession', `Set: [${pluginId}] ${key}`);
   },
 
   get: <T = unknown>(pluginId: string, key: string): T | null => {
@@ -30,7 +32,7 @@ export const PluginSessionService = {
     if (!store) return false;
     const result = store.delete(key);
     if (result) {
-      console.info(`[PluginSession] Delete: [${pluginId}] ${key}`);
+      logger.info('PluginSession', `Delete: [${pluginId}] ${key}`);
     }
     return result;
   },
@@ -38,12 +40,12 @@ export const PluginSessionService = {
   clear: (pluginId: string): void => {
     if (storage.has(pluginId)) {
       storage.delete(pluginId);
-      console.info(`[PluginSession] Cleared: [${pluginId}]`);
+      logger.info('PluginSession', `Cleared: [${pluginId}]`);
     }
   },
 
   clearAll: (): void => {
     storage.clear();
-    console.info(`[PluginSession] Cleared all plugin sessions`);
+    logger.info('PluginSession', `Cleared all plugin sessions`);
   },
 };

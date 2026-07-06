@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import { BrowserWindow } from 'electron';
-import Logger from 'electron-log';
+import { logger } from '../logger/loggerService';
 
 class EventService extends EventEmitter {
   constructor() {
@@ -23,8 +23,9 @@ class EventService extends EventEmitter {
         try {
           win.webContents.send('croffle:app:event', eventName, ...args);
         } catch (err) {
-          Logger.info(
-            `[EventService] Failed to send event ${eventName} to window ${win.id}: ${err}`
+          logger.info(
+            'EventService',
+            `Failed to send event ${eventName} to window ${win.id}: ${err}`
           );
         }
       }

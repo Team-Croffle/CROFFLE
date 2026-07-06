@@ -4,6 +4,7 @@ import { eventService } from '../event-bus/EventService';
 import { AppEventType } from '../../../shared/enums';
 import { settingService } from '../../modules/settings/service/SettingService';
 import icon from '../../../../resources/Logo2OnlyNoBorderIcon.png?asset';
+import { logger } from '../logger/loggerService';
 
 class WindowService {
   private mainWindow: BrowserWindow | null = null;
@@ -12,7 +13,7 @@ class WindowService {
   private shouldCloseToTray: boolean = true; // 닫기 시 트레이로 최소화 여부
 
   constructor() {
-    console.info('[WindowService] Initializing Service...');
+    logger.info('WindowService', 'Initializing Service...');
     this.registerAppLifecycle();
     this.registerUpdateListeners();
   }
@@ -27,26 +28,26 @@ class WindowService {
   private registerUpdateListeners(): void {
     if (!app.isPackaged) return;
 
-    autoUpdater.on('checking-for-update', () => console.info('[Updater] Checking...'));
-    autoUpdater.on('update-available', () => console.info('[Updater] Available.'));
+    autoUpdater.on('checking-for-update', () => logger.info('Updater', 'Checking...'));
+    autoUpdater.on('update-available', () => logger.info('Updater', 'Available.'));
     autoUpdater.on('update-downloaded', () => {
-      console.info('[Updater] Downloaded. Restarting and installing update...');
+      logger.info('Updater', 'Downloaded. Restarting and installing update...');
       this.isQuitting = true;
       autoUpdater.quitAndInstall();
     });
-    autoUpdater.on('error', (err) => console.error('[Updater] Error:', err));
+    autoUpdater.on('error', (err) => logger.error('Updater', 'Error:', err));
   }
 
   public init(window: BrowserWindow): void {
     this.mainWindow = window;
     this.createTray();
     this.registerWindowEvents();
-    console.info('[WindowService] Window initialized.');
+    logger.info('WindowService', 'Window initialized.');
   }
 
   public setCloseToTrayMode(enabled: boolean): void {
     this.shouldCloseToTray = enabled;
-    console.info(`[WindowService] Close-to-Tray mode set to: ${enabled}`);
+    logger.info('WindowService', `Close-to-Tray mode set to: ${enabled}`);
   }
 
   private registerWindowEvents(): void {
@@ -74,7 +75,7 @@ class WindowService {
           shell.openExternal(url);
         }
       } catch (err) {
-        console.error('[WindowService] Invalid URL:', url, err);
+        logger.error('WindowService', `Invalid URL: ${url}`, err);
       }
       return { action: 'deny' };
     });
@@ -96,7 +97,7 @@ class WindowService {
       this.tray.setContextMenu(contextMenu);
       this.tray.on('double-click', () => this.showWindow());
     } catch (err) {
-      console.error('[WindowService] Tray error:', err);
+      logger.error('WindowService', 'Tray error:', err);
     }
   }
 

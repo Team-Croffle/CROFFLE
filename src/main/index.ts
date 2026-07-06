@@ -14,7 +14,7 @@ import {
   LOGIN_HIDDEN_ARG,
 } from './modules/settings/service/SettingsApplyService';
 import icon from '../../resources/Logo2Only.png?asset';
-import log from 'electron-log';
+import { logger } from './core/logger/loggerService';
 
 // Must be called before app is ready
 protocol.registerSchemesAsPrivileged([
@@ -31,9 +31,6 @@ protocol.registerSchemesAsPrivileged([
 ]);
 
 const DEV_URL = 'http://localhost:5173';
-
-log.transports.file.level = 'info';
-autoUpdater.logger = log;
 
 function createWindow(): void {
   // Create the browser window.
@@ -125,7 +122,7 @@ if (!gotTheLock) {
         autoUpdater.checkForUpdatesAndNotify();
       }
     } catch (error) {
-      console.error('Failed to initialize the application:', error);
+      logger.error('Main', 'Failed to initialize the application', error);
       app.quit();
     }
 

@@ -2,6 +2,7 @@ import { ipcMain } from 'electron';
 import { PluginSessionService } from '../modules/plugin-session/service/PluginSessionService';
 import { eventService } from '../core/event-bus/EventService';
 import { AppEventType } from '../../shared/enums';
+import { logger } from '../core/logger/loggerService';
 
 const validateArgs = (
   payload: unknown,
@@ -38,7 +39,7 @@ export const registerPluginSessionIpcHandlers = () => {
       eventService.emit(AppEventType.PLUGIN_SESSION_STORAGE_GET, { pluginId, key });
       return value;
     } catch (error) {
-      console.error('[PluginSession] Get error:', error);
+      logger.error('PluginSession', 'Get error:', error);
       throw error;
     }
   });
@@ -49,7 +50,7 @@ export const registerPluginSessionIpcHandlers = () => {
       PluginSessionService.set(pluginId, key as string, value);
       eventService.emit(AppEventType.PLUGIN_SESSION_STORAGE_SET, { pluginId, key });
     } catch (error) {
-      console.error('[PluginSession] Set error:', error);
+      logger.error('PluginSession', 'Set error:', error);
       throw error;
     }
   });
@@ -61,7 +62,7 @@ export const registerPluginSessionIpcHandlers = () => {
       eventService.emit(AppEventType.PLUGIN_SESSION_STORAGE_DELETE, { pluginId, key, result });
       return result;
     } catch (error) {
-      console.error('[PluginSession] Delete error:', error);
+      logger.error('PluginSession', 'Delete error:', error);
       throw error;
     }
   });
@@ -72,7 +73,7 @@ export const registerPluginSessionIpcHandlers = () => {
       PluginSessionService.clear(pluginId);
       eventService.emit(AppEventType.PLUGIN_SESSION_STORAGE_CLEAR, { pluginId });
     } catch (error) {
-      console.error('[PluginSession] Clear error:', error);
+      logger.error('PluginSession', 'Clear error:', error);
       throw error;
     }
   });
@@ -82,7 +83,7 @@ export const registerPluginSessionIpcHandlers = () => {
       PluginSessionService.clearAll();
       eventService.emit(AppEventType.PLUGIN_SESSION_STORAGE_CLEAR_ALL, {});
     } catch (error) {
-      console.error('[PluginSession] ClearAll error:', error);
+      logger.error('PluginSession', 'ClearAll error:', error);
       throw error;
     }
   });

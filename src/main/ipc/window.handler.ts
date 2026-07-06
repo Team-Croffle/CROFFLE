@@ -2,6 +2,7 @@ import { BrowserWindow, ipcMain, IpcMainInvokeEvent } from 'electron';
 import { windowService } from '../core/window/WindowService';
 import { eventService } from '../core/event-bus/EventService';
 import { AppEventType } from '../../shared/enums';
+import { logger } from '../core/logger/loggerService';
 
 const validateSender = (event: IpcMainInvokeEvent): BrowserWindow => {
   const window = BrowserWindow.fromWebContents(event.sender);
@@ -15,7 +16,7 @@ const validateSender = (event: IpcMainInvokeEvent): BrowserWindow => {
     frameUrl?.startsWith('file://') || frameUrl === '' || /^http:\/\/localhost:\d+/.test(frameUrl);
 
   if (!isSafeOrigin) {
-    console.error(`[Security] Blocked IPC from unauthorized origin: ${frameUrl}`);
+    logger.error('Security', `Blocked IPC from unauthorized origin: ${frameUrl}`);
     throw new Error('Unauthorized IPC sender');
   }
   return window;

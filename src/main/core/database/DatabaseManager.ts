@@ -5,6 +5,7 @@ import { Tag } from '../../modules/tags/model/Tag';
 import { Schedule } from '../../modules/schedules/model/Schedule';
 import { PluginInfo } from '../../modules/plugin-info/model/PluginInfo';
 import { PluginStorage } from '../../modules/plugin-data/model/PluginStorage';
+import { logger } from '../logger/loggerService';
 
 class DatabaseManager {
   private dataSource: DataSource;
@@ -12,7 +13,7 @@ class DatabaseManager {
   constructor() {
     const dbPath = path.join(app.getPath('userData'), 'croffledb.sqlite');
 
-    console.debug(`[DB] Database path: ${dbPath}`);
+    logger.debug('DB', `Database path: ${dbPath}`);
 
     this.dataSource = new DataSource({
       type: 'sqlite',
@@ -27,9 +28,9 @@ class DatabaseManager {
     if (!this.dataSource.isInitialized) {
       try {
         await this.dataSource.initialize();
-        console.log('[DB] Database initialized successfully.');
+        logger.info('DB', 'Database initialized successfully.');
       } catch (error) {
-        console.error('[DB] Error during database initialization:', error);
+        logger.error('DB', 'Error during database initialization:', error);
         throw error;
       }
     }

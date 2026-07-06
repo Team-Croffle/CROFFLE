@@ -11,6 +11,7 @@ import { app } from 'electron';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import path from 'path';
 import { settingsApplyService } from './SettingsApplyService';
+import { logger } from '../../../core/logger/loggerService';
 
 const DEFAULT_SETTINGS: AppSettings = {
   general: {
@@ -45,7 +46,7 @@ class SettingService {
   private loadSettings(): AppSettings {
     try {
       if (!existsSync(this.filePath)) {
-        console.info('[Settings] Settings file does not exist. Creating default settings.');
+        logger.info('Settings', 'Settings file does not exist. Creating default settings.');
         this.saveSettings(DEFAULT_SETTINGS);
         return DEFAULT_SETTINGS;
       }
@@ -63,7 +64,7 @@ class SettingService {
       settingsApplyService.applyLoginItem(merged);
       return merged;
     } catch (err) {
-      console.error('[Settings] Failed to load settings, using default settings.', err);
+      logger.error('Settings', 'Failed to load settings, using default settings.', err);
       return DEFAULT_SETTINGS;
     }
   }
@@ -72,9 +73,9 @@ class SettingService {
     try {
       writeFileSync(this.filePath, JSON.stringify(settings, null, 2), 'utf-8');
       this.settings = settings;
-      console.info('[Settings] Settings saved successfully.');
+      logger.info('Settings', 'Settings saved successfully.');
     } catch (err) {
-      console.error('[Settings] Failed to save settings.', err);
+      logger.error('Settings', 'Failed to save settings.', err);
     }
   }
 
