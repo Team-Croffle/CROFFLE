@@ -1,5 +1,6 @@
 import log from 'electron-log/main';
 import { app } from 'electron';
+import { autoUpdater } from 'electron-updater';
 
 export class LoggerService {
   constructor() {
@@ -11,6 +12,9 @@ export class LoggerService {
     log.transports.console.level = isProd ? 'error' : 'debug';
     log.transports.file.level = isProd ? 'info' : 'debug';
     log.transports.file.format = '[{d}/{m}/{y} {h}:{i}:{s}] {level} | {text}';
+
+    // Auto Updater의 로깅을 이 loggerService로 설정합니다.
+    autoUpdater.logger = log;
   }
 
   public info(context: string, message: string, ...meta: unknown[]) {
@@ -23,6 +27,10 @@ export class LoggerService {
 
   public error(context: string, message: string, ...meta: unknown[]) {
     log.error(`${context}: ${message}`, ...meta);
+  }
+
+  public debug(context: string, message: string, ...meta: unknown[]) {
+    log.debug(`${context}: ${message}`, ...meta);
   }
 }
 

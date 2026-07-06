@@ -1,5 +1,6 @@
 import { net } from 'electron';
 import { HttpResponse } from '@croffledev/croffle-types';
+import { logger } from '../../../core/logger/loggerService';
 
 class HttpService {
   private readonly TIMEOUT = 10000;
@@ -28,7 +29,7 @@ class HttpService {
     customHeaders?: Record<string, string>
   ): Promise<HttpResponse> {
     return new Promise((resolve) => {
-      console.info(`[Http] ${method} ${url}`);
+      logger.info('Http', `${method} ${url}`);
 
       const request = net.request({ method, url });
 

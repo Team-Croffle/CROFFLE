@@ -2,13 +2,13 @@ import { ClipboardResult } from '@croffledev/croffle-types';
 import { ClipboardDataType } from '../../../../shared/enums';
 import { Notification, app, clipboard, nativeImage } from 'electron';
 import path from 'path';
-import log from 'electron-log';
+import { logger } from '../../../core/logger/loggerService';
 
 export class OsService {
   public showNotification(title?: string, body?: string): void {
     try {
       if (!Notification.isSupported()) {
-        log.warn('OS/ Notification not supported');
+        logger.warn('OS', 'Notification not supported');
         return;
       }
 
@@ -16,7 +16,7 @@ export class OsService {
       const Body = body?.trim();
 
       if (!Title && !Body) {
-        log.warn('OS/ Notification content is empty');
+        logger.warn('OS', 'Notification content is empty');
         return;
       }
 
@@ -26,7 +26,7 @@ export class OsService {
         body: Body || '',
       }).show();
     } catch (error) {
-      log.error('OS/ Notification error:', error);
+      logger.error('OS', 'Notification error:', error);
       throw error;
     }
   }
@@ -56,7 +56,7 @@ export class OsService {
 
       return { type: ClipboardDataType.EMPTY, value: null };
     } catch (error) {
-      log.error('OS/ Read Clipboard error:', error);
+      logger.error('OS', 'Read Clipboard error:', error);
       const errorMessage = error instanceof Error ? error.message : String(error);
       return { type: ClipboardDataType.ERROR, value: errorMessage };
     }
@@ -77,7 +77,7 @@ export class OsService {
         clipboard.writeImage(image);
       }
     } catch (error) {
-      log.error('OS/ Write Clipboard error:', error);
+      logger.error('OS', 'Write Clipboard error:', error);
       throw error;
     }
   }
