@@ -33,6 +33,7 @@ protocol.registerSchemesAsPrivileged([
 const DEV_URL = 'http://localhost:5173';
 
 function createWindow(): void {
+  logger.info('Main', 'Creating main window');
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1500,
@@ -55,6 +56,7 @@ function createWindow(): void {
   windowService.init(mainWindow);
 
   mainWindow.on('ready-to-show', () => {
+    logger.info('Main', 'Main window is ready to show');
     const settings = settingService.get();
     settingsApplyService.applyStartupPresentation(settings);
 
@@ -68,7 +70,10 @@ function createWindow(): void {
         process.argv.includes(LOGIN_HIDDEN_ARG));
 
     if (!shouldHideOnLogin) {
+      logger.debug('Main', 'Showing main window');
       mainWindow.show();
+    } else {
+      logger.debug('Main', 'Main window is hidden on login');
     }
   });
 
@@ -80,9 +85,11 @@ function createWindow(): void {
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev) {
+    logger.debug('Main', `Loading DEV_URL: ${DEV_URL}`);
     mainWindow.loadURL(DEV_URL);
     mainWindow.webContents.openDevTools();
   } else {
+    logger.debug('Main', 'Loading local HTML file for production');
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'));
   }
 }
@@ -94,14 +101,17 @@ function createWindow(): void {
 const gotTheLock = app.requestSingleInstanceLock();
 
 if (!gotTheLock) {
+  logger.warn('Main', 'Another instance is already running. Quitting this instance.');
   app.quit();
 } else {
   app.on('second-instance', () => {
+    logger.info('Main', 'Second instance requested. Focusing existing window.');
     // Someone tried to run a second instance, we should focus our window.
     windowService.showWindow();
   });
 
   app.whenReady().then(async () => {
+    logger.info('Main', 'Application is ready. Starting initialization...');
     // Set app user model id for windows
     electronApp.setAppUserModelId('kr.croffledev.croffle');
 
@@ -115,10 +125,14 @@ if (!gotTheLock) {
     // IPC test
     try {
       await databaseManager.initialize();
+
+      logger.info('Main', 'Registering IPC handlers');
       registerAllIpcHandlers();
+
       createWindow();
 
       if (!is.dev && settingsApplyService.shouldCheckForUpdates(settingService.get())) {
+        logger.info('Main', 'Checking for application updates');
         autoUpdater.checkForUpdatesAndNotify();
       }
     } catch (error) {
@@ -137,6 +151,7 @@ if (!gotTheLock) {
   // for applications and their menu bar to stay active until the user quits
   // explicitly with Cmd + Q.
   app.on('window-all-closed', () => {
+    logger.info('Main', 'All windows closed');
     if (process.platform !== 'darwin') {
       app.quit();
     }
