@@ -151,7 +151,6 @@ class WindowService {
       eventService.emit(AppEventType.UPDATE_DOWNLOAD_PROGRESS, {
         percent: progress.percent,
         transferred: progress.transferred,
-        total: progress.total,
       });
     });
 
