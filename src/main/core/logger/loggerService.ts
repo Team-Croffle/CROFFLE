@@ -6,10 +6,10 @@ export class LoggerService {
   constructor() {
     log.initialize();
 
-    // 개발 환경이면 log level debug, Production이면 error
+    // 개발 환경이면 log level debug, Production이면 info
     const isProd = app.isPackaged;
 
-    log.transports.console.level = isProd ? 'error' : 'debug';
+    log.transports.console.level = isProd ? 'info' : 'debug';
     log.transports.file.level = isProd ? 'info' : 'debug';
     log.transports.file.format = '[{d}/{m}/{y} {h}:{i}:{s}] {level} | {text}';
 

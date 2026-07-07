@@ -29,7 +29,7 @@ class HttpService {
     customHeaders?: Record<string, string>
   ): Promise<HttpResponse> {
     return new Promise((resolve) => {
-      logger.info('Http', `${method} ${url}`);
+      logger.info('Http', `${method} ${url.split('?')[0]}`);
 
       const request = net.request({ method, url });
 
