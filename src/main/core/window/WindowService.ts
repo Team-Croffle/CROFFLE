@@ -1,10 +1,12 @@
 import { app, BrowserWindow, Menu, Tray, shell } from 'electron';
-import { autoUpdater } from 'electron-updater';
+import { autoUpdater, UpdateInfo } from 'electron-updater';
 import { eventService } from '../event-bus/EventService';
 import { AppEventType } from '../../../shared/enums';
 import { settingService } from '../../modules/settings/service/SettingService';
 import icon from '../../../../resources/Logo2OnlyNoBorderIcon.png?asset';
 import { logger } from '../logger/loggerService';
+import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
+import path from 'path';
 
 class WindowService {
   private mainWindow: BrowserWindow | null = null;
@@ -12,10 +14,19 @@ class WindowService {
   public isQuitting: boolean = false; // Service가 상태 관리
   private shouldCloseToTray: boolean = true; // 닫기 시 트레이로 최소화 여부
 
+  // ======== Update 관련 변수 ========
+  private readonly updateStatePath: string = path.join(
+    app.getPath('userData'),
+    'update-state.json'
+  );
+  private pendingUpdateInfo: UpdateInfo | null = null;
+  private installOnQuit = false;
+
   constructor() {
     logger.info('WindowService', 'Initializing Service...');
     this.registerAppLifecycle();
     this.registerUpdateListeners();
+    this.registerUpdateActionListeners();
   }
 
   private registerAppLifecycle(): void {
@@ -23,19 +34,6 @@ class WindowService {
       this.isQuitting = true;
       this.tray?.destroy();
     });
-  }
-
-  private registerUpdateListeners(): void {
-    if (!app.isPackaged) return;
-
-    autoUpdater.on('checking-for-update', () => logger.info('Updater', 'Checking...'));
-    autoUpdater.on('update-available', () => logger.info('Updater', 'Available.'));
-    autoUpdater.on('update-downloaded', () => {
-      logger.info('Updater', 'Downloaded. Restarting and installing update...');
-      this.isQuitting = true;
-      autoUpdater.quitAndInstall();
-    });
-    autoUpdater.on('error', (err) => logger.error('Updater', 'Error:', err));
   }
 
   public init(window: BrowserWindow): void {
@@ -123,12 +121,111 @@ class WindowService {
     eventService.emit(AppEventType.WINDOW_EXIT);
   }
 
+  // ======== Update 관련 로직 ========
+
+  private registerUpdateListeners(): void {
+    if (!app.isPackaged) return;
+
+    autoUpdater.autoDownload = false; // 체크 후 자동 다운로드 방지
+    autoUpdater.autoInstallOnAppQuit = true; // 자동 업데이트 설치 허용
+
+    autoUpdater.on('checking-for-update', () => logger.info('Updater', 'Checking...'));
+    autoUpdater.on('update-available', (info) => {
+      if (this.getSkippedVersion() === info.version) {
+        logger.info('Updater', `Version ${info.version} is skipped by user.`);
+        return;
+      }
+
+      this.pendingUpdateInfo = info;
+      eventService.emit(AppEventType.UPDATE_AVAILABLE, {
+        version: info.version,
+        releaseNotes: info.releaseNotes,
+      });
+    });
+
+    autoUpdater.on('update-not-available', () => {
+      eventService.emit(AppEventType.UPDATE_NOT_AVAILABLE);
+    });
+
+    autoUpdater.on('download-progress', (progress) => {
+      eventService.emit(AppEventType.UPDATE_DOWNLOAD_PROGRESS, {
+        percent: progress.percent,
+        transferred: progress.transferred,
+        total: progress.total,
+      });
+    });
+
+    autoUpdater.on('update-downloaded', () => {
+      eventService.emit(AppEventType.UPDATE_DOWNLOADED);
+
+      if (!this.installOnQuit) {
+        // "지금 적용" 선택 시
+        this.isQuitting = true;
+        autoUpdater.quitAndInstall();
+      }
+      // "나중에 적용" 선택 시 알아서 적용됨
+      // L40에서 설치 예약 처리함
+    });
+
+    autoUpdater.on('error', (err) => {
+      logger.error('Updater', 'Error:', err);
+      eventService.emit(AppEventType.UPDATE_ERROR, err);
+    });
+  }
+
+  // Update 관련 이벤트 리스너 등록
+  private registerUpdateActionListeners(): void {
+    eventService.on(AppEventType.UPDATE_DOWNLOAD_NOW, () => {
+      this.installOnQuit = false;
+      autoUpdater.downloadUpdate();
+    });
+
+    eventService.on(AppEventType.UPDATE_DOWNLOAD_LATER, () => {
+      this.installOnQuit = true;
+      autoUpdater.downloadUpdate();
+    });
+
+    eventService.on(AppEventType.UPDATE_SKIP_THIS_VERSION, () => {
+      if (this.pendingUpdateInfo) {
+        this.setSkippedVersion(this.pendingUpdateInfo.version);
+        this.pendingUpdateInfo = null;
+      }
+    });
+  }
+
   public async checkForUpdates(): Promise<void> {
     if (!app.isPackaged) return;
     if (!settingService.get().general.autoUpdate) return;
-    await autoUpdater.checkForUpdatesAndNotify();
+    await autoUpdater.checkForUpdates(); // Notify제거: Event를 통해 모달로 처리함
+  }
 
-    eventService.emit(AppEventType.WINDOW_CHECK_FOR_UPDATES);
+  // Update를 스킵한 버전 정보 조회
+  private getSkippedVersion(): string | null {
+    try {
+      if (!existsSync(this.updateStatePath)) {
+        return null;
+      }
+      const updateState = JSON.parse(readFileSync(this.updateStatePath, 'utf8'));
+      return updateState.version;
+    } catch (err) {
+      logger.error('WindowService', 'Failed to get skipped version:', err);
+      return null;
+    }
+  }
+
+  // Update를 스킵한 버전 정보 설정
+  private setSkippedVersion(version: string | null): void {
+    try {
+      if (version === null) {
+        if (existsSync(this.updateStatePath)) {
+          unlinkSync(this.updateStatePath);
+        }
+      }
+      const updateState = { version };
+      writeFileSync(this.updateStatePath, JSON.stringify(updateState, null, 2), 'utf8');
+    } catch (err) {
+      logger.error('WindowService', 'Failed to set skipped version:', err);
+    }
   }
 }
 
