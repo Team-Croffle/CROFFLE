@@ -20,10 +20,11 @@
   import { defaultMenus } from './data/defaultContextMenus';
   import { Separator } from './components/ui/separator';
   import { useThemeStore } from './stores/themeStore';
-  import { useAppSettingsStore } from './stores/appSettingsStore';
+  import { useAppSettingsStore, useUpdateStore } from './stores/appSettingsStore';
   import router from './router';
   import Todosheet from './components/Todosheet.vue';
   import { pluginLoader } from './services/PluginLoader';
+  import UpdateModal from './components/UpdateModal.vue';
   // import { mockPluginsList } from './test/testPluginMenu';
 
   const uiStore = useUiStore();
@@ -32,6 +33,7 @@
   const settingsStore = useSettingsStore();
   const themeStore = useThemeStore();
   const appSettingsStore = useAppSettingsStore();
+  const updateStore = useUpdateStore();
 
   // 설정 모달 상태
   const isSettingsOpen = ref(false);
@@ -99,7 +101,7 @@
       callback: (element: HTMLElement | null) => void;
     }>;
     const { pluginId, target, command, label, callback } = customEvent.detail;
-    
+
     contextMenuStore.registerMenu({
       id: `${pluginId}-${command}`,
       targetView: [target],
@@ -118,18 +120,28 @@
   };
 
   const handlePluginLoaded = (event: Event) => {
-    const customEvent = event as CustomEvent<{ plugin: import('@croffledev/croffle-types').PluginInfo }>;
+    const customEvent = event as CustomEvent<{
+      plugin: import('@croffledev/croffle-types').PluginInfo;
+    }>;
     const { plugin } = customEvent.detail;
-    
+
     // 플러그인 로드 시 매니페스트 정보(views, contextMenus, settingsTabs) 동적 등록
     console.log(`[App.vue] handlePluginLoaded: ${plugin.id}`, plugin.features);
     if (plugin.features?.views) {
-      const views = plugin.features.views.map(v => ({ ...v, pluginName: plugin.name, pluginId: plugin.id }));
+      const views = plugin.features.views.map((v) => ({
+        ...v,
+        pluginName: plugin.name,
+        pluginId: plugin.id,
+      }));
       console.log(`[App.vue] registerMenus views:`, views);
       viewStore.registerMenus(views);
     }
     if (plugin.features?.contextMenus) {
-      const contextMenus = plugin.features.contextMenus.map(c => ({ ...c, pluginName: plugin.name, pluginId: plugin.id }));
+      const contextMenus = plugin.features.contextMenus.map((c) => ({
+        ...c,
+        pluginName: plugin.name,
+        pluginId: plugin.id,
+      }));
       contextMenuStore.registerMenus(contextMenus);
     }
     if (plugin.features?.settingsTabs) {
@@ -169,6 +181,7 @@
   onMounted(async () => {
     registerDefaultContextMenu();
     await appSettingsStore.initialize();
+    updateStore.init();
     await setPluginMenus();
     await pluginLoader.init();
     unsubscribeStartupNav = croffle.app.event.on('settings:startup-navigate', (path) => {
@@ -184,6 +197,7 @@
     window.removeEventListener('plugin:unloaded', handlePluginUnloaded);
     unsubscribeStartupNav?.();
     appSettingsStore.dispose();
+    updateStore.dispose();
   });
 </script>
 
@@ -281,6 +295,7 @@
 
     <!-- 설정 모달 -->
     <SettingsModal :open="isSettingsOpen" @update:open="isSettingsOpen = $event" />
+    <UpdateModal />
 
     <Toaster />
   </div>
