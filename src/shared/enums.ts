@@ -112,4 +112,14 @@ export enum AppEventType {
   // UI Extensions
   UI_ADD_MENU_ITEM = 'ui:addMenuItem',
   UI_CONTEXT_MENU_ADD_ITEM = 'ui:contextMenu:addItem',
+
+  // Electron Updater 전용. 앱 내에서만 사용
+  UPDATE_AVAILABLE = 'update:available',
+  UPDATE_NOT_AVAILABLE = 'update:notAvailable',
+  UPDATE_DOWNLOAD_PROGRESS = 'update:downloadProgress',
+  UPDATE_DOWNLOADED = 'update:downloaded',
+  UPDATE_ERROR = 'update:error',
+  UPDATE_DOWNLOAD_NOW = 'update:downloadNow',
+  UPDATE_DOWNLOAD_LATER = 'update:downloadLater',
+  UPDATE_SKIP_THIS_VERSION = 'update:skipThisVersion',
 }
