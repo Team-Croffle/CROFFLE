@@ -4,6 +4,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useThemeStore } from './themeStore';
 import { AppEventType } from '../../../shared/enums';
+import { UpdateInfo } from '@/types/setting';
 
 export const useAppSettingsStore = defineStore('appSettings', () => {
   const settings = ref<AppSettings | null>(null);
@@ -50,5 +51,70 @@ export const useAppSettingsStore = defineStore('appSettings', () => {
     dispose,
     load,
     setThemeDraft,
+  };
+});
+
+export const useUpdateStore = defineStore('update', () => {
+  const isModalOpen = ref<boolean>(false);
+  const updateInfo = ref<UpdateInfo | null>(null);
+  const isDownloading = ref<boolean>(false);
+  const downloadProgress = ref<number>(0);
+  let unsubscribers: (() => void)[] = [];
+
+  function init() {
+    unsubscribers = [
+      croffle.app.event.on(AppEventType.UPDATE_AVAILABLE, (payload) => {
+        updateInfo.value = payload as UpdateInfo;
+        isModalOpen.value = true;
+      }),
+      croffle.app.event.on(AppEventType.UPDATE_DOWNLOAD_PROGRESS, (payload) => {
+        isDownloading.value = true;
+        const { percent } = payload as { percent: number; transferred: number };
+        downloadProgress.value = percent;
+      }),
+      croffle.app.event.on(AppEventType.UPDATE_DOWNLOADED, () => {
+        isDownloading.value = false;
+        downloadProgress.value = 0;
+      }),
+      croffle.app.event.on(AppEventType.UPDATE_ERROR, () => {
+        isDownloading.value = false;
+        downloadProgress.value = 0;
+        isModalOpen.value = false;
+      }),
+    ];
+  }
+
+  function dispose() {
+    unsubscribers.forEach((unsubscribe) => unsubscribe());
+    unsubscribers = [];
+  }
+
+  function downloadNow() {
+    isDownloading.value = true;
+    croffle.app.event.emit(AppEventType.UPDATE_DOWNLOAD_NOW, null);
+  }
+
+  function downloadLater() {
+    croffle.app.event.emit(AppEventType.UPDATE_DOWNLOAD_LATER, null);
+    isDownloading.value = false;
+  }
+
+  function skipUpdate() {
+    croffle.app.event.emit(AppEventType.UPDATE_SKIP_THIS_VERSION, null);
+    isDownloading.value = false;
+    downloadProgress.value = 0;
+    isModalOpen.value = false;
+  }
+
+  return {
+    isModalOpen,
+    updateInfo,
+    isDownloading,
+    downloadProgress,
+    init,
+    dispose,
+    downloadNow,
+    downloadLater,
+    skipUpdate,
   };
 });
