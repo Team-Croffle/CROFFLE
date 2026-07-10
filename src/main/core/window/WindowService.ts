@@ -136,10 +136,20 @@ class WindowService {
         return;
       }
 
+      const releaseNotes =
+        typeof info.releaseNotes === 'string'
+          ? info.releaseNotes
+          : Array.isArray(info.releaseNotes)
+            ? info.releaseNotes
+                .map((note) => note.note ?? '')
+                .filter(Boolean)
+                .join('\n')
+            : '';
+
       this.pendingUpdateInfo = info;
       eventService.emit(AppEventType.UPDATE_AVAILABLE, {
         version: info.version,
-        releaseNotes: info.releaseNotes,
+        releaseNotes,
       });
     });
 
@@ -219,6 +229,7 @@ class WindowService {
         if (existsSync(this.updateStatePath)) {
           unlinkSync(this.updateStatePath);
         }
+        return;
       }
       const updateState = { version };
       writeFileSync(this.updateStatePath, JSON.stringify(updateState, null, 2), 'utf8');
