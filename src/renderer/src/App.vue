@@ -20,7 +20,8 @@
   import { defaultMenus } from './data/defaultContextMenus';
   import { Separator } from './components/ui/separator';
   import { useThemeStore } from './stores/themeStore';
-  import { useAppSettingsStore, useUpdateStore } from './stores/appSettingsStore';
+  import { useAppSettingsStore } from './stores/appSettingsStore';
+  import { useUpdateStore } from './stores/updateStore';
   import router from './router';
   import Todosheet from './components/Todosheet.vue';
   import { pluginLoader } from './services/PluginLoader';
