@@ -95,8 +95,10 @@ export const useUpdateStore = defineStore('update', () => {
   }
 
   function downloadLater() {
+    isModalOpen.value = false;
+    isDownloading.value = true;
+    downloadProgress.value = 0;
     croffle.app.event.emit(AppEventType.UPDATE_DOWNLOAD_LATER, null);
-    isDownloading.value = false;
   }
 
   function skipUpdate() {
