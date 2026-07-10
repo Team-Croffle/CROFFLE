@@ -167,13 +167,14 @@ class WindowService {
     autoUpdater.on('update-downloaded', () => {
       eventService.emit(AppEventType.UPDATE_DOWNLOADED);
 
-      if (!this.installOnQuit) {
-        // "지금 적용" 선택 시
-        this.isQuitting = true;
-        autoUpdater.quitAndInstall();
+      if (this.installOnQuit) {
+        // "나중에 적용" 선택 시 알아서 적용됨
+        // 이벤트 리스너에서 설치 예약 처리함
+        return;
       }
-      // "나중에 적용" 선택 시 알아서 적용됨
-      // L40에서 설치 예약 처리함
+      // "지금 적용" 선택 시
+      this.isQuitting = true;
+      autoUpdater.quitAndInstall();
     });
 
     autoUpdater.on('error', (err) => {
