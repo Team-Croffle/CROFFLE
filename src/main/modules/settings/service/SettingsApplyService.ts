@@ -42,8 +42,7 @@ class SettingsApplyService {
 
     const loginSettings = app.getLoginItemSettings();
     const wasOpenedAtLogin = loginSettings.wasOpenedAtLogin || process.argv.includes(STARTUP_ARG);
-    const wasOpenedAsHidden =
-      loginSettings.wasOpenedAsHidden || process.argv.includes(LOGIN_HIDDEN_ARG);
+    const wasOpenedAsHidden = process.argv.includes(LOGIN_HIDDEN_ARG);
 
     if (!wasOpenedAtLogin) {
       return;

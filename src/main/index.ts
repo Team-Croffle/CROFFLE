@@ -66,7 +66,6 @@ function createWindow(): void {
       wasOpenedAtLogin &&
       (settings.general.startupBehavior === AppSettingStartupBehavior.DO_NOTHING ||
         settings.general.startMinimized ||
-        loginSettings.wasOpenedAsHidden ||
         process.argv.includes(LOGIN_HIDDEN_ARG));
 
     if (!shouldHideOnLogin) {
