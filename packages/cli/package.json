@@ -1,17 +1,19 @@
 {
-  "name": "@croffledev/croffle-sdk",
+  "name": "@croffledev/croffle-cli",
   "version": "1.0.0",
-  "description": "SDK and CLI for creating Croffle plugins",
+  "description": "CLI for scaffolding, building, and packaging Croffle plugins",
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "bin": {
     "create-croffle-plugin": "dist/cli.js",
     "croffle-plugin": "dist/cli.js"
   },
+  "files": [
+    "dist",
+    "templates"
+  ],
   "scripts": {
-    "build": "tsup src/cli.ts src/index.ts --format esm --dts",
-    "dev": "tsup src/cli.ts src/index.ts --format esm --watch",
+    "build": "tsup src/cli.ts --format esm",
+    "dev": "tsup src/cli.ts --format esm --watch",
     "start": "node dist/cli.js",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
@@ -23,7 +25,6 @@
     "prompts": "^2.4.2"
   },
   "devDependencies": {
-    "@croffledev/croffle-types": "workspace:*",
     "@types/adm-zip": "^0.5.7",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.0.0",
@@ -31,9 +32,12 @@
     "tsup": "^8.3.6",
     "typescript": "6.0.3"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/team-croffle/croffle.git",
-    "directory": "packages/plugin-sdk"
+    "directory": "packages/cli"
   }
 }

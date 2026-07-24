@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot, Root } from 'react-dom/client';
-import { PluginContext } from '@croffledev/plugin-sdk';
+import type { PluginContext } from '@croffledev/croffle-types';
 import MyFeatureView from './MyFeatureView';
 import MySettingsTab from './MySettingsTab';
 
