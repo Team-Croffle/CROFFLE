@@ -1,0 +1,55 @@
+{
+  "name": "@croffledev/desktop",
+  "productName": "Croffle",
+  "version": "1.0.1",
+  "private": true,
+  "description": "Croffle desktop (Electron main/preload)",
+  "main": "./out/main/index.js",
+  "author": {
+    "name": "Croffle Dev.",
+    "email": "support@croffledev.kr"
+  },
+  "homepage": "https://github.com/team-croffle",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.node.json --composite false",
+    "start": "electron-vite preview",
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "postinstall": "electron-builder install-app-deps",
+    "build:unpack": "pnpm build && electron-builder --dir",
+    "build:win": "pnpm build && electron-builder --win",
+    "build:mac": "pnpm build && electron-builder --mac",
+    "build:linux": "pnpm build && electron-builder --linux"
+  },
+  "dependencies": {
+    "@croffledev/renderer": "workspace:*",
+    "@croffledev/shared": "workspace:*",
+    "@electron-toolkit/preload": "^3.0.2",
+    "@electron-toolkit/utils": "^4.0.0",
+    "electron-log": "^5.4.4",
+    "electron-updater": "^6.8.9",
+    "jszip": "^3.10.1",
+    "node-schedule": "^2.1.1",
+    "reflect-metadata": "^0.2.2",
+    "sqlite3": "^6.0.1",
+    "typeorm": "1.1.0"
+  },
+  "devDependencies": {
+    "@croffledev/croffle-types": "^1.1.2",
+    "@electron-toolkit/tsconfig": "^2.0.0",
+    "@swc/core": "^1.15.46",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^26.1.1",
+    "@types/node-schedule": "^2.1.8",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "cross-env": "^10.1.0",
+    "electron": "^43.2.0",
+    "electron-builder": "26.15.3",
+    "electron-vite": "^5.0.0",
+    "esbuild": "^0.28.1",
+    "typescript": "~5.8.3",
+    "unplugin-swc": "^1.5.9",
+    "vite": "^8.1.5",
+    "vue": "^3.5.40"
+  }
+}
