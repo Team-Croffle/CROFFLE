@@ -9,7 +9,7 @@ const program = new Command();
 
 program
   .name('croffle-plugin')
-  .description('CLI to develop and build plugins for Croffle')
+  .description('CLI to scaffold, build, and package plugins for Croffle')
   .version('1.0.0');
 
 program.addCommand(createCommand);

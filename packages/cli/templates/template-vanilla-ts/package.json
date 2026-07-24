@@ -1,0 +1,15 @@
+{
+  "name": "my-vanilla-plugin",
+  "version": "1.0.0",
+  "description": "Vanilla TypeScript template for Croffle plugin",
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@croffledev/croffle-types": "latest",
+    "typescript": "^5.0.0",
+    "vite": "^5.0.0"
+  }
+}

@@ -85,7 +85,7 @@ export const createCommand = new Command("create")
 
       const templateDir = path.join(
         __dirname,
-        "../../templates",
+        "../templates",
         answers.template,
       );
       if (!fs.existsSync(templateDir)) {
@@ -131,8 +131,13 @@ export const createCommand = new Command("create")
       console.log(picocolors.green("\n✔ Project successfully created!"));
       console.log("\nNext steps:");
       console.log(picocolors.cyan(`  cd ${projectName}`));
-      console.log(picocolors.cyan(`  yarn install`));
-      console.log(picocolors.cyan(`  yarn dev\n`));
+      console.log(picocolors.cyan(`  pnpm install`));
+      console.log(picocolors.cyan(`  pnpm dev\n`));
+      console.log(
+        picocolors.dim(
+          "Tip: package with  pnpm dlx @croffledev/croffle-cli pack  after build",
+        ),
+      );
     } catch (error) {
       console.error(picocolors.red("Failed to scaffold project:"), error);
       process.exit(1);
