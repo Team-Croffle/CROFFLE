@@ -8,14 +8,15 @@ import tseslint from 'typescript-eslint';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import globals from 'globals';
 
-export default defineConfig(
+export default [
   {
     ignores: [
       '**/dist/**',
+      '**/out/**',
       '**/node_modules/**',
       '**/*.cjs',
       '**/build/**',
-      '**/.stversions/**', // Syncthing
+      '**/.stversions/**',
       '**/coverage/**',
       '**/.vscode/**',
       '**/.git/**',
@@ -57,9 +58,7 @@ export default defineConfig(
             pascalCase: true,
             camelCase: true,
           },
-          ignore: [
-            /.*~\d{8}-\d{6}\..*$/, // Syncthing
-          ],
+          ignore: [/.*~\d{8}-\d{6}\..*$/],
         },
       ],
       'unicorn/prevent-abbreviations': 'off',
@@ -68,35 +67,26 @@ export default defineConfig(
     },
   },
   {
-    files: ['app/renderer/src/**/*.{ts,tsx}'],
+    files: ['packages/renderer/src/**/*.{ts,tsx}'],
     languageOptions: {
       parserOptions: {
-        project: './app/renderer/tsconfig.app.json',
+        project: './packages/renderer/tsconfig.json',
         tsconfigRootDir: process.cwd(),
       },
     },
   },
   {
-    files: ['app/renderer/vite.config.{ts,js}'],
+    files: ['apps/desktop/src/**/*.{ts,tsx}', 'apps/desktop/electron.vite.config.ts'],
     languageOptions: {
       parserOptions: {
-        project: './app/renderer/tsconfig.node.json',
-        tsconfigRootDir: process.cwd(),
-      },
-    },
-  },
-  {
-    files: ['app/main/src/**/*.{ts,tsx}'],
-    languageOptions: {
-      parserOptions: {
-        project: './app/main/tsconfig.json',
+        project: './apps/desktop/tsconfig.node.json',
         tsconfigRootDir: process.cwd(),
       },
     },
     settings: {
       'import/resolver': {
         typescript: {
-          project: './app/main/tsconfig.json',
+          project: './apps/desktop/tsconfig.node.json',
         },
       },
     },
@@ -110,14 +100,11 @@ export default defineConfig(
       },
     },
     rules: {
-      // Vue 관련 규칙
       'vue/multi-word-component-names': 'off',
       'vue/component-api-style': ['error', ['script-setup', 'composition']],
       'vue/define-props-declaration': ['error', 'type-based'],
       'vue/no-v-html': 'warn',
     },
   },
-
-  // Prettier 연동
-  eslintConfigPrettier
-);
+  eslintConfigPrettier,
+];

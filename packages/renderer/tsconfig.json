@@ -1,0 +1,21 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "include": [
+    "src/env.d.ts",
+    "src/**/*",
+    "src/**/*.vue",
+    "../../apps/desktop/src/preload/*.d.ts"
+  ],
+  "compilerOptions": {
+    "composite": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@croffledev/shared": ["../shared/src/index.ts"],
+      "@croffledev/shared/*": ["../shared/src/*"]
+    },
+    "types": ["node"]
+  },
+  "references": [{
+    "path": "../shared"
+  }]
+}
