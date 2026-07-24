@@ -1,0 +1,19 @@
+{
+  "id": "com.example.myreactplugin",
+  "name": "My React Plugin",
+  "version": "1.0.0",
+  "author": "Croffle Developer",
+  "description": "React test plugin for Croffle",
+  "main": "index.js",
+  "features": {
+    "views": [
+      {
+        "id": "react-feature-view",
+        "title": "React Feature",
+        "subtitle": "Built with React",
+        "icon": "",
+        "url": "/plugin/react-feature-view"
+      }
+    ]
+  }
+}

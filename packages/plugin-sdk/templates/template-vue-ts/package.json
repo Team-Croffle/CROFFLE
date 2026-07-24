@@ -1,0 +1,20 @@
+{
+  "name": "my-test-plugin",
+  "version": "1.0.0",
+  "description": "Vue 3 + TypeScript template for Croffle plugin",
+  "scripts": {
+    "dev": "croffle-plugin build --watch",
+    "build": "croffle-plugin build",
+    "pack": "croffle-plugin pack"
+  },
+  "dependencies": {
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@croffledev/croffle-types": "latest",
+    "@croffledev/plugin-sdk": "latest",
+    "@vitejs/plugin-vue": "^5.0.0",
+    "typescript": "^5.0.0",
+    "vite": "^5.0.0"
+  }
+}

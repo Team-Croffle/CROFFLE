@@ -1,0 +1,19 @@
+{
+  "id": "com.example.mytestplugin",
+  "name": "My Test Plugin",
+  "version": "1.0.0",
+  "author": "Croffle Developer",
+  "description": "An all-in-one test plugin for Croffle",
+  "main": "index.js",
+  "features": {
+    "views": [
+      {
+        "id": "test-feature-view",
+        "title": "Test Feature",
+        "subtitle": "All-in-one plugin",
+        "icon": "",
+        "url": "/plugin/test-feature-view"
+      }
+    ]
+  }
+}

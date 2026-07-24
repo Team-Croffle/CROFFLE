@@ -1,0 +1,24 @@
+{
+  "name": "my-react-plugin",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Vue 3 + TypeScript template for Croffle plugin",
+  "scripts": {
+    "dev": "croffle-plugin build --watch",
+    "build": "croffle-plugin build",
+    "pack": "croffle-plugin pack"
+  },
+  "dependencies": {
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  },
+  "devDependencies": {
+    "@croffledev/croffle-types": "latest",
+    "@croffledev/plugin-sdk": "latest",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^4.0.0",
+    "typescript": "^5.0.0",
+    "vite": "^5.0.0"
+  }
+}

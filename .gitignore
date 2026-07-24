@@ -1,58 +1,44 @@
-
 # Dependencies
 node_modules
-dist
-out
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Logs / caches
+*.log*
+.eslintcache
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Yarn legacy
 .pnp
 .pnp.js
 .yarn/install-state.gz
 
-# Local env files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Testing
+# Test / tooling
 coverage
-
-# Turbo
 .turbo
-
-# Vercel
 .vercel
 
-# Build Outputs
-out/
-apps/desktop/out/
-
-# Debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Misc
+# OS
 .DS_Store
-.eslintcache
-*.log*
-*.pem
+.AppleDouble
+.LSOverride
+.directory
 
-.stfolder
-.stignore
-.stversions
-
-.vscode/* 
-!.vscode/settings.json
-!.vscode/tasks.json
-
+# IDE
 .idea
 *.sublime-workspace
 *.sublime-project
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
 
-# Mac system files
-.AppleDouble
-.LSOverride
-
-# Linux system files
-.directory
+# Syncthing
+.stfolder
+.stignore
+.stversions
