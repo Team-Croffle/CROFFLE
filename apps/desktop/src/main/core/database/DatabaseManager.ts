@@ -16,7 +16,7 @@ class DatabaseManager {
     logger.debug('DB', `Database path: ${dbPath}`);
 
     this.dataSource = new DataSource({
-      type: 'sqlite',
+      type: 'better-sqlite3',
       database: dbPath,
       entities: [Tag, Schedule, PluginInfo, PluginStorage],
       synchronize: process.env.NODE_ENV === 'development',
