@@ -1,12 +1,14 @@
-import { app, BrowserWindow, Menu, Tray, shell } from 'electron';
-import { autoUpdater, UpdateInfo } from 'electron-updater';
+import type { BrowserWindow } from 'electron';
+import { app, Menu, Tray, shell } from 'electron';
+import type { UpdateInfo } from 'electron-updater';
+import { autoUpdater } from 'electron-updater';
 import { eventService } from '../event-bus/EventService';
 import { AppEventType } from '@croffledev/shared';
 import { settingService } from '../../modules/settings/service/SettingService';
 import icon from '../../../../resources/Logo2OnlyNoBorderIcon.png?asset';
 import { logger } from '../logger/loggerService';
-import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
-import path from 'path';
+import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
+import path from 'node:path';
 
 class WindowService {
   private mainWindow: BrowserWindow | null = null;
@@ -17,7 +19,7 @@ class WindowService {
   // ======== Update 관련 변수 ========
   private readonly updateStatePath: string = path.join(
     app.getPath('userData'),
-    'update-state.json'
+    'update-state.json',
   );
   private pendingUpdateInfo: UpdateInfo | null = null;
   private installOnQuit = false;
@@ -49,10 +51,14 @@ class WindowService {
   }
 
   private registerWindowEvents(): void {
-    if (!this.mainWindow) return;
+    if (!this.mainWindow) {
+      return;
+    }
 
     this.mainWindow.on('close', (event) => {
-      if (this.isQuitting) return true;
+      if (this.isQuitting) {
+        return true;
+      }
 
       if (this.shouldCloseToTray) {
         event.preventDefault();
@@ -80,7 +86,9 @@ class WindowService {
   }
 
   private createTray(): void {
-    if (this.tray) return;
+    if (this.tray) {
+      return;
+    }
 
     try {
       this.tray = new Tray(icon);
@@ -124,7 +132,9 @@ class WindowService {
   // ======== Update 관련 로직 ========
 
   private registerUpdateListeners(): void {
-    if (!app.isPackaged) return;
+    if (!app.isPackaged) {
+      return;
+    }
 
     autoUpdater.autoDownload = false; // 체크 후 자동 다운로드 방지
     autoUpdater.autoInstallOnAppQuit = true; // 자동 업데이트 설치 허용
@@ -204,8 +214,12 @@ class WindowService {
   }
 
   public async checkForUpdates(): Promise<void> {
-    if (!app.isPackaged) return;
-    if (!settingService.get().general.autoUpdate) return;
+    if (!app.isPackaged) {
+      return;
+    }
+    if (!settingService.get().general.autoUpdate) {
+      return;
+    }
     await autoUpdater.checkForUpdates(); // Notify제거: Event를 통해 모달로 처리함
   }
 

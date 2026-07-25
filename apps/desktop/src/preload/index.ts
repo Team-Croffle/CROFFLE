@@ -13,6 +13,7 @@ import { pluginSettingsApi } from './api/pluginSettings.api';
 import { tagApi } from './api/tag.api';
 import { windowApi } from './api/window.api';
 import { searchApi } from './api/search.api';
+import { logger } from '../main/core/logger/loggerService';
 
 // Custom APIs for renderer
 const api = {
@@ -44,7 +45,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('electron', electronAPI);
     contextBridge.exposeInMainWorld('croffle', api);
   } catch (error) {
-    console.error(error);
+    logger.error('Preload', JSON.stringify(error));
   }
 } else {
   // @ts-ignore (define in dts)

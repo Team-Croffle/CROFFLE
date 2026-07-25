@@ -1,6 +1,15 @@
 <script setup lang="ts">
   import { ref, onMounted, watch, computed } from 'vue';
-  import { Settings, Bell, Puzzle, CalendarDays, Trash2, Github, Download, Loader2 } from 'lucide-vue-next';
+  import {
+    Settings,
+    Bell,
+    Puzzle,
+    CalendarDays,
+    Trash2,
+    Github,
+    Download,
+    Loader2,
+  } from 'lucide-vue-next';
   import {
     AppSettingLanguage,
     AppSettingStartupBehavior,
@@ -14,7 +23,7 @@
   import SettingsExtensionPanel from '@/components/settings/SettingsExtensionPanel.vue';
   import ConfigSchemaForm from '@/components/settings/ConfigSchemaForm.vue';
   import { mergeWithSchemaDefaults } from '@/utils/pluginSettingsSchema';
-  import type { SettingsTabContribution } from '@croffledev/croffle-types';
+  import type { SettingsTabContribution, AppSettings, PluginInfo } from '@croffledev/croffle-types';
   import {
     Dialog,
     DialogContent,
@@ -34,19 +43,19 @@
   import { Switch } from '@/components/ui/switch';
 
   import { Separator } from '@/components/ui/separator';
-  import type { AppSettings, PluginInfo } from '@croffledev/croffle-types';
   import { pluginLoader } from '@/services/PluginLoader';
+  import { toast } from 'vue-sonner';
 
-  interface Props {
+  type Props = {
     open: boolean;
-  }
+  };
 
   // 알림 탭 UI 전용 스키마
-  interface NotificationDraft {
+  type NotificationDraft = {
     emailAlert: boolean;
     dndStart: string;
     dndEnd: string;
-  }
+  };
 
   const props = defineProps<Props>();
   const emit = defineEmits<{
@@ -116,7 +125,7 @@
   });
 
   const activeTabLabel = computed(
-    () => allTabs.value.find((t) => t.id === activeTab.value)?.label ?? '설정'
+    () => allTabs.value.find((t) => t.id === activeTab.value)?.label ?? '설정',
   );
 
   // 깊은 복사 유틸
@@ -127,7 +136,9 @@
     JSON.parse(JSON.stringify(value)) as Record<string, Record<string, unknown>>;
 
   const loadExtensionTabSettings = async (tab: SettingsTabContribution) => {
-    if (!tab.sections?.length) return;
+    if (!tab.sections?.length) {
+      return;
+    }
     const compositeId = settingsStore.getTabCompositeId(tab);
     const stored = await croffle.base.pluginSettings.get<Record<string, unknown>>(tab.pluginId);
     const merged = mergeWithSchemaDefaults(tab.sections, stored);
@@ -140,7 +151,9 @@
     const originals: Record<string, Record<string, unknown>> = {};
 
     for (const tab of settingsStore.sortedExtensionTabs) {
-      if (!tab.sections?.length) continue;
+      if (!tab.sections?.length) {
+        continue;
+      }
       const compositeId = settingsStore.getTabCompositeId(tab);
       const stored = await croffle.base.pluginSettings.get<Record<string, unknown>>(tab.pluginId);
       const merged = mergeWithSchemaDefaults(tab.sections, stored);
@@ -152,13 +165,17 @@
     originalExtensionDrafts.value = originals;
   };
 
-  const loadUiDraftFromStorage = (): { notifications: NotificationDraft } | null => {
+  const loadUiDraftFromStorage = (): {
+    notifications: NotificationDraft;
+  } | null => {
     try {
       const raw = localStorage.getItem(UI_DRAFT_STORAGE_KEY);
-      if (!raw) return null;
+      if (!raw) {
+        return null;
+      }
       return JSON.parse(raw) as { notifications: NotificationDraft };
     } catch (error) {
-      console.error('UI draft 로드 실패:', error);
+      toast.error(`UI draft 로드 실패: ${JSON.stringify(error)}`);
       return null;
     }
   };
@@ -170,7 +187,7 @@
       };
       localStorage.setItem(UI_DRAFT_STORAGE_KEY, JSON.stringify(payload));
     } catch (error) {
-      console.error('UI draft 저장 실패:', error);
+      toast.error(`UI draft 저장 실패: ${JSON.stringify(error)}`);
     }
   };
 
@@ -200,7 +217,7 @@
       syncUiDraft();
       await loadAllExtensionSettings();
     } catch (error) {
-      console.error('설정 로드 실패:', error);
+      toast.error(`설정 로드 실패: ${JSON.stringify(error)}`);
       loadError.value = '설정을 불러오지 못했습니다.';
     } finally {
       isLoadingSettings.value = false;
@@ -211,20 +228,24 @@
     try {
       installedPlugins.value = await croffle.base.pluginInfo.getInstalled();
     } catch (err) {
-      console.error('Failed to fetch installed plugins', err);
+      toast.error(`플러그인 목록 로드 실패: ${JSON.stringify(err)}`);
     }
   };
 
   const onInstallPlugin = async () => {
-    if (!installUrl.value) return;
+    if (!installUrl.value) {
+      return;
+    }
     isInstalling.value = true;
     try {
-      const plugin = await croffle.base.pluginInfo.install({ id: installUrl.value });
+      const plugin = await croffle.base.pluginInfo.install({
+        id: installUrl.value,
+      });
       installUrl.value = '';
       await fetchInstalledPlugins();
       await pluginLoader.loadPluginById(plugin.id);
     } catch (err) {
-      console.error('Failed to install plugin', err);
+      toast.error(`Failed to install plugin: ${JSON.stringify(err)}`);
     } finally {
       isInstalling.value = false;
     }
@@ -239,8 +260,7 @@
         await pluginLoader.loadPluginById(result.id);
       }
     } catch (err) {
-      console.error('Failed to install local plugin', err);
-      alert(`플러그인 설치 중 오류가 발생했습니다.\n${err}`);
+      toast.error(`Failed to install local plugin: ${JSON.stringify(err)}`);
     } finally {
       isInstalling.value = false;
     }
@@ -250,25 +270,27 @@
     try {
       await croffle.base.pluginInfo.toggle(plugin.id, plugin.enabled);
       await fetchInstalledPlugins();
-      
+
       if (plugin.enabled) {
         await pluginLoader.loadPluginById(plugin.id);
       } else {
         await pluginLoader.unloadPlugin(plugin.id);
       }
     } catch (err) {
-      console.error('Failed to toggle plugin', err);
+      toast.error(`플러그인 토글 실패: ${JSON.stringify(err)}`);
     }
   };
 
   const onUninstallPlugin = async (plugin: PluginInfo) => {
-    if (!confirm(`'${plugin.name}' 플러그인을 삭제하시겠습니까?`)) return;
+    if (!confirm(`'${plugin.name}' 플러그인을 삭제하시겠습니까?`)) {
+      return;
+    }
     try {
       await pluginLoader.unloadPlugin(plugin.id);
       await croffle.base.pluginInfo.uninstall(plugin.id);
       await fetchInstalledPlugins();
     } catch (err) {
-      console.error('Failed to uninstall plugin', err);
+      toast.error(`플러그인 삭제 실패: ${JSON.stringify(err)}`);
     }
   };
 
@@ -280,7 +302,9 @@
   watch(
     () => props.open,
     (isOpen) => {
-      if (!isOpen) return;
+      if (!isOpen) {
+        return;
+      }
       if (originalSettings.value) {
         settings.value = cloneSettings(originalSettings.value);
         syncUiDraft();
@@ -291,7 +315,7 @@
       if (activeTab.value === 'plugins') {
         void fetchInstalledPlugins();
       }
-    }
+    },
   );
 
   watch(activeTab, (tab) => {
@@ -301,12 +325,16 @@
   });
 
   const handleSave = async () => {
-    if (!settings.value) return;
+    if (!settings.value) {
+      return;
+    }
     try {
       await croffle.base.settings.update(cloneSettings(settings.value));
 
       for (const tab of settingsStore.sortedExtensionTabs) {
-        if (!tab.sections?.length) continue;
+        if (!tab.sections?.length) {
+          continue;
+        }
         const compositeId = settingsStore.getTabCompositeId(tab);
         const draft = extensionDrafts.value[compositeId];
         if (draft) {
@@ -326,7 +354,7 @@
 
       emit('update:open', false);
     } catch (error) {
-      console.error('설정 저장 실패:', error);
+      toast.error(`설정 저장 실패: ${JSON.stringify(error)}`);
     }
   };
 
@@ -342,27 +370,37 @@
 
   // Switch 이벤트값 정규화(checked/modelValue 둘 다 대응)
   const asBool = (v: unknown): boolean => {
-    if (typeof v === 'boolean') return v;
-    if (typeof v === 'string') return v === 'true' || v === '1' || v === 'on';
+    if (typeof v === 'boolean') {
+      return v;
+    }
+    if (typeof v === 'string') {
+      return v === 'true' || v === '1' || v === 'on';
+    }
     return !!v;
   };
 
   const setGeneralBool = (
     key: 'autoUpdate' | 'startOnSystemBoot' | 'startMinimized',
-    v: unknown
+    v: unknown,
   ) => {
-    if (!settings.value) return;
+    if (!settings.value) {
+      return;
+    }
     settings.value.general[key] = asBool(v);
   };
 
   const onThemeChange = (theme: unknown) => {
-    if (!settings.value || typeof theme !== 'string') return;
+    if (!settings.value || typeof theme !== 'string') {
+      return;
+    }
     settings.value.general.theme = theme as AppSettingTheme;
     appSettingsStore.setThemeDraft(theme as AppSettingTheme);
   };
 
   const onReminderMinutesChange = (v: unknown) => {
-    if (!settings.value || v == null) return;
+    if (!settings.value || v === null) {
+      return;
+    }
     settings.value.notifications.defaultReminderMinutes = Number(v);
   };
 
@@ -371,12 +409,16 @@
   };
 
   const onAppAlertSwitch = (v: unknown) => {
-    if (!settings.value) return;
+    if (!settings.value) {
+      return;
+    }
     settings.value.notifications.enabled = asBool(v);
   };
 
   const onShowWeekNumbersSwitch = (v: unknown) => {
-    if (!settings.value) return;
+    if (!settings.value) {
+      return;
+    }
     settings.value.calendar.showWeekNumbers = asBool(v);
   };
 
@@ -392,9 +434,18 @@
   ] as const;
 
   const startupBehaviorOptions = [
-    { value: AppSettingStartupBehavior.OPEN_LAST_SESSION, label: '마지막에 열었던 화면' },
-    { value: AppSettingStartupBehavior.OPEN_NEW_WINDOW, label: '캘린더 기본 화면' },
-    { value: AppSettingStartupBehavior.DO_NOTHING, label: '열지 않음 (백그라운드)' },
+    {
+      value: AppSettingStartupBehavior.OPEN_LAST_SESSION,
+      label: '마지막에 열었던 화면',
+    },
+    {
+      value: AppSettingStartupBehavior.OPEN_NEW_WINDOW,
+      label: '캘린더 기본 화면',
+    },
+    {
+      value: AppSettingStartupBehavior.DO_NOTHING,
+      label: '열지 않음 (백그라운드)',
+    },
   ] as const;
 
   const calendarViewOptions = [
@@ -437,7 +488,7 @@
   <Dialog :open="open" @update:open="(val) => emit('update:open', val)">
     <!-- 반응형 모달 크기 -->
     <DialogContent
-      class="h-[90vh] max-h-[940px] w-[96vw] gap-0 overflow-hidden border-none p-0 shadow-2xl sm:w-[94vw] sm:max-w-none lg:w-[92vw]"
+      class="h-[90vh] max-h-235 w-[96vw] gap-0 overflow-hidden border-none p-0 shadow-2xl sm:w-[94vw] sm:max-w-none lg:w-[92vw]"
     >
       <DialogHeader class="sr-only">
         <DialogTitle>설정</DialogTitle>
@@ -559,8 +610,8 @@
                       :checked="settings.general.autoUpdate"
                       :model-value="settings.general.autoUpdate"
                       aria-label="자동 업데이트"
-                      @update:checked="(v) => setGeneralBool('autoUpdate', v)"
-                      @update:model-value="(v) => setGeneralBool('autoUpdate', v)"
+                      @update:checked="(v: boolean) => setGeneralBool('autoUpdate', v)"
+                      @update:model-value="(v: unknown) => setGeneralBool('autoUpdate', v)"
                     />
                   </div>
                 </section>
@@ -581,14 +632,16 @@
                       :checked="settings.general.startOnSystemBoot"
                       :model-value="settings.general.startOnSystemBoot"
                       aria-label="OS 시작 시 실행"
-                      @update:checked="(v) => setGeneralBool('startOnSystemBoot', v)"
-                      @update:model-value="(v) => setGeneralBool('startOnSystemBoot', v)"
+                      @update:checked="(v: boolean) => setGeneralBool('startOnSystemBoot', v)"
+                      @update:model-value="(v: unknown) => setGeneralBool('startOnSystemBoot', v)"
                     />
                   </div>
 
                   <div
                     class="space-y-4 rounded-lg border border-neutral-100 bg-neutral-50/50 p-4"
-                    :class="{ 'pointer-events-none opacity-50': !isBootEnabled }"
+                    :class="{
+                      'pointer-events-none opacity-50': !isBootEnabled,
+                    }"
                   >
                     <div class="space-y-2">
                       <Label
@@ -627,8 +680,8 @@
                         :model-value="settings.general.startMinimized"
                         :disabled="!isBootEnabled"
                         aria-label="최소화로 시작"
-                        @update:checked="(v) => setGeneralBool('startMinimized', v)"
-                        @update:model-value="(v) => setGeneralBool('startMinimized', v)"
+                        @update:checked="(v: boolean) => setGeneralBool('startMinimized', v)"
+                        @update:model-value="(v: unknown) => setGeneralBool('startMinimized', v)"
                       />
                     </div>
                   </div>
@@ -807,8 +860,12 @@
                 <p class="text-muted-foreground text-sm">확장 플러그인을 설치하고 관리합니다.</p>
 
                 <!-- 설치 폼 -->
-                <div class="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-                  <h4 class="mb-3 text-sm font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-2">
+                <div
+                  class="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900"
+                >
+                  <h4
+                    class="mb-3 text-sm font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-2"
+                  >
                     <Github class="h-4 w-4" />
                     GitHub에서 설치
                   </h4>
@@ -831,10 +888,12 @@
                       설치
                     </Button>
                   </div>
-                  
+
                   <Separator class="my-5" />
-                  
-                  <h4 class="mb-3 text-sm font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-2">
+
+                  <h4
+                    class="mb-3 text-sm font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-2"
+                  >
                     <Download class="h-4 w-4" />
                     로컬 Zip 파일로 설치
                   </h4>
@@ -854,14 +913,23 @@
 
                 <!-- 플러그인 목록 -->
                 <div class="space-y-4">
-                  <h4 class="text-base font-bold text-neutral-900 dark:text-neutral-100">설치된 플러그인</h4>
-                  
-                  <div v-if="installedPlugins.length === 0" class="flex flex-col items-center justify-center rounded-xl border border-dashed border-neutral-300 bg-neutral-50 py-12 text-center dark:border-neutral-800 dark:bg-neutral-950">
+                  <h4 class="text-base font-bold text-neutral-900 dark:text-neutral-100">
+                    설치된 플러그인
+                  </h4>
+
+                  <div
+                    v-if="installedPlugins.length === 0"
+                    class="flex flex-col items-center justify-center rounded-xl border border-dashed border-neutral-300 bg-neutral-50 py-12 text-center dark:border-neutral-800 dark:bg-neutral-950"
+                  >
                     <div class="mb-4 rounded-full bg-neutral-200/50 p-3 dark:bg-neutral-800/50">
                       <Puzzle class="h-6 w-6 text-neutral-500" />
                     </div>
-                    <p class="text-sm font-medium text-neutral-900 dark:text-neutral-100">설치된 플러그인이 없습니다.</p>
-                    <p class="mt-1 text-xs text-neutral-500">위쪽 설치 폼에 GitHub URL을 입력하여 플러그인을 추가해보세요.</p>
+                    <p class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                      설치된 플러그인이 없습니다.
+                    </p>
+                    <p class="mt-1 text-xs text-neutral-500">
+                      위쪽 설치 폼에 GitHub URL을 입력하여 플러그인을 추가해보세요.
+                    </p>
                   </div>
 
                   <div v-else class="grid gap-4 sm:grid-cols-2">
@@ -873,22 +941,45 @@
                       <div class="flex items-start justify-between p-4">
                         <div class="min-w-0 flex-1">
                           <div class="flex items-center gap-2">
-                            <h5 class="truncate font-semibold text-neutral-900 dark:text-neutral-100" :title="plugin.name">{{ plugin.name }}</h5>
-                            <span class="rounded bg-neutral-100 px-1.5 py-0.5 text-[10px] font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">v{{ plugin.version }}</span>
+                            <h5
+                              class="truncate font-semibold text-neutral-900 dark:text-neutral-100"
+                              :title="plugin.name"
+                            >
+                              {{ plugin.name }}
+                            </h5>
+                            <span
+                              class="rounded bg-neutral-100 px-1.5 py-0.5 text-2xs font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400"
+                              >v{{ plugin.version }}</span
+                            >
                           </div>
                           <p class="mt-1 text-xs text-neutral-500">by {{ plugin.author }}</p>
-                          <p class="mt-2 line-clamp-2 text-sm text-neutral-600 dark:text-neutral-300" :title="plugin.description">{{ plugin.description }}</p>
+                          <p
+                            class="mt-2 line-clamp-2 text-sm text-neutral-600 dark:text-neutral-300"
+                            :title="plugin.description"
+                          >
+                            {{ plugin.description }}
+                          </p>
                         </div>
                       </div>
-                      
-                      <div class="mt-auto flex items-center justify-between border-t border-neutral-100 bg-neutral-50/50 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-950/50">
+
+                      <div
+                        class="mt-auto flex items-center justify-between border-t border-neutral-100 bg-neutral-50/50 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-950/50"
+                      >
                         <div class="flex items-center gap-2">
                           <Switch
                             :model-value="plugin.enabled"
                             aria-label="플러그인 활성화"
-                            @update:model-value="(v) => { plugin.enabled = v; onTogglePlugin(plugin); }"
+                            @update:model-value="
+                              (v) => {
+                                plugin.enabled = v;
+                                onTogglePlugin(plugin);
+                              }
+                            "
                           />
-                          <span class="text-xs font-medium" :class="plugin.enabled ? 'text-[#A68A64]' : 'text-neutral-500'">
+                          <span
+                            class="text-xs font-medium"
+                            :class="plugin.enabled ? 'text-[#A68A64]' : 'text-neutral-500'"
+                          >
                             {{ plugin.enabled ? '사용 중' : '사용 안 함' }}
                           </span>
                         </div>

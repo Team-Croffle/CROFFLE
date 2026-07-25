@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { settingService } from '../modules/settings/service/SettingService';
-import { AppSettings } from '@croffledev/croffle-types';
+import type { AppSettings } from '@croffledev/croffle-types';
 import { eventService } from '../core/event-bus/EventService';
 import { AppEventType } from '@croffledev/shared';
 import { validateSettings } from '../modules/helper/settingsValidator';
@@ -27,7 +27,7 @@ export const registerSettingsIpcHandlers = (): void => {
       eventService.emit(AppEventType.SETTINGS_GET_OF, key, result);
 
       return result;
-    }
+    },
   );
 
   ipcMain.handle(
@@ -40,6 +40,6 @@ export const registerSettingsIpcHandlers = (): void => {
       eventService.emit(AppEventType.SETTINGS_UPDATE, newSettings);
 
       return newSettings;
-    }
+    },
   );
 };

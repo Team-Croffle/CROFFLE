@@ -11,7 +11,9 @@
     SelectItem,
   } from '@/components/ui/select';
 
-  const values = defineModel<Record<string, unknown>>('values', { required: true });
+  const values = defineModel<Record<string, unknown>>('values', {
+    required: true,
+  });
 
   defineProps<{
     items: Record<string, ConfigItemSchema>;
@@ -20,8 +22,12 @@
   }>();
 
   const asBool = (v: unknown): boolean => {
-    if (typeof v === 'boolean') return v;
-    if (typeof v === 'string') return v === 'true' || v === '1' || v === 'on';
+    if (typeof v === 'boolean') {
+      return v;
+    }
+    if (typeof v === 'string') {
+      return v === 'true' || v === '1' || v === 'on';
+    }
     return !!v;
   };
 
@@ -37,7 +43,9 @@
 <template>
   <section class="space-y-4">
     <div v-if="sectionTitle || sectionDescription" class="space-y-1">
-      <h4 v-if="sectionTitle" class="text-base font-bold text-neutral-900">{{ sectionTitle }}</h4>
+      <h4 v-if="sectionTitle" class="text-base font-bold text-neutral-900">
+        {{ sectionTitle }}
+      </h4>
       <p v-if="sectionDescription" class="text-muted-foreground text-sm">
         {{ sectionDescription }}
       </p>
@@ -55,8 +63,8 @@
           :checked="!!values[key]"
           :model-value="!!values[key]"
           :aria-label="schema.label"
-          @update:checked="(v) => onSwitch(key, v)"
-          @update:model-value="(v) => onSwitch(key, v)"
+          @update:checked="(v: boolean) => onSwitch(key, v)"
+          @update:model-value="(v: unknown) => onSwitch(key, v)"
         />
       </div>
 
@@ -66,7 +74,7 @@
         </Label>
         <Select
           :model-value="String(values[key] ?? schema.defaultValue)"
-          @update:model-value="(v) => updateValue(key, v)"
+          @update:model-value="(v: unknown) => updateValue(key, v)"
         >
           <SelectTrigger :id="`ext-setting-${key}`" class="w-full">
             <SelectValue :placeholder="schema.label" />

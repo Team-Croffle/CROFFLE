@@ -22,14 +22,20 @@ export const PluginSessionService = {
 
   get: <T = unknown>(pluginId: string, key: string): T | null => {
     const store = getStore(pluginId, false);
-    if (!store) return null;
-    if (!store.has(key)) return null;
+    if (!store) {
+      return null;
+    }
+    if (!store.has(key)) {
+      return null;
+    }
     return store.get(key) as T;
   },
 
   delete: (pluginId: string, key: string): boolean => {
     const store = getStore(pluginId, false);
-    if (!store) return false;
+    if (!store) {
+      return false;
+    }
     const result = store.delete(key);
     if (result) {
       logger.info('PluginSession', `Delete: [${pluginId}] ${key}`);

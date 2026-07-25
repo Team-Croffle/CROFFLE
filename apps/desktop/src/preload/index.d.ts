@@ -1,5 +1,5 @@
 import type { base, app, enums, ui } from '@croffledev/croffle-types';
-import { ElectronAPI } from '@electron-toolkit/preload';
+import type { ElectronAPI } from '@electron-toolkit/preload';
 
 declare global {
   const croffle: {

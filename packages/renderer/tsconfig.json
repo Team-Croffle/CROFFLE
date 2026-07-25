@@ -1,13 +1,9 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": [
-    "src/env.d.ts",
-    "src/**/*",
-    "src/**/*.vue",
-    "../../apps/desktop/src/preload/*.d.ts"
-  ],
+  "include": ["src/env.d.ts", "src/**/*", "src/**/*.vue", "../../apps/desktop/src/preload/*.d.ts"],
   "compilerOptions": {
     "composite": true,
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "paths": {
       "@/*": ["./src/*"],
       "@croffledev/shared": ["../shared/src/index.ts"],
@@ -15,7 +11,9 @@
     },
     "types": ["node"]
   },
-  "references": [{
-    "path": "../shared"
-  }]
+  "references": [
+    {
+      "path": "../shared"
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { tagService } from '../modules/tags/service/TagService';
-import { Tag } from '@croffledev/croffle-types';
+import type { Tag } from '@croffledev/croffle-types';
 import { TagMapper } from '../modules/tags/mapper/TagMapper';
 import { eventService } from '../core/event-bus/EventService';
 import { AppEventType } from '@croffledev/shared';

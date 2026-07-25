@@ -1,7 +1,7 @@
-import { ClipboardResult } from '@croffledev/croffle-types';
+import type { ClipboardResult } from '@croffledev/croffle-types';
 import { ClipboardDataType } from '@croffledev/shared';
 import { Notification, app, clipboard, nativeImage } from 'electron';
-import path from 'path';
+import path from 'node:path';
 import { logger } from '../../../core/logger/loggerService';
 
 export class OsService {
@@ -64,7 +64,7 @@ export class OsService {
 
   // 2-2) 쓰기
   public setClipboard(
-    data: { type: 'text'; value: string } | { type: 'image'; value: Buffer }
+    data: { type: 'text'; value: string } | { type: 'image'; value: Buffer },
   ): void {
     try {
       if (data.type === 'text') {

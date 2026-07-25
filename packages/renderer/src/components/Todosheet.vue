@@ -43,7 +43,9 @@
 
   // 달력 컴포넌트에서 사용할 상태값과 함수들을 정의
   const formatCalendarDate = (calendarDate: CalendarDate | undefined) => {
-    if (!calendarDate) return '날짜를 선택하세요';
+    if (!calendarDate) {
+      return '날짜를 선택하세요';
+    }
     const jsDate = calendarDate.toDate(getLocalTimeZone());
     return new Intl.DateTimeFormat('ko-KR', {
       month: 'long',
@@ -133,7 +135,9 @@
       scheduleId: selectedScheduleId.value,
     }),
     ({ open, mode, scheduleId }) => {
-      if (!open) return;
+      if (!open) {
+        return;
+      }
       // add 모드일 때는 모든 필드를 초기값으로 설정
       if (mode === 'add') {
         resetForm();
@@ -164,12 +168,14 @@
 
       fillFormFromSchedule(schedule);
     },
-    { immediate: true }
+    { immediate: true },
   );
 
   // 저장 버튼 핸들러
   const handleSave = async () => {
-    if (!form.title.trim() || !startDate.value || !endDate.value) return;
+    if (!form.title.trim() || !startDate.value || !endDate.value) {
+      return;
+    }
 
     let selectedStart = startDate.value.toString();
     let selectedEnd = endDate.value.toString();
@@ -213,18 +219,22 @@
       if (todoSheetMode.value === 'add') {
         await scheduleStore.createSchedule(payload);
       } else {
-        if (!selectedScheduleId.value) return;
+        if (!selectedScheduleId.value) {
+          return;
+        }
         await scheduleStore.updateScheduleById(selectedScheduleId.value, payload);
       }
 
       uiStore.closeTodoSheet();
     } catch (error) {
-      console.error('일정 저장 실패:', error);
+      toast.error(`일정 저장 실패: ${JSON.stringify(error)}`);
     }
   };
 
   const handleDelete = async () => {
-    if (todoSheetMode.value !== 'edit' || !selectedScheduleId.value) return;
+    if (todoSheetMode.value !== 'edit' || !selectedScheduleId.value) {
+      return;
+    }
 
     try {
       const isSuccess = await scheduleStore.removeScheduleById(selectedScheduleId.value);
@@ -232,7 +242,7 @@
         uiStore.closeTodoSheet();
       }
     } catch (error) {
-      console.error('일정 삭제 실패:', error);
+      toast.error(`일정 삭제 실패: ${JSON.stringify(error)}`);
     }
   };
 
@@ -356,7 +366,7 @@
                     :class="
                       cn(
                         'border-croffle-border hover:bg-croffle-sidebar bg-background h-11 w-full justify-between text-left font-normal',
-                        !startDate && 'text-muted-foreground'
+                        !startDate && 'text-muted-foreground',
                       )
                     "
                   >
@@ -384,7 +394,7 @@
                     :class="
                       cn(
                         'border-croffle-border hover:bg-croffle-sidebar bg-background h-11 w-full justify-between text-left font-normal',
-                        !endDate && 'text-muted-foreground'
+                        !endDate && 'text-muted-foreground',
                       )
                     "
                   >

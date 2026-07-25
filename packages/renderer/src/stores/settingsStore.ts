@@ -5,11 +5,11 @@ import { computed, ref } from 'vue';
 const BUILTIN_TAB_IDS = ['general', 'calendar', 'account', 'notifications'] as const;
 export type BuiltinSettingsTabId = (typeof BUILTIN_TAB_IDS)[number];
 
+const getTabCompositeId = (tab: Pick<SettingsTabContribution, 'pluginId' | 'id'>) =>
+  `${tab.pluginId}:${tab.id}`;
+
 export const useSettingsStore = defineStore('settings', () => {
   const extensionTabs = ref<SettingsTabContribution[]>([]);
-
-  const getTabCompositeId = (tab: Pick<SettingsTabContribution, 'pluginId' | 'id'>) =>
-    `${tab.pluginId}:${tab.id}`;
 
   const registerTab = (tab: SettingsTabContribution) => {
     const compositeId = getTabCompositeId(tab);
@@ -22,9 +22,11 @@ export const useSettingsStore = defineStore('settings', () => {
   const registerManifestTabs = (
     pluginId: string,
     pluginName: string,
-    manifests: SettingsTabManifest[] | undefined
+    manifests: SettingsTabManifest[] | undefined,
   ) => {
-    if (!manifests?.length) return;
+    if (!manifests?.length) {
+      return;
+    }
     for (const manifest of manifests) {
       registerTab({
         ...manifest,
@@ -39,7 +41,7 @@ export const useSettingsStore = defineStore('settings', () => {
   };
 
   const sortedExtensionTabs = computed(() =>
-    [...extensionTabs.value].sort((a, b) => (a.order ?? 100) - (b.order ?? 100))
+    [...extensionTabs.value].toSorted((a, b) => (a.order ?? 100) - (b.order ?? 100)),
   );
 
   const findExtensionTab = (compositeId: string) =>

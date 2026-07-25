@@ -1,4 +1,4 @@
-import { pluginStorage } from '@croffledev/croffle-types';
+import type { pluginStorage } from '@croffledev/croffle-types';
 import { ipcRenderer } from 'electron';
 
 type PluginStorageAPI = typeof pluginStorage;

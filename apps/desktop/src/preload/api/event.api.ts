@@ -1,5 +1,6 @@
-import { event } from '@croffledev/croffle-types';
-import { ipcRenderer, IpcRendererEvent } from 'electron';
+import type { event } from '@croffledev/croffle-types';
+import type { IpcRendererEvent } from 'electron';
+import { ipcRenderer } from 'electron';
 
 type EventApi = typeof event;
 

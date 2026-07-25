@@ -1,9 +1,9 @@
 import { app, net, protocol } from 'electron';
-import path from 'path';
-import fs from 'fs';
+import path from 'node:path';
+import fs from 'node:fs';
 import JSZip from 'jszip';
 import { pluginInfoService } from '../../modules/plugin-info/service/PluginInfoService';
-import { PluginInfo } from '@croffledev/croffle-types';
+import type { PluginInfo } from '@croffledev/croffle-types';
 
 class PluginManager {
   private pluginDir = path.join(app.getPath('userData'), 'plugins');
@@ -14,20 +14,20 @@ class PluginManager {
     });
   }
 
-    private registerProtocol() {
+  private registerProtocol() {
     protocol.handle('plugin', async (req) => {
       let url = req.url.replace('plugin://', '');
-      
+
       // 쿼리 스트링 제거
       const queryIndex = url.indexOf('?');
       if (queryIndex !== -1) {
         url = url.substring(0, queryIndex);
       }
-      
+
       const safePath = path.normalize(url).replace(/^(\.\.(\/|\\|$))+/, '');
       const localPath = path.join(this.pluginDir, safePath);
 
-      const response = await net.fetch('file://' + localPath);
+      const response = await net.fetch(`file://${localPath}`);
 
       const headers = new Headers(response.headers);
       headers.set('Access-Control-Allow-Origin', '*');
@@ -67,7 +67,7 @@ class PluginManager {
         extractPromise.push(
           zipEntry.async('nodebuffer').then((content) => {
             return fs.promises.writeFile(targetPath, content);
-          })
+          }),
         );
       }
     });
@@ -147,7 +147,7 @@ class PluginManager {
         extractPromise.push(
           zipEntry.async('nodebuffer').then((content) => {
             return fs.promises.writeFile(targetPath, content);
-          })
+          }),
         );
       }
     });

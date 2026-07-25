@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { scheduleService } from '../modules/schedules/service/ScheduleService';
-import { Schedule } from '@croffledev/croffle-types';
+import type { Schedule } from '@croffledev/croffle-types';
 import { ScheduleMapper } from '../modules/schedules/mapper/ScheduleMapper';
 import { eventService } from '../core/event-bus/EventService';
 import { AppEventType } from '@croffledev/shared';
@@ -20,7 +20,7 @@ export const registerScheduleIpcHandlers = (): void => {
       eventService.emit(AppEventType.SCHEDULE_GET, dto);
 
       return dto;
-    }
+    },
   );
 
   ipcMain.handle('schedule:create', async (_, data: Partial<Schedule>): Promise<Schedule> => {
@@ -45,7 +45,7 @@ export const registerScheduleIpcHandlers = (): void => {
       eventService.emit(AppEventType.SCHEDULE_UPDATE, dto);
 
       return dto;
-    }
+    },
   );
 
   ipcMain.handle('schedule:delete', async (_, id: string): Promise<boolean> => {
@@ -59,23 +59,23 @@ export const registerScheduleIpcHandlers = (): void => {
     'schedule:exportSchedulesToFile',
     async (
       _,
-      period?: { start: string; end: string }
+      period?: { start: string; end: string },
     ): Promise<{ filePath: string; count: number } | null> => {
       const result = await scheduleImportExportService.exportSchedulesToFile(period);
       eventService.emit(AppEventType.SCHEDULE_EXPORT_TO_FILE, result);
       return result;
-    }
+    },
   );
 
   ipcMain.handle(
     'schedule:importScheduleFromFile',
     async (
       _,
-      mode?: 'merge' | 'duplicate'
+      mode?: 'merge' | 'duplicate',
     ): Promise<{ created: number; updated: number } | null> => {
       const result = await scheduleImportExportService.importScheduleFromFile(mode ?? 'merge');
       eventService.emit(AppEventType.SCHEDULE_IMPORT_FROM_FILE, result);
       return result;
-    }
+    },
   );
 };

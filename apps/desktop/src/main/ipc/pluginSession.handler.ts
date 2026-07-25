@@ -6,7 +6,7 @@ import { logger } from '../core/logger/loggerService';
 
 const validateArgs = (
   payload: unknown,
-  requireKey: boolean = true
+  requireKey: boolean = true,
 ): { pluginId: string; key?: string; value?: unknown } => {
   // payload가 비어있거나 객체가 아니면 에러
   if (!payload || typeof payload !== 'object') {

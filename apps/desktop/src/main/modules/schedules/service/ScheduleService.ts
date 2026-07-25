@@ -1,4 +1,5 @@
-import { LessThanOrEqual, MoreThanOrEqual, FindOptionsWhere } from 'typeorm';
+import type { FindOptionsWhere } from 'typeorm';
+import { LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 import { databaseManager } from '../../../core/database/DatabaseManager';
 import { Schedule } from '../model/Schedule';
 import { stringValidation } from '../../helper/stringValidation';
@@ -56,15 +57,19 @@ export const scheduleService = {
     return await repo.find({
       where: whereCondition,
       order: { startDate: 'ASC' },
-      relations: ['tags'],
+      relations: { tags: true },
     });
   },
 
   createSchedule: async (data: Partial<Schedule>): Promise<Schedule> => {
     const repo = databaseManager.getRepository(Schedule);
 
-    if (!data.title) throw new Error('Title is required');
-    if (!data.startDate || !data.endDate) throw new Error('Date range is required');
+    if (!data.title) {
+      throw new Error('Title is required');
+    }
+    if (!data.startDate || !data.endDate) {
+      throw new Error('Date range is required');
+    }
 
     validateScheduleData(data as Schedule);
 
@@ -79,10 +84,12 @@ export const scheduleService = {
 
     const schedule = await repo.findOne({
       where: { id },
-      relations: ['tags'],
+      relations: { tags: true },
     });
 
-    if (!schedule) throw new Error('Schedule not found');
+    if (!schedule) {
+      throw new Error('Schedule not found');
+    }
 
     repo.merge(schedule, data);
 
@@ -97,7 +104,9 @@ export const scheduleService = {
     const repo = databaseManager.getRepository(Schedule);
     const schedule = await repo.findOne({ where: { id } });
 
-    if (!schedule) throw new Error('Schedule not found');
+    if (!schedule) {
+      throw new Error('Schedule not found');
+    }
 
     await repo.remove(schedule);
     return true;

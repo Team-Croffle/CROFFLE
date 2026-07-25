@@ -3,7 +3,7 @@ export const stringValidation = (
   nullable: boolean = false,
   maxLength: number = 255,
   minLength: number = 1,
-  pattern?: RegExp
+  pattern?: RegExp,
 ): boolean => {
   if (nullable && input === null) {
     return true;

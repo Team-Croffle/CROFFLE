@@ -1,3 +1,4 @@
+// oxlint-disable-next-line import/no-unassigned-import
 import './index.css';
 
 import { createApp } from 'vue';

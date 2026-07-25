@@ -1,5 +1,5 @@
 import { net } from 'electron';
-import { HttpResponse } from '@croffledev/croffle-types';
+import type { HttpResponse } from '@croffledev/croffle-types';
 import { logger } from '../../../core/logger/loggerService';
 
 class HttpService {
@@ -8,7 +8,7 @@ class HttpService {
   public async get(
     url: string,
     params?: Record<string, string>,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
   ): Promise<HttpResponse> {
     const queryString = params ? `?${new URLSearchParams(params).toString()}` : '';
     return this.request('GET', `${url}${queryString}`, undefined, headers);
@@ -17,7 +17,7 @@ class HttpService {
   public async post(
     url: string,
     body?: unknown,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
   ): Promise<HttpResponse> {
     return this.request('POST', url, body, headers);
   }
@@ -26,7 +26,7 @@ class HttpService {
     method: 'GET' | 'POST',
     url: string,
     body?: unknown,
-    customHeaders?: Record<string, string>
+    customHeaders?: Record<string, string>,
   ): Promise<HttpResponse> {
     return new Promise((resolve) => {
       logger.info('Http', `${method} ${url.split('?')[0]}`);

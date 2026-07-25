@@ -1,4 +1,5 @@
-.plugin-container, .plugin-settings-container {
+.plugin-container,
+.plugin-settings-container {
   padding: 1.5rem;
   font-family: sans-serif;
   color: var(--croffle-text, #333);

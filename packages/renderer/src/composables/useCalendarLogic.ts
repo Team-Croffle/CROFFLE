@@ -1,6 +1,6 @@
 import { useUiStore } from '@/stores/uiStore';
 import type FullCalendarComponent from '@fullcalendar/vue3';
-import { type Ref } from 'vue';
+import type { Ref } from 'vue';
 
 export function useCalendarLogic() {
   const uiStore = useUiStore();
@@ -11,12 +11,16 @@ export function useCalendarLogic() {
   // 캘린더 리사이징 최적화 로직
   const startResizeObserver = (
     containerRef: Ref<HTMLElement | null>,
-    calendarRef: Ref<InstanceType<typeof FullCalendarComponent> | null>
+    calendarRef: Ref<InstanceType<typeof FullCalendarComponent> | null>,
   ) => {
-    if (!containerRef.value || !calendarRef.value) return;
+    if (!containerRef.value || !calendarRef.value) {
+      return;
+    }
 
     resizeObserver = new ResizeObserver(() => {
-      if (animationFrameId !== null) return;
+      if (animationFrameId !== null) {
+        return;
+      }
       animationFrameId = requestAnimationFrame(() => {
         calendarRef.value?.getApi().updateSize();
         animationFrameId = null;
@@ -34,19 +38,6 @@ export function useCalendarLogic() {
       cancelAnimationFrame(animationFrameId);
       animationFrameId = null;
     }
-  };
-
-  const getClickedDate = (e: MouseEvent): string | null => {
-    // 클릭된 요소가 날짜인지 확인
-    const target = e.target as HTMLElement;
-    const dayCell = target.closest('.fc-daygrid-day');
-
-    return dayCell ? dayCell.getAttribute('data-date') : null;
-  };
-
-  const getClickedDateFromTarget = (target: HTMLElement): string | null => {
-    const dayCell = target.closest('.fc-daygrid-day');
-    return dayCell ? dayCell.getAttribute('data-date') : null;
   };
 
   // 더블클릭 핸들러
@@ -99,8 +90,6 @@ export function useCalendarLogic() {
   };
 
   return {
-    getClickedDate,
-    getClickedDateFromTarget,
     startResizeObserver,
     stopResizeObserver,
     handleDateDoubleClick,

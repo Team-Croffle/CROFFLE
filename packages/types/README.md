@@ -39,18 +39,18 @@ pnpm add -D @croffledev/croffle-types
 Import the types to define your plugin structure. This ensures your plugin correctly implements the required lifecycle hooks and metadata.
 
 ```typescript
-import type { ICrofflePlugin, PluginContext } from "@croffledev/croffle-types";
+import type { ICrofflePlugin, PluginContext } from '@croffledev/croffle-types';
 
 const myPlugin: ICrofflePlugin = {
-  name: "MyAwesomePlugin",
-  version: "1.0.0",
+  name: 'MyAwesomePlugin',
+  version: '1.0.0',
 
   onLoad(context: PluginContext) {
-    console.log("Croffle Plugin Loaded!", context.appVersion);
+    console.log('Croffle Plugin Loaded!', context.appVersion);
   },
 
   onUnload() {
-    console.log("Cleaning up...");
+    console.log('Cleaning up...');
   },
 };
 

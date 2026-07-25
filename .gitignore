@@ -42,3 +42,7 @@ coverage
 .stfolder
 .stignore
 .stversions
+
+# Build
+dist
+*buildinfo

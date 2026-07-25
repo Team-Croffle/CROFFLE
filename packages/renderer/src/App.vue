@@ -39,6 +39,12 @@
   // 설정 모달 상태
   const isSettingsOpen = ref(false);
 
+  const isDev = import.meta.env.DEV;
+  if (isDev) {
+    // oxlint-disable-next-line no-console
+    console.log('isDev', isDev);
+  }
+
   // Electron 윈도우 제어 함수
   const minimizeWindow = async () => {
     croffle.base.windows.minimize();
@@ -75,9 +81,10 @@
     const { pluginId, pluginName, tabId, label, icon, order, render, sections } =
       customEvent.detail;
 
-    if (render && sections) {
+    if (render && sections && isDev) {
+      // oxlint-disable-next-line no-console
       console.warn(
-        `[Plugin ${pluginName}] registerSettingsTab: render와 sections는 동시에 사용할 수 없습니다. render가 우선됩니다.`
+        `[Plugin ${pluginName}] registerSettingsTab: render와 sections는 동시에 사용할 수 없습니다. render가 우선됩니다.`,
       );
     }
 
@@ -127,14 +134,22 @@
     const { plugin } = customEvent.detail;
 
     // 플러그인 로드 시 매니페스트 정보(views, contextMenus, settingsTabs) 동적 등록
-    console.log(`[App.vue] handlePluginLoaded: ${plugin.id}`, plugin.features);
+    if (isDev) {
+      // oxlint-disable-next-line no-console
+      console.log(`[App.vue] handlePluginLoaded: ${plugin.id}`, plugin.features);
+    }
     if (plugin.features?.views) {
       const views = plugin.features.views.map((v) => ({
         ...v,
         pluginName: plugin.name,
         pluginId: plugin.id,
       }));
-      console.log(`[App.vue] registerMenus views:`, views);
+
+      if (isDev) {
+        // oxlint-disable-next-line no-console
+        console.log(`[App.vue] registerMenus views:`, views);
+      }
+
       viewStore.registerMenus(views);
     }
     if (plugin.features?.contextMenus) {

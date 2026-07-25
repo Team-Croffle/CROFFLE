@@ -11,7 +11,7 @@
   import dayjs from 'dayjs';
   import isBetween from 'dayjs/plugin/isBetween';
   import pkg from '../../../../package.json';
-  
+
   dayjs.extend(isBetween);
 
   const uiStore = useUiStore();
@@ -21,7 +21,9 @@
 
   // 선택된 날짜에 해당하는 일정만 스토어에서 가져옴
   const selectedSchedules = computed(() => {
-    if (!selectedDate.value) return [];
+    if (!selectedDate.value) {
+      return [];
+    }
 
     // 중간 날짜를 클릭했을 때도 해당 일정이 보여야 하므로, 일정의 시작과 끝을 포함하는지 확인
     // 단순 문자열 비교 시 발생할 수 있는 문제를 방지하기 위해 dayjs로 날짜 비교

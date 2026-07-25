@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import { Schedule, schedules } from '@croffledev/croffle-types';
+import type { Schedule, schedules } from '@croffledev/croffle-types';
 
 type ScheduleAPI = typeof schedules;
 
@@ -28,7 +28,7 @@ export const scheduleApi = {
   },
 
   importScheduleFromFile: async (
-    mode?: 'merge' | 'duplicate'
+    mode?: 'merge' | 'duplicate',
   ): Promise<{ created: number; updated: number } | null> => {
     return ipcRenderer.invoke('schedule:importScheduleFromFile', mode);
   },

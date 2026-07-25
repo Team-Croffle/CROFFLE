@@ -1,5 +1,6 @@
-import { DataSource, ObjectLiteral, Repository } from 'typeorm';
-import * as path from 'path';
+import type { ObjectLiteral, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
+import * as path from 'node:path';
 import { app } from 'electron';
 import { Tag } from '../../modules/tags/model/Tag';
 import { Schedule } from '../../modules/schedules/model/Schedule';
@@ -45,7 +46,7 @@ class DatabaseManager {
 
   public async save<T extends ObjectLiteral>(entity: T): Promise<T> {
     const repository = this.dataSource.getRepository(
-      entity.constructor as new () => T
+      entity.constructor as new () => T,
     ) as Repository<T>;
     const result = await repository.save(entity);
     return result;

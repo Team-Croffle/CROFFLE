@@ -3,6 +3,7 @@ import type {
   PluginInfo,
   RegisterSettingsTabOptions,
 } from '@croffledev/croffle-types';
+import { toast } from 'vue-sonner';
 
 class PluginLoader {
   private activePlugins = new Map<string, unknown>();
@@ -17,8 +18,8 @@ class PluginLoader {
       for (const plugin of enabledPlugins) {
         await this.loadPlugin(plugin);
       }
-    } catch (error) {
-      console.error('Failed to load plugins', error);
+    } catch {
+      toast.error('Failed to load plugins');
     }
   }
 
@@ -27,18 +28,20 @@ class PluginLoader {
     try {
       // IPC의 getByName은 name 기반 조회이므로, id 기반 검색을 위해 전체 목록을 순회합니다.
       const plugins = await croffle.base.pluginInfo.getInstalled();
-      const plugin = plugins.find(p => p.id === pluginId);
+      const plugin = plugins.find((p) => p.id === pluginId);
       if (plugin && plugin.enabled) {
         await this.loadPlugin(plugin);
       }
-    } catch (error) {
-      console.error(`Failed to load plugin by id ${pluginId}`, error);
+    } catch {
+      toast.error(`Failed to load plugin by id ${pluginId}`);
     }
   }
 
   private async loadPlugin(plugin: PluginInfo) {
     try {
-      if (this.activePlugins.has(plugin.id)) return;
+      if (this.activePlugins.has(plugin.id)) {
+        return;
+      }
 
       // CSS 자동 주입 (style.css가 존재할 경우)
       try {
@@ -51,8 +54,8 @@ class PluginLoader {
           link.id = `plugin-style-${plugin.id}`;
           document.head.appendChild(link);
         }
-      } catch (e) {
-        // ignore
+      } catch {
+        toast.error(`Failed to load plugin ${plugin.name}`);
       }
 
       if (plugin.main) {
@@ -64,49 +67,47 @@ class PluginLoader {
           const context = this.createContext(plugin);
           await pluginModule.activated(context);
           this.activePlugins.set(plugin.id, { module: pluginModule, context });
-          console.log(`Plugin ${plugin.name} loaded successfully`);
         }
       } else {
         // 스크립트가 없는 manifest 전용 플러그인의 경우
         this.activePlugins.set(plugin.id, { module: null, context: null });
-        console.log(`Plugin ${plugin.name} (manifest only) loaded successfully`);
       }
 
       window.dispatchEvent(
         new CustomEvent('plugin:loaded', {
           detail: { plugin },
-        })
+        }),
       );
-    } catch (error) {
-      console.error(`Failed to execute plugin ${plugin.name}`, error);
+    } catch {
+      toast.error(`Failed to execute plugin ${plugin.name}`);
     }
   }
 
   public async unloadPlugin(pluginId: string) {
     try {
-      const active = this.activePlugins.get(pluginId) as { module: any, context: PluginContext } | undefined;
+      const active = this.activePlugins.get(pluginId) as
+        // oxlint-disable-next-line typescript/no-explicit-any
+        { module: any; context: PluginContext } | undefined;
       if (active) {
         if (active.module && typeof active.module.deactivated === 'function') {
           await active.module.deactivated(active.context);
         }
         this.activePlugins.delete(pluginId);
-        
+
         // 플러그인 CSS 제거
         const link = document.getElementById(`plugin-style-${pluginId}`);
         if (link) {
           link.remove();
         }
-        
-        console.log(`Plugin ${pluginId} unloaded successfully`);
-        
+
         window.dispatchEvent(
           new CustomEvent('plugin:unloaded', {
             detail: { pluginId },
-          })
+          }),
         );
       }
-    } catch (error) {
-      console.error(`Failed to unload plugin ${pluginId}`, error);
+    } catch {
+      toast.error(`Failed to unload plugin ${pluginId}`);
     }
   }
 
@@ -120,14 +121,14 @@ class PluginLoader {
           window.dispatchEvent(
             new CustomEvent('plugin:register-view', {
               detail: { pluginId: plugin.id, viewId, renderFn },
-            })
+            }),
           );
         },
         registerContextMenu: (target, command, label, callback) => {
           window.dispatchEvent(
             new CustomEvent('plugin:register-context-menu', {
               detail: { pluginId: plugin.id, target, command, label, callback },
-            })
+            }),
           );
         },
         registerSettingsTab: (tabId: string, options: RegisterSettingsTabOptions) => {
@@ -139,7 +140,7 @@ class PluginLoader {
                 tabId,
                 ...options,
               },
-            })
+            }),
           );
         },
       },
