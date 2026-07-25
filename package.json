@@ -9,12 +9,15 @@
   },
   "homepage": "https://github.com/team-croffle",
   "scripts": {
-    "format": "prettier --write .",
-    "lint": "eslint --cache .",
+    "format": "oxfmt --write .",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint --fix .",
+    "prepare": "husky init",
     "typecheck": "pnpm -r --parallel run typecheck",
     "dev": "pnpm --filter @croffledev/desktop dev",
     "start": "pnpm --filter @croffledev/desktop start",
     "build": "pnpm --filter @croffledev/desktop build",
+    "build:shared": "pnpm --filter @croffledev/shared build",
     "build:unpack": "pnpm --filter @croffledev/desktop build:unpack",
     "build:win": "pnpm --filter @croffledev/desktop build:win",
     "build:mac": "pnpm --filter @croffledev/desktop build:mac",
@@ -39,8 +42,17 @@
     "typescript": "6.0.3",
     "vue-eslint-parser": "^10.4.1"
   },
+  "lint-staged": {
+    "*.{js,jsx,mjs,ts,tsx,mts,cts,vue}": [
+      "oxlint --fix",
+      "oxfmt --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "oxfmt --write"
+    ]
+  },
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   },
   "packageManager": "pnpm@11.17.0"
 }
