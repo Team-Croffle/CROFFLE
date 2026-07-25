@@ -41,7 +41,9 @@ export const tagService = {
   modifyTag: async (id: string, name: string, color: string): Promise<Tag> => {
     const tagRepo = databaseManager.getRepository(Tag);
     const tag = await tagRepo.findOneBy({ id });
-    if (!tag) throw new Error('Tag not found');
+    if (!tag) {
+      throw new Error('Tag not found');
+    }
 
     if (!stringValidation(name, false, 50, 1)) {
       throw new Error('Tag name must be between 1 and 50 characters');
@@ -65,7 +67,9 @@ export const tagService = {
   removeTag: async (id: string): Promise<boolean> => {
     const tagRepo = databaseManager.getRepository(Tag);
     const tag = await tagRepo.findOneBy({ id });
-    if (!tag) throw new Error('Tag not found');
+    if (!tag) {
+      throw new Error('Tag not found');
+    }
 
     await tagRepo.remove(tag);
     return true;

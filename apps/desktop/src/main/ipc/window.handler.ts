@@ -1,4 +1,5 @@
-import { BrowserWindow, ipcMain, IpcMainInvokeEvent } from 'electron';
+import type { IpcMainInvokeEvent } from 'electron';
+import { BrowserWindow, ipcMain } from 'electron';
 import { windowService } from '../core/window/WindowService';
 import { eventService } from '../core/event-bus/EventService';
 import { AppEventType } from '@croffledev/shared';

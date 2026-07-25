@@ -16,7 +16,8 @@
     "**/build/**",
     "**/*.cjs",
     "**/coverage/**",
-    "packages/cli/templates/**"
+    "packages/cli/templates/**",
+    "packages/renderer/src/components/ui/**"
   ],
   "categories": {
     "correctness": "error",
@@ -38,7 +39,6 @@
     "typescript/array-type": "error",
     "typescript/consistent-indexed-object-style": "error",
     "typescript/consistent-type-assertions": "error",
-    "typescript/consistent-type-definitions": ["error", "type"],
     "typescript/consistent-type-imports": "error",
     "typescript/no-explicit-any": ["error", { "ignoreRestArgs": true }],
     "typescript/no-import-type-side-effects": "error",
@@ -58,18 +58,14 @@
     "import/no-mutable-exports": "error",
     "import/no-named-default": "error",
     "import/newline-after-import": ["error", { "count": 1 }],
-    "import/no-unresolved": "error",
-    "import/order": [
-      "error",
-      {
-        "newlines-between": "always"
-      }
-    ],
 
+    // Promise
+    "promise/always-return": "off",
     "promise/no-return-wrap": "error",
     "promise/param-names": "error",
-    "promise/no-nesting": "error",
     "promise/no-callback-in-promise": "error",
+    "promise/no-multiple-resolved": "off",
+    "promise/no-nesting": "error",
 
     // Unicorn
     "unicorn/consistent-empty-array-spread": "error",
@@ -91,7 +87,7 @@
     "unicorn/prefer-number-properties": "error",
     "unicorn/prefer-object-from-entries": "error",
     "unicorn/prefer-regexp-test": "warn",
-    "unicorn/prefer-ternary": "error",
+    "unicorn/require-module-specifiers": "off",
     "unicorn/throw-new-error": "error",
 
     // Vue
@@ -144,6 +140,20 @@
             "skipComments": true
           }
         ]
+      }
+    },
+    {
+      "files": ["packages/cli/**/*.ts"],
+      "rules": {
+        "no-console": "off",
+        "no-underscore-dangle": "off",
+        "no-unused-vars": "off"
+      }
+    },
+    {
+      "files": ["packages/types/**/*.d.ts"],
+      "rules": {
+        "max-lines": "off"
       }
     }
   ]

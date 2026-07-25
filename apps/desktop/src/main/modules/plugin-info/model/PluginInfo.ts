@@ -24,5 +24,5 @@ export class PluginInfo {
   main?: string;
 
   @Column({ type: 'simple-json', nullable: true })
-  features?: any;
+  features?: unknown;
 }

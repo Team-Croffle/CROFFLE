@@ -1,10 +1,11 @@
+// oxlint-disable-next-line import/no-unassigned-import
 import 'reflect-metadata';
 import { app, shell, BrowserWindow, protocol } from 'electron';
 import { AppSettingStartupBehavior } from '@croffledev/shared';
 import { autoUpdater } from 'electron-updater';
 import { databaseManager } from './core/database/DatabaseManager';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
-import { join } from 'path';
+import { join } from 'node:path';
 import { registerAllIpcHandlers } from './ipc';
 import { windowService } from './core/window/WindowService';
 import { settingService } from './modules/settings/service/SettingService';
@@ -109,7 +110,7 @@ if (!gotTheLock) {
     windowService.showWindow();
   });
 
-  app.whenReady().then(async () => {
+  app.whenReady().then(async (): Promise<void> => {
     logger.info('Main', 'Application is ready. Starting initialization...');
     // Set app user model id for windows
     electronApp.setAppUserModelId('kr.croffledev.croffle');
@@ -142,7 +143,9 @@ if (!gotTheLock) {
     app.on('activate', function () {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
-      if (BrowserWindow.getAllWindows().length === 0) createWindow();
+      if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow();
+      }
     });
   });
 

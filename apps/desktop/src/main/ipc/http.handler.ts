@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import { HttpResponse } from '@croffledev/croffle-types';
+import type { HttpResponse } from '@croffledev/croffle-types';
 import { httpService } from '../modules/http/service/HttpService';
 import { eventService } from '../core/event-bus/EventService';
 import { AppEventType } from '@croffledev/shared';
@@ -11,7 +11,7 @@ export const registerHttpIpcHandlers = (): void => {
       _,
       url: string,
       params?: Record<string, string>,
-      headers?: Record<string, string>
+      headers?: Record<string, string>,
     ): Promise<HttpResponse> => {
       if (!url || typeof url !== 'string') {
         throw new Error('[HTTP] Invalid URL.');
@@ -22,7 +22,7 @@ export const registerHttpIpcHandlers = (): void => {
       // Add app event emit
       eventService.emit(AppEventType.HTTP_SERVICE_GET, { url, params, headers, result });
       return result;
-    }
+    },
   );
 
   ipcMain.handle(
@@ -31,7 +31,7 @@ export const registerHttpIpcHandlers = (): void => {
       _,
       url: string,
       body?: unknown,
-      headers?: Record<string, string>
+      headers?: Record<string, string>,
     ): Promise<HttpResponse> => {
       if (!url || typeof url !== 'string') {
         throw new Error('[HTTP] Invalid URL.');
@@ -42,6 +42,6 @@ export const registerHttpIpcHandlers = (): void => {
       // Add app event emit
       eventService.emit(AppEventType.HTTP_SERVICE_POST, { url, body, headers, result });
       return result;
-    }
+    },
   );
 };

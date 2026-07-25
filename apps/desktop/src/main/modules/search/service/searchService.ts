@@ -1,7 +1,7 @@
 import { databaseManager } from '../../../core/database/DatabaseManager';
 import { Schedule } from '../../schedules/model/Schedule';
-import { Tag } from '../../tags/model/Tag';
-import { SearchQuery } from '@croffledev/croffle-types';
+import type { Tag } from '../../tags/model/Tag';
+import type { SearchQuery } from '@croffledev/croffle-types';
 
 export class SearchService {
   async searchSchedules(query: SearchQuery): Promise<Schedule[]> {

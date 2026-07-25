@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { searchService } from '../modules/search/service/searchService';
-import { SearchQuery } from '@croffledev/croffle-types';
+import type { SearchQuery } from '@croffledev/croffle-types';
 
 export function registerSearchIpcHandlers() {
   ipcMain.handle('search:search', async (_event, query: SearchQuery) => {

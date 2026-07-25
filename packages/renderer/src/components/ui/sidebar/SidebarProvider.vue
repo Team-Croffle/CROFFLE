@@ -22,7 +22,7 @@
     {
       defaultOpen: !defaultDocument?.cookie.includes(`${SIDEBAR_COOKIE_NAME}=false`),
       open: undefined,
-    }
+    },
   );
 
   const emits = defineEmits<{
@@ -86,7 +86,7 @@
       :class="
         cn(
           'group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full',
-          props.class
+          props.class,
         )
       "
       v-bind="$attrs"

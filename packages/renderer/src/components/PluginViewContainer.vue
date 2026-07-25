@@ -22,7 +22,7 @@
     () => props.viewId,
     () => {
       renderPlugin();
-    }
+    },
   );
 
   onBeforeUnmount(() => {

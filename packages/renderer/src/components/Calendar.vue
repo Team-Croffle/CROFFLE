@@ -29,15 +29,18 @@
   const fullCalendarRef = ref<InstanceType<typeof FullCalendar> | null>(null);
   const calendarContainerRef = ref<HTMLElement | null>(null);
 
-  const {
-    startResizeObserver,
-    stopResizeObserver,
-    handleDateDoubleClick,
-    handleEventDoubleClick,
-    getClickedDate,
-  } = useCalendarLogic();
+  const { startResizeObserver, stopResizeObserver, handleDateDoubleClick, handleEventDoubleClick } =
+    useCalendarLogic();
 
   let unsubscribeSettings: (() => void) | null = null;
+
+  const getClickedDate = (e: MouseEvent): string | null => {
+    // 클릭된 요소가 날짜인지 확인
+    const target = e.target as HTMLElement;
+    const dayCell = target.closest('.fc-daygrid-day');
+
+    return dayCell ? dayCell.getAttribute('data-date') : null;
+  };
 
   // 우클릭 핸들러
   const handleContextMenu = (e: MouseEvent) => {
@@ -88,7 +91,9 @@
       dateClick: (info) => handleDateDoubleClick(info.dateStr), // 날짜 클릭 핸들러
       eventClick: (info) => {
         const eventId = info.event.id;
-        if (!eventId) return;
+        if (!eventId) {
+          return;
+        }
         handleEventDoubleClick(eventId);
       },
       eventDidMount: (info) => {
@@ -131,7 +136,9 @@
     const api = fullCalendarRef.value?.getApi();
     const cal = settings.value?.calendar;
     const lang = settings.value?.general.language;
-    if (!cal) return;
+    if (!cal) {
+      return;
+    }
 
     const patch: Partial<CalendarOptions> = {
       locale: lang ? languageToLocale(lang) : 'ko',
@@ -184,7 +191,7 @@
     (newEvents) => {
       calendarOptions.events = newEvents;
     },
-    { immediate: true, deep: true } // 초기 로드 시에도 반영, 배열 내부 변경 감지
+    { immediate: true, deep: true }, // 초기 로드 시에도 반영, 배열 내부 변경 감지
   );
 </script>
 

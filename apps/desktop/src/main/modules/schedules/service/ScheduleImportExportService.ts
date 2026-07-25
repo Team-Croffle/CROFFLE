@@ -26,12 +26,17 @@ export class ScheduleImportExportService {
       defaultFileName: 'schedules.json',
     });
 
-    if (!filePath) return null;
+    if (!filePath) {
+      return null;
+    }
 
     const schedules = await scheduleService.getSchedules(
       period
         ? { start: new Date(period.start), end: new Date(period.end) }
-        : { start: new Date('1970-01-01T00:00:00.000Z'), end: new Date('2999-12-31T23:59:59.999Z') }
+        : {
+            start: new Date('1970-01-01T00:00:00.000Z'),
+            end: new Date('2999-12-31T23:59:59.999Z'),
+          },
     );
 
     const payload: ExportShapeV1 = {
@@ -47,10 +52,12 @@ export class ScheduleImportExportService {
   }
 
   async importScheduleFromFile(
-    mode: 'merge' | 'duplicate' = 'merge'
+    mode: 'merge' | 'duplicate' = 'merge',
   ): Promise<{ created: number; updated: number } | null> {
     const filePath = await fileDialogService.openJsonFile({ title: 'Import schedules' });
-    if (!filePath) return null;
+    if (!filePath) {
+      return null;
+    }
 
     const raw = await fs.readFile(filePath, 'utf-8');
     const parsed = JSON.parse(raw) as ExportShapeV1 | ScheduleInterface[];

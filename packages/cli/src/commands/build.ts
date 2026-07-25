@@ -1,12 +1,12 @@
 import { Command } from 'commander';
 import fs from 'fs-extra';
-import path from 'path';
+import path from 'node:path';
 import picocolors from 'picocolors';
-import { execSync } from 'child_process';
-import { fileURLToPath } from 'url';
+import { execSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename = import.meta.filename;
+const __dirname = import.meta.dirname;
 
 export const buildCommand = new Command('build')
   .description('Build the plugin using tsup')
@@ -22,15 +22,15 @@ export const buildCommand = new Command('build')
         console.log(picocolors.cyan('Using tsup to build...'));
         command = `npx tsup src/index.ts --format esm --clean ${options.watch ? '--watch' : ''}`;
       }
-      
+
       execSync(command, { stdio: 'inherit' });
-      
+
       // Also copy plugin.json to dist if exists
       if (fs.existsSync('plugin.json')) {
         fs.copyFileSync('plugin.json', 'dist/plugin.json');
         console.log(picocolors.green('plugin.json copied to dist/'));
       }
-      
+
       console.log(picocolors.green('✔ Build complete.'));
     } catch (error) {
       console.error(picocolors.red('Failed to build plugin:'), error);

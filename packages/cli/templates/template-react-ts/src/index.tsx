@@ -33,18 +33,18 @@ export function activated(context: PluginContext) {
     (element: HTMLElement | null) => {
       console.log('Context menu clicked!', element);
       alert('Hello from React Plugin!');
-    }
+    },
   );
 }
 
 export function deactivated() {
   console.log('React Plugin has been deactivated!');
-  
+
   if (viewRoot) {
     viewRoot.unmount();
     viewRoot = null;
   }
-  
+
   if (settingsRoot) {
     settingsRoot.unmount();
     settingsRoot = null;

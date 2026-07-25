@@ -17,7 +17,7 @@
         'mb-3 font-medium',
         'data-[variant=legend]:text-base',
         'data-[variant=label]:text-sm',
-        props.class
+        props.class,
       )
     "
   >

@@ -1,4 +1,4 @@
-export interface UpdateInfo {
+export type UpdateInfo = {
   version: string;
   releaseNotes: string;
-}
+};

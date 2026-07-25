@@ -57,7 +57,7 @@ export function activated(context: PluginContext) {
     (element: HTMLElement | null) => {
       console.log('Context menu clicked!', element);
       alert('Hello from Vanilla Plugin!');
-    }
+    },
   );
 }
 

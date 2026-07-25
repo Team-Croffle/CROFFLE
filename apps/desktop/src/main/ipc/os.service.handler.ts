@@ -33,6 +33,6 @@ export const registerOsIpcHandlers = (): void => {
 
       // Add app event emit
       eventService.emit(AppEventType.NATIVE_OS_CLIPBOARD_SET, data);
-    }
+    },
   );
 };

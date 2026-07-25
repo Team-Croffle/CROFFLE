@@ -23,7 +23,7 @@
     () => props.panelKey,
     () => {
       renderPanel();
-    }
+    },
   );
 
   onBeforeUnmount(() => {

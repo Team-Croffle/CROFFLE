@@ -9,7 +9,9 @@ export class FileDialogService {
       filters: [{ name: 'JSON', extensions: ['json'] }],
     });
 
-    if (result.canceled || result.filePaths.length === 0) return null;
+    if (result.canceled || result.filePaths.length === 0) {
+      return null;
+    }
     return result.filePaths[0];
   }
 
@@ -23,7 +25,9 @@ export class FileDialogService {
       filters: [{ name: 'JSON', extensions: ['json'] }],
     });
 
-    if (result.canceled || !result.filePath) return null;
+    if (result.canceled || !result.filePath) {
+      return null;
+    }
     return result.filePath;
   }
 }

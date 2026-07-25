@@ -2,6 +2,7 @@ import type { Schedule } from '@croffledev/croffle-types';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import dayjs from 'dayjs';
+import { toast } from 'vue-sonner';
 
 export const useScheduleStore = defineStore('schedule', () => {
   // 더미 데이터 사용
@@ -85,7 +86,7 @@ export const useScheduleStore = defineStore('schedule', () => {
       const result = await croffle.base.schedules.getAll({ start, end });
       schedules.value = result;
     } catch (error) {
-      console.error('일정 불러오기 실패:', error);
+      toast.error(`일정 불러오기 실패: ${JSON.stringify(error)}`);
     }
   };
 

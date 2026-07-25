@@ -1,12 +1,8 @@
-import EventEmitter from 'events';
+import EventEmitter from 'node:events';
 import { BrowserWindow } from 'electron';
 import { logger } from '../logger/loggerService';
 
 class EventService extends EventEmitter {
-  constructor() {
-    super();
-  }
-
   /**
    * Emit and event, and broadcast to all renderer processes (windows)
    * @param eventName Event name
@@ -25,7 +21,7 @@ class EventService extends EventEmitter {
         } catch (err) {
           logger.info(
             'EventService',
-            `Failed to send event ${eventName} to window ${win.id}: ${err}`
+            `Failed to send event ${eventName} to window ${win.id}: ${err}`,
           );
         }
       }

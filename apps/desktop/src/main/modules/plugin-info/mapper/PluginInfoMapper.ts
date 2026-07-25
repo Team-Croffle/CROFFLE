@@ -1,5 +1,5 @@
 import { PluginInfo as PluginInfoEntity } from '../model/PluginInfo';
-import { PluginInfo } from '@croffledev/croffle-types';
+import type { PluginInfo } from '@croffledev/croffle-types';
 
 export const PluginInfoMapper = {
   toInterface(entity: PluginInfoEntity): PluginInfo {

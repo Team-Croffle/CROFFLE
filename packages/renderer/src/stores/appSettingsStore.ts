@@ -1,19 +1,18 @@
 import type { AppSettings } from '@croffledev/croffle-types';
-import { AppSettingTheme } from '@croffledev/shared';
+import { type AppSettingTheme, AppEventType } from '@croffledev/shared';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useThemeStore } from './themeStore';
-import { AppEventType } from '@croffledev/shared';
+
+const applyToUi = (value: AppSettings) => {
+  const themeStore = useThemeStore();
+  themeStore.applyFromSettings(value.general.theme);
+};
 
 export const useAppSettingsStore = defineStore('appSettings', () => {
   const settings = ref<AppSettings | null>(null);
   const isReady = ref(false);
   let unsubscribe: (() => void) | null = null;
-
-  const applyToUi = (value: AppSettings) => {
-    const themeStore = useThemeStore();
-    themeStore.applyFromSettings(value.general.theme);
-  };
 
   const load = async () => {
     const loaded = await croffle.base.settings.getAll();
@@ -38,7 +37,9 @@ export const useAppSettingsStore = defineStore('appSettings', () => {
   };
 
   const setThemeDraft = (theme: AppSettingTheme) => {
-    if (!settings.value) return;
+    if (!settings.value) {
+      return;
+    }
     settings.value.general.theme = theme;
     useThemeStore().applyFromSettings(theme);
   };

@@ -3,8 +3,12 @@ import { defineStore } from 'pinia';
 import { onMounted, ref } from 'vue';
 
 const resolveIsDark = (theme: AppSettingTheme): boolean => {
-  if (theme === AppSettingTheme.DARK) return true;
-  if (theme === AppSettingTheme.LIGHT) return false;
+  if (theme === AppSettingTheme.DARK) {
+    return true;
+  }
+  if (theme === AppSettingTheme.LIGHT) {
+    return false;
+  }
   return window.matchMedia('(prefers-color-scheme: dark)').matches;
 };
 

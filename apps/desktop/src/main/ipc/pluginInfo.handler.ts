@@ -1,6 +1,6 @@
 import { ipcMain, dialog } from 'electron';
 import { pluginInfoService } from '../modules/plugin-info/service/PluginInfoService';
-import { PluginInfo } from '@croffledev/croffle-types';
+import type { PluginInfo } from '@croffledev/croffle-types';
 import { validatePluginName } from '../modules/helper/pluginValidator';
 import { PluginInfoMapper } from '../modules/plugin-info/mapper/PluginInfoMapper';
 import { eventService } from '../core/event-bus/EventService';
@@ -36,7 +36,7 @@ export const registerPluginInfoIpcHandlers = (): void => {
       eventService.emit(AppEventType.PLUGIN_INFO_GET_BY_NAME, entity);
 
       return entity ? PluginInfoMapper.toInterface(entity) : null;
-    }
+    },
   );
 
   ipcMain.handle(
@@ -52,30 +52,27 @@ export const registerPluginInfoIpcHandlers = (): void => {
       eventService.emit(AppEventType.PLUGIN_INFO_INSTALL, entity);
 
       return PluginInfoMapper.toInterface(entity);
-    }
+    },
   );
 
-  ipcMain.handle(
-    'pluginInfo:installFromLocal',
-    async (): Promise<PluginInfo | null> => {
-      const result = await dialog.showOpenDialog({
-        title: '로컬 플러그인 설치 (Zip 파일 선택)',
-        filters: [{ name: 'Zip Files', extensions: ['zip'] }],
-        properties: ['openFile'],
-      });
+  ipcMain.handle('pluginInfo:installFromLocal', async (): Promise<PluginInfo | null> => {
+    const result = await dialog.showOpenDialog({
+      title: '로컬 플러그인 설치 (Zip 파일 선택)',
+      filters: [{ name: 'Zip Files', extensions: ['zip'] }],
+      properties: ['openFile'],
+    });
 
-      if (result.canceled || result.filePaths.length === 0) {
-        return null;
-      }
-
-      const entity = await pluginManager.installFromLocalZip(result.filePaths[0]);
-
-      // Add app event emit
-      eventService.emit(AppEventType.PLUGIN_INFO_INSTALL, entity);
-
-      return PluginInfoMapper.toInterface(entity);
+    if (result.canceled || result.filePaths.length === 0) {
+      return null;
     }
-  );
+
+    const entity = await pluginManager.installFromLocalZip(result.filePaths[0]);
+
+    // Add app event emit
+    eventService.emit(AppEventType.PLUGIN_INFO_INSTALL, entity);
+
+    return PluginInfoMapper.toInterface(entity);
+  });
 
   ipcMain.handle(
     'pluginInfo:togglePlugin',
@@ -91,7 +88,7 @@ export const registerPluginInfoIpcHandlers = (): void => {
       eventService.emit(AppEventType.PLUGIN_INFO_TOGGLE, entity);
 
       return entity ? PluginInfoMapper.toInterface(entity) : null;
-    }
+    },
   );
 
   ipcMain.handle('pluginInfo:uninstallPlugin', async (_, name: string): Promise<boolean> => {
