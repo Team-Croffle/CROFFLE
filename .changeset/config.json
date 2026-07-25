@@ -7,10 +7,5 @@
   "access": "public",
   "baseBranch": "master",
   "updateInternalDependencies": "patch",
-  "ignore": [
-    "@croffledev/croffle",
-    "@croffledev/desktop",
-    "@croffledev/renderer",
-    "@croffledev/shared"
-  ]
+  "ignore": ["@croffledev/desktop", "@croffledev/renderer", "@croffledev/shared"]
 }
