@@ -80,7 +80,7 @@ export const registerExtensionInfoIpcHandlers = (): void => {
 
   ipcMain.handle('extensionInfo:uninstallExtension', async (_, name: string): Promise<boolean> => {
     validateExtensionId(name);
-    const result = await extensionInfoService.uninstallExtension(name);
+    const result = await extensionManager.uninstallExtension(name);
     if (result) {
       eventService.emit(AppEventType.EXTENSION_INFO_UNINSTALL, name);
     }
