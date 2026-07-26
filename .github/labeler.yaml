@@ -1,19 +1,69 @@
+# Used by actions/labeler (see .github/workflows/labeler.yml).
+# Label names must exist in the repo, or the workflow needs `issues: write` to create them.
+
+# --- Packages / areas ---
+desktop:
+  - changed-files:
+      - any-glob-to-any-file:
+          - apps/desktop/**
+
+desktop-main:
+  - changed-files:
+      - any-glob-to-any-file:
+          - apps/desktop/src/main/**
+
+desktop-preload:
+  - changed-files:
+      - any-glob-to-any-file:
+          - apps/desktop/src/preload/**
+
+desktop-renderer:
+  - changed-files:
+      - any-glob-to-any-file:
+          - apps/desktop/src/renderer/**
+
+types:
+  - changed-files:
+      - any-glob-to-any-file:
+          - packages/types/**
+
+cli:
+  - changed-files:
+      - any-glob-to-any-file:
+          - packages/cli/**
+
+# --- Cross-cutting ---
 documentation:
   - changed-files:
       - any-glob-to-any-file:
-          - readme.md
-          - CONTRIBUTING.md
-          - CODE_OF_CONDUCT.md
-          - SECURITY.md
+          - '**/*.md'
+          - docs/**
 
 dependencies:
   - changed-files:
       - any-glob-to-any-file:
-          - package.json
-          - package-lock.json
+          - '**/package.json'
+          - pnpm-lock.yaml
+          - pnpm-workspace.yaml
 
 ci:
   - changed-files:
       - any-glob-to-any-file:
-          - .github/workflows/*
-          - scripts/*
+          - .github/workflows/**
+          - .github/labeler.yaml
+          - .github/CODEOWNERS
+
+# --- Branch name hints (optional) ---
+feature:
+  - head-branch:
+      - '^feat'
+      - '^feature'
+
+bug:
+  - head-branch:
+      - '^fix'
+      - '^bug'
+
+refactor:
+  - head-branch:
+      - '^refactor'

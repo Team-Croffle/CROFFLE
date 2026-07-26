@@ -1,10 +1,1 @@
 * @bluenyang
-
-package.json @bluenyang @sejung2
-package-lock.json @bluenyang @sejung2
-
-/resources  @bluenyang @sejung2
-/src/main @bluenyang
-/src/preload @bluenyang
-/src/renderer @sejung2 @dudadab
-/src/shared @bluenyang @sejung2 @dudadab
