@@ -33,7 +33,7 @@ export const extensionConfigurationApi = {
     extensionId: string,
     storageKey = DEFAULT_STORAGE_KEY,
   ): Promise<T> => {
-    const raw = await ipcRenderer.invoke('app:storage:get', { extensionId, key: storageKey });
+    const raw = await ipcRenderer.invoke('extensionStorage:get', { extensionId, key: storageKey });
     return coerceConfigurationValue<T>(raw);
   },
   set: async (
@@ -41,7 +41,7 @@ export const extensionConfigurationApi = {
     values: Record<string, unknown>,
     storageKey = DEFAULT_STORAGE_KEY,
   ): Promise<void> => {
-    await ipcRenderer.invoke('app:storage:set', {
+    await ipcRenderer.invoke('extensionStorage:set', {
       extensionId,
       key: storageKey,
       value: values,

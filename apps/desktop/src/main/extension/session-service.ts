@@ -19,7 +19,7 @@ export function getStore(
 export function setItem(extensionId: string, key: string, value: unknown): void {
   const store = getStore(extensionId, true)!;
   store.set(key, value);
-  logger.info('PluginSession', `Set: [${extensionId}] ${key}`);
+  logger.info('ExtensionSession', `Set: [${extensionId}] ${key}`);
 }
 
 export function getItem<T = unknown>(extensionId: string, key: string): T | null {
@@ -40,7 +40,7 @@ export function deleteItem(extensionId: string, key: string): boolean {
   }
   const result = store.delete(key);
   if (result) {
-    logger.info('PluginSession', `Delete: [${extensionId}] ${key}`);
+    logger.info('ExtensionSession', `Delete: [${extensionId}] ${key}`);
   }
   return result;
 }
@@ -48,11 +48,12 @@ export function deleteItem(extensionId: string, key: string): boolean {
 export function clearItem(extensionId: string): void {
   if (storage.has(extensionId)) {
     storage.delete(extensionId);
-    logger.info('PluginSession', `Cleared: [${extensionId}]`);
+    logger.info('ExtensionSession', `Cleared: [${extensionId}]`);
   }
 }
 
+/** Host-only helper (not exposed via preload). */
 export function clearAllItems(): void {
   storage.clear();
-  logger.info('PluginSession', `Cleared all plugin sessions`);
+  logger.info('ExtensionSession', 'Cleared all extension sessions');
 }
