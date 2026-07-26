@@ -19,6 +19,7 @@ declare global {
   };
 
   interface Window {
+    electron: ElectronAPI;
     readonly croffle: typeof croffle;
   }
 }
