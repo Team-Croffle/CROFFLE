@@ -6,7 +6,7 @@ import { eventService } from '../event-bus/event-service';
 import { extensionInfoService } from '../extension/info-service';
 import { extensionManager } from '../extension/manager';
 import { extensionInfoMapper } from '../mapper/extension-info-mapper';
-import { validatePluginName } from '../utils/extension-validator';
+import { validateExtensionId } from '../utils/extension-validator';
 
 export const registerExtensionInfoIpcHandlers = (): void => {
   ipcMain.handle('extensionInfo:getInstalledExtensions', async (): Promise<ExtensionInfo[]> => {
@@ -30,7 +30,7 @@ export const registerExtensionInfoIpcHandlers = (): void => {
   ipcMain.handle(
     'extensionInfo:getExtensionByName',
     async (_, name: string): Promise<ExtensionInfo | null> => {
-      validatePluginName(name);
+      validateExtensionId(name);
       const entity = await extensionInfoService.getExtensionByName(name);
 
       // Add app event emit
@@ -44,7 +44,7 @@ export const registerExtensionInfoIpcHandlers = (): void => {
     'extensionInfo:installExtension',
     async (_, pluginData: Partial<ExtensionInfo>): Promise<ExtensionInfo> => {
       if (!pluginData.id) {
-        throw new Error('[ExtensionInfo] Invalid plugin id (GitHub URL) provided.');
+        throw new Error('[ExtensionInfo] Invalid extension id (GitHub URL) provided.');
       }
 
       const entity = await extensionManager.installFromGitHub(pluginData.id);
@@ -58,7 +58,7 @@ export const registerExtensionInfoIpcHandlers = (): void => {
 
   ipcMain.handle('extensionInfo:installFromLocal', async (): Promise<ExtensionInfo | null> => {
     const result = await dialog.showOpenDialog({
-      title: '로컬 플러그인 설치 (Zip 파일 선택)',
+      title: '로컬 확장 설치 (Zip 파일 선택)',
       filters: [{ name: 'Zip Files', extensions: ['zip'] }],
       properties: ['openFile'],
     });
@@ -78,7 +78,7 @@ export const registerExtensionInfoIpcHandlers = (): void => {
   ipcMain.handle(
     'extensionInfo:toggleExtension',
     async (_, name: string, enable: boolean): Promise<ExtensionInfo | null> => {
-      validatePluginName(name);
+      validateExtensionId(name);
       if (typeof enable !== 'boolean') {
         throw new Error('[ExtensionInfo] Invalid enable value provided.');
       }
@@ -93,7 +93,7 @@ export const registerExtensionInfoIpcHandlers = (): void => {
   );
 
   ipcMain.handle('extensionInfo:uninstallExtension', async (_, name: string): Promise<boolean> => {
-    validatePluginName(name);
+    validateExtensionId(name);
     const result = await extensionInfoService.uninstallExtension(name);
 
     // Add app event emit

@@ -24,5 +24,8 @@ export class ExtensionInfo {
   main?: string;
 
   @Column({ type: 'simple-json', nullable: true })
-  features?: unknown;
+  engines?: unknown;
+
+  @Column({ type: 'simple-json', nullable: true })
+  contributes?: unknown;
 }

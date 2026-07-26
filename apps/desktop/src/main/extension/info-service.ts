@@ -32,26 +32,31 @@ export const extensionInfoService = {
     });
   },
 
-  installExtension: async (pluginData: Partial<ExtensionInfo>): Promise<ExtensionInfo> => {
+  installExtension: async (data: Partial<ExtensionInfo>): Promise<ExtensionInfo> => {
     const repo = databaseManager.getRepository(ExtensionInfo);
 
-    const existing = await repo.findOne({ where: { name: pluginData.name! } });
-    if (existing) {
-      throw new Error(`Plugin with name "${pluginData.name}" is already installed.`);
+    const existingById = await repo.findOne({ where: { id: data.id! } });
+    if (existingById) {
+      Object.assign(existingById, data);
+      return repo.save(existingById);
     }
 
-    const plugin = repo.create(pluginData);
-    return repo.save(plugin);
+    const existingByName = await repo.findOne({ where: { name: data.name! } });
+    if (existingByName) {
+      throw new Error(`Extension with name "${data.name}" is already installed.`);
+    }
+
+    return repo.save(repo.create(data));
   },
 
   toggleExtension: async (id: string, enable: boolean): Promise<ExtensionInfo | null> => {
     const repo = databaseManager.getRepository(ExtensionInfo);
-    const plugin = await repo.findOne({ where: { id } });
-    if (!plugin) {
-      throw new Error(`Plugin "${id}" not found.`);
+    const row = await repo.findOne({ where: { id } });
+    if (!row) {
+      throw new Error(`Extension "${id}" not found.`);
     }
-    plugin.enabled = enable;
-    return repo.save(plugin);
+    row.enabled = enable;
+    return repo.save(row);
   },
 
   uninstallExtension: async (id: string): Promise<boolean> => {

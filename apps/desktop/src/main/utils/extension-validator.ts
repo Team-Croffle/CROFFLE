@@ -1,25 +1,12 @@
 import type { ExtensionInfo } from '@croffledev/croffle-types';
 
-/**
- * Validates the plugin data before installation.
- * @param data Partial plugin info data to validate before installation.
- * @throws Error if validation fails.
- */
-export const validatePluginInstallation = (data: Partial<ExtensionInfo>): void => {
-  if (!data.name) {
-    throw new Error('[ExtensionInfo] Plugin name is required for installation.');
+export const validateExtensionInstallation = (data: Partial<ExtensionInfo>): void => {
+  if (!data.name || typeof data.name !== 'string' || data.name.trim().length === 0) {
+    throw new Error('[ExtensionInfo] Extension name is required for installation.');
   }
 
-  if (!data.version) {
-    throw new Error('[ExtensionInfo] Plugin version is required for installation.');
-  }
-
-  if (typeof data.name !== 'string' || data.name.trim().length === 0) {
-    throw new Error('[ExtensionInfo] Invalid plugin name provided.');
-  }
-
-  if (typeof data.version !== 'string') {
-    throw new Error('[ExtensionInfo] Invalid plugin version provided.');
+  if (!data.version || typeof data.version !== 'string') {
+    throw new Error('[ExtensionInfo] Extension version is required for installation.');
   }
 
   if (data.author !== undefined && typeof data.author !== 'string') {
@@ -35,15 +22,9 @@ export const validatePluginInstallation = (data: Partial<ExtensionInfo>): void =
   }
 };
 
-/**
- * Validates the parameters for toggling a plugin's enabled status.
- * @param name Name of the plugin to toggle.
- * @param enable Boolean indicating whether to enable or disable the plugin.
- * @throws Error if validation fails.
- */
-export const validatePluginToggle = (name: unknown, enable: unknown): void => {
+export const validateExtensionToggle = (name: unknown, enable: unknown): void => {
   if (typeof name !== 'string' || name.trim().length === 0) {
-    throw new Error('[ExtensionInfo] Invalid plugin name provided for toggle.');
+    throw new Error('[ExtensionInfo] Invalid extension id provided for toggle.');
   }
 
   if (typeof enable !== 'boolean') {
@@ -51,13 +32,8 @@ export const validatePluginToggle = (name: unknown, enable: unknown): void => {
   }
 };
 
-/**
- * Validates the plugin name.
- * @param name Name of the plugin to validate.
- * @throws Error if the plugin name is invalid.
- */
-export const validatePluginName = (name: unknown): void => {
-  if (typeof name !== 'string' || name.trim().length === 0) {
-    throw new Error('[ExtensionInfo] Invalid plugin name provided.');
+export const validateExtensionId = (id: unknown): void => {
+  if (typeof id !== 'string' || id.trim().length === 0) {
+    throw new Error('[ExtensionInfo] Invalid extension id provided.');
   }
 };
