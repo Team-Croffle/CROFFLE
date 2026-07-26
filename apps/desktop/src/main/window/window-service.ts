@@ -5,7 +5,7 @@ import { autoUpdater } from 'electron-updater';
 import { eventService } from '../event-bus/event-service';
 import { AppEventType } from '@croffledev/shared';
 import { settingService } from '../setting/setting-service';
-import icon from '../../../../resources/Logo2OnlyNoBorderIcon.png?asset';
+import icon from '../../../resources/Logo2OnlyNoBorderIcon.png?asset';
 import { logger } from '../logger';
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
 import path from 'node:path';

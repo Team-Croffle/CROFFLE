@@ -5,11 +5,13 @@
 
   const props = defineProps<{
     class?: HTMLAttributes['class'];
-    errors?: Array<{ message?: string } | undefined>;
+    errors?: ({ message?: string } | undefined)[];
   }>();
 
   const content = computed(() => {
-    if (!props.errors || props.errors.length === 0) return null;
+    if (!props.errors || props.errors.length === 0) {
+      return null;
+    }
 
     if (props.errors.length === 1 && props.errors[0]?.message) {
       return props.errors[0].message;
