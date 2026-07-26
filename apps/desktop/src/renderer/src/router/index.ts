@@ -1,6 +1,7 @@
+import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-router';
+
 import Calendar from '@/components/Calendar.vue';
 import PluginRoute from '@/components/PluginRoute.vue';
-import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
   {

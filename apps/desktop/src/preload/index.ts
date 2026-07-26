@@ -1,19 +1,20 @@
-import { contextBridge } from 'electron';
-import { electronAPI } from '@electron-toolkit/preload';
 import * as Enums from '@croffledev/shared';
+import { electronAPI } from '@electron-toolkit/preload';
+import { contextBridge } from 'electron';
+
+import { logger } from '../main/logger';
 import { eventApi } from './api/event.api';
 import { httpApi } from './api/http.api';
 import { osApi } from './api/os.api';
 import { pluginInfoApi } from './api/pluginInfo.api';
 import { pluginSessionApi } from './api/pluginSession.api';
+import { pluginSettingsApi } from './api/pluginSettings.api';
 import { pluginStorageApi } from './api/pluginStorage.api';
 import { scheduleApi } from './api/schedule.api';
+import { searchApi } from './api/search.api';
 import { settingsApi } from './api/settings.api';
-import { pluginSettingsApi } from './api/pluginSettings.api';
 import { tagApi } from './api/tag.api';
 import { windowApi } from './api/window.api';
-import { searchApi } from './api/search.api';
-import { logger } from '../main/logger';
 
 // Custom APIs for renderer
 const api = {

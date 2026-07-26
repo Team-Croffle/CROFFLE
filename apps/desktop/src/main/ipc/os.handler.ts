@@ -1,9 +1,10 @@
-import { ipcMain } from 'electron';
-import { showNotification } from '../window/os-notification';
-import { getClipboard, setClipboard } from '../window/clipboard';
 import type { ClipboardResult } from '@croffledev/croffle-types';
-import { eventService } from '../event-bus/event-service';
 import { AppEventType } from '@croffledev/shared';
+import { ipcMain } from 'electron';
+
+import { eventService } from '../event-bus/event-service';
+import { getClipboard, setClipboard } from '../window/clipboard';
+import { showNotification } from '../window/os-notification';
 
 export const registerOsIpcHandlers = (): void => {
   // 1. 알림

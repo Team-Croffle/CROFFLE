@@ -1,10 +1,11 @@
-import { Command } from 'commander';
-import prompts from 'prompts';
-import fs from 'fs-extra';
-import path from 'node:path';
-import picocolors from 'picocolors';
-import { fileURLToPath } from 'node:url';
 import { execSync } from 'node:child_process';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import { Command } from 'commander';
+import fs from 'fs-extra';
+import picocolors from 'picocolors';
+import prompts from 'prompts';
 
 const __filename = import.meta.filename;
 const __dirname = import.meta.dirname;

@@ -1,7 +1,8 @@
-import { ipcMain } from 'electron';
-import { get, set } from '../plugin/storage';
-import { eventService } from '../event-bus/event-service';
 import { AppEventType } from '@croffledev/shared';
+import { ipcMain } from 'electron';
+
+import { eventService } from '../event-bus/event-service';
+import { get, set } from '../plugin/storage';
 
 export const registerPluginStorageIpcHandlers = () => {
   ipcMain.handle('app:storage:get', async (_, { pluginId, key }) => {

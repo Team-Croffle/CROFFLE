@@ -1,5 +1,5 @@
-import { ipcRenderer } from 'electron';
 import type { http } from '@croffledev/croffle-types';
+import { ipcRenderer } from 'electron';
 
 type HttpApi = typeof http;
 

@@ -1,12 +1,14 @@
+import * as path from 'node:path';
+
+import { app } from 'electron';
 import type { ObjectLiteral, Repository } from 'typeorm';
 import { DataSource } from 'typeorm';
-import * as path from 'node:path';
-import { app } from 'electron';
-import { Tag } from './schema/tag.entity';
-import { Schedule } from './schema/schedule.entity';
+
+import { logger } from '../logger';
 import { PluginInfo } from './schema/plugin-info.entity';
 import { PluginStorage } from './schema/plugin-storage.entity';
-import { logger } from '../logger';
+import { Schedule } from './schema/schedule.entity';
+import { Tag } from './schema/tag.entity';
 
 class DatabaseManager {
   private dataSource: DataSource;

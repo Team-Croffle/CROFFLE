@@ -1,31 +1,33 @@
 <script setup lang="ts">
-  import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
-  import { Toaster } from '@/components/ui/sonner';
   import { Minus, Moon, PanelLeft, Square, Sun, X } from 'lucide-vue-next';
-  import LeftSidebar from './components/LeftSidebar.vue';
-  import RightSidebar from './components/RightSidebar.vue';
-  import SettingsModal from './components/SettingsModal.vue';
-  import Button from './components/ui/button/Button.vue';
-  import { useUiStore } from './stores/uiStore';
+  import { ref, onMounted, onUnmounted } from 'vue';
+
   import {
     ContextMenu,
     ContextMenuTrigger,
     ContextMenuContent,
     ContextMenuItem,
   } from '@/components/ui/context-menu';
-  import { useContextMenuStore } from './stores/contextMenuStore';
-  import { ref, onMounted, onUnmounted } from 'vue';
-  import { useViewStore } from './stores/viewStore';
-  import { useSettingsStore } from './stores/settingsStore';
-  import { defaultMenus } from './data/defaultContextMenus';
-  import { Separator } from './components/ui/separator';
-  import { useThemeStore } from './stores/themeStore';
-  import { useAppSettingsStore } from './stores/appSettingsStore';
-  import { useUpdateStore } from './stores/updateStore';
-  import router from './router';
+  import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
+  import { Toaster } from '@/components/ui/sonner';
+
+  import LeftSidebar from './components/LeftSidebar.vue';
+  import RightSidebar from './components/RightSidebar.vue';
+  import SettingsModal from './components/SettingsModal.vue';
   import Todosheet from './components/Todosheet.vue';
-  import { pluginLoader } from './services/PluginLoader';
+  import Button from './components/ui/button/Button.vue';
+  import { Separator } from './components/ui/separator';
   import UpdateModal from './components/UpdateModal.vue';
+  import { defaultMenus } from './data/defaultContextMenus';
+  import router from './router';
+  import { pluginLoader } from './services/PluginLoader';
+  import { useAppSettingsStore } from './stores/appSettingsStore';
+  import { useContextMenuStore } from './stores/contextMenuStore';
+  import { useSettingsStore } from './stores/settingsStore';
+  import { useThemeStore } from './stores/themeStore';
+  import { useUiStore } from './stores/uiStore';
+  import { useUpdateStore } from './stores/updateStore';
+  import { useViewStore } from './stores/viewStore';
   // import { mockPluginsList } from './test/testPluginMenu';
 
   const uiStore = useUiStore();

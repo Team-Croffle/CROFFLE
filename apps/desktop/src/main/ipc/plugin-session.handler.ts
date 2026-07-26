@@ -1,8 +1,9 @@
-import { ipcMain } from 'electron';
-import { getItem, setItem, deleteItem, clearItem, clearAllItems } from '../plugin/session-service';
-import { eventService } from '../event-bus/event-service';
 import { AppEventType } from '@croffledev/shared';
+import { ipcMain } from 'electron';
+
+import { eventService } from '../event-bus/event-service';
 import { logger } from '../logger';
+import { getItem, setItem, deleteItem, clearItem, clearAllItems } from '../plugin/session-service';
 
 const validateArgs = (
   payload: unknown,

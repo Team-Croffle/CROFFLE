@@ -1,7 +1,11 @@
 <script setup lang="ts">
+  import type { FeatureView } from '@croffledev/croffle-types';
+  import { Bell, CircleHelp, Settings, Puzzle } from 'lucide-vue-next';
+  import { storeToRefs } from 'pinia';
   import { ref, computed } from 'vue';
-  import { DEFAULT_MENU_ITEMS } from '@/data/defaultMenus';
-  import { useViewStore } from '@/stores/viewStore';
+  import { useRoute } from 'vue-router';
+
+  import logoImg from '@/assets/Logo2Only.png';
   import {
     Sidebar,
     SidebarContent,
@@ -13,13 +17,11 @@
     SidebarGroup,
     SidebarGroupContent,
   } from '@/components/ui/sidebar';
-  import { Bell, CircleHelp, Settings, Puzzle } from 'lucide-vue-next';
-  import logoImg from '@/assets/Logo2Only.png';
-  import { storeToRefs } from 'pinia';
+  import { DEFAULT_MENU_ITEMS } from '@/data/defaultMenus';
   import { useUiStore } from '@/stores/uiStore';
+  import { useViewStore } from '@/stores/viewStore';
+
   import HelpModal from './HelpModal.vue';
-  import { useRoute } from 'vue-router';
-  import type { FeatureView } from '@croffledev/croffle-types';
   // import { testMockPlugin } from '@/test/testPluginMenu';
 
   const uiStore = useUiStore();

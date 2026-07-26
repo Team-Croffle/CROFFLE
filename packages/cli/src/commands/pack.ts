@@ -1,8 +1,9 @@
+import path from 'node:path';
+
+import AdmZip from 'adm-zip';
 import { Command } from 'commander';
 import fs from 'fs-extra';
-import path from 'node:path';
 import picocolors from 'picocolors';
-import AdmZip from 'adm-zip';
 
 export const packCommand = new Command('pack')
   .description('Package the built plugin into a .zip file')

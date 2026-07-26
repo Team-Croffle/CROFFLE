@@ -1,4 +1,5 @@
 import type { PluginContext } from '@croffledev/croffle-types';
+
 import './style.css'; // We will create this
 
 export function activated(context: PluginContext) {

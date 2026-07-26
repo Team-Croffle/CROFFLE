@@ -1,5 +1,6 @@
-import { PluginInfo as PluginInfoEntity } from '../database/schema/plugin-info.entity';
 import type { PluginInfo as PluginInfoInterface } from '@croffledev/croffle-types';
+
+import { PluginInfo as PluginInfoEntity } from '../database/schema/plugin-info.entity';
 
 export const pluginInfoMapper = {
   toInterface(entity: PluginInfoEntity): PluginInfoInterface {

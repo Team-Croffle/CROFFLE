@@ -1,5 +1,13 @@
 <script setup lang="ts">
-  import { ref, onMounted, watch, computed } from 'vue';
+  import type { SettingsTabContribution, AppSettings, PluginInfo } from '@croffledev/croffle-types';
+  import {
+    AppSettingLanguage,
+    AppSettingStartupBehavior,
+    AppSettingTheme,
+    CalendarTimeFormat,
+    CalendarView,
+    CalendarWeekStartDay,
+  } from '@croffledev/shared';
   import {
     Settings,
     Bell,
@@ -10,20 +18,12 @@
     Download,
     Loader2,
   } from 'lucide-vue-next';
-  import {
-    AppSettingLanguage,
-    AppSettingStartupBehavior,
-    AppSettingTheme,
-    CalendarTimeFormat,
-    CalendarView,
-    CalendarWeekStartDay,
-  } from '@croffledev/shared';
-  import { useAppSettingsStore } from '@/stores/appSettingsStore';
-  import { useSettingsStore } from '@/stores/settingsStore';
-  import SettingsExtensionPanel from '@/components/settings/SettingsExtensionPanel.vue';
+  import { ref, onMounted, watch, computed } from 'vue';
+  import { toast } from 'vue-sonner';
+
   import ConfigSchemaForm from '@/components/settings/ConfigSchemaForm.vue';
-  import { mergeWithSchemaDefaults } from '@/utils/pluginSettingsSchema';
-  import type { SettingsTabContribution, AppSettings, PluginInfo } from '@croffledev/croffle-types';
+  import SettingsExtensionPanel from '@/components/settings/SettingsExtensionPanel.vue';
+  import { Button } from '@/components/ui/button';
   import {
     Dialog,
     DialogContent,
@@ -31,7 +31,6 @@
     DialogTitle,
     DialogDescription,
   } from '@/components/ui/dialog';
-  import { Button } from '@/components/ui/button';
   import { Label } from '@/components/ui/label';
   import {
     Select,
@@ -40,11 +39,12 @@
     SelectContent,
     SelectItem,
   } from '@/components/ui/select';
-  import { Switch } from '@/components/ui/switch';
-
   import { Separator } from '@/components/ui/separator';
+  import { Switch } from '@/components/ui/switch';
   import { pluginLoader } from '@/services/PluginLoader';
-  import { toast } from 'vue-sonner';
+  import { useAppSettingsStore } from '@/stores/appSettingsStore';
+  import { useSettingsStore } from '@/stores/settingsStore';
+  import { mergeWithSchemaDefaults } from '@/utils/pluginSettingsSchema';
 
   type Props = {
     open: boolean;

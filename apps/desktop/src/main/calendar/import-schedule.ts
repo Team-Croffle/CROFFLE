@@ -2,13 +2,12 @@ import { promises as fs } from 'node:fs';
 
 import type { Schedule as ScheduleInterface } from '@croffledev/croffle-types';
 
-import { openJsonFileDialog } from '../window/json-file-dialog';
-import { createSchedule, updateSchedule } from './schedule-service';
-import { scheduleMapper } from '../mapper/schedule-mapper';
-
 import { databaseManager } from '../database';
 import { Schedule as ScheduleEntity } from '../database/schema/schedule.entity';
+import { scheduleMapper } from '../mapper/schedule-mapper';
+import { openJsonFileDialog } from '../window/json-file-dialog';
 import type { ExportShapeV1 } from './export.type';
+import { createSchedule, updateSchedule } from './schedule-service';
 
 export async function importScheduleFromFile(
   mode: 'merge' | 'duplicate' = 'merge',

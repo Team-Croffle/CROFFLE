@@ -1,9 +1,10 @@
+import { execSync } from 'node:child_process';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 import { Command } from 'commander';
 import fs from 'fs-extra';
-import path from 'node:path';
 import picocolors from 'picocolors';
-import { execSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
 
 const __filename = import.meta.filename;
 const __dirname = import.meta.dirname;

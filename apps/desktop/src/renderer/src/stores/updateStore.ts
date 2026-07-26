@@ -1,7 +1,8 @@
+import { AppEventType } from '@croffledev/shared';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { toast } from 'vue-sonner';
-import { AppEventType } from '@croffledev/shared';
+
 import type { UpdateInfo } from '@/types/update';
 
 export const useUpdateStore = defineStore('update', () => {

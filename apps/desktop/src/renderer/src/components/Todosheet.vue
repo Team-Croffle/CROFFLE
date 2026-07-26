@@ -1,6 +1,16 @@
 <script setup lang="ts">
-  import { reactive, ref, shallowRef, toRaw, watch } from 'vue';
+  import type { Schedule } from '@croffledev/croffle-types';
+  import { CalendarDate, getLocalTimeZone } from '@internationalized/date';
   import { Save, X, ChevronDown } from 'lucide-vue-next';
+  import { storeToRefs } from 'pinia';
+  import { reactive, ref, shallowRef, toRaw, watch } from 'vue';
+  import { toast } from 'vue-sonner';
+
+  import { Button } from '@/components/ui/button';
+  import { Calendar } from '@/components/ui/calendar';
+  import { Input } from '@/components/ui/input';
+  import { Label } from '@/components/ui/label';
+  import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
   import {
     Sheet,
     SheetContent,
@@ -8,18 +18,9 @@
     SheetTitle,
     SheetDescription,
   } from '@/components/ui/sheet';
-  import { Button } from '@/components/ui/button';
-  import { Input } from '@/components/ui/input';
-  import { Label } from '@/components/ui/label';
-  import { Calendar } from '@/components/ui/calendar';
   import { cn } from '@/lib/utils';
-  import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-  import { CalendarDate, getLocalTimeZone } from '@internationalized/date';
-  import { useUiStore } from '@/stores/uiStore';
-  import { storeToRefs } from 'pinia';
   import { useScheduleStore } from '@/stores/scheduleStore';
-  import type { Schedule } from '@croffledev/croffle-types';
-  import { toast } from 'vue-sonner';
+  import { useUiStore } from '@/stores/uiStore';
   // import type { Tag } from 'croffle';
 
   // 스토어 연결

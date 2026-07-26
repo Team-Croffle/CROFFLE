@@ -1,9 +1,10 @@
-import { ipcMain } from 'electron';
-import { getAllTags, getTagByName, createTag, modifyTag, removeTag } from '../calendar/tag';
 import type { Tag } from '@croffledev/croffle-types';
-import { tagMapper } from '../mapper/tag-mapper';
-import { eventService } from '../event-bus/event-service';
 import { AppEventType } from '@croffledev/shared';
+import { ipcMain } from 'electron';
+
+import { getAllTags, getTagByName, createTag, modifyTag, removeTag } from '../calendar/tag';
+import { eventService } from '../event-bus/event-service';
+import { tagMapper } from '../mapper/tag-mapper';
 
 export const registerTagIpcHandlers = (): void => {
   ipcMain.handle('tag:getAll', async (): Promise<Tag[]> => {
