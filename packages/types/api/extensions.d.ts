@@ -30,6 +30,26 @@ export interface ExtensionSessionApi {
   clear(extensionId: string): Promise<void>;
 }
 
+/** Bound to a single extension id (passed via ExtensionContext) */
+export interface ExtensionScopedStorageApi {
+  get<T = unknown>(key: string): Promise<T | null>;
+  set(key: string, value: unknown): Promise<void>;
+  delete(key: string): Promise<boolean>;
+  clear(): Promise<void>;
+}
+
+export interface ExtensionScopedSessionApi {
+  get<T = unknown>(key: string): Promise<T | null>;
+  set<T = unknown>(key: string, value: T): Promise<void>;
+  delete(key: string): Promise<boolean>;
+  clear(): Promise<void>;
+}
+
+export interface ExtensionScopedConfigurationApi {
+  get<T = Record<string, unknown>>(storageKey?: string): Promise<T>;
+  set(values: Record<string, unknown>, storageKey?: string): Promise<void>;
+}
+
 export interface ExtensionsApi {
   info: ExtensionInfoApi;
   configuration: ExtensionConfigurationApi;

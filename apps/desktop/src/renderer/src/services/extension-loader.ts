@@ -100,8 +100,26 @@ class ExtensionLoader {
   }
 
   private createContext(extension: ExtensionInfo): ExtensionContext {
+    const id = extension.id;
+
     return {
       ...croffle,
+      storage: {
+        get: (key) => croffle.extensions.storage.get(id, key),
+        set: (key, value) => croffle.extensions.storage.set(id, key, value),
+        delete: (key) => croffle.extensions.storage.delete(id, key),
+        clear: () => croffle.extensions.storage.clear(id),
+      },
+      session: {
+        get: (key) => croffle.extensions.session.get(id, key),
+        set: (key, value) => croffle.extensions.session.set(id, key, value),
+        delete: (key) => croffle.extensions.session.delete(id, key),
+        clear: () => croffle.extensions.session.clear(id),
+      },
+      configuration: {
+        get: (storageKey) => croffle.extensions.configuration.get(id, storageKey),
+        set: (values, storageKey) => croffle.extensions.configuration.set(id, values, storageKey),
+      },
       ui: {
         registerView: (viewId, renderFn) => {
           window.dispatchEvent(
