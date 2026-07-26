@@ -3,7 +3,7 @@
   "name": "My Extension",
   "version": "1.0.0",
   "author": "Croffle Developer",
-  "description": "An example Croffle extension",
+  "description": "An example Croffle extension with a view and schema-based configuration",
   "main": "index.js",
   "engines": {
     "croffle": ">=1.0.0"
@@ -16,6 +16,61 @@
         "subtitle": "Sample extension view",
         "icon": "",
         "url": "/extension/example-view"
+      }
+    ],
+    "configuration": [
+      {
+        "id": "general",
+        "label": "일반",
+        "order": 10,
+        "sections": [
+          {
+            "id": "display",
+            "title": "표시",
+            "description": "사이드바·알림에 보이는 동작",
+            "items": {
+              "enabled": {
+                "type": "boolean",
+                "label": "기능 사용",
+                "description": "끄면 이 확장의 자동 동작을 중단합니다.",
+                "defaultValue": true
+              },
+              "displayName": {
+                "type": "string",
+                "label": "표시 이름",
+                "description": "설정·로그에 쓰일 이름",
+                "defaultValue": "My Extension"
+              },
+              "refreshIntervalMinutes": {
+                "type": "number",
+                "label": "새로고침 간격(분)",
+                "defaultValue": 15
+              },
+              "theme": {
+                "type": "select",
+                "label": "테마",
+                "defaultValue": "system",
+                "options": [
+                  { "label": "시스템", "value": "system" },
+                  { "label": "라이트", "value": "light" },
+                  { "label": "다크", "value": "dark" }
+                ]
+              }
+            }
+          },
+          {
+            "id": "paths",
+            "title": "경로",
+            "items": {
+              "exportFolder": {
+                "type": "path",
+                "label": "내보내기 폴더",
+                "description": "파일을 저장할 기본 폴더",
+                "defaultValue": ""
+              }
+            }
+          }
+        ]
       }
     ]
   }
