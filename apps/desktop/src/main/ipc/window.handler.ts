@@ -1,9 +1,9 @@
 import type { IpcMainInvokeEvent } from 'electron';
 import { BrowserWindow, ipcMain } from 'electron';
-import { windowService } from '../core/window/WindowService';
-import { eventService } from '../core/event-bus/EventService';
+import { windowService } from '../window/window-service';
+import { eventService } from '../event-bus/event-service';
 import { AppEventType } from '@croffledev/shared';
-import { logger } from '../core/logger/loggerService';
+import { logger } from '../logger';
 
 const validateSender = (event: IpcMainInvokeEvent): BrowserWindow => {
   const window = BrowserWindow.fromWebContents(event.sender);

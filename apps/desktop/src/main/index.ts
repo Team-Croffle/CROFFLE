@@ -3,19 +3,20 @@ import 'reflect-metadata';
 import { app, shell, BrowserWindow, protocol } from 'electron';
 import { AppSettingStartupBehavior } from '@croffledev/shared';
 import { autoUpdater } from 'electron-updater';
-import { databaseManager } from './core/database/DatabaseManager';
+import { databaseManager } from './database';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { join } from 'node:path';
 import { registerAllIpcHandlers } from './ipc';
-import { windowService } from './core/window/WindowService';
-import { settingService } from './modules/settings/service/SettingService';
+import { windowService } from './window/window-service';
+import { settingService } from './setting/setting-service';
 import {
-  settingsApplyService,
+  applyStartupPresentation,
+  shouldCheckForUpdates,
   STARTUP_ARG,
   LOGIN_HIDDEN_ARG,
-} from './modules/settings/service/SettingsApplyService';
+} from './setting/setting-applies';
 import icon from '../../resources/Logo2Only.png?asset';
-import { logger } from './core/logger/loggerService';
+import { logger } from './logger';
 
 // Must be called before app is ready
 protocol.registerSchemesAsPrivileged([
@@ -59,7 +60,7 @@ function createWindow(): void {
   mainWindow.on('ready-to-show', () => {
     logger.info('Main', 'Main window is ready to show');
     const settings = settingService.get();
-    settingsApplyService.applyStartupPresentation(settings);
+    applyStartupPresentation(settings);
 
     const loginSettings = app.getLoginItemSettings();
     const wasOpenedAtLogin = loginSettings.wasOpenedAtLogin || process.argv.includes(STARTUP_ARG);
@@ -131,7 +132,7 @@ if (!gotTheLock) {
 
       createWindow();
 
-      if (!is.dev && settingsApplyService.shouldCheckForUpdates(settingService.get())) {
+      if (!is.dev && shouldCheckForUpdates(settingService.get())) {
         logger.info('Main', 'Checking for application updates');
         autoUpdater.checkForUpdatesAndNotify();
       }

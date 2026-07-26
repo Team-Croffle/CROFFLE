@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import { eventService } from '../core/event-bus/EventService';
+import { eventService } from '../event-bus/event-service';
 
 export const registerEventIpcHandlers = (): void => {
   // register event ipc handlers
