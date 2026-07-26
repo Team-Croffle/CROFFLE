@@ -1,54 +1,360 @@
+# Desktop app release (electron-builder → GitHub Releases)
+#
+# Inspired by electron-builder GitHub Actions docs and dispatch-driven flows
+# (e.g. openhive bump+tag+matrix publish, Orca normalize-version dispatch).
+#
+# Trigger: Actions → "Croffle Release" → Run workflow
+#   - release_type: rc | patch | minor | major
+#   - version: optional exact semver (no leading v). If empty, bump from apps/desktop.
+#   - version_suffix: optional prerelease id (e.g. rc.1, beta.2). Appended to the core version.
+#   - draft: keep GitHub Release as draft (electron-updater cannot see drafts)
+#   - dry_run: build only — no version commit/tag/publish
+
 name: Croffle Release
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: Version bump kind (ignored when `version` is set, except `rc` default suffix)
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - rc
+        default: patch
+      version:
+        description: Exact version without leading v (e.g. 1.2.0). Leave empty to auto-bump.
+        required: false
+        type: string
+        default: ''
+      version_suffix:
+        description: Prerelease suffix without leading hyphen (e.g. rc.1, beta.2). Empty = none (rc defaults to rc.N).
+        required: false
+        type: string
+        default: ''
+      draft:
+        description: Leave the GitHub Release as draft after upload
+        required: true
+        type: boolean
+        default: false
+      dry_run:
+        description: Build installers only (no commit, tag, or publish)
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: croffle-release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  DESKTOP_PKG: apps/desktop/package.json
+  NODE_VERSION: '24'
 
 jobs:
-  build-and-release:
-    name: Build and Release
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-
-    # GITHUB_TOKEN이 Release 노트를 생성하고 파일을 업로드할 수 있도록 쓰기 권한 부여
-    permissions:
-      contents: write
-
+  version:
+    name: Resolve version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.calc.outputs.version }}
+      tag: ${{ steps.calc.outputs.tag }}
+      ref: ${{ steps.commit.outputs.ref }}
+      is_prerelease: ${{ steps.calc.outputs.is_prerelease }}
+      dry_run: ${{ steps.calc.outputs.dry_run }}
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: ${{ env.NODE_VERSION }}
 
-      - name: Enable Corepack
-        run: corepack enable
+      - name: Calculate version
+        id: calc
+        shell: bash
+        env:
+          RELEASE_TYPE: ${{ inputs.release_type }}
+          INPUT_VERSION: ${{ inputs.version }}
+          VERSION_SUFFIX: ${{ inputs.version_suffix }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          set -euo pipefail
+
+          CURRENT=$(node -p "require('./${{ env.DESKTOP_PKG }}').version")
+          echo "Current desktop version: $CURRENT"
+
+          # strip prerelease / build metadata → major.minor.patch
+          core_of() {
+            node -e "const v=process.argv[1].replace(/^v/,'').split(/[-+]/)[0]; if(!/^\d+\.\d+\.\d+$/.test(v)){console.error('Invalid semver core:', process.argv[1]); process.exit(1)}; console.log(v)" "$1"
+          }
+
+          bump_core() {
+            local core="$1" kind="$2"
+            node -e "
+              const [maj, min, pat] = process.argv[1].split('.').map(Number);
+              const kind = process.argv[2];
+              if (kind === 'major') console.log(\`\${maj + 1}.0.0\`);
+              else if (kind === 'minor') console.log(\`\${maj}.\${min + 1}.0\`);
+              else console.log(\`\${maj}.\${min}.\${pat + 1}\`);
+            " "$core" "$kind"
+          }
+
+          NEXT=""
+          if [[ -n "${INPUT_VERSION}" ]]; then
+            # Explicit version wins (may include its own prerelease, e.g. 1.2.0-beta.1)
+            NEXT="${INPUT_VERSION#v}"
+          else
+            CORE="$(core_of "$CURRENT")"
+            case "$RELEASE_TYPE" in
+              major|minor|patch)
+                NEXT="$(bump_core "$CORE" "$RELEASE_TYPE")"
+                ;;
+              rc)
+                # 1.2.3-rc.1 → 1.2.3-rc.2 ; otherwise next patch as X.Y.Z-rc.1
+                if [[ "$CURRENT" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-rc\.([0-9]+)$ ]]; then
+                  NEXT="${BASH_REMATCH[1]}-rc.$((BASH_REMATCH[2] + 1))"
+                else
+                  NEXT="$(bump_core "$CORE" patch)-rc.1"
+                fi
+                ;;
+              *)
+                echo "Unknown release_type: $RELEASE_TYPE" >&2
+                exit 1
+                ;;
+            esac
+          fi
+
+          # version_suffix replaces any existing prerelease on the core
+          if [[ -n "${VERSION_SUFFIX}" ]]; then
+            SUFFIX="${VERSION_SUFFIX#-}"
+            NEXT="$(core_of "$NEXT")-${SUFFIX}"
+          fi
+
+          if [[ ! "$NEXT" =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-].+)?$ ]]; then
+            echo "Computed version looks invalid: $NEXT" >&2
+            exit 1
+          fi
+
+          IS_PRE=false
+          if [[ "$NEXT" == *-* ]]; then
+            IS_PRE=true
+          fi
+
+          TAG="v${NEXT}"
+          echo "Resolved version: $NEXT (tag $TAG, prerelease=$IS_PRE, dry_run=$DRY_RUN)"
+
+          if [[ "$DRY_RUN" != "true" ]]; then
+            if git ls-remote --tags origin "refs/tags/${TAG}" | grep -q .; then
+              echo "::error::Tag ${TAG} already exists on origin."
+              exit 1
+            fi
+          fi
+
+          {
+            echo "version=${NEXT}"
+            echo "tag=${TAG}"
+            echo "is_prerelease=${IS_PRE}"
+            echo "dry_run=${DRY_RUN}"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Write package versions
+        if: ${{ inputs.dry_run != true }}
+        shell: bash
+        env:
+          NEW_VERSION: ${{ steps.calc.outputs.version }}
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('fs');
+          const version = process.env.NEW_VERSION;
+          for (const file of ['apps/desktop/package.json', 'package.json']) {
+            const pkg = JSON.parse(fs.readFileSync(file, 'utf8'));
+            pkg.version = version;
+            fs.writeFileSync(file, JSON.stringify(pkg, null, 2) + '\n');
+            console.log(`Updated ${file} → ${version}`);
+          }
+          NODE
+
+      - name: Commit, tag, push
+        id: commit
+        shell: bash
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+          NEW_VERSION: ${{ steps.calc.outputs.version }}
+          TAG: ${{ steps.calc.outputs.tag }}
+        run: |
+          set -euo pipefail
+
+          if [[ "$DRY_RUN" == "true" ]]; then
+            echo "dry_run — skip commit/tag/push"
+            echo "ref=${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/desktop/package.json package.json
+          git commit -m "release: v${NEW_VERSION}"
+
+          for attempt in 1 2 3; do
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              break
+            fi
+            if [[ $attempt -eq 3 ]]; then
+              echo "branch push failed after 3 attempts" >&2
+              exit 1
+            fi
+            echo "push rejected (attempt $attempt/3) — rebasing…"
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+          done
+
+          git tag "$TAG"
+          git push origin "$TAG"
+
+          echo "ref=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: Build (${{ matrix.os }})
+    needs: version
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    env:
+      ELECTRON_CACHE: ${{ github.workspace }}/.cache/electron
+      ELECTRON_BUILDER_CACHE: ${{ github.workspace }}/.cache/electron-builder
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.version.outputs.ref }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Pin desktop version (dry_run)
+        if: ${{ needs.version.outputs.dry_run == 'true' }}
+        shell: bash
+        env:
+          NEW_VERSION: ${{ needs.version.outputs.version }}
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const version = process.env.NEW_VERSION;
+          for (const file of ['apps/desktop/package.json', 'package.json']) {
+            const pkg = JSON.parse(fs.readFileSync(file, 'utf8'));
+            pkg.version = version;
+            fs.writeFileSync(file, JSON.stringify(pkg, null, 2) + '\n');
+          }
+          NODE
 
       - name: Install dependencies
-        run: yarn install --immutable
+        run: pnpm install --frozen-lockfile
 
-      - name: Build Vite App
-        run: yarn build
+      - name: Install Linux packaging deps
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends rpm fakeroot dpkg
 
-      - name: Package and Publish (macOS)
-        if: matrix.os == 'macos-latest'
-        run: yarn electron-builder --mac -p always
+      - name: Build app
+        run: pnpm --filter @croffledev/desktop build
+
+      - name: Package (electron-builder)
+        working-directory: apps/desktop
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EP_PRE_RELEASE: ${{ needs.version.outputs.is_prerelease }}
+          EP_DRAFT: 'true'
+          # Unsigned GitHub Releases only
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        shell: bash
+        run: |
+          set -euo pipefail
+          PUBLISH_FLAG=always
+          if [[ "${{ needs.version.outputs.dry_run }}" == "true" ]]; then
+            PUBLISH_FLAG=never
+          fi
 
-      - name: Package and Publish (Windows)
-        if: matrix.os == 'windows-latest'
-        run: yarn electron-builder --win -p always
+          case "${{ runner.os }}" in
+            macOS)
+              # arm64 dmg + zip (artifactName …-arm64-mac.zip)
+              pnpm exec electron-builder --mac --arm64 --publish "$PUBLISH_FLAG"
+              ;;
+            Windows)
+              pnpm exec electron-builder --win --x64 --publish "$PUBLISH_FLAG"
+              ;;
+            Linux)
+              # AppImage + deb + rpm
+              pnpm exec electron-builder --linux AppImage deb rpm --x64 --publish "$PUBLISH_FLAG"
+              ;;
+          esac
+
+      - name: Upload installers
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: croffle-${{ needs.version.outputs.version }}-${{ matrix.os }}
+          path: |
+            apps/desktop/dist/*.exe
+            apps/desktop/dist/*.dmg
+            apps/desktop/dist/*.zip
+            apps/desktop/dist/*.AppImage
+            apps/desktop/dist/*.rpm
+            apps/desktop/dist/*.deb
+            apps/desktop/dist/*.blockmap
+            apps/desktop/dist/*.yml
+            apps/desktop/dist/latest*.yml
+          if-no-files-found: warn
+          retention-days: 14
+
+  publish:
+    name: Finalize GitHub Release
+    needs: [version, build]
+    if: ${{ !cancelled() && !failure() && needs.version.outputs.dry_run != 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Promote or keep draft
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.version.outputs.tag }}
+          KEEP_DRAFT: ${{ inputs.draft }}
+          IS_PRE: ${{ needs.version.outputs.is_prerelease }}
+        run: |
+          set -euo pipefail
+          # Wait briefly for electron-builder uploads to settle
+          sleep 5
 
-      - name: Package and Publish (Linux)
-        if: matrix.os == 'ubuntu-latest'
-        run: yarn electron-builder --linux -p always
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ARGS=()
+          if [[ "$KEEP_DRAFT" == "true" ]]; then
+            ARGS+=(--draft)
+          else
+            ARGS+=(--draft=false)
+          fi
+
+          if [[ "$IS_PRE" == "true" ]]; then
+            ARGS+=(--prerelease)
+          else
+            ARGS+=(--prerelease=false)
+          fi
+
+          gh release edit "$TAG" "${ARGS[@]}" --repo "$GITHUB_REPOSITORY"
+          echo "Release $TAG updated (draft=$KEEP_DRAFT, prerelease=$IS_PRE)"
