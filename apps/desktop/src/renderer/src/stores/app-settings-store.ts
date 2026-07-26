@@ -1,5 +1,5 @@
+import { type AppSettingTheme, AppEventType } from '@croffledev/common';
 import type { AppSettings } from '@croffledev/croffle-types';
-import { type AppSettingTheme, AppEventType } from '@croffledev/shared';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
@@ -16,7 +16,7 @@ export const useAppSettingsStore = defineStore('appSettings', () => {
   let unsubscribe: (() => void) | null = null;
 
   const load = async () => {
-    const loaded = await croffle.base.settings.getAll();
+    const loaded = await croffle.settings.getAll();
     settings.value = loaded;
     applyToUi(loaded);
     isReady.value = true;
@@ -25,7 +25,7 @@ export const useAppSettingsStore = defineStore('appSettings', () => {
   const initialize = async () => {
     await load();
     unsubscribe?.();
-    unsubscribe = croffle.app.event.on(AppEventType.SETTINGS_UPDATE, (payload) => {
+    unsubscribe = croffle.event.on(AppEventType.SETTINGS_UPDATE, (payload) => {
       const updated = payload as AppSettings;
       settings.value = updated;
       applyToUi(updated);

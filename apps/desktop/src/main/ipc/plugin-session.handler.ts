@@ -1,4 +1,4 @@
-import { AppEventType } from '@croffledev/shared';
+import { AppEventType } from '@croffledev/common';
 import { ipcMain } from 'electron';
 
 import { eventService } from '../event-bus/event-service';

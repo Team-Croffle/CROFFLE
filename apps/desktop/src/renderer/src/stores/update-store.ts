@@ -1,4 +1,4 @@
-import { AppEventType } from '@croffledev/shared';
+import { AppEventType } from '@croffledev/common';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { toast } from 'vue-sonner';
@@ -15,24 +15,24 @@ export const useUpdateStore = defineStore('update', () => {
 
   function init() {
     unsubscribers = [
-      croffle.app.event.on(AppEventType.UPDATE_AVAILABLE, (payload) => {
+      croffle.event.on(AppEventType.UPDATE_AVAILABLE, (payload) => {
         updateInfo.value = payload as UpdateInfo;
         updateError.value = null;
         isModalOpen.value = true;
       }),
-      croffle.app.event.on(AppEventType.UPDATE_NOT_AVAILABLE, () => {
+      croffle.event.on(AppEventType.UPDATE_NOT_AVAILABLE, () => {
         toast('이미 최신 버전입니다.');
       }),
-      croffle.app.event.on(AppEventType.UPDATE_DOWNLOAD_PROGRESS, (payload) => {
+      croffle.event.on(AppEventType.UPDATE_DOWNLOAD_PROGRESS, (payload) => {
         isDownloading.value = true;
         const { percent } = payload as { percent: number; transferred: number };
         downloadProgress.value = percent;
       }),
-      croffle.app.event.on(AppEventType.UPDATE_DOWNLOADED, () => {
+      croffle.event.on(AppEventType.UPDATE_DOWNLOADED, () => {
         isDownloading.value = false;
         downloadProgress.value = 0;
       }),
-      croffle.app.event.on(AppEventType.UPDATE_ERROR, (payload) => {
+      croffle.event.on(AppEventType.UPDATE_ERROR, (payload) => {
         const err = payload as Error;
         const message = err?.message ?? '업데이트 중 오류가 발생했습니다.';
         isDownloading.value = false;
@@ -52,7 +52,7 @@ export const useUpdateStore = defineStore('update', () => {
   function downloadNow() {
     updateError.value = null;
     isDownloading.value = true;
-    croffle.app.event.emit(AppEventType.UPDATE_DOWNLOAD_NOW, null);
+    croffle.event.emit(AppEventType.UPDATE_DOWNLOAD_NOW, null);
   }
 
   function downloadLater() {
@@ -60,11 +60,11 @@ export const useUpdateStore = defineStore('update', () => {
     isModalOpen.value = false;
     isDownloading.value = true;
     downloadProgress.value = 0;
-    croffle.app.event.emit(AppEventType.UPDATE_DOWNLOAD_LATER, null);
+    croffle.event.emit(AppEventType.UPDATE_DOWNLOAD_LATER, null);
   }
 
   function skipUpdate() {
-    croffle.app.event.emit(AppEventType.UPDATE_SKIP_THIS_VERSION, null);
+    croffle.event.emit(AppEventType.UPDATE_SKIP_THIS_VERSION, null);
     isDownloading.value = false;
     downloadProgress.value = 0;
     updateError.value = null;

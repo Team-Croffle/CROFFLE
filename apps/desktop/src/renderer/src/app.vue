@@ -49,13 +49,13 @@
 
   // Electron 윈도우 제어 함수
   const minimizeWindow = async () => {
-    croffle.base.windows.minimize();
+    croffle.window.minimize();
   };
   const maximizeWindow = async () => {
-    croffle.base.windows.maximize();
+    croffle.window.maximize();
   };
   const closeWindow = async () => {
-    croffle.base.windows.close();
+    croffle.window.close();
   };
 
   const handleRegisterView = (event: Event) => {
@@ -202,7 +202,7 @@
     updateStore.init();
     await setPluginMenus();
     await pluginLoader.init();
-    unsubscribeStartupNav = croffle.app.event.on('settings:startup-navigate', (path) => {
+    unsubscribeStartupNav = croffle.event.on('settings:startup-navigate', (path) => {
       void router.push(typeof path === 'string' ? path : '/calendar');
     });
   });

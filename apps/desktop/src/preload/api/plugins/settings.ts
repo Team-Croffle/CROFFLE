@@ -1,9 +1,7 @@
-import type { pluginSettings } from '@croffledev/croffle-types';
+import type { PluginSettingsApi } from '@croffledev/croffle-types';
 import { ipcRenderer } from 'electron';
 
 const DEFAULT_STORAGE_KEY = '__croffle_settings__';
-
-type PluginSettingsAPI = typeof pluginSettings;
 
 export const pluginSettingsApi = {
   get: async <T = Record<string, unknown>>(
@@ -31,4 +29,4 @@ export const pluginSettingsApi = {
       value: JSON.stringify(values),
     });
   },
-} satisfies PluginSettingsAPI;
+} satisfies PluginSettingsApi;

@@ -1,7 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
-import type { AppSettings } from '@croffledev/croffle-types';
 import {
   AppSettingLanguage,
   AppSettingStartupBehavior,
@@ -9,7 +8,8 @@ import {
   CalendarTimeFormat,
   CalendarView,
   CalendarWeekStartDay,
-} from '@croffledev/shared';
+} from '@croffledev/common';
+import type { AppSettings } from '@croffledev/croffle-types';
 import { app } from 'electron';
 
 import { logger } from '../logger';

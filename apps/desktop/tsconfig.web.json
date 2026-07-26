@@ -1,16 +1,21 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["src/renderer/src/env.d.ts", "src/renderer/src/**/*", "src/renderer/src/**/*.vue"],
+  "include": [
+    "src/renderer/src/env.d.ts",
+    "src/renderer/src/**/*",
+    "src/renderer/src/**/*.vue",
+    "src/preload/env.d.ts",
+    "src/common/**/*"
+  ],
   "compilerOptions": {
     "composite": true,
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "resolveJsonModule": true,
     "paths": {
       "@/*": ["./src/renderer/src/*"],
-      "@croffledev/shared": ["../../packages/shared/src/index.ts"],
-      "@croffledev/shared/*": ["../../packages/shared/src/*"]
+      "@croffledev/common": ["./src/common/index.ts"],
+      "@croffledev/common/*": ["./src/common/*"]
     },
     "types": ["node"]
-  },
-  "references": [{ "path": "../../packages/shared" }]
+  }
 }

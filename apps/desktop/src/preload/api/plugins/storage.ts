@@ -1,14 +1,11 @@
-import type { pluginStorage } from '@croffledev/croffle-types';
+import type { PluginStorageApi } from '@croffledev/croffle-types';
 import { ipcRenderer } from 'electron';
-
-type PluginStorageAPI = typeof pluginStorage;
 
 export const pluginStorageApi = {
   get: (pluginId: string, key: string) => {
     return ipcRenderer.invoke('app:storage:get', { pluginId, key });
   },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  set: (pluginId: string, key: string, value: any) => {
+  set: (pluginId: string, key: string, value: string) => {
     return ipcRenderer.invoke('app:storage:set', { pluginId, key, value });
   },
-} satisfies PluginStorageAPI;
+} satisfies PluginStorageApi;

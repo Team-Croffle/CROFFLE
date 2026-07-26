@@ -1,7 +1,5 @@
-import type { PluginInfo, pluginInfo } from '@croffledev/croffle-types';
+import type { PluginInfo, PluginInfoApi } from '@croffledev/croffle-types';
 import { ipcRenderer } from 'electron';
-
-type PluginInfoAPI = typeof pluginInfo;
 
 export const pluginInfoApi = {
   getInstalled: async (): Promise<PluginInfo[]> => {
@@ -31,4 +29,4 @@ export const pluginInfoApi = {
   uninstall: async (name: string): Promise<boolean> => {
     return ipcRenderer.invoke('pluginInfo:uninstallPlugin', name);
   },
-} satisfies PluginInfoAPI;
+} satisfies PluginInfoApi;

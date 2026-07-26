@@ -2,7 +2,7 @@
 import 'reflect-metadata';
 import { join } from 'node:path';
 
-import { AppSettingStartupBehavior } from '@croffledev/shared';
+import { AppSettingStartupBehavior } from '@croffledev/common';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { app, shell, BrowserWindow, protocol } from 'electron';
 import { autoUpdater } from 'electron-updater';

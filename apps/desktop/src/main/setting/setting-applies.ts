@@ -1,5 +1,5 @@
+import { AppSettingStartupBehavior } from '@croffledev/common';
 import type { AppSettings } from '@croffledev/croffle-types';
-import { AppSettingStartupBehavior } from '@croffledev/shared';
 import { app } from 'electron';
 
 import { eventService } from '../event-bus/event-service';

@@ -1,7 +1,5 @@
-import type { Tag, tags } from '@croffledev/croffle-types';
+import type { Tag, TagsApi } from '@croffledev/croffle-types';
 import { ipcRenderer } from 'electron';
-
-type TagAPI = typeof tags;
 
 export const tagApi = {
   getAll: async (): Promise<Tag[]> => {
@@ -23,4 +21,4 @@ export const tagApi = {
   remove: async (id: string): Promise<boolean> => {
     return ipcRenderer.invoke('tag:remove', id);
   },
-} satisfies TagAPI;
+} satisfies TagsApi;

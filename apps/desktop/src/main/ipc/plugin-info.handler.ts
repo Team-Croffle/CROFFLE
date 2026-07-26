@@ -1,5 +1,5 @@
+import { AppEventType } from '@croffledev/common';
 import type { PluginInfo } from '@croffledev/croffle-types';
-import { AppEventType } from '@croffledev/shared';
 import { ipcMain, dialog } from 'electron';
 
 import { eventService } from '../event-bus/event-service';
