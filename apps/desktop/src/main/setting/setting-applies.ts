@@ -1,4 +1,4 @@
-import { AppSettingStartupBehavior } from '@croffledev/common';
+import { AppEventType, AppSettingStartupBehavior } from '@croffledev/common';
 import type { AppSettings } from '@croffledev/croffle-types';
 import { app } from 'electron';
 
@@ -58,7 +58,7 @@ export function applyStartupPresentation(settings: AppSettings): void {
   }
 
   if (startupBehavior === AppSettingStartupBehavior.OPEN_NEW_WINDOW) {
-    eventService.emit('settings:startup-navigate', '/calendar');
+    eventService.emit(AppEventType.SETTINGS_STARTUP_NAVIGATE, '/calendar');
   }
 }
 

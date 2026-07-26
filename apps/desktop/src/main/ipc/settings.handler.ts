@@ -8,11 +8,7 @@ import { validateSettings } from '../utils/settings-validator';
 
 export const registerSettingsIpcHandlers = (): void => {
   ipcMain.handle('settings:getAll', async (): Promise<AppSettings> => {
-    const result = settingService.get();
-    // Add app event emit
-    eventService.emit(AppEventType.SETTINGS_GET, result);
-
-    return result;
+    return settingService.get();
   });
 
   ipcMain.handle(
@@ -22,12 +18,7 @@ export const registerSettingsIpcHandlers = (): void => {
         throw new Error('[Settings] Key must be a string.');
       }
 
-      const result = settingService.getOf(key);
-
-      // Add app event emit
-      eventService.emit(AppEventType.SETTINGS_GET_OF, key, result);
-
-      return result;
+      return settingService.getOf(key);
     },
   );
 
@@ -36,10 +27,7 @@ export const registerSettingsIpcHandlers = (): void => {
     async (_, partialSettings: Partial<AppSettings>): Promise<AppSettings> => {
       validateSettings(partialSettings);
       const newSettings = settingService.update(partialSettings);
-
-      // Add app event emit
       eventService.emit(AppEventType.SETTINGS_UPDATE, newSettings);
-
       return newSettings;
     },
   );

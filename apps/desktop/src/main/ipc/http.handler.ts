@@ -1,8 +1,6 @@
-import { AppEventType } from '@croffledev/common';
 import type { HttpResponse } from '@croffledev/croffle-types';
 import { ipcMain } from 'electron';
 
-import { eventService } from '../event-bus/event-service';
 import { httpService } from '../http';
 
 export const registerHttpIpcHandlers = (): void => {
@@ -18,11 +16,7 @@ export const registerHttpIpcHandlers = (): void => {
         throw new Error('[HTTP] Invalid URL.');
       }
 
-      const result = await httpService.get(url, params, headers);
-
-      // Add app event emit
-      eventService.emit(AppEventType.HTTP_SERVICE_GET, { url, params, headers, result });
-      return result;
+      return await httpService.get(url, params, headers);
     },
   );
 
@@ -38,11 +32,7 @@ export const registerHttpIpcHandlers = (): void => {
         throw new Error('[HTTP] Invalid URL.');
       }
 
-      const result = await httpService.post(url, body, headers);
-
-      // Add app event emit
-      eventService.emit(AppEventType.HTTP_SERVICE_POST, { url, body, headers, result });
-      return result;
+      return await httpService.post(url, body, headers);
     },
   );
 };

@@ -1,8 +1,6 @@
-import { AppEventType } from '@croffledev/common';
 import type { IpcMainInvokeEvent } from 'electron';
 import { BrowserWindow, ipcMain } from 'electron';
 
-import { eventService } from '../event-bus/event-service';
 import { logger } from '../logger';
 import { windowService } from '../window/window-service';
 
@@ -28,32 +26,20 @@ export function registerWindowIpcHandlers() {
   ipcMain.handle('window:minimize', (event) => {
     const window = validateSender(event);
     window.minimize();
-
-    // Add app event emit
-    eventService.emit(AppEventType.WINDOW_MINIMIZE);
   });
 
   ipcMain.handle('window:maximize', (event) => {
     const window = validateSender(event);
     if (window.isMaximized()) {
       window.unmaximize();
-
-      // Add app event emit
-      eventService.emit(AppEventType.WINDOW_RESTORE);
     } else {
       window.maximize();
-
-      // Add app event emit
-      eventService.emit(AppEventType.WINDOW_MAXIMIZE);
     }
   });
 
   ipcMain.handle('window:close', (event) => {
     const window = validateSender(event);
     window.close();
-
-    // Add app event emit
-    eventService.emit(AppEventType.WINDOW_CLOSE);
   });
 
   ipcMain.handle('window:exitApp', (event) => {
@@ -62,11 +48,8 @@ export function registerWindowIpcHandlers() {
   });
 
   ipcMain.handle('window:checkForUpdates', async (event) => {
-    const window = validateSender(event);
+    validateSender(event);
     await windowService.checkForUpdates();
-
-    // Add app event emit
-    eventService.emit(AppEventType.WINDOW_CHECK_FOR_UPDATES, window.id);
   });
 
   ipcMain.handle('window:setCloseToTrayMode', (event, enabled: boolean) => {
