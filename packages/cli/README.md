@@ -14,4 +14,4 @@ pnpm dlx @croffledev/croffle-cli pack
 ```
 
 Extension types live in `@croffledev/croffle-types` (`ExtensionContext`, `ExtensionInfo`, …).  
-Manifest file is still named `plugin.json` until the manifest redesign.
+Manifest file is `croffle-manifest.json` (`id`, `name`, `version`, `author`, `main?`, `engines?`, `contributes?`).

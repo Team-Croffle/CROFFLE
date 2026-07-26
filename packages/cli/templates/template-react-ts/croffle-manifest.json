@@ -1,0 +1,22 @@
+{
+  "id": "com.example.my-extension",
+  "name": "My Extension",
+  "version": "1.0.0",
+  "author": "Croffle Developer",
+  "description": "An example Croffle extension",
+  "main": "index.js",
+  "engines": {
+    "croffle": ">=1.0.0"
+  },
+  "contributes": {
+    "views": [
+      {
+        "id": "example-view",
+        "title": "Example View",
+        "subtitle": "Sample extension view",
+        "icon": "",
+        "url": "/extension/example-view"
+      }
+    ]
+  }
+}

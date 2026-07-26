@@ -7,10 +7,10 @@ export default defineConfig({
   plugins: [
     vue(),
     {
-      name: 'copy-plugin-json',
+      name: 'copy-croffle-manifest',
       closeBundle() {
-        if (existsSync('plugin.json')) {
-          copyFileSync('plugin.json', 'dist/plugin.json');
+        if (existsSync('croffle-manifest.json')) {
+          copyFileSync('croffle-manifest.json', 'dist/croffle-manifest.json');
         }
       },
     },
@@ -23,13 +23,13 @@ export default defineConfig({
     emptyOutDir: true,
     lib: {
       entry: 'src/index.ts',
-      name: 'Plugin',
+      name: 'Extension',
       formats: ['es'],
       fileName: () => 'index.js',
     },
     rollupOptions: {
       // Do NOT externalize 'vue' — the extension:// protocol cannot resolve bare imports.
-      // Vue must be fully bundled into the plugin's index.js.
+      // Vue must be fully bundled into the extension's index.js.
     },
   },
 });

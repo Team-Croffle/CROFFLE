@@ -1,13 +1,11 @@
 import { execSync } from 'node:child_process';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 import { Command } from 'commander';
 import fs from 'fs-extra';
 import picocolors from 'picocolors';
 import prompts from 'prompts';
 
-const __filename = import.meta.filename;
 const __dirname = import.meta.dirname;
 
 export const createCommand = new Command('create')
@@ -91,15 +89,15 @@ export const createCommand = new Command('create')
       // Copy template files
       await fs.copy(templateDir, targetPath);
 
-      // Update plugin.json
-      const pluginJsonPath = path.join(targetPath, 'plugin.json');
-      if (fs.existsSync(pluginJsonPath)) {
-        const manifest = JSON.parse(await fs.readFile(pluginJsonPath, 'utf8'));
+      // Update croffle-manifest.json
+      const manifestPath = path.join(targetPath, 'croffle-manifest.json');
+      if (fs.existsSync(manifestPath)) {
+        const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
         manifest.id = answers.extensionId;
         manifest.name = answers.extensionName;
         manifest.description = answers.pluginDescription;
         manifest.author = answers.author;
-        await fs.writeFile(pluginJsonPath, JSON.stringify(manifest, null, 2));
+        await fs.writeFile(manifestPath, JSON.stringify(manifest, null, 2));
       }
 
       // Update package.json
