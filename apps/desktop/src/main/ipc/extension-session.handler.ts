@@ -1,12 +1,6 @@
 import { ipcMain } from 'electron';
 
-import {
-  getItem,
-  setItem,
-  deleteItem,
-  clearItem,
-  clearAllItems,
-} from '../extension/session-service';
+import { getItem, setItem, deleteItem, clearItem } from '../extension/session-service';
 import { logger } from '../logger';
 
 const validateArgs = (
@@ -71,15 +65,6 @@ export const registerExtensionSessionIpcHandlers = () => {
       clearItem(extensionId);
     } catch (error) {
       logger.error('ExtensionSession', 'Clear error:', error);
-      throw error;
-    }
-  });
-
-  ipcMain.handle('sessionStorage:clearAll', async () => {
-    try {
-      clearAllItems();
-    } catch (error) {
-      logger.error('ExtensionSession', 'ClearAll error:', error);
       throw error;
     }
   });

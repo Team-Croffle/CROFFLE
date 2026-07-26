@@ -19,6 +19,8 @@ export interface ExtensionConfigurationApi {
 export interface ExtensionStorageApi {
   get<T = unknown>(extensionId: string, key: string): Promise<T | null>;
   set(extensionId: string, key: string, value: unknown): Promise<void>;
+  delete(extensionId: string, key: string): Promise<boolean>;
+  clear(extensionId: string): Promise<void>;
 }
 
 export interface ExtensionSessionApi {
@@ -26,7 +28,6 @@ export interface ExtensionSessionApi {
   set<T = unknown>(extensionId: string, key: string, value: T): Promise<void>;
   delete(extensionId: string, key: string): Promise<boolean>;
   clear(extensionId: string): Promise<void>;
-  clearAll(): Promise<void>;
 }
 
 export interface ExtensionsApi {
