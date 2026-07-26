@@ -1,5 +1,5 @@
-import { defineStore } from 'pinia';
 import dayjs from 'dayjs';
+import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 export const useUiStore = defineStore('ui', () => {

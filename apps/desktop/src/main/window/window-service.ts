@@ -1,14 +1,16 @@
+import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
+import path from 'node:path';
+
+import { AppEventType } from '@croffledev/shared';
 import type { BrowserWindow } from 'electron';
 import { app, Menu, Tray, shell } from 'electron';
 import type { UpdateInfo } from 'electron-updater';
 import { autoUpdater } from 'electron-updater';
-import { eventService } from '../event-bus/event-service';
-import { AppEventType } from '@croffledev/shared';
-import { settingService } from '../setting/setting-service';
+
 import icon from '../../../resources/Logo2OnlyNoBorderIcon.png?asset';
+import { eventService } from '../event-bus/event-service';
 import { logger } from '../logger';
-import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
-import path from 'node:path';
+import { settingService } from '../setting/setting-service';
 
 class WindowService {
   private mainWindow: BrowserWindow | null = null;

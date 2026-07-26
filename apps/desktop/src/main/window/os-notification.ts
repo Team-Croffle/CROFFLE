@@ -1,5 +1,7 @@
-import { Notification, app } from 'electron';
 import path from 'node:path';
+
+import { Notification, app } from 'electron';
+
 import { logger } from '../logger';
 
 export function showNotification(title?: string, body?: string): void {

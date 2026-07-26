@@ -1,5 +1,5 @@
-import { ipcRenderer } from 'electron';
 import type { SearchQuery, Schedule, search } from '@croffledev/croffle-types';
+import { ipcRenderer } from 'electron';
 
 type searchApi = typeof search;
 

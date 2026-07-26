@@ -1,8 +1,8 @@
 <script setup lang="ts">
   import type { ConfigItemSchema } from '@croffledev/croffle-types';
-  import { Label } from '@/components/ui/label';
+
   import { Input } from '@/components/ui/input';
-  import { Switch } from '@/components/ui/switch';
+  import { Label } from '@/components/ui/label';
   import {
     Select,
     SelectTrigger,
@@ -10,6 +10,7 @@
     SelectContent,
     SelectItem,
   } from '@/components/ui/select';
+  import { Switch } from '@/components/ui/switch';
 
   const values = defineModel<Record<string, unknown>>('values', {
     required: true,

@@ -1,8 +1,9 @@
-import { ipcMain } from 'electron';
-import { settingService } from '../setting/setting-service';
 import type { AppSettings } from '@croffledev/croffle-types';
-import { eventService } from '../event-bus/event-service';
 import { AppEventType } from '@croffledev/shared';
+import { ipcMain } from 'electron';
+
+import { eventService } from '../event-bus/event-service';
+import { settingService } from '../setting/setting-service';
 import { validateSettings } from '../utils/settings-validator';
 
 export const registerSettingsIpcHandlers = (): void => {

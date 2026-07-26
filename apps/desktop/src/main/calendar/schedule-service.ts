@@ -1,9 +1,10 @@
 import type { FindOptionsWhere } from 'typeorm';
 import { LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+
 import { databaseManager } from '../database';
 import { Schedule } from '../database/schema/schedule.entity';
-import { stringValidation } from '../utils/string-validator';
 import { colorValidation } from '../utils/color-validator';
+import { stringValidation } from '../utils/string-validator';
 
 export function validateScheduleData(schedule: Schedule) {
   // 제목 검증 (필수, 1~100자)

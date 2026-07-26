@@ -1,5 +1,6 @@
 import type { PluginContext } from '@croffledev/croffle-types';
 import { createApp } from 'vue';
+
 import FeatureView from './MyFeatureView.vue';
 import MySettingsTab from './MySettingsTab.vue';
 

@@ -1,7 +1,8 @@
+import type { SearchQuery } from '@croffledev/croffle-types';
+
 import { databaseManager } from '../database';
 import { Schedule } from '../database/schema/schedule.entity';
 import type { Tag } from '../database/schema/tag.entity';
-import type { SearchQuery } from '@croffledev/croffle-types';
 
 export async function searchSchedules(query: SearchQuery): Promise<Schedule[]> {
   const repo = databaseManager.getRepository(Schedule);

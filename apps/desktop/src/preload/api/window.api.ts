@@ -1,5 +1,5 @@
-import { ipcRenderer } from 'electron';
 import type { windows } from '@croffledev/croffle-types';
+import { ipcRenderer } from 'electron';
 
 type WindowAPI = typeof windows;
 

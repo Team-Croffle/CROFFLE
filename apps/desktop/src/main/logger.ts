@@ -1,5 +1,5 @@
-import log from 'electron-log/main';
 import { app } from 'electron';
+import log from 'electron-log/main';
 import { autoUpdater } from 'electron-updater';
 
 export class LoggerService {

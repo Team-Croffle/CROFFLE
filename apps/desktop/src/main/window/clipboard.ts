@@ -1,6 +1,7 @@
 import type { ClipboardResult } from '@croffledev/croffle-types';
 import { ClipboardDataType } from '@croffledev/shared';
 import { clipboard, nativeImage } from 'electron';
+
 import { logger } from '../logger';
 
 export function getClipboard(): ClipboardResult {

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { createCommand } from './commands/create.js';
+
 import { buildCommand } from './commands/build.js';
+import { createCommand } from './commands/create.js';
 import { packCommand } from './commands/pack.js';
 
 const program = new Command();

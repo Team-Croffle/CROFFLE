@@ -1,5 +1,5 @@
-import { ipcRenderer } from 'electron';
 import type { Schedule, schedules } from '@croffledev/croffle-types';
+import { ipcRenderer } from 'electron';
 
 type ScheduleAPI = typeof schedules;
 

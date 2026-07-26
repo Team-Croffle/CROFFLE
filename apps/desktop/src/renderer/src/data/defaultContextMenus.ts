@@ -1,7 +1,9 @@
 import type { FeatureContextMenu } from '@croffledev/croffle-types';
-import { useUiStore } from '../stores/uiStore';
-import { useScheduleStore } from '@/stores/scheduleStore';
 import { toast } from 'vue-sonner';
+
+import { useScheduleStore } from '@/stores/scheduleStore';
+
+import { useUiStore } from '../stores/uiStore';
 
 const isDateElement = (target: HTMLElement | null) => {
   return !!target?.closest('[data-date], .fc-daygrid-day') && !target?.closest('.fc-event');

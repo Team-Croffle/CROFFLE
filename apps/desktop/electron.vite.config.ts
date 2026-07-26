@@ -1,9 +1,10 @@
 import { resolve } from 'node:path';
-import { defineConfig } from 'electron-vite';
-import type { Plugin } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import swc from 'unplugin-swc';
+
 import tailwindcss from '@tailwindcss/vite';
+import vue from '@vitejs/plugin-vue';
+import { defineConfig } from 'electron-vite';
+import swc from 'unplugin-swc';
+import type { Plugin } from 'vite';
 
 const sharedEntry = resolve(__dirname, '../../packages/shared/src/index.ts');
 

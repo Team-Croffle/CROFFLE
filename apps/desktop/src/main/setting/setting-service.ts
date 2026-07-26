@@ -1,3 +1,6 @@
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import path from 'node:path';
+
 import type { AppSettings } from '@croffledev/croffle-types';
 import {
   AppSettingLanguage,
@@ -8,10 +11,9 @@ import {
   CalendarWeekStartDay,
 } from '@croffledev/shared';
 import { app } from 'electron';
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import path from 'node:path';
-import { applyLoginItem, applyPersisted } from './setting-applies';
+
 import { logger } from '../logger';
+import { applyLoginItem, applyPersisted } from './setting-applies';
 
 const DEFAULT_SETTINGS: AppSettings = {
   general: {

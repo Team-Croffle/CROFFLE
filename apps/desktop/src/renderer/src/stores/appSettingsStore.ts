@@ -2,6 +2,7 @@ import type { AppSettings } from '@croffledev/croffle-types';
 import { type AppSettingTheme, AppEventType } from '@croffledev/shared';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+
 import { useThemeStore } from './themeStore';
 
 const applyToUi = (value: AppSettings) => {

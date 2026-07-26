@@ -1,7 +1,9 @@
 <script setup lang="ts">
-  import { useViewStore } from '@/stores/viewStore';
   import { computed } from 'vue';
   import { useRoute } from 'vue-router';
+
+  import { useViewStore } from '@/stores/viewStore';
+
   import PluginViewContainer from './PluginViewContainer.vue';
 
   const route = useRoute();

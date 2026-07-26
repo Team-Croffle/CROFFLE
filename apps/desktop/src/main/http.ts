@@ -1,5 +1,6 @@
-import { net } from 'electron';
 import type { HttpResponse } from '@croffledev/croffle-types';
+import { net } from 'electron';
+
 import { logger } from './logger';
 
 class HttpService {

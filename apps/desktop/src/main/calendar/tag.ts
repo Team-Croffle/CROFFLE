@@ -1,7 +1,8 @@
 import { Not } from 'typeorm';
+
 import { databaseManager } from '../database';
-import { colorValidation } from '../utils/color-validator';
 import { Tag } from '../database/schema/tag.entity';
+import { colorValidation } from '../utils/color-validator';
 import { stringValidation } from '../utils/string-validator';
 
 export async function getAllTags(): Promise<Tag[]> {

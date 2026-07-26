@@ -1,4 +1,12 @@
 <script setup lang="ts">
+  import {
+    ChevronRight,
+    ChevronLeft,
+    Calendar,
+    Layout,
+    Palette,
+    PartyPopper,
+  } from 'lucide-vue-next';
   import { ref, computed } from 'vue';
 
   import {
@@ -8,15 +16,6 @@
     DialogTitle,
     DialogDescription,
   } from '@/components/ui/dialog';
-
-  import {
-    ChevronRight,
-    ChevronLeft,
-    Calendar,
-    Layout,
-    Palette,
-    PartyPopper,
-  } from 'lucide-vue-next';
 
   // Props 및 Emit 정의
 

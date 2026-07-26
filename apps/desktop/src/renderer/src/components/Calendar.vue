@@ -1,23 +1,24 @@
 <script setup lang="ts">
-  import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
+  import { AppEventType } from '@croffledev/shared';
   import type { CalendarOptions } from '@fullcalendar/core';
-  import FullCalendar from '@fullcalendar/vue3';
   import dayGridPlugin from '@fullcalendar/daygrid';
-  import timeGridPlugin from '@fullcalendar/timegrid';
-  import multiMonthPlugin from '@fullcalendar/multimonth';
   import interactionPlugin from '@fullcalendar/interaction';
-  import { useScheduleStore } from '@/stores/scheduleStore';
-  import { useAppSettingsStore } from '@/stores/appSettingsStore';
+  import multiMonthPlugin from '@fullcalendar/multimonth';
+  import timeGridPlugin from '@fullcalendar/timegrid';
+  import FullCalendar from '@fullcalendar/vue3';
+  import dayjs from 'dayjs';
   import { storeToRefs } from 'pinia';
+  import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
+
   import { useCalendarLogic } from '@/composables/useCalendarLogic';
+  import { useAppSettingsStore } from '@/stores/appSettingsStore';
+  import { useScheduleStore } from '@/stores/scheduleStore';
   import {
     calendarViewToFullCalendar,
     languageToLocale,
     timeFormatToHour12,
     weekStartDayToFirstDay,
   } from '@/utils/calendarSettings';
-  import { AppEventType } from '@croffledev/shared';
-  import dayjs from 'dayjs';
 
   // pinia store 연결
   const scheduleStore = useScheduleStore();

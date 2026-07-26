@@ -1,11 +1,12 @@
-import { ipcMain, dialog } from 'electron';
-import { pluginInfoService } from '../plugin/info-service';
 import type { PluginInfo } from '@croffledev/croffle-types';
-import { validatePluginName } from '../utils/plugin-validator';
-import { pluginInfoMapper } from '../mapper/plugin-info-mapper';
-import { eventService } from '../event-bus/event-service';
 import { AppEventType } from '@croffledev/shared';
+import { ipcMain, dialog } from 'electron';
+
+import { eventService } from '../event-bus/event-service';
+import { pluginInfoMapper } from '../mapper/plugin-info-mapper';
+import { pluginInfoService } from '../plugin/info-service';
 import { pluginManager } from '../plugin/manager';
+import { validatePluginName } from '../utils/plugin-validator';
 
 export const registerPluginInfoIpcHandlers = (): void => {
   ipcMain.handle('pluginInfo:getInstalledPlugins', async (): Promise<PluginInfo[]> => {

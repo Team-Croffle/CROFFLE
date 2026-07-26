@@ -1,4 +1,7 @@
 <script setup lang="ts">
+  import { storeToRefs } from 'pinia';
+
+  import { Button } from '@/components/ui/button';
   import {
     Dialog,
     DialogContent,
@@ -8,8 +11,6 @@
     DialogTitle,
   } from '@/components/ui/dialog';
   import { useUpdateStore } from '@/stores/updateStore';
-  import { Button } from '@/components/ui/button';
-  import { storeToRefs } from 'pinia';
 
   const updateStore = useUpdateStore();
   const { isModalOpen, updateInfo, isDownloading, downloadProgress } = storeToRefs(updateStore);

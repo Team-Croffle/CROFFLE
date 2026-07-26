@@ -1,22 +1,24 @@
 // oxlint-disable-next-line import/no-unassigned-import
 import 'reflect-metadata';
-import { app, shell, BrowserWindow, protocol } from 'electron';
-import { AppSettingStartupBehavior } from '@croffledev/shared';
-import { autoUpdater } from 'electron-updater';
-import { databaseManager } from './database';
-import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { join } from 'node:path';
+
+import { AppSettingStartupBehavior } from '@croffledev/shared';
+import { electronApp, optimizer, is } from '@electron-toolkit/utils';
+import { app, shell, BrowserWindow, protocol } from 'electron';
+import { autoUpdater } from 'electron-updater';
+
+import icon from '../../resources/Logo2Only.png?asset';
+import { databaseManager } from './database';
 import { registerAllIpcHandlers } from './ipc';
-import { windowService } from './window/window-service';
-import { settingService } from './setting/setting-service';
+import { logger } from './logger';
 import {
   applyStartupPresentation,
   shouldCheckForUpdates,
   STARTUP_ARG,
   LOGIN_HIDDEN_ARG,
 } from './setting/setting-applies';
-import icon from '../../resources/Logo2Only.png?asset';
-import { logger } from './logger';
+import { settingService } from './setting/setting-service';
+import { windowService } from './window/window-service';
 
 // Must be called before app is ready
 protocol.registerSchemesAsPrivileged([

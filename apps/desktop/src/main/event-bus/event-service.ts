@@ -1,5 +1,7 @@
 import EventEmitter from 'node:events';
+
 import { BrowserWindow } from 'electron';
+
 import { logger } from '../logger';
 
 class EventService extends EventEmitter {

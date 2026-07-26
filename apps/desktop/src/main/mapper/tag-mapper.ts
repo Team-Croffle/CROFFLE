@@ -1,5 +1,6 @@
-import type { Tag as TagEntity } from '../database/schema/tag.entity';
 import type { Tag as TagInterface } from '@croffledev/croffle-types';
+
+import type { Tag as TagEntity } from '../database/schema/tag.entity';
 
 export const tagMapper = {
   toInterface(entity: TagEntity): TagInterface {

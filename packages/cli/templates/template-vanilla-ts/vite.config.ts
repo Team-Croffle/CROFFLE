@@ -1,4 +1,5 @@
 import { copyFileSync, existsSync } from 'node:fs';
+
 import { defineConfig } from 'vite';
 
 export default defineConfig({

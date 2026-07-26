@@ -1,9 +1,11 @@
-import { app, net, protocol } from 'electron';
-import path from 'node:path';
 import fs from 'node:fs';
-import JSZip from 'jszip';
-import { pluginInfoService } from './info-service';
+import path from 'node:path';
+
 import type { PluginInfo } from '@croffledev/croffle-types';
+import { app, net, protocol } from 'electron';
+import JSZip from 'jszip';
+
+import { pluginInfoService } from './info-service';
 
 class PluginManager {
   private pluginDir = path.join(app.getPath('userData'), 'plugins');

@@ -1,5 +1,6 @@
-import type { Schedule as ScheduleEntity } from '../database/schema/schedule.entity';
 import type { Schedule as ScheduleInterface } from '@croffledev/croffle-types';
+
+import type { Schedule as ScheduleEntity } from '../database/schema/schedule.entity';
 
 export const scheduleMapper = {
   toInterface(entity: ScheduleEntity): ScheduleInterface {

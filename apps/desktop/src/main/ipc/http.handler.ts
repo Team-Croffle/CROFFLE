@@ -1,8 +1,9 @@
-import { ipcMain } from 'electron';
 import type { HttpResponse } from '@croffledev/croffle-types';
-import { httpService } from '../http';
-import { eventService } from '../event-bus/event-service';
 import { AppEventType } from '@croffledev/shared';
+import { ipcMain } from 'electron';
+
+import { eventService } from '../event-bus/event-service';
+import { httpService } from '../http';
 
 export const registerHttpIpcHandlers = (): void => {
   ipcMain.handle(

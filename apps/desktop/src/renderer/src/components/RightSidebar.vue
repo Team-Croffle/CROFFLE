@@ -1,15 +1,17 @@
 <script setup lang="ts">
-  import { Calendar, Clock, CheckSquare, Plus, Home, PanelRight } from 'lucide-vue-next';
-  import { Button } from '@/components/ui/button';
-  import { Badge } from '@/components/ui/badge';
-  import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-  import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from '@/components/ui/sidebar';
-  import { useUiStore } from '@/stores/uiStore';
-  import { storeToRefs } from 'pinia';
-  import { computed } from 'vue';
-  import { useScheduleStore } from '@/stores/scheduleStore';
   import dayjs from 'dayjs';
   import isBetween from 'dayjs/plugin/isBetween';
+  import { Calendar, Clock, CheckSquare, Plus, Home, PanelRight } from 'lucide-vue-next';
+  import { storeToRefs } from 'pinia';
+  import { computed } from 'vue';
+
+  import { Badge } from '@/components/ui/badge';
+  import { Button } from '@/components/ui/button';
+  import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+  import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from '@/components/ui/sidebar';
+  import { useScheduleStore } from '@/stores/scheduleStore';
+  import { useUiStore } from '@/stores/uiStore';
+
   import pkg from '../../../../package.json';
 
   dayjs.extend(isBetween);
