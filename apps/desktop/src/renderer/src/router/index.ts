@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-router';
 
 import Calendar from '@/components/calendar.vue';
-import PluginRoute from '@/components/extension-route.vue';
+import ExtensionRoute from '@/components/extension-route.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -16,7 +16,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/extension/:viewId',
     name: 'extension-view',
-    component: PluginRoute,
+    component: ExtensionRoute,
   },
 ];
 

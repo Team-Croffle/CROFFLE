@@ -129,22 +129,21 @@
     contextMenuStore.unregisterExtensionMenus(extensionId);
   };
 
-  const handlePluginLoaded = (event: Event) => {
+  const handleExtensionLoaded = (event: Event) => {
     const customEvent = event as CustomEvent<{
-      plugin: import('@croffledev/croffle-types').ExtensionInfo;
+      extension: import('@croffledev/croffle-types').ExtensionInfo;
     }>;
-    const { plugin } = customEvent.detail;
+    const { extension } = customEvent.detail;
 
-    // 플러그인 로드 시 매니페스트 정보(views, contextMenus, configurationTabs) 동적 등록
     if (isDev) {
       // oxlint-disable-next-line no-console
-      console.log(`[app.vue] handlePluginLoaded: ${plugin.id}`, plugin.features);
+      console.log(`[app.vue] handleExtensionLoaded: ${extension.id}`, extension.contributes);
     }
-    if (plugin.features?.views) {
-      const views = plugin.features.views.map((v) => ({
+    if (extension.contributes?.views) {
+      const views = extension.contributes.views.map((v) => ({
         ...v,
-        extensionName: plugin.name,
-        extensionId: plugin.id,
+        extensionName: extension.name,
+        extensionId: extension.id,
       }));
 
       if (isDev) {
@@ -154,16 +153,12 @@
 
       viewStore.registerMenus(views);
     }
-    if (plugin.features?.contextMenus) {
-      const contextMenus = plugin.features.contextMenus.map((c) => ({
-        ...c,
-        extensionName: plugin.name,
-        extensionId: plugin.id,
-      }));
-      contextMenuStore.registerMenus(contextMenus);
-    }
-    if (plugin.features?.configurationTabs) {
-      settingsStore.registerManifestTabs(plugin.id, plugin.name, plugin.features.configurationTabs);
+    if (extension.contributes?.configuration) {
+      settingsStore.registerManifestTabs(
+        extension.id,
+        extension.name,
+        extension.contributes.configuration,
+      );
     }
   };
 
@@ -176,7 +171,7 @@
     window.addEventListener('extension:register-view', handleRegisterView);
     window.addEventListener('extension:register-configuration-tab', handleRegisterSettingsTab);
     window.addEventListener('extension:register-context-menu', handleRegisterContextMenu);
-    window.addEventListener('extension:loaded', handlePluginLoaded);
+    window.addEventListener('extension:loaded', handleExtensionLoaded);
     window.addEventListener('extension:unloaded', handlePluginUnloaded);
 
     // 최초 로드 시 활성화된 플러그인들의 매니페스트는 extensionLoader.init()에서 extension:loaded 이벤트를 쏴주므로
@@ -211,7 +206,7 @@
     window.removeEventListener('extension:register-view', handleRegisterView);
     window.removeEventListener('extension:register-configuration-tab', handleRegisterSettingsTab);
     window.removeEventListener('extension:register-context-menu', handleRegisterContextMenu);
-    window.removeEventListener('extension:loaded', handlePluginLoaded);
+    window.removeEventListener('extension:loaded', handleExtensionLoaded);
     window.removeEventListener('extension:unloaded', handlePluginUnloaded);
     unsubscribeStartupNav?.();
     appSettingsStore.dispose();
