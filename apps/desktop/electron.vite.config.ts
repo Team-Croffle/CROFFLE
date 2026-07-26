@@ -5,7 +5,6 @@ import vue from '@vitejs/plugin-vue';
 import swc from 'unplugin-swc';
 import tailwindcss from '@tailwindcss/vite';
 
-const rendererRoot = resolve(__dirname, '../../packages/renderer');
 const sharedEntry = resolve(__dirname, '../../packages/shared/src/index.ts');
 
 /** types-only package — provide an empty module so Rolldown can resolve it */
@@ -66,18 +65,9 @@ export default defineConfig({
     },
   },
   renderer: {
-    root: rendererRoot,
-    build: {
-      outDir: resolve(__dirname, 'out/renderer'),
-      rollupOptions: {
-        input: {
-          index: resolve(rendererRoot, 'index.html'),
-        },
-      },
-    },
     resolve: {
       alias: {
-        '@': resolve(rendererRoot, 'src'),
+        '@': resolve(__dirname, 'src/renderer/src'),
         '@croffledev/shared': sharedEntry,
       },
     },

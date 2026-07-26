@@ -16,8 +16,7 @@
     "**/build/**",
     "**/*.cjs",
     "**/coverage/**",
-    "packages/cli/templates/**",
-    "packages/renderer/src/components/ui/**"
+    "packages/cli/templates/**"
   ],
   "categories": {
     "correctness": "error",

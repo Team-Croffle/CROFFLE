@@ -1,13 +1,14 @@
 <script lang="ts" setup>
-  import type { RangeCalendarHeadingProps } from 'reka-ui';
+  import type { CalendarHeadingProps } from 'reka-ui';
   import type { HTMLAttributes } from 'vue';
   import { reactiveOmit } from '@vueuse/core';
-  import { RangeCalendarHeading, useForwardProps } from 'reka-ui';
+  import { CalendarHeading, useForwardProps } from 'reka-ui';
   import { cn } from '@/lib/utils';
 
-  const props = defineProps<RangeCalendarHeadingProps & { class?: HTMLAttributes['class'] }>();
+  const props = defineProps<CalendarHeadingProps & { class?: HTMLAttributes['class'] }>();
 
   defineSlots<{
+    // oxlint-disable-next-line typescript/no-explicit-any
     default: (props: { headingValue: string }) => any;
   }>();
 
@@ -17,14 +18,14 @@
 </script>
 
 <template>
-  <RangeCalendarHeading
+  <CalendarHeading
     v-slot="{ headingValue }"
-    data-slot="range-calendar-heading"
+    data-slot="calendar-heading"
     :class="cn('text-sm font-medium', props.class)"
     v-bind="forwardedProps"
   >
     <slot :heading-value>
       {{ headingValue }}
     </slot>
-  </RangeCalendarHeading>
+  </CalendarHeading>
 </template>
