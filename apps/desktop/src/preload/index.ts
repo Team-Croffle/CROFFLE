@@ -13,7 +13,7 @@ import { pluginSettingsApi } from './api/pluginSettings.api';
 import { tagApi } from './api/tag.api';
 import { windowApi } from './api/window.api';
 import { searchApi } from './api/search.api';
-import { logger } from '../main/core/logger/loggerService';
+import { logger } from '../main/logger';
 
 // Custom APIs for renderer
 const api = {

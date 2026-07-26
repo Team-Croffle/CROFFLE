@@ -1,15 +1,15 @@
 import { registerWindowIpcHandlers } from './window.handler';
 import { registerScheduleIpcHandlers } from './schedule.handler';
 import { registerTagIpcHandlers } from './tag.handler';
-import { registerPluginInfoIpcHandlers } from './pluginInfo.handler';
+import { registerPluginInfoIpcHandlers } from './plugin-info.handler';
 import { registerSearchIpcHandlers } from './search.handler';
 import { registerSettingsIpcHandlers } from './settings.handler';
-import { registerOsIpcHandlers } from './os.service.handler';
-import { registerPluginStorageIpcHandlers } from './pluginStorage.handler';
+import { registerOsIpcHandlers } from './os.handler';
+import { registerPluginStorageIpcHandlers } from './plugin-storage.handler';
 import { registerHttpIpcHandlers } from './http.handler';
 import { registerEventIpcHandlers } from './event.handler';
-import { registerPluginSessionIpcHandlers } from './pluginSession.handler';
-import { logger } from '../core/logger/loggerService';
+import { registerPluginSessionIpcHandlers } from './plugin-session.handler';
+import { logger } from '../logger';
 
 export function registerAllIpcHandlers() {
   logger.debug('IPC', 'Registering Window IPC Handlers');
