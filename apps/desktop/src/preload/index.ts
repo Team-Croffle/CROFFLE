@@ -2,7 +2,6 @@ import * as Enums from '@croffledev/common';
 import { electronAPI } from '@electron-toolkit/preload';
 import { contextBridge } from 'electron';
 
-import { logger } from '../main/logger';
 import { scheduleApi } from './api/calendar/schedules';
 import { searchApi } from './api/calendar/search';
 import { tagApi } from './api/calendar/tags';
@@ -40,8 +39,9 @@ if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI);
     contextBridge.exposeInMainWorld('croffle', api);
-  } catch (error) {
-    logger.error('Preload', JSON.stringify(error));
+  } catch {
+    // oxlint-disable-next-line no-console
+    console.error('Failed to expose API to main world');
   }
 } else {
   window.electron = electronAPI;
