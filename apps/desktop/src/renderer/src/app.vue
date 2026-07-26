@@ -84,6 +84,9 @@
     const { extensionId, extensionName, tabId, label, icon, order, render, sections } =
       customEvent.detail;
 
+    // NOTE: the section means the configuration section using the pre-defined schema.
+    // and the render means the custom configuration section.
+    // render has the permission for rendering on the one of the settings tabs.
     if (render && sections && isDev) {
       // oxlint-disable-next-line no-console
       console.warn(
