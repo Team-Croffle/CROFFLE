@@ -16,7 +16,8 @@
     "**/build/**",
     "**/*.cjs",
     "**/coverage/**",
-    "packages/cli/templates/**"
+    "packages/cli/templates/**",
+    "apps/desktop/src/renderer/src/components/ui/**"
   ],
   "categories": {
     "correctness": "error",
@@ -67,6 +68,13 @@
     "promise/no-nesting": "error",
 
     // Unicorn
+    "unicorn/filename-case": [
+      "error",
+      {
+        "case": "kebabCase",
+        "ignore": ["\\.d\\.ts$"]
+      }
+    ],
     "unicorn/consistent-empty-array-spread": "error",
     "unicorn/error-message": "error",
     "unicorn/no-array-fill-with-reference-type": "warn",

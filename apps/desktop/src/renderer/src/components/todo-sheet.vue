@@ -19,8 +19,8 @@
     SheetDescription,
   } from '@/components/ui/sheet';
   import { cn } from '@/lib/utils';
-  import { useScheduleStore } from '@/stores/scheduleStore';
-  import { useUiStore } from '@/stores/uiStore';
+  import { useScheduleStore } from '@/stores/schedule-store';
+  import { useUiStore } from '@/stores/ui-store';
   // import type { Tag } from 'croffle';
 
   // 스토어 연결

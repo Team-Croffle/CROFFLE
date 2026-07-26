@@ -10,7 +10,7 @@
     DialogHeader,
     DialogTitle,
   } from '@/components/ui/dialog';
-  import { useUpdateStore } from '@/stores/updateStore';
+  import { useUpdateStore } from '@/stores/update-store';
 
   const updateStore = useUpdateStore();
   const { isModalOpen, updateInfo, isDownloading, downloadProgress } = storeToRefs(updateStore);

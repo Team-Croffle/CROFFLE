@@ -11,23 +11,23 @@
   import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
   import { Toaster } from '@/components/ui/sonner';
 
-  import LeftSidebar from './components/LeftSidebar.vue';
-  import RightSidebar from './components/RightSidebar.vue';
-  import SettingsModal from './components/SettingsModal.vue';
-  import Todosheet from './components/Todosheet.vue';
+  import LeftSidebar from './components/left-sidebar.vue';
+  import RightSidebar from './components/right-sidebar.vue';
+  import SettingsModal from './components/settings-modal.vue';
+  import Todosheet from './components/todo-sheet.vue';
   import Button from './components/ui/button/Button.vue';
-  import { Separator } from './components/ui/separator';
-  import UpdateModal from './components/UpdateModal.vue';
-  import { defaultMenus } from './data/defaultContextMenus';
-  import router from './router';
-  import { pluginLoader } from './services/PluginLoader';
-  import { useAppSettingsStore } from './stores/appSettingsStore';
-  import { useContextMenuStore } from './stores/contextMenuStore';
-  import { useSettingsStore } from './stores/settingsStore';
-  import { useThemeStore } from './stores/themeStore';
-  import { useUiStore } from './stores/uiStore';
-  import { useUpdateStore } from './stores/updateStore';
-  import { useViewStore } from './stores/viewStore';
+  import { Separator } from './components/ui/separator/index.ts';
+  import UpdateModal from './components/update-modal.vue';
+  import { defaultMenus } from './data/default-context-menus.ts';
+  import router from './router/index.ts';
+  import { pluginLoader } from './services/plugin-loader.ts';
+  import { useAppSettingsStore } from './stores/app-settings-store.ts';
+  import { useContextMenuStore } from './stores/context-menu-store.ts';
+  import { useSettingsStore } from './stores/settings-store.ts';
+  import { useThemeStore } from './stores/theme-store.ts';
+  import { useUiStore } from './stores/ui-store.ts';
+  import { useUpdateStore } from './stores/update-store.ts';
+  import { useViewStore } from './stores/view-store.ts';
   // import { mockPluginsList } from './test/testPluginMenu';
 
   const uiStore = useUiStore();
@@ -138,7 +138,7 @@
     // 플러그인 로드 시 매니페스트 정보(views, contextMenus, settingsTabs) 동적 등록
     if (isDev) {
       // oxlint-disable-next-line no-console
-      console.log(`[App.vue] handlePluginLoaded: ${plugin.id}`, plugin.features);
+      console.log(`[app.vue] handlePluginLoaded: ${plugin.id}`, plugin.features);
     }
     if (plugin.features?.views) {
       const views = plugin.features.views.map((v) => ({
@@ -149,7 +149,7 @@
 
       if (isDev) {
         // oxlint-disable-next-line no-console
-        console.log(`[App.vue] registerMenus views:`, views);
+        console.log(`[app.vue] registerMenus views:`, views);
       }
 
       viewStore.registerMenus(views);

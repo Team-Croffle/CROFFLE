@@ -17,11 +17,11 @@
     SidebarGroup,
     SidebarGroupContent,
   } from '@/components/ui/sidebar';
-  import { DEFAULT_MENU_ITEMS } from '@/data/defaultMenus';
-  import { useUiStore } from '@/stores/uiStore';
-  import { useViewStore } from '@/stores/viewStore';
+  import { DEFAULT_MENU_ITEMS } from '@/data/default-menus';
+  import { useUiStore } from '@/stores/ui-store';
+  import { useViewStore } from '@/stores/view-store';
 
-  import HelpModal from './HelpModal.vue';
+  import HelpModal from './help-modal.vue';
   // import { testMockPlugin } from '@/test/testPluginMenu';
 
   const uiStore = useUiStore();
