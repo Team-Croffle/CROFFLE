@@ -1,27 +1,62 @@
-## Overview
+## Summary
 
-- Please provide a brief description of the bug that was fixed and the context in which it occurred.
+<!-- What was broken, and what this PR does to fix it. -->
 
-## Area (Please check only one)
+-
 
-- [ ] MainProcess
+## Package scope
+
+- [ ] `apps/desktop`
+- [ ] `packages/types`
+- [ ] `packages/cli`
+- [ ] Root / workspace / CI
+
+## Electron surface
+
+- [ ] Main
+- [ ] Preload / host API
 - [ ] Renderer
+- [ ] Native / IPC / packaging
 
-## Related Issue
+## Related issues
 
-Fixes #00
+Fixes #
 
-- Please link the related issue number here.
+## Root cause
 
-## Changes Made
+<!-- Short note on why it happened (optional but helpful). -->
 
-- [x] Please list the specific changes made in this pull request.
-- [ ] Use bullet points for clarity.
+-
 
-## Screenshots (if applicable)
+## Fix
 
-- Please include any relevant screenshots to illustrate the changes made.
+-
 
-## Additional Notes
+## How to reproduce (before) / verify (after)
 
-- Please provide any additional information or context that reviewers should be aware of.
+1.
+2.
+3.
+
+**Expected:**  
+**Actual (before):**
+
+## Test plan
+
+- [ ] Reproduced the bug on a clean build, then confirmed the fix
+- [ ] `pnpm typecheck` passes for affected packages
+- [ ] Regression check for nearby behavior _(list what you checked)_
+- [ ] Verified on _[ Windows / macOS / Linux ]_ _(if platform-specific)_
+- [ ] Changeset added _(only if publishable public API / behavior changed)_
+
+## Screenshots / logs
+
+<!-- Attach before/after if UI, or relevant log snippets. -->
+
+## Release notes
+
+Notes:
+
+## Additional notes for reviewers
+
+-

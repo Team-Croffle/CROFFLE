@@ -1,27 +1,70 @@
-## Overview
+## Summary
 
-- Please provide a brief description of the new feature being added and its intended purpose.
+<!-- What the feature enables and why it matters. -->
 
-## Area (Please check only one)
+-
 
-- [ ] MainProcess
+## Package scope
+
+- [ ] `apps/desktop`
+- [ ] `packages/types`
+- [ ] `packages/cli`
+- [ ] Root / workspace / CI
+
+## Electron surface
+
+- [ ] Main
+- [ ] Preload / host API
 - [ ] Renderer
+- [ ] Native / IPC / packaging
 
-## Related Issue
+## Related issues
 
-Feat #00
+Closes #
 
-- Please link the related issue number here.
+## Motivation / user story
 
-## Changes Made
+<!-- Optional: problem or use case this solves. -->
 
-- [x] Please list the specific changes made in this pull request.
-- [ ] Use bullet points for clarity.
+-
 
-## Screenshots (if applicable)
+## Approach
 
-- Please include any relevant screenshots to illustrate the changes made.
+<!-- High-level design. Call out alternatives considered if non-obvious. -->
 
-## Additional Notes
+-
 
-- Please provide any additional information or context that reviewers should be aware of.
+## API / contract changes
+
+<!-- Host API (`croffle.*`), types exports, CLI flags, plugin lifecycle — or "None". -->
+
+-
+
+## Test plan
+
+- [ ] Happy path verified
+- [ ] Edge cases / failure paths checked _(briefly list)_
+- [ ] `pnpm typecheck` passes for affected packages
+- [ ] Built and smoke-tested (`pnpm dev` / `pnpm build` as relevant)
+- [ ] Verified on _[ Windows / macOS / Linux ]_ _(if UI or Electron behavior)_
+- [ ] Changeset added for publishable packages (`types` / `cli`) when public API changed
+- [ ] Docs / README / template samples updated _(if user-facing)_
+
+### Manual steps
+
+1.
+2.
+
+## Screenshots / demo
+
+<!-- UI or CLI output if helpful. -->
+
+## Release notes
+
+<!-- Past tense, written for app / plugin developers. -->
+
+Notes:
+
+## Additional notes for reviewers
+
+-
