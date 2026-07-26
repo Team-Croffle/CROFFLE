@@ -15,7 +15,7 @@ export const DEFAULT_MENU_ITEMS: FeatureView[] = [
     title: '대시보드',
     subtitle: 'Dashboard',
     icon: ChartLine,
-    url: '/plugin/dashboard',
+    url: '/extension/dashboard',
     active: false,
   },
   {
@@ -23,7 +23,7 @@ export const DEFAULT_MENU_ITEMS: FeatureView[] = [
     title: '리포트',
     subtitle: 'Report',
     icon: Pencil,
-    url: '/plugin/report',
+    url: '/extension/report',
     active: false,
   },
   {
@@ -31,7 +31,7 @@ export const DEFAULT_MENU_ITEMS: FeatureView[] = [
     title: '팀 관리',
     subtitle: 'Team',
     icon: Users,
-    url: '/plugin/team',
+    url: '/extension/team',
     active: false,
   },
 ];

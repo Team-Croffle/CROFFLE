@@ -45,7 +45,7 @@
       icon: menu.icon || Puzzle,
       // 현재 URL의 viewId 파라미터가 메뉴의 id와 같으면 활성화
       active: route.params.viewId === `${menu.id}`,
-      url: `/plugin/${menu.id}`,
+      url: `/extension/${menu.id}`,
     }));
 
     return [...baseMenus, ...additionalMenus];

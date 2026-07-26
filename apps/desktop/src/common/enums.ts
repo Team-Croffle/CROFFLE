@@ -56,18 +56,18 @@ export enum AppEventType {
   TAG_UPDATE = 'tag:update',
   TAG_DELETE = 'tag:delete',
 
-  // Plugin Info
-  PLUGIN_INFO_GET_INSTALLED = 'pluginInfo:getInstalled',
-  PLUGIN_INFO_GET_ENABLED = 'pluginInfo:getEnabled',
-  PLUGIN_INFO_GET_BY_NAME = 'pluginInfo:getByName',
-  PLUGIN_INFO_INSTALL = 'pluginInfo:install',
-  PLUGIN_INFO_TOGGLE = 'pluginInfo:toggle',
-  PLUGIN_INFO_UNINSTALL = 'pluginInfo:uninstall',
+  // Extension Info
+  EXTENSION_INFO_GET_INSTALLED = 'extensionInfo:getInstalled',
+  EXTENSION_INFO_GET_ENABLED = 'extensionInfo:getEnabled',
+  EXTENSION_INFO_GET_BY_NAME = 'extensionInfo:getByName',
+  EXTENSION_INFO_INSTALL = 'extensionInfo:install',
+  EXTENSION_INFO_TOGGLE = 'extensionInfo:toggle',
+  EXTENSION_INFO_UNINSTALL = 'extensionInfo:uninstall',
 
-  // Plugin Storage
-  PLUGIN_STORAGE_GET = 'pluginStorage:get',
-  PLUGIN_STORAGE_SET = 'pluginStorage:set',
-  PLUGIN_STORAGE_DELETE = 'pluginStorage:delete',
+  // Extension Storage
+  EXTENSION_STORAGE_GET = 'extensionStorage:get',
+  EXTENSION_STORAGE_SET = 'extensionStorage:set',
+  EXTENSION_STORAGE_DELETE = 'extensionStorage:delete',
 
   // Settings
   SETTINGS_GET = 'settings:get',
@@ -93,17 +93,17 @@ export enum AppEventType {
   HTTP_SERVICE_GET = 'httpService:get',
   HTTP_SERVICE_POST = 'httpService:post',
 
-  // Plugin
-  PLUGIN_INSTALL = 'plugin:install',
-  PLUGIN_TOGGLE = 'plugin:toggle',
-  PLUGIN_UNINSTALL = 'plugin:uninstall',
+  // Extension
+  EXTENSION_INSTALL = 'extension:install',
+  EXTENSION_TOGGLE = 'extension:toggle',
+  EXTENSION_UNINSTALL = 'extension:uninstall',
 
-  // Plugin Session Storage
-  PLUGIN_SESSION_STORAGE_GET = 'sessionStorage:get',
-  PLUGIN_SESSION_STORAGE_SET = 'sessionStorage:set',
-  PLUGIN_SESSION_STORAGE_DELETE = 'sessionStorage:delete',
-  PLUGIN_SESSION_STORAGE_CLEAR = 'sessionStorage:clear',
-  PLUGIN_SESSION_STORAGE_CLEAR_ALL = 'sessionStorage:clearAll',
+  // Extension Session Storage
+  EXTENSION_SESSION_STORAGE_GET = 'sessionStorage:get',
+  EXTENSION_SESSION_STORAGE_SET = 'sessionStorage:set',
+  EXTENSION_SESSION_STORAGE_DELETE = 'sessionStorage:delete',
+  EXTENSION_SESSION_STORAGE_CLEAR = 'sessionStorage:clear',
+  EXTENSION_SESSION_STORAGE_CLEAR_ALL = 'sessionStorage:clearAll',
 
   // Background works
   SCHEDULER_REGISTER = 'scheduler:register',
@@ -113,7 +113,7 @@ export enum AppEventType {
   UI_ADD_MENU_ITEM = 'ui:addMenuItem',
   UI_CONTEXT_MENU_ADD_ITEM = 'ui:contextMenu:addItem',
 
-  // Electron Updater 전용. 앱 내에서만 사용
+  // Electron Updater ?�용. ???�에?�만 ?�용
   UPDATE_AVAILABLE = 'update:available',
   UPDATE_NOT_AVAILABLE = 'update:notAvailable',
   UPDATE_DOWNLOAD_PROGRESS = 'update:downloadProgress',

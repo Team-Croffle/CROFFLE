@@ -1,7 +1,7 @@
 {
   "name": "@croffledev/croffle-cli",
   "version": "1.0.1",
-  "description": "CLI for scaffolding, building, and packaging Croffle plugins",
+  "description": "CLI for scaffolding, building, and packaging Croffle extensions",
   "type": "module",
   "bin": {
     "create-croffle-plugin": "dist/cli.js",

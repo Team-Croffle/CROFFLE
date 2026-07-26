@@ -1,9 +1,9 @@
 import { databaseManager } from '../database';
-import { PluginInfo } from '../database/schema/plugin-info.entity';
+import { ExtensionInfo } from '../database/schema/extension-info.entity';
 
-export const pluginInfoService = {
-  getInstalledPlugins: async (): Promise<PluginInfo[]> => {
-    const repo = databaseManager.getRepository(PluginInfo);
+export const extensionInfoService = {
+  getInstalledExtensions: async (): Promise<ExtensionInfo[]> => {
+    const repo = databaseManager.getRepository(ExtensionInfo);
     return repo.find({
       order: {
         name: 'ASC',
@@ -11,8 +11,8 @@ export const pluginInfoService = {
     });
   },
 
-  getEnabledPlugins: async (): Promise<PluginInfo[]> => {
-    const repo = databaseManager.getRepository(PluginInfo);
+  getEnabledExtensions: async (): Promise<ExtensionInfo[]> => {
+    const repo = databaseManager.getRepository(ExtensionInfo);
     return repo.find({
       where: {
         enabled: true,
@@ -23,8 +23,8 @@ export const pluginInfoService = {
     });
   },
 
-  getPluginByName: async (name: string): Promise<PluginInfo | null> => {
-    const repo = databaseManager.getRepository(PluginInfo);
+  getExtensionByName: async (name: string): Promise<ExtensionInfo | null> => {
+    const repo = databaseManager.getRepository(ExtensionInfo);
     return repo.findOne({
       where: {
         name,
@@ -32,8 +32,8 @@ export const pluginInfoService = {
     });
   },
 
-  installPlugin: async (pluginData: Partial<PluginInfo>): Promise<PluginInfo> => {
-    const repo = databaseManager.getRepository(PluginInfo);
+  installExtension: async (pluginData: Partial<ExtensionInfo>): Promise<ExtensionInfo> => {
+    const repo = databaseManager.getRepository(ExtensionInfo);
 
     const existing = await repo.findOne({ where: { name: pluginData.name! } });
     if (existing) {
@@ -44,8 +44,8 @@ export const pluginInfoService = {
     return repo.save(plugin);
   },
 
-  togglePlugin: async (id: string, enable: boolean): Promise<PluginInfo | null> => {
-    const repo = databaseManager.getRepository(PluginInfo);
+  toggleExtension: async (id: string, enable: boolean): Promise<ExtensionInfo | null> => {
+    const repo = databaseManager.getRepository(ExtensionInfo);
     const plugin = await repo.findOne({ where: { id } });
     if (!plugin) {
       throw new Error(`Plugin "${id}" not found.`);
@@ -54,8 +54,8 @@ export const pluginInfoService = {
     return repo.save(plugin);
   },
 
-  uninstallPlugin: async (id: string): Promise<boolean> => {
-    const repo = databaseManager.getRepository(PluginInfo);
+  uninstallExtension: async (id: string): Promise<boolean> => {
+    const repo = databaseManager.getRepository(ExtensionInfo);
     const result = await repo.delete({ id });
     return result.affected !== undefined && result.affected !== null && result.affected > 0;
   },

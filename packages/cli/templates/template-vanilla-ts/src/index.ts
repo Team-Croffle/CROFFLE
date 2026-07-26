@@ -1,8 +1,8 @@
-import type { PluginContext } from '@croffledev/croffle-types';
+import type { ExtensionContext } from '@croffledev/croffle-types';
 
 import './style.css'; // We will create this
 
-export function activated(context: PluginContext) {
+export function activated(context: ExtensionContext) {
   console.log('Vanilla Plugin has been activated!');
 
   // 1. Register Feature View
@@ -28,7 +28,7 @@ export function activated(context: PluginContext) {
   });
 
   // 2. Register Settings Tab
-  context.ui.registerSettingsTab('vanilla-settings-tab', {
+  context.ui.registerConfigurationTab('vanilla-settings-tab', {
     label: 'Vanilla Tab',
     render: (container: HTMLElement) => {
       container.innerHTML = `

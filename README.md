@@ -13,7 +13,7 @@
 
 **Croffle** is an open-source **desktop application** designed to go beyond simple schedule management. It empowers users to add custom features and automate workflows directly within the app.
 
-We provide a **powerful plugin system** that lets you build your own productivity environment. Starting with Calendar and To-Do management, you can extend Croffle to fit your workflow. Built on Electron, it runs on Windows, macOS, and Linux.
+We provide a **powerful extension system** that lets you build your own productivity environment. Starting with Calendar and To-Do management, you can extend Croffle to fit your workflow. Built on Electron, it runs on Windows, macOS, and Linux.
 
 ---
 
@@ -25,11 +25,11 @@ We provide a **powerful plugin system** that lets you build your own productivit
 - **Flexible Tagging**: Categorize and filter work with tags.
 - **Desktop Optimized**: Built for large screens and keyboard-driven use.
 
-### Plugin System
+### Extension System
 
-- **Easy Installation**: Install plugins from **GitHub** or a local `.zip`.
+- **Easy Installation**: Install extensions from **GitHub** or a local `.zip`.
 - **Your Own Toolkit**: Add only what you need (timers, habit trackers, notes, …).
-- **Full Control**: Enable or disable plugins anytime.
+- **Full Control**: Enable or disable extensions anytime.
 
 ### Workflow Automation
 
@@ -51,12 +51,12 @@ Download the latest build from the [Releases](https://github.com/team-croffle/cr
 
 > Exact filenames include the version and architecture (for example `croffle-1.0.2-arm64.dmg`).
 
-### Using plugins
+### Using extensions
 
-1. Open **Settings → Plugins**.
-2. Choose **Install Plugin**.
-3. Paste a **GitHub repository URL**, or pick a built plugin `.zip`.
-4. Enable the plugin after install.
+1. Open **Settings → Extensions**.
+2. Choose **Install Extension**.
+3. Paste a **GitHub repository URL**, or pick a built extension `.zip`.
+4. Enable the extension after install.
 
 ---
 
@@ -79,8 +79,8 @@ pnpm dev
 
 Requirements: **Node.js ≥ 24**, **pnpm** (via Corepack).
 
-- Plugin scaffolding: [`@croffledev/croffle-cli`](./packages/cli/README.md)
-- Types for plugins: [`@croffledev/croffle-types`](./packages/types/README.md)
+- Extension scaffolding: [`@croffledev/croffle-cli`](./packages/cli/README.md)
+- Types for extensions: [`@croffledev/croffle-types`](./packages/types/README.md)
 - Full contribution guide: **[CONTRIBUTING.md](./CONTRIBUTING.md)** · [한국어](./CONTRIBUTING.ko.md)
 
 ---

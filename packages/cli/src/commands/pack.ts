@@ -27,21 +27,21 @@ export const packCommand = new Command('pack')
       }
 
       const manifest = JSON.parse(fs.readFileSync(pluginJsonPath, 'utf8'));
-      const pluginId = manifest.id;
-      if (!pluginId) {
+      const extensionId = manifest.id;
+      if (!extensionId) {
         console.error(picocolors.red('Error: plugin.json is missing an "id" field.'));
         process.exit(1);
       }
 
-      const zipFileName = `${pluginId}-${manifest.version || '1.0.0'}.zip`;
+      const zipFileName = `${extensionId}-${manifest.version || '1.0.0'}.zip`;
       console.log(picocolors.cyan(`Packaging plugin as ${zipFileName}...`));
 
       const zip = new AdmZip();
 
       // Add a root folder inside the zip so it matches the expected structure when unzipped from github
-      // PluginManager expects a root dir if unzipped, but actually our local zip install expects a single root directory if there's only one.
+      // ExtensionManager expects a root dir if unzipped, but actually our local zip install expects a single root directory if there's only one.
       // We will place everything inside a folder named after the plugin ID.
-      zip.addLocalFolder(distPath, pluginId);
+      zip.addLocalFolder(distPath, extensionId);
 
       zip.writeZip(zipFileName);
 

@@ -7,7 +7,11 @@
     CalendarView,
     CalendarWeekStartDay,
   } from '@croffledev/common';
-  import type { SettingsTabContribution, AppSettings, PluginInfo } from '@croffledev/croffle-types';
+  import type {
+    ConfigurationTabContribution,
+    AppSettings,
+    ExtensionInfo,
+  } from '@croffledev/croffle-types';
   import {
     Settings,
     Bell,
@@ -41,10 +45,10 @@
   } from '@/components/ui/select';
   import { Separator } from '@/components/ui/separator';
   import { Switch } from '@/components/ui/switch';
-  import { pluginLoader } from '@/services/plugin-loader';
+  import { extensionLoader } from '@/services/extension-loader';
   import { useAppSettingsStore } from '@/stores/app-settings-store';
   import { useSettingsStore } from '@/stores/settings-store';
-  import { mergeWithSchemaDefaults } from '@/utils/plugin-settings-schema';
+  import { mergeWithSchemaDefaults } from '@/utils/extension-configuration-schema';
 
   type Props = {
     open: boolean;
@@ -74,7 +78,7 @@
   const loadError = ref<string | null>(null);
 
   // 플러그인 관리 상태
-  const installedPlugins = ref<PluginInfo[]>([]);
+  const installedPlugins = ref<ExtensionInfo[]>([]);
   const installUrl = ref<string>('');
   const isInstalling = ref<boolean>(false);
 
@@ -100,7 +104,7 @@
     { id: 'general', label: '일반', icon: Settings },
     { id: 'calendar', label: '캘린더', icon: CalendarDays },
     { id: 'notifications', label: '알림', icon: Bell },
-    { id: 'plugins', label: '플러그인 관리', icon: Puzzle },
+    { id: 'extensions', label: '확장 관리', icon: Puzzle },
   ] as const;
 
   const isBootEnabled = computed(() => settings.value?.general.startOnSystemBoot ?? false);
@@ -135,12 +139,14 @@
   const cloneExtensionDrafts = (value: Record<string, Record<string, unknown>>) =>
     JSON.parse(JSON.stringify(value)) as Record<string, Record<string, unknown>>;
 
-  const loadExtensionTabSettings = async (tab: SettingsTabContribution) => {
+  const loadExtensionTabSettings = async (tab: ConfigurationTabContribution) => {
     if (!tab.sections?.length) {
       return;
     }
     const compositeId = settingsStore.getTabCompositeId(tab);
-    const stored = await croffle.plugins.settings.get<Record<string, unknown>>(tab.pluginId);
+    const stored = await croffle.extensions.configuration.get<Record<string, unknown>>(
+      tab.extensionId,
+    );
     const merged = mergeWithSchemaDefaults(tab.sections, stored);
     extensionDrafts.value[compositeId] = merged;
     originalExtensionDrafts.value[compositeId] = JSON.parse(JSON.stringify(merged));
@@ -155,7 +161,9 @@
         continue;
       }
       const compositeId = settingsStore.getTabCompositeId(tab);
-      const stored = await croffle.plugins.settings.get<Record<string, unknown>>(tab.pluginId);
+      const stored = await croffle.extensions.configuration.get<Record<string, unknown>>(
+        tab.extensionId,
+      );
       const merged = mergeWithSchemaDefaults(tab.sections, stored);
       drafts[compositeId] = merged;
       originals[compositeId] = JSON.parse(JSON.stringify(merged));
@@ -226,9 +234,9 @@
 
   const fetchInstalledPlugins = async () => {
     try {
-      installedPlugins.value = await croffle.plugins.info.getInstalled();
+      installedPlugins.value = await croffle.extensions.info.getInstalled();
     } catch (err) {
-      toast.error(`플러그인 목록 로드 실패: ${JSON.stringify(err)}`);
+      toast.error(`확장 목록 로드 실패: ${JSON.stringify(err)}`);
     }
   };
 
@@ -238,14 +246,14 @@
     }
     isInstalling.value = true;
     try {
-      const plugin = await croffle.plugins.info.install({
+      const plugin = await croffle.extensions.info.install({
         id: installUrl.value,
       });
       installUrl.value = '';
       await fetchInstalledPlugins();
-      await pluginLoader.loadPluginById(plugin.id);
+      await extensionLoader.loadPluginById(plugin.id);
     } catch (err) {
-      toast.error(`Failed to install plugin: ${JSON.stringify(err)}`);
+      toast.error(`Failed to install extension: ${JSON.stringify(err)}`);
     } finally {
       isInstalling.value = false;
     }
@@ -254,43 +262,43 @@
   const onLocalZipSelect = async () => {
     isInstalling.value = true;
     try {
-      const result = await croffle.plugins.info.installFromLocal();
+      const result = await croffle.extensions.info.installFromLocal();
       if (result) {
         await fetchInstalledPlugins();
-        await pluginLoader.loadPluginById(result.id);
+        await extensionLoader.loadPluginById(result.id);
       }
     } catch (err) {
-      toast.error(`Failed to install local plugin: ${JSON.stringify(err)}`);
+      toast.error(`Failed to install local extension: ${JSON.stringify(err)}`);
     } finally {
       isInstalling.value = false;
     }
   };
 
-  const onTogglePlugin = async (plugin: PluginInfo) => {
+  const onTogglePlugin = async (plugin: ExtensionInfo) => {
     try {
-      await croffle.plugins.info.toggle(plugin.id, plugin.enabled);
+      await croffle.extensions.info.toggle(plugin.id, plugin.enabled);
       await fetchInstalledPlugins();
 
       if (plugin.enabled) {
-        await pluginLoader.loadPluginById(plugin.id);
+        await extensionLoader.loadPluginById(plugin.id);
       } else {
-        await pluginLoader.unloadPlugin(plugin.id);
+        await extensionLoader.unloadPlugin(plugin.id);
       }
     } catch (err) {
-      toast.error(`플러그인 토글 실패: ${JSON.stringify(err)}`);
+      toast.error(`확장 토글 실패: ${JSON.stringify(err)}`);
     }
   };
 
-  const onUninstallPlugin = async (plugin: PluginInfo) => {
-    if (!confirm(`'${plugin.name}' 플러그인을 삭제하시겠습니까?`)) {
+  const onUninstallExtension = async (plugin: ExtensionInfo) => {
+    if (!confirm(`'${plugin.name}' 확장을 삭제하시겠습니까?`)) {
       return;
     }
     try {
-      await pluginLoader.unloadPlugin(plugin.id);
-      await croffle.plugins.info.uninstall(plugin.id);
+      await extensionLoader.unloadPlugin(plugin.id);
+      await croffle.extensions.info.uninstall(plugin.id);
       await fetchInstalledPlugins();
     } catch (err) {
-      toast.error(`플러그인 삭제 실패: ${JSON.stringify(err)}`);
+      toast.error(`확장 삭제 실패: ${JSON.stringify(err)}`);
     }
   };
 
@@ -312,14 +320,14 @@
       } else {
         void reloadSettings();
       }
-      if (activeTab.value === 'plugins') {
+      if (activeTab.value === 'extensions') {
         void fetchInstalledPlugins();
       }
     },
   );
 
   watch(activeTab, (tab) => {
-    if (tab === 'plugins') {
+    if (tab === 'extensions') {
       void fetchInstalledPlugins();
     }
   });
@@ -338,7 +346,7 @@
         const compositeId = settingsStore.getTabCompositeId(tab);
         const draft = extensionDrafts.value[compositeId];
         if (draft) {
-          await croffle.plugins.settings.set(tab.pluginId, draft);
+          await croffle.extensions.configuration.set(tab.extensionId, draft);
         }
       }
 
@@ -470,7 +478,7 @@
     label: `${m}분 전`,
   }));
 
-  const onExtensionTabClick = async (tab: SettingsTabContribution) => {
+  const onExtensionTabClick = async (tab: ConfigurationTabContribution) => {
     const compositeId = settingsStore.getTabCompositeId(tab);
     activeTab.value = compositeId;
     if (tab.sections?.length && !extensionDrafts.value[compositeId]) {
@@ -856,8 +864,8 @@
               </div>
 
               <!-- 플러그인 관리 -->
-              <div v-if="activeTab === 'plugins'" class="space-y-6">
-                <p class="text-muted-foreground text-sm">확장 플러그인을 설치하고 관리합니다.</p>
+              <div v-if="activeTab === 'extensions'" class="space-y-6">
+                <p class="text-muted-foreground text-sm">확장을 설치하고 관리합니다.</p>
 
                 <!-- 설치 폼 -->
                 <div
@@ -911,10 +919,10 @@
                   </div>
                 </div>
 
-                <!-- 플러그인 목록 -->
+                <!-- 확장 목록 -->
                 <div class="space-y-4">
                   <h4 class="text-base font-bold text-neutral-900 dark:text-neutral-100">
-                    설치된 플러그인
+                    설치된 확장
                   </h4>
 
                   <div
@@ -925,10 +933,10 @@
                       <Puzzle class="h-6 w-6 text-neutral-500" />
                     </div>
                     <p class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
-                      설치된 플러그인이 없습니다.
+                      설치된 확장이 없습니다.
                     </p>
                     <p class="mt-1 text-xs text-neutral-500">
-                      위쪽 설치 폼에 GitHub URL을 입력하여 플러그인을 추가해보세요.
+                      위쪽 설치 폼에 GitHub URL을 입력하여 확장을 추가해보세요.
                     </p>
                   </div>
 
@@ -968,7 +976,7 @@
                         <div class="flex items-center gap-2">
                           <Switch
                             :model-value="plugin.enabled"
-                            aria-label="플러그인 활성화"
+                            aria-label="확장 활성화"
                             @update:model-value="
                               (v) => {
                                 plugin.enabled = v;
@@ -988,7 +996,7 @@
                           variant="ghost"
                           size="icon"
                           class="h-8 w-8 text-neutral-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/50"
-                          @click="onUninstallPlugin(plugin)"
+                          @click="onUninstallExtension(plugin)"
                         >
                           <Trash2 class="h-4 w-4" />
                           <span class="sr-only">삭제</span>
@@ -1008,8 +1016,8 @@
 
               <!-- Extension: schema sections -->
               <div v-else-if="activeExtensionTab?.sections?.length" class="space-y-8">
-                <p v-if="activeExtensionTab.pluginName" class="text-muted-foreground text-sm">
-                  {{ activeExtensionTab.pluginName }} 확장 설정
+                <p v-if="activeExtensionTab.extensionName" class="text-muted-foreground text-sm">
+                  {{ activeExtensionTab.extensionName }} 확장 구성
                 </p>
                 <ConfigSchemaForm
                   v-for="section in activeExtensionTab.sections"

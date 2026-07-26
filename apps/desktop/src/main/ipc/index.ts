@@ -1,10 +1,10 @@
 import { logger } from '../logger';
 import { registerEventIpcHandlers } from './event.handler';
+import { registerExtensionInfoIpcHandlers } from './extension-info.handler';
+import { registerExtensionSessionIpcHandlers } from './extension-session.handler';
+import { registerExtensionStorageIpcHandlers } from './extension-storage.handler';
 import { registerHttpIpcHandlers } from './http.handler';
 import { registerOsIpcHandlers } from './os.handler';
-import { registerPluginInfoIpcHandlers } from './plugin-info.handler';
-import { registerPluginSessionIpcHandlers } from './plugin-session.handler';
-import { registerPluginStorageIpcHandlers } from './plugin-storage.handler';
 import { registerScheduleIpcHandlers } from './schedule.handler';
 import { registerSearchIpcHandlers } from './search.handler';
 import { registerSettingsIpcHandlers } from './settings.handler';
@@ -26,7 +26,7 @@ export function registerAllIpcHandlers() {
 
   logger.debug('IPC', 'Registering Plugin Manager IPC Handlers');
   // Plugin Manager IPC Handlers
-  registerPluginInfoIpcHandlers();
+  registerExtensionInfoIpcHandlers();
 
   logger.debug('IPC', 'Registering Search IPC Handlers');
   // Search IPC Handlers
@@ -46,7 +46,7 @@ export function registerAllIpcHandlers() {
 
   logger.debug('IPC', 'Registering Plugin Storage IPC Handlers');
   // Plugin Storage IPC Handlers
-  registerPluginStorageIpcHandlers();
+  registerExtensionStorageIpcHandlers();
 
   logger.debug('IPC', 'Registering HTTP IPC Handlers');
   // HTTP IPC Handlers
@@ -58,7 +58,7 @@ export function registerAllIpcHandlers() {
 
   logger.debug('IPC', 'Registering Plugin Session IPC Handlers');
   // Plugin Session IPC Handlers
-  registerPluginSessionIpcHandlers();
+  registerExtensionSessionIpcHandlers();
 
   logger.info('IPC', 'All IPC handlers registered successfully');
 }

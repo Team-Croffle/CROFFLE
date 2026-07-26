@@ -1,9 +1,9 @@
 import { Column, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 
-@Entity('plugin_storage')
-export class PluginStorage {
-  @PrimaryColumn()
-  pluginId: string;
+@Entity('extension_storage')
+export class ExtensionStorage {
+  @PrimaryColumn({ name: 'pluginId' })
+  extensionId: string;
 
   @PrimaryColumn()
   key: string;

@@ -4,7 +4,7 @@
 
   import { useViewStore } from '@/stores/view-store';
 
-  import PluginViewContainer from './plugin-view-container.vue';
+  import PluginViewContainer from './extension-view-container.vue';
 
   const route = useRoute();
   const viewStore = useViewStore();

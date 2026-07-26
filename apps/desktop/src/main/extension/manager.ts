@@ -1,14 +1,14 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import type { PluginInfo } from '@croffledev/croffle-types';
+import type { ExtensionInfo } from '@croffledev/croffle-types';
 import { app, net, protocol } from 'electron';
 import JSZip from 'jszip';
 
-import { pluginInfoService } from './info-service';
+import { extensionInfoService } from './info-service';
 
-class PluginManager {
-  private pluginDir = path.join(app.getPath('userData'), 'plugins');
+class ExtensionManager {
+  private pluginDir = path.join(app.getPath('userData'), 'extensions');
 
   constructor() {
     app.whenReady().then(() => {
@@ -17,8 +17,8 @@ class PluginManager {
   }
 
   private registerProtocol() {
-    protocol.handle('plugin', async (req) => {
-      let url = req.url.replace('plugin://', '');
+    protocol.handle('extension', async (req) => {
+      let url = req.url.replace('extension://', '');
 
       // 쿼리 스트링 제거
       const queryIndex = url.indexOf('?');
@@ -90,7 +90,7 @@ class PluginManager {
       throw new Error('plugin.json not found');
     }
 
-    const manifest: PluginInfo = JSON.parse(fs.readFileSync(pluginJsonPath, 'utf-8'));
+    const manifest: ExtensionInfo = JSON.parse(fs.readFileSync(pluginJsonPath, 'utf-8'));
     const finalPluginDir = path.join(this.pluginDir, manifest.id);
 
     if (fs.existsSync(finalPluginDir)) {
@@ -103,7 +103,7 @@ class PluginManager {
 
     fs.rmSync(tempDir, { recursive: true, force: true });
 
-    return await pluginInfoService.installPlugin({
+    return await extensionInfoService.installExtension({
       id: manifest.id,
       name: manifest.name,
       version: manifest.version,
@@ -170,7 +170,7 @@ class PluginManager {
       throw new Error('plugin.json not found');
     }
 
-    const manifest: PluginInfo = JSON.parse(fs.readFileSync(pluginJsonPath, 'utf-8'));
+    const manifest: ExtensionInfo = JSON.parse(fs.readFileSync(pluginJsonPath, 'utf-8'));
     const finalPluginDir = path.join(this.pluginDir, manifest.id);
 
     if (fs.existsSync(finalPluginDir)) {
@@ -183,7 +183,7 @@ class PluginManager {
 
     fs.rmSync(tempDir, { recursive: true, force: true });
 
-    return await pluginInfoService.installPlugin({
+    return await extensionInfoService.installExtension({
       id: manifest.id,
       name: manifest.name,
       version: manifest.version,
@@ -195,14 +195,14 @@ class PluginManager {
   }
 
   async getPlugins() {
-    const dbPlugins = await pluginInfoService.getInstalledPlugins();
-    const plugins: PluginInfo[] = [];
+    const dbPlugins = await extensionInfoService.getInstalledExtensions();
+    const plugins: ExtensionInfo[] = [];
 
     for (const dbPlugin of dbPlugins) {
       const pluginPath = path.join(this.pluginDir, dbPlugin.id, 'plugin.json');
 
       if (fs.existsSync(pluginPath)) {
-        const manifest: PluginInfo = JSON.parse(fs.readFileSync(pluginPath, 'utf-8'));
+        const manifest: ExtensionInfo = JSON.parse(fs.readFileSync(pluginPath, 'utf-8'));
         plugins.push({
           ...manifest,
           enabled: dbPlugin.enabled,
@@ -213,4 +213,4 @@ class PluginManager {
   }
 }
 
-export const pluginManager = new PluginManager();
+export const extensionManager = new ExtensionManager();

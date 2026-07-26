@@ -13,7 +13,7 @@
 
 **Croffle**은 단순한 일정 관리를 넘어, 필요한 기능을 직접 추가하고 업무 흐름을 자동화할 수 있는 **오픈소스 데스크톱 애플리케이션**입니다.
 
-**플러그인 시스템**으로 캘린더·할 일(To-Do)을 기반으로 자신만의 생산성 환경을 만들 수 있습니다. Electron 기반이며 Windows, macOS, Linux에서 동일하게 동작합니다.
+**확장(extension) 시스템**으로 캘린더·할 일(To-Do)을 기반으로 자신만의 생산성 환경을 만들 수 있습니다. Electron 기반이며 Windows, macOS, Linux에서 동일하게 동작합니다.
 
 ---
 
@@ -25,7 +25,7 @@
 - **태그**: 작업을 분류·필터링
 - **데스크톱 최적화**: 넓은 화면과 단축키에 맞춘 UX
 
-### 플러그인
+### 확장
 
 - **간편 설치**: GitHub URL 또는 로컬 `.zip`
 - **필요한 것만**: 타이머, 습관 추적, 메모 등
@@ -51,10 +51,10 @@
 
 > 파일명에는 버전·아키텍처가 포함됩니다 (예: `croffle-1.0.2-arm64.dmg`).
 
-### 플러그인 사용
+### 확장 사용
 
-1. **설정 → 플러그인**으로 이동
-2. **플러그인 설치** 선택
+1. **설정 → 확장**으로 이동
+2. **확장 설치** 선택
 3. **GitHub 저장소 URL** 입력 또는 `.zip` 선택
 4. 설치 후 활성화
 
@@ -79,8 +79,8 @@ pnpm dev
 
 요구 사항: **Node.js ≥ 24**, **pnpm** (Corepack 권장).
 
-- 플러그인 스캐폴딩: [`@croffledev/croffle-cli`](./packages/cli/README.md)
-- 플러그인 타입: [`@croffledev/croffle-types`](./packages/types/README.md)
+- 확장 스캐폴딩: [`@croffledev/croffle-cli`](./packages/cli/README.md)
+- 확장 타입: [`@croffledev/croffle-types`](./packages/types/README.md)
 - 기여 가이드: **[CONTRIBUTING.ko.md](./CONTRIBUTING.ko.md)** · [English](./CONTRIBUTING.md)
 
 ---

@@ -1,14 +1,14 @@
-import type { PluginSettingsApi } from '@croffledev/croffle-types';
+import type { ExtensionConfigurationApi } from '@croffledev/croffle-types';
 import { ipcRenderer } from 'electron';
 
-const DEFAULT_STORAGE_KEY = '__croffle_settings__';
+const DEFAULT_STORAGE_KEY = '__croffle_configuration__';
 
-export const pluginSettingsApi = {
+export const extensionConfigurationApi = {
   get: async <T = Record<string, unknown>>(
-    pluginId: string,
+    extensionId: string,
     storageKey = DEFAULT_STORAGE_KEY,
   ): Promise<T> => {
-    const raw = await ipcRenderer.invoke('app:storage:get', { pluginId, key: storageKey });
+    const raw = await ipcRenderer.invoke('app:storage:get', { extensionId, key: storageKey });
     if (!raw) {
       return {} as T;
     }
@@ -19,14 +19,14 @@ export const pluginSettingsApi = {
     }
   },
   set: async (
-    pluginId: string,
+    extensionId: string,
     values: Record<string, unknown>,
     storageKey = DEFAULT_STORAGE_KEY,
   ): Promise<void> => {
     await ipcRenderer.invoke('app:storage:set', {
-      pluginId,
+      extensionId,
       key: storageKey,
       value: JSON.stringify(values),
     });
   },
-} satisfies PluginSettingsApi;
+} satisfies ExtensionConfigurationApi;

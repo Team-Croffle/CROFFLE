@@ -20,7 +20,7 @@
   import UpdateModal from './components/update-modal.vue';
   import { defaultMenus } from './data/default-context-menus.ts';
   import router from './router/index.ts';
-  import { pluginLoader } from './services/plugin-loader.ts';
+  import { extensionLoader } from './services/extension-loader.ts';
   import { useAppSettingsStore } from './stores/app-settings-store.ts';
   import { useContextMenuStore } from './stores/context-menu-store.ts';
   import { useSettingsStore } from './stores/settings-store.ts';
@@ -60,7 +60,7 @@
 
   const handleRegisterView = (event: Event) => {
     const customEvent = event as CustomEvent<{
-      pluginId: string;
+      extensionId: string;
       viewId: string;
       renderFn: (container: HTMLElement) => void;
     }>;
@@ -71,22 +71,22 @@
 
   const handleRegisterSettingsTab = (event: Event) => {
     const customEvent = event as CustomEvent<{
-      pluginId: string;
-      pluginName: string;
+      extensionId: string;
+      extensionName: string;
       tabId: string;
       label: string;
       icon?: unknown;
       order?: number;
       render?: (container: HTMLElement) => void;
-      sections?: import('@croffledev/croffle-types').SettingsSectionContribution[];
+      sections?: import('@croffledev/croffle-types').ConfigurationSectionContribution[];
     }>;
-    const { pluginId, pluginName, tabId, label, icon, order, render, sections } =
+    const { extensionId, extensionName, tabId, label, icon, order, render, sections } =
       customEvent.detail;
 
     if (render && sections && isDev) {
       // oxlint-disable-next-line no-console
       console.warn(
-        `[Plugin ${pluginName}] registerSettingsTab: render와 sections는 동시에 사용할 수 없습니다. render가 우선됩니다.`,
+        `[Plugin ${extensionName}] registerConfigurationTab: render와 sections는 동시에 사용할 수 없습니다. render가 우선됩니다.`,
       );
     }
 
@@ -95,8 +95,8 @@
       label,
       icon,
       order,
-      pluginId,
-      pluginName,
+      extensionId,
+      extensionName,
       render,
       sections: render ? undefined : sections,
     });
@@ -104,38 +104,38 @@
 
   const handleRegisterContextMenu = (event: Event) => {
     const customEvent = event as CustomEvent<{
-      pluginId: string;
+      extensionId: string;
       target: string;
       command: string;
       label: string;
       callback: (element: HTMLElement | null) => void;
     }>;
-    const { pluginId, target, command, label, callback } = customEvent.detail;
+    const { extensionId, target, command, label, callback } = customEvent.detail;
 
     contextMenuStore.registerMenu({
-      id: `${pluginId}-${command}`,
+      id: `${extensionId}-${command}`,
       targetView: [target],
       label,
       action: callback,
-      pluginId,
+      extensionId,
     });
   };
 
   const handlePluginUnloaded = (event: Event) => {
-    const customEvent = event as CustomEvent<{ pluginId: string }>;
-    const { pluginId } = customEvent.detail;
-    settingsStore.unregisterPluginTabs(pluginId);
-    viewStore.unregisterPluginMenus(pluginId);
-    contextMenuStore.unregisterPluginMenus(pluginId);
+    const customEvent = event as CustomEvent<{ extensionId: string }>;
+    const { extensionId } = customEvent.detail;
+    settingsStore.unregisterExtensionConfigurationTabs(extensionId);
+    viewStore.unregisterExtensionMenus(extensionId);
+    contextMenuStore.unregisterExtensionMenus(extensionId);
   };
 
   const handlePluginLoaded = (event: Event) => {
     const customEvent = event as CustomEvent<{
-      plugin: import('@croffledev/croffle-types').PluginInfo;
+      plugin: import('@croffledev/croffle-types').ExtensionInfo;
     }>;
     const { plugin } = customEvent.detail;
 
-    // 플러그인 로드 시 매니페스트 정보(views, contextMenus, settingsTabs) 동적 등록
+    // 플러그인 로드 시 매니페스트 정보(views, contextMenus, configurationTabs) 동적 등록
     if (isDev) {
       // oxlint-disable-next-line no-console
       console.log(`[app.vue] handlePluginLoaded: ${plugin.id}`, plugin.features);
@@ -143,8 +143,8 @@
     if (plugin.features?.views) {
       const views = plugin.features.views.map((v) => ({
         ...v,
-        pluginName: plugin.name,
-        pluginId: plugin.id,
+        extensionName: plugin.name,
+        extensionId: plugin.id,
       }));
 
       if (isDev) {
@@ -157,13 +157,13 @@
     if (plugin.features?.contextMenus) {
       const contextMenus = plugin.features.contextMenus.map((c) => ({
         ...c,
-        pluginName: plugin.name,
-        pluginId: plugin.id,
+        extensionName: plugin.name,
+        extensionId: plugin.id,
       }));
       contextMenuStore.registerMenus(contextMenus);
     }
-    if (plugin.features?.settingsTabs) {
-      settingsStore.registerManifestTabs(plugin.id, plugin.name, plugin.features.settingsTabs);
+    if (plugin.features?.configurationTabs) {
+      settingsStore.registerManifestTabs(plugin.id, plugin.name, plugin.features.configurationTabs);
     }
   };
 
@@ -173,15 +173,15 @@
 
   const setPluginMenus = async () => {
     // 이벤트로 플러그인 호출 동작 매핑
-    window.addEventListener('plugin:register-view', handleRegisterView);
-    window.addEventListener('plugin:register-settings-tab', handleRegisterSettingsTab);
-    window.addEventListener('plugin:register-context-menu', handleRegisterContextMenu);
-    window.addEventListener('plugin:loaded', handlePluginLoaded);
-    window.addEventListener('plugin:unloaded', handlePluginUnloaded);
+    window.addEventListener('extension:register-view', handleRegisterView);
+    window.addEventListener('extension:register-configuration-tab', handleRegisterSettingsTab);
+    window.addEventListener('extension:register-context-menu', handleRegisterContextMenu);
+    window.addEventListener('extension:loaded', handlePluginLoaded);
+    window.addEventListener('extension:unloaded', handlePluginUnloaded);
 
-    // 최초 로드 시 활성화된 플러그인들의 매니페스트는 pluginLoader.init()에서 plugin:loaded 이벤트를 쏴주므로
+    // 최초 로드 시 활성화된 플러그인들의 매니페스트는 extensionLoader.init()에서 extension:loaded 이벤트를 쏴주므로
     // 여기서 직접 registerManifestTabs를 순회해서 호출할 필요가 없어짐.
-    // pluginLoader.init() 내부에서 플러그인을 로딩할 때 plugin:loaded를 쏘면 자동으로 handlePluginLoaded가 처리함.
+    // extensionLoader.init() 내부에서 플러그인을 로딩할 때 extension:loaded를 쏘면 자동으로 handlePluginLoaded가 처리함.
   };
 
   const handleContextMenuEvent = (e: MouseEvent) => {
@@ -201,18 +201,18 @@
     await appSettingsStore.initialize();
     updateStore.init();
     await setPluginMenus();
-    await pluginLoader.init();
+    await extensionLoader.init();
     unsubscribeStartupNav = croffle.event.on('settings:startup-navigate', (path) => {
       void router.push(typeof path === 'string' ? path : '/calendar');
     });
   });
 
   onUnmounted(() => {
-    window.removeEventListener('plugin:register-view', handleRegisterView);
-    window.removeEventListener('plugin:register-settings-tab', handleRegisterSettingsTab);
-    window.removeEventListener('plugin:register-context-menu', handleRegisterContextMenu);
-    window.removeEventListener('plugin:loaded', handlePluginLoaded);
-    window.removeEventListener('plugin:unloaded', handlePluginUnloaded);
+    window.removeEventListener('extension:register-view', handleRegisterView);
+    window.removeEventListener('extension:register-configuration-tab', handleRegisterSettingsTab);
+    window.removeEventListener('extension:register-context-menu', handleRegisterContextMenu);
+    window.removeEventListener('extension:loaded', handlePluginLoaded);
+    window.removeEventListener('extension:unloaded', handlePluginUnloaded);
     unsubscribeStartupNav?.();
     appSettingsStore.dispose();
     updateStore.dispose();

@@ -12,7 +12,7 @@
         "title": "Test Feature",
         "subtitle": "All-in-one plugin",
         "icon": "",
-        "url": "/plugin/test-feature-view"
+        "url": "/extension/test-feature-view"
       }
     ]
   }

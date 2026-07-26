@@ -20,17 +20,20 @@ Thanks for helping improve Croffle. This guide covers local development, PRs, an
 | ---------------- | --------------------------- | -------------------------------- |
 | `apps/desktop`   | `@croffledev/desktop`       | Electron app (private)           |
 | `packages/types` | `@croffledev/croffle-types` | Published TypeScript definitions |
-| `packages/cli`   | `@croffledev/croffle-cli`   | Published plugin CLI             |
+| `packages/cli`   | `@croffledev/croffle-cli`   | Published extension CLI          |
 
 Desktop host API (preload) is exposed as a **domain-flat** surface, for example:
 
 ```ts
 croffle.window;
 croffle.calendar.schedules;
-croffle.plugins.info;
+croffle.extensions.info;
+croffle.extensions.configuration;
 croffle.event;
 // …
 ```
+
+Terminology: installable packages are **extensions**. Extension options are **configuration**; app-wide preferences remain **settings** (`croffle.settings`). Manifest file is still `plugin.json` for now (manifest redesign TBD).
 
 Types live in `@croffledev/croffle-types`. Runtime enums used by the app live under `apps/desktop/src/common` (`@croffledev/common` alias).
 

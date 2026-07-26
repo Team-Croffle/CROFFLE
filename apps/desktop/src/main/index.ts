@@ -23,7 +23,7 @@ import { windowService } from './window/window-service';
 // Must be called before app is ready
 protocol.registerSchemesAsPrivileged([
   {
-    scheme: 'plugin',
+    scheme: 'extension',
     privileges: {
       standard: true,
       secure: true,

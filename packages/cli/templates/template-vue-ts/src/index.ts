@@ -1,4 +1,4 @@
-import type { PluginContext } from '@croffledev/croffle-types';
+import type { ExtensionContext } from '@croffledev/croffle-types';
 import { createApp } from 'vue';
 
 import FeatureView from './MyFeatureView.vue';
@@ -7,7 +7,7 @@ import MySettingsTab from './MySettingsTab.vue';
 let viewAppInstance: any = null;
 let settingsAppInstance: any = null;
 
-export function activated(context: PluginContext) {
+export function activated(context: ExtensionContext) {
   console.log('Test Plugin has been activated!');
 
   // 1. Register Feature View
@@ -17,7 +17,7 @@ export function activated(context: PluginContext) {
   });
 
   // 2. Register Settings Tab
-  context.ui.registerSettingsTab('test-settings-tab', {
+  context.ui.registerConfigurationTab('test-settings-tab', {
     label: 'Test Tab',
     render: (container: HTMLElement) => {
       settingsAppInstance = createApp(MySettingsTab);
