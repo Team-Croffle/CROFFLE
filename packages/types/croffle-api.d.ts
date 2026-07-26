@@ -1,6 +1,11 @@
 import type { CalendarApi } from './api/calendar';
 import type { EventApi } from './api/event';
-import type { ExtensionsApi } from './api/extensions';
+import type {
+  ExtensionScopedConfigurationApi,
+  ExtensionScopedSessionApi,
+  ExtensionScopedStorageApi,
+  ExtensionsApi,
+} from './api/extensions';
 import type { HttpApi } from './api/http';
 import type { OsApi } from './api/os';
 import type { SettingsApi } from './api/settings';
@@ -40,7 +45,11 @@ export interface CroffleAPI {
   enums: EnumsApi;
 }
 
-/** Extension activated(context)에 전달되는 API (+ ui) */
+/** Extension activated(context)에 전달되는 API (+ ui + id-bound storage) */
 export type ExtensionContext = CroffleAPI & {
   ui: UiApi;
+  /** Prefer over `extensions.storage` — id is fixed to this extension */
+  storage: ExtensionScopedStorageApi;
+  session: ExtensionScopedSessionApi;
+  configuration: ExtensionScopedConfigurationApi;
 };
