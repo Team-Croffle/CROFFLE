@@ -8,9 +8,6 @@ export type RegisterConfigurationTabOptions = {
   sections?: ConfigurationSectionContribution[];
 };
 
-/** @deprecated Use RegisterConfigurationTabOptions */
-export type RegisterSettingsTabOptions = RegisterConfigurationTabOptions;
-
 export interface UiApi {
   registerView(viewId: string, renderFn: (container: HTMLElement) => void): void;
   registerContextMenu(

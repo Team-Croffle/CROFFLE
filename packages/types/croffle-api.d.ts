@@ -44,6 +44,3 @@ export interface CroffleAPI {
 export type ExtensionContext = CroffleAPI & {
   ui: UiApi;
 };
-
-/** @deprecated Use ExtensionContext */
-export type PluginContext = ExtensionContext;

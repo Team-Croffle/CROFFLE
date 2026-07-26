@@ -35,16 +35,3 @@ export interface ExtensionsApi {
   storage: ExtensionStorageApi;
   session: ExtensionSessionApi;
 }
-
-/** @deprecated Use ExtensionInfoApi */
-export type PluginInfoApi = ExtensionInfoApi;
-/** @deprecated Use ExtensionConfigurationApi */
-export type PluginSettingsApi = ExtensionConfigurationApi;
-/** @deprecated Use ExtensionStorageApi */
-export type PluginStorageApi = ExtensionStorageApi;
-/** @deprecated Use ExtensionSessionApi */
-export type PluginSessionApi = ExtensionSessionApi;
-/** @deprecated Use ExtensionSessionApi */
-export type PluginSessionAPI = ExtensionSessionApi;
-/** @deprecated Use ExtensionsApi */
-export type PluginsApi = ExtensionsApi;
