@@ -28,22 +28,22 @@ const validateArgs = (
 };
 
 export const registerExtensionStorageIpcHandlers = () => {
-  ipcMain.handle('app:storage:get', async (_, payload: unknown = {}) => {
+  ipcMain.handle('extensionStorage:get', async (_, payload: unknown = {}) => {
     const { extensionId, key } = validateArgs(payload, true);
     return await get(extensionId, key as string);
   });
 
-  ipcMain.handle('app:storage:set', async (_, payload: unknown = {}) => {
+  ipcMain.handle('extensionStorage:set', async (_, payload: unknown = {}) => {
     const { extensionId, key, value } = validateArgs(payload, true);
     await set(extensionId, key as string, value);
   });
 
-  ipcMain.handle('app:storage:delete', async (_, payload: unknown = {}) => {
+  ipcMain.handle('extensionStorage:delete', async (_, payload: unknown = {}) => {
     const { extensionId, key } = validateArgs(payload, true);
     return await remove(extensionId, key as string);
   });
 
-  ipcMain.handle('app:storage:clear', async (_, payload: unknown = {}) => {
+  ipcMain.handle('extensionStorage:clear', async (_, payload: unknown = {}) => {
     const { extensionId } = validateArgs(payload, false);
     await clear(extensionId);
   });

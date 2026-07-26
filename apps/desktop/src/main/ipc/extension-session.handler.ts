@@ -29,7 +29,7 @@ const validateArgs = (
 };
 
 export const registerExtensionSessionIpcHandlers = () => {
-  ipcMain.handle('sessionStorage:get', async (_, payload: unknown = {}) => {
+  ipcMain.handle('extensionSession:get', async (_, payload: unknown = {}) => {
     try {
       const { extensionId, key } = validateArgs(payload, true);
       return getItem(extensionId, key as string);
@@ -39,7 +39,7 @@ export const registerExtensionSessionIpcHandlers = () => {
     }
   });
 
-  ipcMain.handle('sessionStorage:set', async (_, payload: unknown = {}) => {
+  ipcMain.handle('extensionSession:set', async (_, payload: unknown = {}) => {
     try {
       const { extensionId, key, value } = validateArgs(payload, true);
       setItem(extensionId, key as string, value);
@@ -49,7 +49,7 @@ export const registerExtensionSessionIpcHandlers = () => {
     }
   });
 
-  ipcMain.handle('sessionStorage:delete', async (_, payload: unknown = {}) => {
+  ipcMain.handle('extensionSession:delete', async (_, payload: unknown = {}) => {
     try {
       const { extensionId, key } = validateArgs(payload, true);
       return deleteItem(extensionId, key as string);
@@ -59,7 +59,7 @@ export const registerExtensionSessionIpcHandlers = () => {
     }
   });
 
-  ipcMain.handle('sessionStorage:clear', async (_, payload: unknown = {}) => {
+  ipcMain.handle('extensionSession:clear', async (_, payload: unknown = {}) => {
     try {
       const { extensionId } = validateArgs(payload, false);
       clearItem(extensionId);
