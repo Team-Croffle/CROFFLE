@@ -3,7 +3,7 @@ import { type AppSettingTheme, AppEventType } from '@croffledev/shared';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
-import { useThemeStore } from './themeStore';
+import { useThemeStore } from './theme-store';
 
 const applyToUi = (value: AppSettings) => {
   const themeStore = useThemeStore();

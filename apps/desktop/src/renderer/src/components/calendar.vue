@@ -10,15 +10,15 @@
   import { storeToRefs } from 'pinia';
   import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 
-  import { useCalendarLogic } from '@/composables/useCalendarLogic';
-  import { useAppSettingsStore } from '@/stores/appSettingsStore';
-  import { useScheduleStore } from '@/stores/scheduleStore';
+  import { useCalendarLogic } from '@/composables/use-calendar-logic';
+  import { useAppSettingsStore } from '@/stores/app-settings-store';
+  import { useScheduleStore } from '@/stores/schedule-store';
   import {
     calendarViewToFullCalendar,
     languageToLocale,
     timeFormatToHour12,
     weekStartDayToFirstDay,
-  } from '@/utils/calendarSettings';
+  } from '@/utils/calendar-settings';
 
   // pinia store 연결
   const scheduleStore = useScheduleStore();

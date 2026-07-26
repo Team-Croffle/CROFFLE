@@ -21,8 +21,8 @@
   import { ref, onMounted, watch, computed } from 'vue';
   import { toast } from 'vue-sonner';
 
-  import ConfigSchemaForm from '@/components/settings/ConfigSchemaForm.vue';
-  import SettingsExtensionPanel from '@/components/settings/SettingsExtensionPanel.vue';
+  import ConfigSchemaForm from '@/components/settings/config-schema-form.vue';
+  import SettingsExtensionPanel from '@/components/settings/settings-extension-panel.vue';
   import { Button } from '@/components/ui/button';
   import {
     Dialog,
@@ -41,10 +41,10 @@
   } from '@/components/ui/select';
   import { Separator } from '@/components/ui/separator';
   import { Switch } from '@/components/ui/switch';
-  import { pluginLoader } from '@/services/PluginLoader';
-  import { useAppSettingsStore } from '@/stores/appSettingsStore';
-  import { useSettingsStore } from '@/stores/settingsStore';
-  import { mergeWithSchemaDefaults } from '@/utils/pluginSettingsSchema';
+  import { pluginLoader } from '@/services/plugin-loader';
+  import { useAppSettingsStore } from '@/stores/app-settings-store';
+  import { useSettingsStore } from '@/stores/settings-store';
+  import { mergeWithSchemaDefaults } from '@/utils/plugin-settings-schema';
 
   type Props = {
     open: boolean;

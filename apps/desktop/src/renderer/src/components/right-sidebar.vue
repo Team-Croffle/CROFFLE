@@ -9,8 +9,8 @@
   import { Button } from '@/components/ui/button';
   import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
   import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from '@/components/ui/sidebar';
-  import { useScheduleStore } from '@/stores/scheduleStore';
-  import { useUiStore } from '@/stores/uiStore';
+  import { useScheduleStore } from '@/stores/schedule-store';
+  import { useUiStore } from '@/stores/ui-store';
 
   import pkg from '../../../../package.json';
 

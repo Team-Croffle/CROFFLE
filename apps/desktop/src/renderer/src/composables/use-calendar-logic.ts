@@ -1,7 +1,7 @@
 import type FullCalendarComponent from '@fullcalendar/vue3';
 import type { Ref } from 'vue';
 
-import { useUiStore } from '@/stores/uiStore';
+import { useUiStore } from '@/stores/ui-store';
 
 export function useCalendarLogic() {
   const uiStore = useUiStore();

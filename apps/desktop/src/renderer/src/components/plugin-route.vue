@@ -2,9 +2,9 @@
   import { computed } from 'vue';
   import { useRoute } from 'vue-router';
 
-  import { useViewStore } from '@/stores/viewStore';
+  import { useViewStore } from '@/stores/view-store';
 
-  import PluginViewContainer from './PluginViewContainer.vue';
+  import PluginViewContainer from './plugin-view-container.vue';
 
   const route = useRoute();
   const viewStore = useViewStore();
