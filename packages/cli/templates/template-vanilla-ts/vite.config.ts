@@ -5,10 +5,10 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   plugins: [
     {
-      name: 'copy-plugin-json',
+      name: 'copy-croffle-manifest',
       closeBundle() {
-        if (existsSync('plugin.json')) {
-          copyFileSync('plugin.json', 'dist/plugin.json');
+        if (existsSync('croffle-manifest.json')) {
+          copyFileSync('croffle-manifest.json', 'dist/croffle-manifest.json');
         }
       },
     },
@@ -21,7 +21,7 @@ export default defineConfig({
     emptyOutDir: true,
     lib: {
       entry: 'src/index.ts',
-      name: 'Plugin',
+      name: 'Extension',
       formats: ['es'],
       fileName: () => 'index.js',
     },
