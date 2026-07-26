@@ -33,7 +33,7 @@ croffle.event;
 // …
 ```
 
-Terminology: installable packages are **extensions**. Extension options are **configuration**; app-wide preferences remain **settings** (`croffle.settings`). Manifest file is still `plugin.json` for now (manifest redesign TBD).
+Terminology: installable packages are **extensions**. Extension options are **configuration**; app-wide preferences remain **settings** (`croffle.settings`). Extension packages use `croffle-manifest.json`.
 
 Types live in `@croffledev/croffle-types`. Runtime enums used by the app live under `apps/desktop/src/common` (`@croffledev/common` alias).
 

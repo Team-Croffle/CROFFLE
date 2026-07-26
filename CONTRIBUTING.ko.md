@@ -33,7 +33,7 @@ croffle.event;
 // …
 ```
 
-용어: 설치 단위는 **extension**. 확장 옵션은 **configuration**, 앱 전역은 **settings**(`croffle.settings`)입니다. 매니페스트 파일명은 당분간 `plugin.json`을 유지합니다(매니페스트 재설계 TBD).
+용어: 설치 단위는 **extension**. 확장 옵션은 **configuration**, 앱 전역은 **settings**(`croffle.settings`)입니다. 확장 패키지 매니페스트는 `croffle-manifest.json`입니다.
 
 타입은 `@croffledev/croffle-types`, 앱 런타임 enum은 `apps/desktop/src/common` (`@croffledev/common` alias)입니다.
 
