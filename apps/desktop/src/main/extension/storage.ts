@@ -23,3 +23,14 @@ export async function set(extensionId: string, key: string, value: unknown): Pro
     value: JSON.stringify(value),
   });
 }
+
+export async function remove(extensionId: string, key: string): Promise<boolean> {
+  const repo = databaseManager.getRepository(ExtensionStorage);
+  const result = await repo.delete({ extensionId, key });
+  return (result.affected ?? 0) > 0;
+}
+
+export async function clear(extensionId: string): Promise<void> {
+  const repo = databaseManager.getRepository(ExtensionStorage);
+  await repo.delete({ extensionId });
+}

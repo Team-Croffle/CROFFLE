@@ -16,8 +16,4 @@ export const extensionSessionApi = {
   clear: (extensionId: string): Promise<void> => {
     return ipcRenderer.invoke('sessionStorage:clear', { extensionId });
   },
-
-  clearAll: (): Promise<void> => {
-    return ipcRenderer.invoke('sessionStorage:clearAll');
-  },
 } satisfies ExtensionSessionApi;

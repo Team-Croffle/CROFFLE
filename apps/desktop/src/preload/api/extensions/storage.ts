@@ -8,4 +8,10 @@ export const extensionStorageApi = {
   set: (extensionId: string, key: string, value: unknown): Promise<void> => {
     return ipcRenderer.invoke('app:storage:set', { extensionId, key, value });
   },
+  delete: (extensionId: string, key: string): Promise<boolean> => {
+    return ipcRenderer.invoke('app:storage:delete', { extensionId, key });
+  },
+  clear: (extensionId: string): Promise<void> => {
+    return ipcRenderer.invoke('app:storage:clear', { extensionId });
+  },
 } satisfies ExtensionStorageApi;
