@@ -22,11 +22,7 @@ export const registerScheduleIpcHandlers = (): void => {
         end: new Date(period.end),
       });
 
-      const dto = schedules.map(scheduleMapper.toInterface);
-      // Add app event emit
-      eventService.emit(AppEventType.SCHEDULE_GET, dto);
-
-      return dto;
+      return schedules.map(scheduleMapper.toInterface);
     },
   );
 
@@ -35,7 +31,6 @@ export const registerScheduleIpcHandlers = (): void => {
     const createdEntity = await createSchedule(entityData);
 
     const dto = scheduleMapper.toInterface(createdEntity);
-    // Add app event emit
     eventService.emit(AppEventType.SCHEDULE_CREATE, dto);
 
     return dto;
@@ -48,7 +43,6 @@ export const registerScheduleIpcHandlers = (): void => {
       const updatedEntity = await updateSchedule(id, entityData);
 
       const dto = scheduleMapper.toInterface(updatedEntity);
-      // Add app event emit
       eventService.emit(AppEventType.SCHEDULE_UPDATE, dto);
 
       return dto;
@@ -56,10 +50,11 @@ export const registerScheduleIpcHandlers = (): void => {
   );
 
   ipcMain.handle('schedule:delete', async (_, id: string): Promise<boolean> => {
-    // Add app event emit
-    eventService.emit(AppEventType.SCHEDULE_DELETE, id);
-
-    return await deleteSchedule(id);
+    const result = await deleteSchedule(id);
+    if (result) {
+      eventService.emit(AppEventType.SCHEDULE_DELETE, id);
+    }
+    return result;
   });
 
   ipcMain.handle(
@@ -69,7 +64,9 @@ export const registerScheduleIpcHandlers = (): void => {
       period?: { start: string; end: string },
     ): Promise<{ filePath: string; count: number } | null> => {
       const result = await exportSchedulesToFile(period);
-      eventService.emit(AppEventType.SCHEDULE_EXPORT_TO_FILE, result);
+      if (result) {
+        eventService.emit(AppEventType.SCHEDULE_EXPORT_TO_FILE, result);
+      }
       return result;
     },
   );
@@ -81,7 +78,9 @@ export const registerScheduleIpcHandlers = (): void => {
       mode?: 'merge' | 'duplicate',
     ): Promise<{ created: number; updated: number } | null> => {
       const result = await importScheduleFromFile(mode ?? 'merge');
-      eventService.emit(AppEventType.SCHEDULE_IMPORT_FROM_FILE, result);
+      if (result) {
+        eventService.emit(AppEventType.SCHEDULE_IMPORT_FROM_FILE, result);
+      }
       return result;
     },
   );

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import { AppEventType } from '@croffledev/common';
   import { Minus, Moon, PanelLeft, Square, Sun, X } from 'lucide-vue-next';
   import { ref, onMounted, onUnmounted } from 'vue';
 
@@ -197,7 +198,7 @@
     updateStore.init();
     await setPluginMenus();
     await extensionLoader.init();
-    unsubscribeStartupNav = croffle.event.on('settings:startup-navigate', (path) => {
+    unsubscribeStartupNav = croffle.event.on(AppEventType.SETTINGS_STARTUP_NAVIGATE, (path) => {
       void router.push(typeof path === 'string' ? path : '/calendar');
     });
   });
