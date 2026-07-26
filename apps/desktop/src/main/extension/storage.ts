@@ -1,14 +1,21 @@
 import { databaseManager } from '../database';
 import { ExtensionStorage } from '../database/schema/extension-storage.entity';
 
-export async function get(extensionId: string, key: string): Promise<string | null> {
+export async function get<T = unknown>(extensionId: string, key: string): Promise<T | null> {
   const repo = databaseManager.getRepository(ExtensionStorage);
   const item = await repo.findOne({ where: { extensionId, key } });
-  return item ? JSON.parse(item.value) : null;
+  if (!item) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(item.value) as T;
+  } catch {
+    return null;
+  }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function set(extensionId: string, key: string, value: any): Promise<void> {
+export async function set(extensionId: string, key: string, value: unknown): Promise<void> {
   const repo = databaseManager.getRepository(ExtensionStorage);
   await repo.save({
     extensionId,

@@ -17,8 +17,8 @@ export interface ExtensionConfigurationApi {
 }
 
 export interface ExtensionStorageApi {
-  get(extensionId: string, key: string): Promise<string | null>;
-  set(extensionId: string, key: string, value: string): Promise<void>;
+  get<T = unknown>(extensionId: string, key: string): Promise<T | null>;
+  set(extensionId: string, key: string, value: unknown): Promise<void>;
 }
 
 export interface ExtensionSessionApi {
