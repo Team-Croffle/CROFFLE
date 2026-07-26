@@ -6,8 +6,11 @@ import { app, net, protocol } from 'electron';
 import JSZip from 'jszip';
 
 import type { ExtensionInfo } from '../database/schema/extension-info.entity';
+import { logger } from '../logger';
 import { extensionInfoService } from './info-service';
 import { MANIFEST_FILENAME, satisfiesCroffleEngine } from './manifest';
+import { clearItem as clearSession } from './session-service';
+import { clear as clearStorage } from './storage';
 
 class ExtensionManager {
   private extensionDir = path.join(app.getPath('userData'), 'extensions');
@@ -152,6 +155,35 @@ class ExtensionManager {
     const buffer = await resp.arrayBuffer();
     const { tempDir, contentDir } = await this.extractZip(buffer);
     return this.finalizeInstall(contentDir, tempDir);
+  }
+
+  /**
+   * Remove extension files, storage, session, then DB row.
+   * Best-effort purge of side state before deleting the info record.
+   */
+  async uninstallExtension(extensionId: string): Promise<boolean> {
+    try {
+      await clearStorage(extensionId);
+    } catch (err) {
+      logger.error('ExtensionManager', `Failed to clear storage for ${extensionId}:`, err);
+    }
+
+    try {
+      clearSession(extensionId);
+    } catch (err) {
+      logger.error('ExtensionManager', `Failed to clear session for ${extensionId}:`, err);
+    }
+
+    const finalDir = path.join(this.extensionDir, extensionId);
+    try {
+      if (fs.existsSync(finalDir)) {
+        fs.rmSync(finalDir, { recursive: true, force: true });
+      }
+    } catch (err) {
+      logger.error('ExtensionManager', `Failed to remove files for ${extensionId}:`, err);
+    }
+
+    return extensionInfoService.uninstallExtension(extensionId);
   }
 }
 
