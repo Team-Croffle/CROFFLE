@@ -2,7 +2,7 @@ import type { FeatureView } from '@croffledev/croffle-types';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
-export const useViewStore = defineStore('plugin', () => {
+export const useViewStore = defineStore('extension', () => {
   const menuRegistry = ref<FeatureView[]>([]);
   const views = ref<Map<string, (container: HTMLElement) => void>>(new Map());
 
@@ -19,12 +19,12 @@ export const useViewStore = defineStore('plugin', () => {
     });
   };
 
-  const unregisterPluginMenus = (pluginId: string) => {
-    // 삭제 대상 메뉴의 id(pluginId)를 수집하여 views 맵에서도 제거
-    const viewsToRemove = menuRegistry.value.filter((m) => m.pluginId === pluginId);
+  const unregisterExtensionMenus = (extensionId: string) => {
+    // 삭제 대상 메뉴의 id(extensionId)를 수집하여 views 맵에서도 제거
+    const viewsToRemove = menuRegistry.value.filter((m) => m.extensionId === extensionId);
     viewsToRemove.forEach((m) => views.value.delete(m.id));
 
-    menuRegistry.value = menuRegistry.value.filter((m) => m.pluginId !== pluginId);
+    menuRegistry.value = menuRegistry.value.filter((m) => m.extensionId !== extensionId);
   };
 
   const registerView = (viewId: string, renderFn: (container: HTMLElement) => void) => {
@@ -40,6 +40,6 @@ export const useViewStore = defineStore('plugin', () => {
     registerMenu,
     registerMenus,
     registerView,
-    unregisterPluginMenus,
+    unregisterExtensionMenus,
   };
 });

@@ -1,12 +1,15 @@
-import type { SettingsSectionContribution } from '../models/plugin';
+import type { ConfigurationSectionContribution } from '../models/extension';
 
-export type RegisterSettingsTabOptions = {
+export type RegisterConfigurationTabOptions = {
   label: string;
   icon?: unknown;
   order?: number;
   render?: (container: HTMLElement) => void;
-  sections?: SettingsSectionContribution[];
+  sections?: ConfigurationSectionContribution[];
 };
+
+/** @deprecated Use RegisterConfigurationTabOptions */
+export type RegisterSettingsTabOptions = RegisterConfigurationTabOptions;
 
 export interface UiApi {
   registerView(viewId: string, renderFn: (container: HTMLElement) => void): void;
@@ -17,8 +20,8 @@ export interface UiApi {
     callback: (target: string) => void,
   ): void;
   /**
-   * 설정 모달에 탭을 추가합니다.
-   * @param tabId 고유 탭 ID (플러그인 ID와 조합해 `${pluginId}:${tabId}` 형태로 저장됨)
+   * 앱 설정 모달에 extension configuration 탭을 추가합니다.
+   * @param tabId 고유 탭 ID (`${extensionId}:${tabId}` 형태로 저장됨)
    */
-  registerSettingsTab(tabId: string, options: RegisterSettingsTabOptions): void;
+  registerConfigurationTab(tabId: string, options: RegisterConfigurationTabOptions): void;
 }

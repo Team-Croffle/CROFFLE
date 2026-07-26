@@ -41,13 +41,13 @@ export const createCommand = new Command('create')
       const answers = await prompts([
         {
           type: 'text',
-          name: 'pluginId',
+          name: 'extensionId',
           message: 'Plugin ID (e.g. com.myname.myplugin):',
           initial: `com.example.${projectName.replace(/[^a-zA-Z0-9]/g, '')}`,
         },
         {
           type: 'text',
-          name: 'pluginName',
+          name: 'extensionName',
           message: 'Plugin Name (Display Name):',
           initial: 'My Plugin',
         },
@@ -75,7 +75,7 @@ export const createCommand = new Command('create')
         },
       ]);
 
-      if (!answers.pluginId) {
+      if (!answers.extensionId) {
         console.log(picocolors.yellow('Operation cancelled.'));
         return;
       }
@@ -95,8 +95,8 @@ export const createCommand = new Command('create')
       const pluginJsonPath = path.join(targetPath, 'plugin.json');
       if (fs.existsSync(pluginJsonPath)) {
         const manifest = JSON.parse(await fs.readFile(pluginJsonPath, 'utf8'));
-        manifest.id = answers.pluginId;
-        manifest.name = answers.pluginName;
+        manifest.id = answers.extensionId;
+        manifest.name = answers.extensionName;
         manifest.description = answers.pluginDescription;
         manifest.author = answers.author;
         await fs.writeFile(pluginJsonPath, JSON.stringify(manifest, null, 2));

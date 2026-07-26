@@ -7,12 +7,12 @@ import { scheduleApi } from './api/calendar/schedules';
 import { searchApi } from './api/calendar/search';
 import { tagApi } from './api/calendar/tags';
 import { eventApi } from './api/event';
+import { extensionConfigurationApi } from './api/extensions/configuration';
+import { extensionInfoApi } from './api/extensions/info';
+import { extensionSessionApi } from './api/extensions/session';
+import { extensionStorageApi } from './api/extensions/storage';
 import { httpApi } from './api/http';
 import { osApi } from './api/os';
-import { pluginInfoApi } from './api/plugins/info';
-import { pluginSessionApi } from './api/plugins/session';
-import { pluginSettingsApi } from './api/plugins/settings';
-import { pluginStorageApi } from './api/plugins/storage';
 import { settingsApi } from './api/settings';
 import { windowApi } from './api/window';
 
@@ -27,11 +27,11 @@ const api = {
     search: searchApi,
   },
   settings: settingsApi,
-  plugins: {
-    info: pluginInfoApi,
-    settings: pluginSettingsApi,
-    storage: pluginStorageApi,
-    session: pluginSessionApi,
+  extensions: {
+    info: extensionInfoApi,
+    configuration: extensionConfigurationApi,
+    storage: extensionStorageApi,
+    session: extensionSessionApi,
   },
   enums: Enums,
 };

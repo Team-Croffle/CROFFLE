@@ -11,27 +11,28 @@ export type ConfigItemSchema<T = unknown> = {
   }[];
 };
 
-export type SettingsSectionContribution = {
+export type ConfigurationSectionContribution = {
   id: string;
   title?: string;
   description?: string;
   items: Record<string, ConfigItemSchema>;
 };
 
-export type SettingsTabContribution = {
+export type ConfigurationTabContribution = {
   id: string;
   label: string;
   icon?: unknown;
-  pluginId: string;
-  pluginName?: string;
+  extensionId: string;
+  extensionName?: string;
   order?: number;
   render?: (container: HTMLElement) => void;
-  sections?: SettingsSectionContribution[];
+  sections?: ConfigurationSectionContribution[];
 };
 
-export type SettingsTabManifest = Omit<
-  SettingsTabContribution,
-  'pluginId' | 'pluginName' | 'render'
+/** Manifest에 선언 가능한 configuration 탭 (render 제외) */
+export type ConfigurationTabManifest = Omit<
+  ConfigurationTabContribution,
+  'extensionId' | 'extensionName' | 'render'
 >;
 
 export type FeatureView = {
@@ -41,8 +42,8 @@ export type FeatureView = {
   icon: unknown;
   url: string;
   active?: boolean;
-  pluginName?: string;
-  pluginId?: string;
+  extensionName?: string;
+  extensionId?: string;
 };
 
 export type FeatureContextMenu = {
@@ -52,10 +53,10 @@ export type FeatureContextMenu = {
   condition?: (targetElement: HTMLElement | null) => boolean;
   disabled?: boolean;
   targetView?: string[];
-  pluginId?: string;
+  extensionId?: string;
 };
 
-export type PluginInfo = {
+export type ExtensionInfo = {
   enabled: boolean;
   id: string;
   name: string;
@@ -66,6 +67,15 @@ export type PluginInfo = {
   features: {
     views?: FeatureView[];
     contextMenus?: FeatureContextMenu[];
-    settingsTabs?: SettingsTabManifest[];
+    configurationTabs?: ConfigurationTabManifest[];
   };
 };
+
+/** @deprecated Use ExtensionInfo */
+export type PluginInfo = ExtensionInfo;
+/** @deprecated Use ConfigurationSectionContribution */
+export type SettingsSectionContribution = ConfigurationSectionContribution;
+/** @deprecated Use ConfigurationTabContribution */
+export type SettingsTabContribution = ConfigurationTabContribution;
+/** @deprecated Use ConfigurationTabManifest */
+export type SettingsTabManifest = ConfigurationTabManifest;

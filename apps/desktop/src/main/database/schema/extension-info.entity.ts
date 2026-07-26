@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
-@Entity()
-export class PluginInfo {
+@Entity('extension_info')
+export class ExtensionInfo {
   @PrimaryColumn('varchar')
   id: string;
 

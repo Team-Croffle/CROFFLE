@@ -13,7 +13,7 @@ export const useContextMenuStore = defineStore('contextMenu', () => {
   const currentItems = computed(() => {
     let currentTarget = 'calendar'; // default;
 
-    if (route.path.startsWith('/plugin/') && route.params.viewId) {
+    if (route.path.startsWith('/extension/') && route.params.viewId) {
       currentTarget = route.params.viewId as string;
     } else if (route.name) {
       currentTarget = route.name as string;
@@ -59,8 +59,8 @@ export const useContextMenuStore = defineStore('contextMenu', () => {
     menuRegistry.value = menuRegistry.value.filter((m) => !menuId.includes(m.id));
   };
 
-  const unregisterPluginMenus = (pluginId: string) => {
-    menuRegistry.value = menuRegistry.value.filter((m) => m.pluginId !== pluginId);
+  const unregisterExtensionMenus = (extensionId: string) => {
+    menuRegistry.value = menuRegistry.value.filter((m) => m.extensionId !== extensionId);
   };
 
   const setActiveElement = (el: HTMLElement | null) => {
@@ -75,7 +75,7 @@ export const useContextMenuStore = defineStore('contextMenu', () => {
     registerMenus,
     unregisterMenu,
     unregisterMenus,
-    unregisterPluginMenus,
+    unregisterExtensionMenus,
     setActiveElement,
   };
 });

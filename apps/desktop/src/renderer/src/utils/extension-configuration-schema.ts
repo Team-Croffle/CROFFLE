@@ -1,7 +1,7 @@
-import type { ConfigItemSchema, SettingsSectionContribution } from '@croffledev/croffle-types';
+import type { ConfigItemSchema, ConfigurationSectionContribution } from '@croffledev/croffle-types';
 
 export const buildDefaultsFromSections = (
-  sections: SettingsSectionContribution[],
+  sections: ConfigurationSectionContribution[],
 ): Record<string, unknown> => {
   const defaults: Record<string, unknown> = {};
   for (const section of sections) {
@@ -13,7 +13,7 @@ export const buildDefaultsFromSections = (
 };
 
 export const mergeWithSchemaDefaults = (
-  sections: SettingsSectionContribution[],
+  sections: ConfigurationSectionContribution[],
   stored: Record<string, unknown>,
 ): Record<string, unknown> => {
   const defaults = buildDefaultsFromSections(sections);
@@ -21,7 +21,7 @@ export const mergeWithSchemaDefaults = (
 };
 
 export const collectSchemaItems = (
-  sections: SettingsSectionContribution[],
+  sections: ConfigurationSectionContribution[],
 ): Record<string, ConfigItemSchema> => {
   const items: Record<string, ConfigItemSchema> = {};
   for (const section of sections) {

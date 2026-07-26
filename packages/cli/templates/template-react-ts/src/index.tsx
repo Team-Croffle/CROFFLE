@@ -1,4 +1,4 @@
-import type { PluginContext } from '@croffledev/croffle-types';
+import type { ExtensionContext } from '@croffledev/croffle-types';
 import React from 'react';
 import type { Root } from 'react-dom/client';
 import { createRoot } from 'react-dom/client';
@@ -9,7 +9,7 @@ import MySettingsTab from './MySettingsTab';
 let viewRoot: Root | null = null;
 let settingsRoot: Root | null = null;
 
-export function activated(context: PluginContext) {
+export function activated(context: ExtensionContext) {
   console.log('React Plugin has been activated!');
 
   // 1. Register Feature View
@@ -19,7 +19,7 @@ export function activated(context: PluginContext) {
   });
 
   // 2. Register Settings Tab
-  context.ui.registerSettingsTab('react-settings-tab', {
+  context.ui.registerConfigurationTab('react-settings-tab', {
     label: 'React Tab',
     render: (container: HTMLElement) => {
       settingsRoot = createRoot(container);

@@ -1,9 +1,9 @@
-import type { PluginInfo as PluginInfoInterface } from '@croffledev/croffle-types';
+import type { ExtensionInfo as ExtensionInfoInterface } from '@croffledev/croffle-types';
 
-import { PluginInfo as PluginInfoEntity } from '../database/schema/plugin-info.entity';
+import { ExtensionInfo as ExtensionInfoEntity } from '../database/schema/extension-info.entity';
 
-export const pluginInfoMapper = {
-  toInterface(entity: PluginInfoEntity): PluginInfoInterface {
+export const extensionInfoMapper = {
+  toInterface(entity: ExtensionInfoEntity): ExtensionInfoInterface {
     return {
       ...entity,
       description: entity.description || '',
@@ -14,8 +14,8 @@ export const pluginInfoMapper = {
     };
   },
 
-  toEntity(api: PluginInfoInterface): PluginInfoEntity {
-    const entity = new PluginInfoEntity();
+  toEntity(api: ExtensionInfoInterface): ExtensionInfoEntity {
+    const entity = new ExtensionInfoEntity();
     entity.id = api.id;
     entity.name = api.name;
     entity.version = api.version;

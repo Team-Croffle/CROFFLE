@@ -1,17 +1,20 @@
-import type { SettingsTabContribution, SettingsTabManifest } from '@croffledev/croffle-types';
+import type {
+  ConfigurationTabContribution,
+  ConfigurationTabManifest,
+} from '@croffledev/croffle-types';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
 const BUILTIN_TAB_IDS = ['general', 'calendar', 'account', 'notifications'] as const;
 export type BuiltinSettingsTabId = (typeof BUILTIN_TAB_IDS)[number];
 
-const getTabCompositeId = (tab: Pick<SettingsTabContribution, 'pluginId' | 'id'>) =>
-  `${tab.pluginId}:${tab.id}`;
+const getTabCompositeId = (tab: Pick<ConfigurationTabContribution, 'extensionId' | 'id'>) =>
+  `${tab.extensionId}:${tab.id}`;
 
 export const useSettingsStore = defineStore('settings', () => {
-  const extensionTabs = ref<SettingsTabContribution[]>([]);
+  const extensionTabs = ref<ConfigurationTabContribution[]>([]);
 
-  const registerTab = (tab: SettingsTabContribution) => {
+  const registerTab = (tab: ConfigurationTabContribution) => {
     const compositeId = getTabCompositeId(tab);
     if (extensionTabs.value.some((t) => getTabCompositeId(t) === compositeId)) {
       return;
@@ -20,9 +23,9 @@ export const useSettingsStore = defineStore('settings', () => {
   };
 
   const registerManifestTabs = (
-    pluginId: string,
-    pluginName: string,
-    manifests: SettingsTabManifest[] | undefined,
+    extensionId: string,
+    extensionName: string,
+    manifests: ConfigurationTabManifest[] | undefined,
   ) => {
     if (!manifests?.length) {
       return;
@@ -30,14 +33,14 @@ export const useSettingsStore = defineStore('settings', () => {
     for (const manifest of manifests) {
       registerTab({
         ...manifest,
-        pluginId,
-        pluginName,
+        extensionId,
+        extensionName,
       });
     }
   };
 
-  const unregisterPluginTabs = (pluginId: string) => {
-    extensionTabs.value = extensionTabs.value.filter((t) => t.pluginId !== pluginId);
+  const unregisterExtensionConfigurationTabs = (extensionId: string) => {
+    extensionTabs.value = extensionTabs.value.filter((t) => t.extensionId !== extensionId);
   };
 
   const sortedExtensionTabs = computed(() =>
@@ -52,7 +55,7 @@ export const useSettingsStore = defineStore('settings', () => {
     sortedExtensionTabs,
     registerTab,
     registerManifestTabs,
-    unregisterPluginTabs,
+    unregisterExtensionConfigurationTabs,
     getTabCompositeId,
     findExtensionTab,
     isBuiltinTab: (id: string): id is BuiltinSettingsTabId =>

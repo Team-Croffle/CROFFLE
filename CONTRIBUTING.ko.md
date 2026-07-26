@@ -20,17 +20,20 @@ English: [CONTRIBUTING.md](./CONTRIBUTING.md)
 | ---------------- | --------------------------- | --------------------- |
 | `apps/desktop`   | `@croffledev/desktop`       | Electron 앱 (private) |
 | `packages/types` | `@croffledev/croffle-types` | 배포용 타입 정의      |
-| `packages/cli`   | `@croffledev/croffle-cli`   | 배포용 플러그인 CLI   |
+| `packages/cli`   | `@croffledev/croffle-cli`   | 배포용 확장 CLI       |
 
 데스크톱 호스트 API(preload)는 **도메인 단위 flat** 형태입니다.
 
 ```ts
 croffle.window;
 croffle.calendar.schedules;
-croffle.plugins.info;
+croffle.extensions.info;
+croffle.extensions.configuration;
 croffle.event;
 // …
 ```
+
+용어: 설치 단위는 **extension**. 확장 옵션은 **configuration**, 앱 전역은 **settings**(`croffle.settings`)입니다. 매니페스트 파일명은 당분간 `plugin.json`을 유지합니다(매니페스트 재설계 TBD).
 
 타입은 `@croffledev/croffle-types`, 앱 런타임 enum은 `apps/desktop/src/common` (`@croffledev/common` alias)입니다.
 

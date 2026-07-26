@@ -28,7 +28,7 @@ export default defineConfig({
       fileName: () => 'index.js',
     },
     rollupOptions: {
-      // Do NOT externalize 'vue' — the plugin:// protocol cannot resolve bare imports.
+      // Do NOT externalize 'vue' — the extension:// protocol cannot resolve bare imports.
       // Vue must be fully bundled into the plugin's index.js.
     },
   },

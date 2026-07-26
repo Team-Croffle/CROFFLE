@@ -1,8 +1,8 @@
 import type { CalendarApi } from './api/calendar';
 import type { EventApi } from './api/event';
+import type { ExtensionsApi } from './api/extensions';
 import type { HttpApi } from './api/http';
 import type { OsApi } from './api/os';
-import type { PluginsApi } from './api/plugins';
 import type { SettingsApi } from './api/settings';
 import type { UiApi } from './api/ui';
 import type { WindowApi } from './api/window';
@@ -36,11 +36,14 @@ export interface CroffleAPI {
   event: EventApi;
   calendar: CalendarApi;
   settings: SettingsApi;
-  plugins: PluginsApi;
+  extensions: ExtensionsApi;
   enums: EnumsApi;
 }
 
-/** 플러그인 activated(context)에 전달되는 API (+ ui) */
-export type PluginContext = CroffleAPI & {
+/** Extension activated(context)에 전달되는 API (+ ui) */
+export type ExtensionContext = CroffleAPI & {
   ui: UiApi;
 };
+
+/** @deprecated Use ExtensionContext */
+export type PluginContext = ExtensionContext;

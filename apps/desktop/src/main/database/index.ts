@@ -5,8 +5,8 @@ import type { ObjectLiteral, Repository } from 'typeorm';
 import { DataSource } from 'typeorm';
 
 import { logger } from '../logger';
-import { PluginInfo } from './schema/plugin-info.entity';
-import { PluginStorage } from './schema/plugin-storage.entity';
+import { ExtensionInfo } from './schema/extension-info.entity';
+import { ExtensionStorage } from './schema/extension-storage.entity';
 import { Schedule } from './schema/schedule.entity';
 import { Tag } from './schema/tag.entity';
 
@@ -21,7 +21,7 @@ class DatabaseManager {
     this.dataSource = new DataSource({
       type: 'better-sqlite3',
       database: dbPath,
-      entities: [Tag, Schedule, PluginInfo, PluginStorage],
+      entities: [Tag, Schedule, ExtensionInfo, ExtensionStorage],
       synchronize: process.env.NODE_ENV === 'development',
       logging: process.env.NODE_ENV === 'development',
     });
