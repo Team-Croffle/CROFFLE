@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
-import { AppEventType } from '@croffledev/shared';
+import { AppEventType } from '@croffledev/common';
 import type { BrowserWindow } from 'electron';
 import { app, Menu, Tray, shell } from 'electron';
 import type { UpdateInfo } from 'electron-updater';

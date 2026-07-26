@@ -12,7 +12,7 @@ class PluginLoader {
   public async init() {
     try {
       // 활성화된 플러그인 가져오기(DB에서)
-      const enabledPlugins = await croffle.base.pluginInfo.getEnabled();
+      const enabledPlugins = await croffle.plugins.info.getEnabled();
 
       // 각 플러그인 로딩
       for (const plugin of enabledPlugins) {
@@ -27,7 +27,7 @@ class PluginLoader {
   public async loadPluginById(pluginId: string) {
     try {
       // IPC의 getByName은 name 기반 조회이므로, id 기반 검색을 위해 전체 목록을 순회합니다.
-      const plugins = await croffle.base.pluginInfo.getInstalled();
+      const plugins = await croffle.plugins.info.getInstalled();
       const plugin = plugins.find((p) => p.id === pluginId);
       if (plugin && plugin.enabled) {
         await this.loadPlugin(plugin);

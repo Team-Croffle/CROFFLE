@@ -55,21 +55,21 @@ export const useScheduleStore = defineStore('schedule', () => {
 
   // 일정 추가
   const createSchedule = async (payload: Partial<Schedule>) => {
-    const created = await croffle.base.schedules.create(payload);
+    const created = await croffle.calendar.schedules.create(payload);
     upsertSchedule(created);
     return created;
   };
 
   // 일정 수정
   const updateScheduleById = async (id: string, payload: Partial<Schedule>) => {
-    const updated = await croffle.base.schedules.update(id, payload);
+    const updated = await croffle.calendar.schedules.update(id, payload);
     upsertSchedule(updated);
     return updated;
   };
 
   // 일정 제거
   const removeScheduleById = async (id: string) => {
-    const ok = await croffle.base.schedules.remove(id);
+    const ok = await croffle.calendar.schedules.remove(id);
     if (ok) {
       schedules.value = schedules.value.filter((s) => s.id !== id);
     }
@@ -83,7 +83,7 @@ export const useScheduleStore = defineStore('schedule', () => {
       const start = startDate || now.subtract(1, 'month').startOf('month').toISOString();
       const end = endDate || now.add(1, 'month').endOf('month').toISOString();
 
-      const result = await croffle.base.schedules.getAll({ start, end });
+      const result = await croffle.calendar.schedules.getAll({ start, end });
       schedules.value = result;
     } catch (error) {
       toast.error(`일정 불러오기 실패: ${JSON.stringify(error)}`);

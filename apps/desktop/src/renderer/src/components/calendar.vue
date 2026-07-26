@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { AppEventType } from '@croffledev/shared';
+  import { AppEventType } from '@croffledev/common';
   import type { CalendarOptions } from '@fullcalendar/core';
   import dayGridPlugin from '@fullcalendar/daygrid';
   import interactionPlugin from '@fullcalendar/interaction';
@@ -173,7 +173,7 @@
 
   onMounted(() => {
     startResizeObserver(calendarContainerRef, fullCalendarRef);
-    unsubscribeSettings = croffle.app.event.on(AppEventType.SETTINGS_UPDATE, () => {
+    unsubscribeSettings = croffle.event.on(AppEventType.SETTINGS_UPDATE, () => {
       applyCalendarSettings();
     });
     if (settings.value) {

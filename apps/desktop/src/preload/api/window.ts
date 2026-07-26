@@ -1,10 +1,7 @@
-import type { windows } from '@croffledev/croffle-types';
+import type { WindowApi } from '@croffledev/croffle-types';
 import { ipcRenderer } from 'electron';
 
-type WindowAPI = typeof windows;
-
 export const windowApi = {
-  // 윈도우 제어
   minimize: () => ipcRenderer.invoke('window:minimize'),
   maximize: () => ipcRenderer.invoke('window:maximize'),
   close: () => ipcRenderer.invoke('window:close'),
@@ -12,4 +9,4 @@ export const windowApi = {
   checkForUpdates: () => ipcRenderer.invoke('window:checkForUpdates'),
   setCloseToTrayMode: (enabled: boolean) =>
     ipcRenderer.invoke('window:setCloseToTrayMode', enabled),
-} satisfies WindowAPI;
+} satisfies WindowApi;

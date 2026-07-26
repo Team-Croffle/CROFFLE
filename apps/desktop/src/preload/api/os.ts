@@ -2,11 +2,9 @@ import type {
   ClipboardImageData,
   ClipboardResult,
   ClipboardTextData,
-  os,
+  OsApi,
 } from '@croffledev/croffle-types';
 import { ipcRenderer } from 'electron';
-
-type OsApi = typeof os;
 
 export const osApi = {
   showNotification: (title: string, body: string): Promise<void> =>

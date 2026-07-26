@@ -1,46 +1,41 @@
-import * as Enums from '@croffledev/shared';
+import * as Enums from '@croffledev/common';
 import { electronAPI } from '@electron-toolkit/preload';
 import { contextBridge } from 'electron';
 
 import { logger } from '../main/logger';
-import { eventApi } from './api/event.api';
-import { httpApi } from './api/http.api';
-import { osApi } from './api/os.api';
-import { pluginInfoApi } from './api/plugin-info.api';
-import { pluginSessionApi } from './api/plugin-session.api';
-import { pluginSettingsApi } from './api/plugin-settings.api';
-import { pluginStorageApi } from './api/plugin-storage.api';
-import { scheduleApi } from './api/schedule.api';
-import { searchApi } from './api/search.api';
-import { settingsApi } from './api/settings.api';
-import { tagApi } from './api/tag.api';
-import { windowApi } from './api/window.api';
+import { scheduleApi } from './api/calendar/schedules';
+import { searchApi } from './api/calendar/search';
+import { tagApi } from './api/calendar/tags';
+import { eventApi } from './api/event';
+import { httpApi } from './api/http';
+import { osApi } from './api/os';
+import { pluginInfoApi } from './api/plugins/info';
+import { pluginSessionApi } from './api/plugins/session';
+import { pluginSettingsApi } from './api/plugins/settings';
+import { pluginStorageApi } from './api/plugins/storage';
+import { settingsApi } from './api/settings';
+import { windowApi } from './api/window';
 
-// Custom APIs for renderer
 const api = {
-  base: {
-    windows: windowApi,
-    tags: tagApi,
+  window: windowApi,
+  os: osApi,
+  http: httpApi,
+  event: eventApi,
+  calendar: {
     schedules: scheduleApi,
-    pluginInfo: pluginInfoApi,
-    settings: settingsApi,
-    pluginSettings: pluginSettingsApi,
+    tags: tagApi,
     search: searchApi,
   },
-  app: {
-    os: osApi,
-    http: httpApi,
+  settings: settingsApi,
+  plugins: {
+    info: pluginInfoApi,
+    settings: pluginSettingsApi,
     storage: pluginStorageApi,
-    event: eventApi,
     session: pluginSessionApi,
   },
-
   enums: Enums,
 };
 
-// Use `contextBridge` APIs to expose Electron APIs to
-// renderer only if context isolation is enabled, otherwise
-// just add to the DOM global.
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI);
@@ -49,8 +44,6 @@ if (process.contextIsolated) {
     logger.error('Preload', JSON.stringify(error));
   }
 } else {
-  // @ts-ignore (define in dts)
   window.electron = electronAPI;
-  // @ts-ignore (define in dts)
   window.croffle = api;
 }

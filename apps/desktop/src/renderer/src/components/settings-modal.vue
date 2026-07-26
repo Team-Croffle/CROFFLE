@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import type { SettingsTabContribution, AppSettings, PluginInfo } from '@croffledev/croffle-types';
   import {
     AppSettingLanguage,
     AppSettingStartupBehavior,
@@ -7,7 +6,8 @@
     CalendarTimeFormat,
     CalendarView,
     CalendarWeekStartDay,
-  } from '@croffledev/shared';
+  } from '@croffledev/common';
+  import type { SettingsTabContribution, AppSettings, PluginInfo } from '@croffledev/croffle-types';
   import {
     Settings,
     Bell,
@@ -140,7 +140,7 @@
       return;
     }
     const compositeId = settingsStore.getTabCompositeId(tab);
-    const stored = await croffle.base.pluginSettings.get<Record<string, unknown>>(tab.pluginId);
+    const stored = await croffle.plugins.settings.get<Record<string, unknown>>(tab.pluginId);
     const merged = mergeWithSchemaDefaults(tab.sections, stored);
     extensionDrafts.value[compositeId] = merged;
     originalExtensionDrafts.value[compositeId] = JSON.parse(JSON.stringify(merged));
@@ -155,7 +155,7 @@
         continue;
       }
       const compositeId = settingsStore.getTabCompositeId(tab);
-      const stored = await croffle.base.pluginSettings.get<Record<string, unknown>>(tab.pluginId);
+      const stored = await croffle.plugins.settings.get<Record<string, unknown>>(tab.pluginId);
       const merged = mergeWithSchemaDefaults(tab.sections, stored);
       drafts[compositeId] = merged;
       originals[compositeId] = JSON.parse(JSON.stringify(merged));
@@ -211,7 +211,7 @@
     isLoadingSettings.value = true;
     loadError.value = null;
     try {
-      const loaded = await croffle.base.settings.getAll();
+      const loaded = await croffle.settings.getAll();
       originalSettings.value = loaded;
       settings.value = cloneSettings(loaded);
       syncUiDraft();
@@ -226,7 +226,7 @@
 
   const fetchInstalledPlugins = async () => {
     try {
-      installedPlugins.value = await croffle.base.pluginInfo.getInstalled();
+      installedPlugins.value = await croffle.plugins.info.getInstalled();
     } catch (err) {
       toast.error(`플러그인 목록 로드 실패: ${JSON.stringify(err)}`);
     }
@@ -238,7 +238,7 @@
     }
     isInstalling.value = true;
     try {
-      const plugin = await croffle.base.pluginInfo.install({
+      const plugin = await croffle.plugins.info.install({
         id: installUrl.value,
       });
       installUrl.value = '';
@@ -254,7 +254,7 @@
   const onLocalZipSelect = async () => {
     isInstalling.value = true;
     try {
-      const result = await croffle.base.pluginInfo.installFromLocal();
+      const result = await croffle.plugins.info.installFromLocal();
       if (result) {
         await fetchInstalledPlugins();
         await pluginLoader.loadPluginById(result.id);
@@ -268,7 +268,7 @@
 
   const onTogglePlugin = async (plugin: PluginInfo) => {
     try {
-      await croffle.base.pluginInfo.toggle(plugin.id, plugin.enabled);
+      await croffle.plugins.info.toggle(plugin.id, plugin.enabled);
       await fetchInstalledPlugins();
 
       if (plugin.enabled) {
@@ -287,7 +287,7 @@
     }
     try {
       await pluginLoader.unloadPlugin(plugin.id);
-      await croffle.base.pluginInfo.uninstall(plugin.id);
+      await croffle.plugins.info.uninstall(plugin.id);
       await fetchInstalledPlugins();
     } catch (err) {
       toast.error(`플러그인 삭제 실패: ${JSON.stringify(err)}`);
@@ -329,7 +329,7 @@
       return;
     }
     try {
-      await croffle.base.settings.update(cloneSettings(settings.value));
+      await croffle.settings.update(cloneSettings(settings.value));
 
       for (const tab of settingsStore.sortedExtensionTabs) {
         if (!tab.sections?.length) {
@@ -338,12 +338,12 @@
         const compositeId = settingsStore.getTabCompositeId(tab);
         const draft = extensionDrafts.value[compositeId];
         if (draft) {
-          await croffle.base.pluginSettings.set(tab.pluginId, draft);
+          await croffle.plugins.settings.set(tab.pluginId, draft);
         }
       }
 
       // 저장 후 재조회(실제 반영값 동기화)
-      const reloaded = await croffle.base.settings.getAll();
+      const reloaded = await croffle.settings.getAll();
       originalSettings.value = reloaded;
       settings.value = cloneSettings(reloaded);
 

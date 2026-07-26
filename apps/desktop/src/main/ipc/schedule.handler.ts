@@ -1,5 +1,5 @@
+import { AppEventType } from '@croffledev/common';
 import type { Schedule } from '@croffledev/croffle-types';
-import { AppEventType } from '@croffledev/shared';
 import { ipcMain } from 'electron';
 
 import { exportSchedulesToFile } from '../calendar/export-schedule';

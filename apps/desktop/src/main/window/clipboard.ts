@@ -1,5 +1,5 @@
+import { ClipboardDataType } from '@croffledev/common';
 import type { ClipboardResult } from '@croffledev/croffle-types';
-import { ClipboardDataType } from '@croffledev/shared';
 import { clipboard, nativeImage } from 'electron';
 
 import { logger } from '../logger';

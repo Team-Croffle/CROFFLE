@@ -1,4 +1,4 @@
-import { AppEventType } from '@croffledev/shared';
+import { AppEventType } from '@croffledev/common';
 import type { IpcMainInvokeEvent } from 'electron';
 import { BrowserWindow, ipcMain } from 'electron';
 

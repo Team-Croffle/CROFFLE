@@ -1,4 +1,4 @@
-import type { PluginSessionAPI } from '@croffledev/croffle-types';
+import type { PluginSessionApi } from '@croffledev/croffle-types';
 import { ipcRenderer } from 'electron';
 
 export const pluginSessionApi = {
@@ -20,4 +20,4 @@ export const pluginSessionApi = {
   clearAll: (): Promise<void> => {
     return ipcRenderer.invoke('sessionStorage:clearAll');
   },
-} satisfies PluginSessionAPI;
+} satisfies PluginSessionApi;

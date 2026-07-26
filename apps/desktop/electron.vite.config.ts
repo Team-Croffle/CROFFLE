@@ -6,7 +6,7 @@ import { defineConfig } from 'electron-vite';
 import swc from 'unplugin-swc';
 import type { Plugin } from 'vite';
 
-const sharedEntry = resolve(__dirname, '../../packages/shared/src/index.ts');
+const commonEntry = resolve(__dirname, 'src/common/index.ts');
 
 /** types-only package — provide an empty module so Rolldown can resolve it */
 function croffleTypesStub(): Plugin {
@@ -33,12 +33,12 @@ export default defineConfig({
   main: {
     build: {
       externalizeDeps: {
-        exclude: ['@croffledev/shared'],
+        exclude: ['@croffledev/common'],
       },
     },
     resolve: {
       alias: {
-        '@croffledev/shared': sharedEntry,
+        '@croffledev/common': commonEntry,
       },
     },
     plugins: [
@@ -61,7 +61,7 @@ export default defineConfig({
     },
     resolve: {
       alias: {
-        '@croffledev/shared': sharedEntry,
+        '@croffledev/common': commonEntry,
       },
     },
   },
@@ -69,7 +69,7 @@ export default defineConfig({
     resolve: {
       alias: {
         '@': resolve(__dirname, 'src/renderer/src'),
-        '@croffledev/shared': sharedEntry,
+        '@croffledev/common': commonEntry,
       },
     },
     plugins: [croffleTypesStub(), vue(), tailwindcss()],
