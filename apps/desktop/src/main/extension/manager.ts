@@ -1,14 +1,16 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import type { ExtensionInfo } from '@croffledev/croffle-types';
+import type { CroffleManifest } from '@croffledev/croffle-types';
 import { app, net, protocol } from 'electron';
 import JSZip from 'jszip';
 
+import type { ExtensionInfo } from '../database/schema/extension-info.entity';
 import { extensionInfoService } from './info-service';
+import { MANIFEST_FILENAME, satisfiesCroffleEngine } from './manifest';
 
 class ExtensionManager {
-  private pluginDir = path.join(app.getPath('userData'), 'extensions');
+  private extensionDir = path.join(app.getPath('userData'), 'extensions');
 
   constructor() {
     app.whenReady().then(() => {
@@ -20,14 +22,13 @@ class ExtensionManager {
     protocol.handle('extension', async (req) => {
       let url = req.url.replace('extension://', '');
 
-      // 쿼리 스트링 제거
       const queryIndex = url.indexOf('?');
       if (queryIndex !== -1) {
         url = url.substring(0, queryIndex);
       }
 
       const safePath = path.normalize(url).replace(/^(\.\.(\/|\\|$))+/, '');
-      const localPath = path.join(this.pluginDir, safePath);
+      const localPath = path.join(this.extensionDir, safePath);
 
       const response = await net.fetch(`file://${localPath}`);
 
@@ -44,17 +45,38 @@ class ExtensionManager {
     });
   }
 
-  async installFromLocalZip(zipPath: string) {
-    const buffer = fs.readFileSync(zipPath);
-    const zip = await JSZip.loadAsync(buffer);
+  private readAndValidateManifest(dir: string): CroffleManifest {
+    const manifestPath = path.join(dir, MANIFEST_FILENAME);
+    if (!fs.existsSync(manifestPath)) {
+      throw new Error(`${MANIFEST_FILENAME} not found`);
+    }
 
-    // create temp dir
-    const tempDir = path.join(app.getPath('temp'), `croffle-plugin-${Date.now()}`);
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8')) as CroffleManifest;
+    if (!manifest.id || !manifest.name || !manifest.version || !manifest.author) {
+      throw new Error(
+        `${MANIFEST_FILENAME} is missing required fields (id, name, version, author)`,
+      );
+    }
+
+    const appVersion = app.getVersion();
+    if (!satisfiesCroffleEngine(appVersion, manifest.engines?.croffle)) {
+      throw new Error(
+        `Extension requires Croffle ${manifest.engines?.croffle}, but app is ${appVersion}`,
+      );
+    }
+
+    return manifest;
+  }
+
+  private async extractZip(
+    buffer: Buffer | ArrayBuffer,
+  ): Promise<{ tempDir: string; contentDir: string }> {
+    const zip = await JSZip.loadAsync(buffer);
+    const tempDir = path.join(app.getPath('temp'), `croffle-extension-${Date.now()}`);
     await fs.promises.mkdir(tempDir, { recursive: true });
 
-    const extractPromise: Promise<void>[] = [];
+    const writes: Promise<void>[] = [];
 
-    // extract zip file to temp dir
     zip.forEach((relativePath, zipEntry) => {
       const targetPath = path.join(tempDir, relativePath);
 
@@ -66,150 +88,70 @@ class ExtensionManager {
           fs.mkdirSync(dirname, { recursive: true });
         }
 
-        extractPromise.push(
-          zipEntry.async('nodebuffer').then((content) => {
-            return fs.promises.writeFile(targetPath, content);
-          }),
+        writes.push(
+          zipEntry
+            .async('nodebuffer')
+            .then((content) => fs.promises.writeFile(targetPath, content)),
         );
       }
     });
 
-    // execute unzip
-    await Promise.all(extractPromise);
+    await Promise.all(writes);
 
-    // find 'repo-main' root directory
     const dirs = fs.readdirSync(tempDir);
-    const rootDir =
+    const nestedRoot =
       dirs.length === 1 && fs.statSync(path.join(tempDir, dirs[0])).isDirectory() ? dirs[0] : '';
+    const contentDir = nestedRoot ? path.join(tempDir, nestedRoot) : tempDir;
 
-    const extractedPluginPath = path.join(tempDir, rootDir);
-    const pluginJsonPath = path.join(extractedPluginPath, 'plugin.json');
+    return { tempDir, contentDir };
+  }
 
-    if (!fs.existsSync(pluginJsonPath)) {
-      fs.rmSync(tempDir, { recursive: true, force: true });
-      throw new Error('plugin.json not found');
+  private async finalizeInstall(contentDir: string, tempDir: string): Promise<ExtensionInfo> {
+    try {
+      const manifest = this.readAndValidateManifest(contentDir);
+      const finalDir = path.join(this.extensionDir, manifest.id);
+
+      if (fs.existsSync(finalDir)) {
+        fs.rmSync(finalDir, { recursive: true, force: true });
+      }
+
+      fs.mkdirSync(this.extensionDir, { recursive: true });
+      fs.renameSync(contentDir, finalDir);
+
+      return await extensionInfoService.installExtension({
+        id: manifest.id,
+        name: manifest.name,
+        version: manifest.version,
+        author: manifest.author,
+        description: manifest.description,
+        main: manifest.main,
+        engines: manifest.engines,
+        contributes: manifest.contributes ?? {},
+        enabled: true,
+      });
+    } finally {
+      if (fs.existsSync(tempDir)) {
+        fs.rmSync(tempDir, { recursive: true, force: true });
+      }
     }
+  }
 
-    const manifest: ExtensionInfo = JSON.parse(fs.readFileSync(pluginJsonPath, 'utf-8'));
-    const finalPluginDir = path.join(this.pluginDir, manifest.id);
-
-    if (fs.existsSync(finalPluginDir)) {
-      fs.rmSync(finalPluginDir, { recursive: true, force: true });
-    }
-
-    // ensure plugins directory exists before rename
-    fs.mkdirSync(this.pluginDir, { recursive: true });
-    fs.renameSync(extractedPluginPath, finalPluginDir);
-
-    fs.rmSync(tempDir, { recursive: true, force: true });
-
-    return await extensionInfoService.installExtension({
-      id: manifest.id,
-      name: manifest.name,
-      version: manifest.version,
-      author: manifest.author,
-      description: manifest.description,
-      main: manifest.main,
-      features: manifest.features || {},
-      enabled: true,
-    });
+  async installFromLocalZip(zipPath: string) {
+    const buffer = fs.readFileSync(zipPath);
+    const { tempDir, contentDir } = await this.extractZip(buffer);
+    return this.finalizeInstall(contentDir, tempDir);
   }
 
   async installFromGitHub(repoUrl: string) {
-    // get zip file from github
     const zipUrl = `${repoUrl}/archive/refs/heads/main.zip`;
-    // fetch zip file
     const resp = await fetch(zipUrl);
     if (!resp.ok) {
       throw new Error(`Failed to fetch ${zipUrl}`);
     }
 
-    // read zip file
     const buffer = await resp.arrayBuffer();
-    const zip = await JSZip.loadAsync(buffer);
-
-    // create temp dir
-    const tempDir = path.join(app.getPath('temp'), `croffle-plugin-${Date.now()}`);
-    await fs.promises.mkdir(tempDir, { recursive: true });
-
-    const extractPromise: Promise<void>[] = [];
-
-    // extract zip file to temp dir
-    zip.forEach((relativePath, zipEntry) => {
-      const targetPath = path.join(tempDir, relativePath);
-
-      if (zipEntry.dir) {
-        fs.mkdirSync(targetPath, { recursive: true });
-      } else {
-        const dirname = path.dirname(targetPath);
-        if (!fs.existsSync(dirname)) {
-          fs.mkdirSync(dirname, { recursive: true });
-        }
-
-        extractPromise.push(
-          zipEntry.async('nodebuffer').then((content) => {
-            return fs.promises.writeFile(targetPath, content);
-          }),
-        );
-      }
-    });
-
-    // execute unzip
-    await Promise.all(extractPromise);
-
-    // find 'repo-main' root directory
-    const dirs = fs.readdirSync(tempDir);
-    const rootDir =
-      dirs.length === 1 && fs.statSync(path.join(tempDir, dirs[0])).isDirectory() ? dirs[0] : '';
-
-    const extractedPluginPath = path.join(tempDir, rootDir);
-    const pluginJsonPath = path.join(extractedPluginPath, 'plugin.json');
-
-    if (!fs.existsSync(pluginJsonPath)) {
-      fs.rmSync(tempDir, { recursive: true, force: true });
-      throw new Error('plugin.json not found');
-    }
-
-    const manifest: ExtensionInfo = JSON.parse(fs.readFileSync(pluginJsonPath, 'utf-8'));
-    const finalPluginDir = path.join(this.pluginDir, manifest.id);
-
-    if (fs.existsSync(finalPluginDir)) {
-      fs.rmSync(finalPluginDir, { recursive: true, force: true });
-    }
-
-    // ensure plugins directory exists before rename
-    fs.mkdirSync(this.pluginDir, { recursive: true });
-    fs.renameSync(extractedPluginPath, finalPluginDir);
-
-    fs.rmSync(tempDir, { recursive: true, force: true });
-
-    return await extensionInfoService.installExtension({
-      id: manifest.id,
-      name: manifest.name,
-      version: manifest.version,
-      author: manifest.author,
-      description: manifest.description,
-      main: manifest.main,
-      enabled: true,
-    });
-  }
-
-  async getPlugins() {
-    const dbPlugins = await extensionInfoService.getInstalledExtensions();
-    const plugins: ExtensionInfo[] = [];
-
-    for (const dbPlugin of dbPlugins) {
-      const pluginPath = path.join(this.pluginDir, dbPlugin.id, 'plugin.json');
-
-      if (fs.existsSync(pluginPath)) {
-        const manifest: ExtensionInfo = JSON.parse(fs.readFileSync(pluginPath, 'utf-8'));
-        plugins.push({
-          ...manifest,
-          enabled: dbPlugin.enabled,
-        });
-      }
-    }
-    return plugins;
+    const { tempDir, contentDir } = await this.extractZip(buffer);
+    return this.finalizeInstall(contentDir, tempDir);
   }
 }
 

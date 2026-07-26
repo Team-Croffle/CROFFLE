@@ -5,12 +5,15 @@ import { ExtensionInfo as ExtensionInfoEntity } from '../database/schema/extensi
 export const extensionInfoMapper = {
   toInterface(entity: ExtensionInfoEntity): ExtensionInfoInterface {
     return {
-      ...entity,
+      id: entity.id,
+      name: entity.name,
+      version: entity.version,
+      author: entity.author,
       description: entity.description || '',
-      features: entity.features || {
-        views: [],
-        contextMenus: [],
-      },
+      main: entity.main,
+      engines: (entity.engines as ExtensionInfoInterface['engines']) || undefined,
+      contributes: (entity.contributes as ExtensionInfoInterface['contributes']) || {},
+      enabled: entity.enabled,
     };
   },
 
@@ -22,7 +25,9 @@ export const extensionInfoMapper = {
     entity.author = api.author;
     entity.description = api.description || undefined;
     entity.enabled = api.enabled;
-    entity.features = api.features;
+    entity.main = api.main;
+    entity.engines = api.engines;
+    entity.contributes = api.contributes ?? {};
     return entity;
   },
 };
