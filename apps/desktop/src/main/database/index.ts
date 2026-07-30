@@ -1,5 +1,6 @@
 import * as path from 'node:path';
 
+import { is } from '@electron-toolkit/utils';
 import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
@@ -21,7 +22,10 @@ class DatabaseManager {
     }
 
     try {
-      const dbPath = path.join(app.getPath('userData'), 'croffle.db');
+      // const dbPath = path.join(app.getPath('userData'), 'croffle.db');
+      const dbPath = is.dev
+        ? path.join(process.cwd(), 'dev/croffle.db') // development mode, the db file is in the root of the output directory
+        : path.join(app.getPath('userData'), 'croffle.db'); // production mode, the db file is in the user's data directory
       logger.debug('DB', `Database path: ${dbPath}`);
 
       this.sqlite = new Database(dbPath);
