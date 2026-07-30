@@ -1,4 +1,5 @@
-import type { Tag, TagsApi } from '@croffledev/croffle-types';
+import type { Tag } from '@croffledev/common';
+import type { TagsApi } from '@croffledev/croffle-types';
 import { ipcRenderer } from 'electron';
 
 export const tagApi = {

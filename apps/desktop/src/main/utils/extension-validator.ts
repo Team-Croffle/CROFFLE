@@ -1,4 +1,4 @@
-import type { ExtensionInfo } from '@croffledev/croffle-types';
+import type { ExtensionInfo } from '@croffledev/common';
 
 export const validateExtensionInstallation = (data: Partial<ExtensionInfo>): void => {
   if (!data.name || typeof data.name !== 'string' || data.name.trim().length === 0) {

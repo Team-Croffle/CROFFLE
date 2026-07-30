@@ -7,11 +7,8 @@
     CalendarView,
     CalendarWeekStartDay,
   } from '@croffledev/common';
-  import type {
-    ConfigurationTabContribution,
-    AppSettings,
-    ExtensionInfo,
-  } from '@croffledev/croffle-types';
+  import type { ConfigurationTabContribution, ExtensionInfo } from '@croffledev/common';
+  import type { AppSettings } from '@croffledev/croffle-types';
   import {
     Settings,
     Bell,

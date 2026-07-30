@@ -1,4 +1,4 @@
-import type { FeatureContextMenu } from '@croffledev/croffle-types';
+import type { FeatureContextMenu } from '@croffledev/common';
 import { toast } from 'vue-sonner';
 
 import { useScheduleStore } from '@/stores/schedule-store';

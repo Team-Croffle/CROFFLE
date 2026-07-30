@@ -3,16 +3,16 @@ import { randomUUID } from 'node:crypto';
 import { and, eq, ne } from 'drizzle-orm';
 
 import { databaseManager } from '../database';
-import { tags, type Tag } from '../database/schema';
+import { tags, type TagRow } from '../database/schema';
 import { colorValidation } from '../utils/color-validator';
 import { stringValidation } from '../utils/string-validator';
 
-export async function getAllTags(): Promise<Tag[]> {
+export async function getAllTags(): Promise<TagRow[]> {
   const db = databaseManager.getDb();
   return db.select().from(tags);
 }
 
-export async function getTagByName(name: string): Promise<Tag | null> {
+export async function getTagByName(name: string): Promise<TagRow | null> {
   const db = databaseManager.getDb();
   const row = await db.query.tags.findFirst({
     where: eq(tags.name, name),
@@ -20,7 +20,7 @@ export async function getTagByName(name: string): Promise<Tag | null> {
   return row ?? null;
 }
 
-export async function createTag(name: string, color: string): Promise<Tag> {
+export async function createTag(name: string, color: string): Promise<TagRow> {
   const db = databaseManager.getDb();
 
   if (!stringValidation(name, false, 50, 1)) {
@@ -37,12 +37,12 @@ export async function createTag(name: string, color: string): Promise<Tag> {
     throw new Error('Invalid color format');
   }
 
-  const newTag: Tag = { id: randomUUID(), name, color };
+  const newTag: TagRow = { id: randomUUID(), name, color };
   await db.insert(tags).values(newTag);
   return newTag;
 }
 
-export async function modifyTag(id: string, name: string, color: string): Promise<Tag> {
+export async function modifyTag(id: string, name: string, color: string): Promise<TagRow> {
   const db = databaseManager.getDb();
   const tag = await db.query.tags.findFirst({
     where: eq(tags.id, id),

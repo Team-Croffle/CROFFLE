@@ -7,7 +7,7 @@ import {
   schedules,
   scheduleTags,
   type NewSchedule,
-  type Schedule,
+  type ScheduleRow,
   type ScheduleWithTags,
 } from '../database/schema';
 import type { ScheduleEntityInput } from '../mapper/schedule-mapper';
@@ -15,7 +15,7 @@ import { colorValidation } from '../utils/color-validator';
 import { stringValidation } from '../utils/string-validator';
 
 function mapScheduleWithTags(
-  row: Schedule & {
+  row: ScheduleRow & {
     scheduleTags: { tag: ScheduleWithTags['tags'][number] }[];
   },
 ): ScheduleWithTags {

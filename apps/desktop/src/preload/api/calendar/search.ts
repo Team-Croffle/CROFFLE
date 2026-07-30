@@ -1,4 +1,5 @@
-import type { Schedule, SearchApi, SearchQuery } from '@croffledev/croffle-types';
+import type { Schedule, SearchQuery } from '@croffledev/common';
+import type { SearchApi } from '@croffledev/croffle-types';
 import { ipcRenderer } from 'electron';
 
 export const searchApi = {

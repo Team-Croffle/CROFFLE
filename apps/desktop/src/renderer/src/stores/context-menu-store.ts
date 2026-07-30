@@ -1,4 +1,4 @@
-import type { FeatureContextMenu } from '@croffledev/croffle-types';
+import type { FeatureContextMenu } from '@croffledev/common';
 import { defineStore } from 'pinia';
 import { computed, ref, shallowRef } from 'vue';
 import { useRoute } from 'vue-router';

@@ -1,4 +1,4 @@
-import type { Schedule } from '@croffledev/croffle-types';
+import type { Schedule } from '@croffledev/common';
 import dayjs from 'dayjs';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
@@ -11,11 +11,11 @@ export const useScheduleStore = defineStore('schedule', () => {
   // 데이터 변환(FullCalendar 이벤트 형식에 맞게)
   const events = computed(() => {
     return schedules.value.map((schedule) => {
-      let displayEndDate = schedule.endDate;
+      let displayEndDate: Date | string = schedule.endDate;
 
       // 종일 일정의 경우, FullCalendar는 end 날짜를 포함하지 않으므로 하루 더해줌
       if (schedule.isAllDay && schedule.endDate) {
-        displayEndDate = dayjs(schedule.endDate).add(1, 'day').format('YYYY-MM-DD');
+        displayEndDate = dayjs(schedule.endDate).add(1, 'day').toDate();
       }
 
       return {

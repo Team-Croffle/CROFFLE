@@ -1,7 +1,4 @@
-import type {
-  ConfigurationTabContribution,
-  ConfigurationTabManifest,
-} from '@croffledev/croffle-types';
+import type { ConfigurationTabContribution, ConfigurationTabManifest } from '@croffledev/common';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 

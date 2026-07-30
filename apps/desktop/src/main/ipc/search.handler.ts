@@ -1,4 +1,4 @@
-import type { SearchQuery } from '@croffledev/croffle-types';
+import type { SearchQuery } from '@croffledev/common';
 import { ipcMain } from 'electron';
 
 import { searchSchedules } from '../calendar/search';

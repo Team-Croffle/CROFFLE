@@ -1,8 +1,5 @@
-import type {
-  ExtensionContext,
-  ExtensionInfo,
-  RegisterConfigurationTabOptions,
-} from '@croffledev/croffle-types';
+import type { ExtensionInfo } from '@croffledev/common';
+import type { ExtensionContext, RegisterConfigurationTabOptions } from '@croffledev/croffle-types';
 import { toast } from 'vue-sonner';
 
 class ExtensionLoader {

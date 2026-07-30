@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import type { FeatureView } from '@croffledev/croffle-types';
+  import type { FeatureView } from '@croffledev/common';
   import { Bell, CircleHelp, Settings, Puzzle } from 'lucide-vue-next';
   import { storeToRefs } from 'pinia';
   import { ref, computed } from 'vue';

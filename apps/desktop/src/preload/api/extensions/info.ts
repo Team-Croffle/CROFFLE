@@ -1,4 +1,5 @@
-import type { ExtensionInfo, ExtensionInfoApi } from '@croffledev/croffle-types';
+import type { ExtensionInfo } from '@croffledev/common';
+import type { ExtensionInfoApi } from '@croffledev/croffle-types';
 import { ipcRenderer } from 'electron';
 
 export const extensionInfoApi = {

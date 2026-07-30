@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import type { ConfigItemSchema } from '@croffledev/croffle-types';
+  import type { ConfigItemSchema } from '@croffledev/common';
 
   import { Input } from '@/components/ui/input';
   import { Label } from '@/components/ui/label';

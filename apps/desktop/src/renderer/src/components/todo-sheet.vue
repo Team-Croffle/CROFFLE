@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import type { Schedule } from '@croffledev/croffle-types';
+  import type { Schedule } from '@croffledev/common';
   import { CalendarDate, getLocalTimeZone } from '@internationalized/date';
   import { Save, X, ChevronDown } from 'lucide-vue-next';
   import { storeToRefs } from 'pinia';
@@ -37,8 +37,8 @@
   //   high: { name: 'sys:priority:high', color: '#f43f5e' },
   // };
 
-  const toCalendarDate = (iso: string) => {
-    const d = new Date(iso);
+  const toCalendarDate = (value: string | Date) => {
+    const d = value instanceof Date ? value : new Date(value);
     return new CalendarDate(d.getFullYear(), d.getMonth() + 1, d.getDate());
   };
 
@@ -188,17 +188,23 @@
           ? scheduleStore.getScheduleById(selectedScheduleId.value)
           : null;
 
-      selectedStart += originalSchedule?.startDate?.includes('T')
-        ? originalSchedule.startDate.substring(originalSchedule.startDate.indexOf('T'))
-        : 'T00:00:00.000Z';
+      const startTime =
+        originalSchedule?.startDate instanceof Date
+          ? originalSchedule.startDate.toISOString().substring(10)
+          : 'T00:00:00.000Z';
+      const endTime =
+        originalSchedule?.endDate instanceof Date
+          ? originalSchedule.endDate.toISOString().substring(10)
+          : 'T23:59:59.999Z';
 
-      selectedEnd += originalSchedule?.endDate?.includes('T')
-        ? originalSchedule.endDate.substring(originalSchedule.endDate.indexOf('T'))
-        : 'T23:59:59.999Z';
+      selectedStart += startTime;
+      selectedEnd += endTime;
     }
 
     // 시작일이 종료일보다 늦을 수 없도록 검증
-    if (selectedEnd < selectedStart) {
+    const start = new Date(selectedStart);
+    const end = new Date(selectedEnd);
+    if (end < start) {
       toast.error('종료일은 시작일보다 빠를 수 없습니다.');
       return;
     }
@@ -207,8 +213,8 @@
       title: form.title.trim(),
       description: form.description.trim(),
       location: form.location.trim(),
-      startDate: selectedStart,
-      endDate: selectedEnd,
+      startDate: start,
+      endDate: end,
       isAllDay: form.isAllDay,
       recurrenceRule: form.recurrenceRule.trim() || undefined,
       colorLabel: form.colorLabel || '#DCA780',
