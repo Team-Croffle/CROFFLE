@@ -1,57 +1,48 @@
 import * as path from 'node:path';
 
+import Database from 'better-sqlite3';
+import { drizzle } from 'drizzle-orm/better-sqlite3';
+import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { app } from 'electron';
-import type { ObjectLiteral, Repository } from 'typeorm';
-import { DataSource } from 'typeorm';
 
 import { logger } from '../logger';
-import { ExtensionInfo } from './schema/extension-info.entity';
-import { ExtensionStorage } from './schema/extension-storage.entity';
-import { Schedule } from './schema/schedule.entity';
-import { Tag } from './schema/tag.entity';
+import { ensureSchema } from './ensure-schema';
+import * as schema from './schema';
+
+export type AppDatabase = BetterSQLite3Database<typeof schema>;
 
 class DatabaseManager {
-  private dataSource: DataSource;
-
-  constructor() {
-    const dbPath = path.join(app.getPath('userData'), 'croffledb.sqlite');
-
-    logger.debug('DB', `Database path: ${dbPath}`);
-
-    this.dataSource = new DataSource({
-      type: 'better-sqlite3',
-      database: dbPath,
-      entities: [Tag, Schedule, ExtensionInfo, ExtensionStorage],
-      synchronize: process.env.NODE_ENV === 'development',
-      logging: process.env.NODE_ENV === 'development',
-    });
-  }
+  private sqlite: Database.Database | null = null;
+  private db: AppDatabase | null = null;
 
   public async initialize(): Promise<void> {
-    if (!this.dataSource.isInitialized) {
-      try {
-        await this.dataSource.initialize();
-        logger.info('DB', 'Database initialized successfully.');
-      } catch (error) {
-        logger.error('DB', 'Error during database initialization:', error);
-        throw error;
-      }
+    if (this.db) {
+      return;
+    }
+
+    try {
+      const dbPath = path.join(app.getPath('userData'), 'croffle.db');
+      logger.debug('DB', `Database path: ${dbPath}`);
+
+      this.sqlite = new Database(dbPath);
+      this.sqlite.pragma('journal_mode = WAL');
+      this.sqlite.pragma('foreign_keys = ON');
+
+      ensureSchema(this.sqlite);
+
+      this.db = drizzle(this.sqlite, { schema });
+      logger.info('DB', 'Database initialized successfully.');
+    } catch (error) {
+      logger.error('DB', 'Error during database initialization:', error);
+      throw error;
     }
   }
 
-  public getRepository<T extends ObjectLiteral>(entity: new () => T): Repository<T> {
-    if (!this.dataSource.isInitialized) {
+  public getDb(): AppDatabase {
+    if (!this.db) {
       throw new Error('Database not initialized. Call initialize() first.');
     }
-    return this.dataSource.getRepository(entity);
-  }
-
-  public async save<T extends ObjectLiteral>(entity: T): Promise<T> {
-    const repository = this.dataSource.getRepository(
-      entity.constructor as new () => T,
-    ) as Repository<T>;
-    const result = await repository.save(entity);
-    return result;
+    return this.db;
   }
 }
 

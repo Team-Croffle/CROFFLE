@@ -1,9 +1,10 @@
 import { promises as fs } from 'node:fs';
 
 import type { Schedule as ScheduleInterface } from '@croffledev/croffle-types';
+import { eq } from 'drizzle-orm';
 
 import { databaseManager } from '../database';
-import { Schedule as ScheduleEntity } from '../database/schema/schedule.entity';
+import { schedules } from '../database/schema';
 import { scheduleMapper } from '../mapper/schedule-mapper';
 import { openJsonFileDialog } from '../window/json-file-dialog';
 import type { ExportShapeV1 } from './export.type';
@@ -20,25 +21,22 @@ export async function importScheduleFromFile(
   const raw = await fs.readFile(filePath, 'utf-8');
   const parsed = JSON.parse(raw) as ExportShapeV1 | ScheduleInterface[];
 
-  // 허용 포맷:
-  // 1) { version, exportedAt, schedules: [...] }
-  // 2) Schedule[] 단독 배열
-  const schedules: ScheduleInterface[] = Array.isArray(parsed)
+  const scheduleList: ScheduleInterface[] = Array.isArray(parsed)
     ? parsed
     : Array.isArray(parsed.schedules)
       ? parsed.schedules
       : [];
 
-  if (schedules.length === 0) {
+  if (scheduleList.length === 0) {
     throw new Error('Import file has no schedules');
   }
 
-  const repo = databaseManager.getRepository(ScheduleEntity);
+  const db = databaseManager.getDb();
 
   let created = 0;
   let updated = 0;
 
-  for (const s of schedules) {
+  for (const s of scheduleList) {
     const entityData = scheduleMapper.toEntity(s);
 
     if (mode === 'duplicate') {
@@ -47,9 +45,10 @@ export async function importScheduleFromFile(
       continue;
     }
 
-    // merge: id 기반 upsert
     if (s.id) {
-      const exists = await repo.findOne({ where: { id: s.id } });
+      const exists = await db.query.schedules.findFirst({
+        where: eq(schedules.id, s.id),
+      });
       if (exists) {
         await updateSchedule(s.id, entityData);
         updated += 1;

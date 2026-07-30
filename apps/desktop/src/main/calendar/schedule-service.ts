@@ -1,69 +1,119 @@
-import type { FindOptionsWhere } from 'typeorm';
-import { LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import { randomUUID } from 'node:crypto';
+
+import { and, asc, eq, gte, lte, type SQL as DrizzleSQL } from 'drizzle-orm';
 
 import { databaseManager } from '../database';
-import { Schedule } from '../database/schema/schedule.entity';
+import {
+  schedules,
+  scheduleTags,
+  type NewSchedule,
+  type Schedule,
+  type ScheduleWithTags,
+} from '../database/schema';
+import type { ScheduleEntityInput } from '../mapper/schedule-mapper';
 import { colorValidation } from '../utils/color-validator';
 import { stringValidation } from '../utils/string-validator';
 
-export function validateScheduleData(schedule: Schedule) {
-  // 제목 검증 (필수, 1~100자)
+function mapScheduleWithTags(
+  row: Schedule & {
+    scheduleTags: { tag: ScheduleWithTags['tags'][number] }[];
+  },
+): ScheduleWithTags {
+  const { scheduleTags: links, ...schedule } = row;
+  return {
+    ...schedule,
+    tags: links.map((link) => link.tag),
+  };
+}
+
+export function validateScheduleData(schedule: ScheduleEntityInput) {
   if (schedule.title !== undefined && !stringValidation(schedule.title, false, 100, 1)) {
     throw new Error('Title must be between 1 and 100 characters');
   }
 
-  // 색상 검증 (Hex Code)
   if (schedule.colorLabel !== undefined && !colorValidation(schedule.colorLabel)) {
     throw new Error('Invalid color label format');
   }
 
-  // 설명 검증 (선택, 최대 2000자)
   if (schedule.description && !stringValidation(schedule.description, true, 2000, 0)) {
     throw new Error('Description must be less than 2000 characters');
   }
 
-  // 장소 검증 (선택, 최대 200자)
   if (schedule.location && !stringValidation(schedule.location, true, 200, 0)) {
     throw new Error('Location must be less than 200 characters');
   }
 
-  // 날짜 순서 검증
   if (schedule.startDate && schedule.endDate) {
-    const start = new Date(schedule.startDate);
-    const end = new Date(schedule.endDate);
-    if (start > end) {
+    if (schedule.startDate > schedule.endDate) {
       throw new Error('Start date cannot be later than end date');
     }
   }
 }
 
-export async function getSchedules(period: { start: Date; end: Date }): Promise<Schedule[]> {
-  const repo = databaseManager.getRepository(Schedule);
-  const { start, end } = period;
-
-  let whereCondition: FindOptionsWhere<Schedule> = {};
-
-  if (start && end) {
-    whereCondition = {
-      endDate: MoreThanOrEqual(start),
-      startDate: LessThanOrEqual(end),
-    };
-  } else if (start) {
-    whereCondition = { endDate: MoreThanOrEqual(start) };
-  } else if (end) {
-    whereCondition = { startDate: LessThanOrEqual(end) };
+async function syncScheduleTags(scheduleId: string, tags: { id: string }[] | undefined) {
+  if (tags === undefined) {
+    return;
   }
 
-  return await repo.find({
-    where: whereCondition,
-    order: { startDate: 'ASC' },
-    relations: { tags: true },
-  });
+  const db = databaseManager.getDb();
+  await db.delete(scheduleTags).where(eq(scheduleTags.scheduleId, scheduleId));
+
+  if (tags.length === 0) {
+    return;
+  }
+
+  await db.insert(scheduleTags).values(
+    tags.map((tag) => ({
+      scheduleId,
+      tagId: tag.id,
+    })),
+  );
 }
 
-export async function createSchedule(data: Partial<Schedule>): Promise<Schedule> {
-  const repo = databaseManager.getRepository(Schedule);
+async function findScheduleWithTags(id: string): Promise<ScheduleWithTags | null> {
+  const db = databaseManager.getDb();
+  const row = await db.query.schedules.findFirst({
+    where: eq(schedules.id, id),
+    with: {
+      scheduleTags: {
+        with: { tag: true },
+      },
+    },
+  });
 
+  return row ? mapScheduleWithTags(row) : null;
+}
+
+export async function getSchedules(period: {
+  start: Date;
+  end: Date;
+}): Promise<ScheduleWithTags[]> {
+  const db = databaseManager.getDb();
+  const { start, end } = period;
+
+  const conditions: DrizzleSQL[] = [];
+  if (start && end) {
+    conditions.push(gte(schedules.endDate, start), lte(schedules.startDate, end));
+  } else if (start) {
+    conditions.push(gte(schedules.endDate, start));
+  } else if (end) {
+    conditions.push(lte(schedules.startDate, end));
+  }
+
+  const rows = await db.query.schedules.findMany({
+    where: conditions.length > 0 ? and(...conditions) : undefined,
+    orderBy: [asc(schedules.startDate)],
+    with: {
+      scheduleTags: {
+        with: { tag: true },
+      },
+    },
+  });
+
+  return rows.map(mapScheduleWithTags);
+}
+
+export async function createSchedule(data: ScheduleEntityInput): Promise<ScheduleWithTags> {
   if (!data.title) {
     throw new Error('Title is required');
   }
@@ -71,43 +121,105 @@ export async function createSchedule(data: Partial<Schedule>): Promise<Schedule>
     throw new Error('Date range is required');
   }
 
-  validateScheduleData(data as Schedule);
+  validateScheduleData(data);
 
-  const newSchedule = repo.create(data);
-  await repo.save(newSchedule);
+  const now = new Date();
+  const id = data.id ?? randomUUID();
+  const { tags: inputTags, ...scheduleFields } = data;
+  const startDate = data.startDate;
+  const endDate = data.endDate;
 
-  return newSchedule;
+  const values: NewSchedule = {
+    id,
+    title: scheduleFields.title!,
+    description: scheduleFields.description ?? null,
+    location: scheduleFields.location ?? null,
+    startDate,
+    endDate,
+    isAllDay: scheduleFields.isAllDay ?? false,
+    recurrenceRule: scheduleFields.recurrenceRule ?? null,
+    colorLabel: scheduleFields.colorLabel ?? '#E1E1E1',
+    createdAt: scheduleFields.createdAt ?? now,
+    updatedAt: scheduleFields.updatedAt ?? now,
+  };
+
+  const db = databaseManager.getDb();
+  await db.insert(schedules).values(values);
+  await syncScheduleTags(id, inputTags);
+
+  const created = await findScheduleWithTags(id);
+  if (!created) {
+    throw new Error('Failed to create schedule');
+  }
+  return created;
 }
 
-export async function updateSchedule(id: string, data: Partial<Schedule>): Promise<Schedule> {
-  const repo = databaseManager.getRepository(Schedule);
-
-  const schedule = await repo.findOne({
-    where: { id },
-    relations: { tags: true },
-  });
-
-  if (!schedule) {
+export async function updateSchedule(
+  id: string,
+  data: ScheduleEntityInput,
+): Promise<ScheduleWithTags> {
+  const existing = await findScheduleWithTags(id);
+  if (!existing) {
     throw new Error('Schedule not found');
   }
 
-  repo.merge(schedule, data);
+  const { tags: inputTags, ...scheduleFields } = data;
+  const merged: ScheduleEntityInput = {
+    id: existing.id,
+    title: scheduleFields.title ?? existing.title,
+    description:
+      scheduleFields.description !== undefined ? scheduleFields.description : existing.description,
+    location: scheduleFields.location !== undefined ? scheduleFields.location : existing.location,
+    startDate: scheduleFields.startDate ?? existing.startDate,
+    endDate: scheduleFields.endDate ?? existing.endDate,
+    isAllDay: scheduleFields.isAllDay ?? existing.isAllDay,
+    recurrenceRule:
+      scheduleFields.recurrenceRule !== undefined
+        ? scheduleFields.recurrenceRule
+        : existing.recurrenceRule,
+    colorLabel: scheduleFields.colorLabel ?? existing.colorLabel,
+    createdAt: scheduleFields.createdAt ?? existing.createdAt,
+    updatedAt: scheduleFields.updatedAt ?? existing.updatedAt,
+    tags: inputTags ?? existing.tags,
+  };
 
-  validateScheduleData(schedule);
+  validateScheduleData(merged);
 
-  await repo.save(schedule);
+  const db = databaseManager.getDb();
+  await db
+    .update(schedules)
+    .set({
+      title: merged.title,
+      description: merged.description ?? null,
+      location: merged.location ?? null,
+      startDate: merged.startDate,
+      endDate: merged.endDate,
+      isAllDay: merged.isAllDay,
+      recurrenceRule: merged.recurrenceRule ?? null,
+      colorLabel: merged.colorLabel,
+      updatedAt: new Date(),
+    })
+    .where(eq(schedules.id, id));
 
-  return schedule;
+  await syncScheduleTags(id, inputTags);
+
+  const updated = await findScheduleWithTags(id);
+  if (!updated) {
+    throw new Error('Schedule not found');
+  }
+  return updated;
 }
 
 export async function deleteSchedule(id: string): Promise<boolean> {
-  const repo = databaseManager.getRepository(Schedule);
-  const schedule = await repo.findOne({ where: { id } });
+  const db = databaseManager.getDb();
+  const existing = await db.query.schedules.findFirst({
+    where: eq(schedules.id, id),
+  });
 
-  if (!schedule) {
+  if (!existing) {
     throw new Error('Schedule not found');
   }
 
-  await repo.remove(schedule);
+  await db.delete(schedules).where(eq(schedules.id, id));
   return true;
 }

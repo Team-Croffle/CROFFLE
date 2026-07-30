@@ -5,7 +5,7 @@ import type { CroffleManifest } from '@croffledev/croffle-types';
 import { app, net, protocol } from 'electron';
 import JSZip from 'jszip';
 
-import type { ExtensionInfo } from '../database/schema/extension-info.entity';
+import type { ExtensionInfo } from '../database/schema';
 import { logger } from '../logger';
 import { extensionInfoService } from './info-service';
 import { MANIFEST_FILENAME, satisfiesCroffleEngine } from './manifest';
