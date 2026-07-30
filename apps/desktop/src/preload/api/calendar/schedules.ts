@@ -1,4 +1,5 @@
-import type { Schedule, SchedulesApi } from '@croffledev/croffle-types';
+import type { Schedule } from '@croffledev/common';
+import type { SchedulesApi } from '@croffledev/croffle-types';
 import { ipcRenderer } from 'electron';
 
 export const scheduleApi = {

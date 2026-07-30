@@ -1,6 +1,6 @@
 import { promises as fs } from 'node:fs';
 
-import type { Schedule as ScheduleInterface } from '@croffledev/croffle-types';
+import type { Schedule as ScheduleInterface } from '@croffledev/common';
 import { eq } from 'drizzle-orm';
 
 import { databaseManager } from '../database';

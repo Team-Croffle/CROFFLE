@@ -1,4 +1,4 @@
-import type { Schedule as ScheduleInterface } from '@croffledev/croffle-types';
+import type { Schedule as ScheduleInterface } from '@croffledev/common';
 
 export type ExportShapeV1 = {
   version: 1;

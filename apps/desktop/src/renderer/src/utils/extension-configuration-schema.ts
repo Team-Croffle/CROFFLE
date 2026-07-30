@@ -1,4 +1,4 @@
-import type { ConfigItemSchema, ConfigurationSectionContribution } from '@croffledev/croffle-types';
+import type { ConfigItemSchema, ConfigurationSectionContribution } from '@croffledev/common';
 
 export const buildDefaultsFromSections = (
   sections: ConfigurationSectionContribution[],

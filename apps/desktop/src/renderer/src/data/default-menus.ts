@@ -1,4 +1,4 @@
-import type { FeatureView } from '@croffledev/croffle-types';
+import type { FeatureView } from '@croffledev/common';
 import { CalendarDays } from 'lucide-vue-next';
 
 export const DEFAULT_MENU_ITEMS: FeatureView[] = [

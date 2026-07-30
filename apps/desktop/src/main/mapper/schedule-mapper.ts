@@ -1,8 +1,8 @@
-import type { Schedule as ScheduleInterface, Tag as TagInterface } from '@croffledev/croffle-types';
+import type { Schedule, Tag } from '@croffledev/common';
 
-import type { ScheduleWithTags, Tag } from '../database/schema';
+import type { ScheduleWithTags, TagRow } from '../database/schema';
 
-/** Drizzle timestamp 컬럼은 Date로 주고받는다 */
+/** Drizzle write input (dates already as Date). */
 export type ScheduleEntityInput = {
   id?: string;
   title?: string;
@@ -15,10 +15,10 @@ export type ScheduleEntityInput = {
   colorLabel?: string;
   createdAt?: Date;
   updatedAt?: Date;
-  tags?: Tag[];
+  tags?: TagRow[];
 };
 
-function toTag(tag: TagInterface): Tag {
+function toTag(tag: Tag): TagRow {
   return {
     id: tag.id,
     name: tag.name,
@@ -26,33 +26,37 @@ function toTag(tag: TagInterface): Tag {
   };
 }
 
-function toTagInterface(tag: Tag): TagInterface {
+function toTagDto(tag: TagRow): Tag {
   return {
     id: tag.id,
     name: tag.name,
     color: tag.color,
   };
+}
+
+function toDate(value: Date): Date {
+  return value instanceof Date ? value : new Date(value);
 }
 
 export const scheduleMapper = {
-  toInterface(entity: ScheduleWithTags): ScheduleInterface {
+  toInterface(entity: ScheduleWithTags): Schedule {
     return {
       id: entity.id,
       title: entity.title,
       description: entity.description ?? '',
       location: entity.location ?? '',
-      startDate: entity.startDate.toISOString(),
-      endDate: entity.endDate.toISOString(),
+      startDate: entity.startDate,
+      endDate: entity.endDate,
       isAllDay: entity.isAllDay,
       recurrenceRule: entity.recurrenceRule ?? undefined,
       colorLabel: entity.colorLabel,
-      createdAt: entity.createdAt.toISOString(),
-      updatedAt: entity.updatedAt.toISOString(),
-      tags: entity.tags.map(toTagInterface),
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+      tags: entity.tags.map(toTagDto),
     };
   },
 
-  toEntity(data: Partial<ScheduleInterface>): ScheduleEntityInput {
+  toEntity(data: Partial<Schedule>): ScheduleEntityInput {
     const entity: ScheduleEntityInput = {};
 
     if (data.id !== undefined) {
@@ -68,10 +72,10 @@ export const scheduleMapper = {
       entity.location = data.location;
     }
     if (data.startDate !== undefined) {
-      entity.startDate = new Date(data.startDate);
+      entity.startDate = toDate(data.startDate);
     }
     if (data.endDate !== undefined) {
-      entity.endDate = new Date(data.endDate);
+      entity.endDate = toDate(data.endDate);
     }
     if (data.isAllDay !== undefined) {
       entity.isAllDay = data.isAllDay;
@@ -83,10 +87,10 @@ export const scheduleMapper = {
       entity.colorLabel = data.colorLabel;
     }
     if (data.createdAt !== undefined) {
-      entity.createdAt = new Date(data.createdAt);
+      entity.createdAt = toDate(data.createdAt);
     }
     if (data.updatedAt !== undefined) {
-      entity.updatedAt = new Date(data.updatedAt);
+      entity.updatedAt = toDate(data.updatedAt);
     }
     if (data.tags !== undefined) {
       entity.tags = data.tags.map(toTag);

@@ -1,5 +1,5 @@
 import { AppEventType } from '@croffledev/common';
-import type { Tag } from '@croffledev/croffle-types';
+import type { Tag } from '@croffledev/common';
 import { ipcMain } from 'electron';
 
 import { getAllTags, getTagByName, createTag, modifyTag, removeTag } from '../calendar/tag';

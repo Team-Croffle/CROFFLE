@@ -1,4 +1,4 @@
-import type { SearchQuery } from '@croffledev/croffle-types';
+import type { SearchQuery } from '@croffledev/common';
 import { and, asc, gte, inArray, like, lte, or, type SQL } from 'drizzle-orm';
 
 import { databaseManager } from '../database';

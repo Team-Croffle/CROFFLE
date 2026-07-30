@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { AppEventType } from '@croffledev/common';
+  import type { ConfigurationSectionContribution, ExtensionInfo } from '@croffledev/common';
   import { Minus, Moon, PanelLeft, Square, Sun, X } from 'lucide-vue-next';
   import { ref, onMounted, onUnmounted } from 'vue';
 
@@ -79,7 +80,7 @@
       icon?: unknown;
       order?: number;
       render?: (container: HTMLElement) => void;
-      sections?: import('@croffledev/croffle-types').ConfigurationSectionContribution[];
+      sections?: ConfigurationSectionContribution[];
     }>;
     const { extensionId, extensionName, tabId, label, icon, order, render, sections } =
       customEvent.detail;
@@ -135,7 +136,7 @@
 
   const handleExtensionLoaded = (event: Event) => {
     const customEvent = event as CustomEvent<{
-      extension: import('@croffledev/croffle-types').ExtensionInfo;
+      extension: ExtensionInfo;
     }>;
     const { extension } = customEvent.detail;
 

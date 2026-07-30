@@ -1,4 +1,4 @@
-import type { FeatureView } from '@croffledev/croffle-types';
+import type { FeatureView } from '@croffledev/common';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
