@@ -1,5 +1,3 @@
-// oxlint-disable-next-line import/no-unassigned-import
-import 'reflect-metadata';
 import { join } from 'node:path';
 
 import { AppSettingStartupBehavior } from '@croffledev/common';

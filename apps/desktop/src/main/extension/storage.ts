@@ -1,9 +1,13 @@
+import { and, eq } from 'drizzle-orm';
+
 import { databaseManager } from '../database';
-import { ExtensionStorage } from '../database/schema/extension-storage.entity';
+import { extensionStorage } from '../database/schema';
 
 export async function get<T = unknown>(extensionId: string, key: string): Promise<T | null> {
-  const repo = databaseManager.getRepository(ExtensionStorage);
-  const item = await repo.findOne({ where: { extensionId, key } });
+  const db = databaseManager.getDb();
+  const item = await db.query.extensionStorage.findFirst({
+    where: and(eq(extensionStorage.extensionId, extensionId), eq(extensionStorage.key, key)),
+  });
   if (!item) {
     return null;
   }
@@ -16,21 +20,35 @@ export async function get<T = unknown>(extensionId: string, key: string): Promis
 }
 
 export async function set(extensionId: string, key: string, value: unknown): Promise<void> {
-  const repo = databaseManager.getRepository(ExtensionStorage);
-  await repo.save({
-    extensionId,
-    key,
-    value: JSON.stringify(value),
-  });
+  const db = databaseManager.getDb();
+  const now = new Date();
+  await db
+    .insert(extensionStorage)
+    .values({
+      extensionId,
+      key,
+      value: JSON.stringify(value),
+      updatedAt: now,
+    })
+    .onConflictDoUpdate({
+      target: [extensionStorage.extensionId, extensionStorage.key],
+      set: {
+        value: JSON.stringify(value),
+        updatedAt: now,
+      },
+    });
 }
 
 export async function remove(extensionId: string, key: string): Promise<boolean> {
-  const repo = databaseManager.getRepository(ExtensionStorage);
-  const result = await repo.delete({ extensionId, key });
-  return (result.affected ?? 0) > 0;
+  const db = databaseManager.getDb();
+  const result = await db
+    .delete(extensionStorage)
+    .where(and(eq(extensionStorage.extensionId, extensionId), eq(extensionStorage.key, key)))
+    .returning();
+  return result.length > 0;
 }
 
 export async function clear(extensionId: string): Promise<void> {
-  const repo = databaseManager.getRepository(ExtensionStorage);
-  await repo.delete({ extensionId });
+  const db = databaseManager.getDb();
+  await db.delete(extensionStorage).where(eq(extensionStorage.extensionId, extensionId));
 }

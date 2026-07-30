@@ -1,45 +1,70 @@
 import type { SearchQuery } from '@croffledev/croffle-types';
+import { and, asc, gte, inArray, like, lte, or, type SQL } from 'drizzle-orm';
 
 import { databaseManager } from '../database';
-import { Schedule } from '../database/schema/schedule.entity';
-import type { Tag } from '../database/schema/tag.entity';
+import { schedules, scheduleTags, type ScheduleWithTags } from '../database/schema';
 
-export async function searchSchedules(query: SearchQuery): Promise<Schedule[]> {
-  const repo = databaseManager.getRepository(Schedule);
+function mapScheduleWithTags(
+  row: Awaited<ReturnType<typeof querySchedules>>[number],
+): ScheduleWithTags {
+  const { scheduleTags: links, ...schedule } = row;
+  return {
+    ...schedule,
+    tags: links.map((link) => link.tag),
+  };
+}
 
-  const qb = repo.createQueryBuilder('schedule').leftJoinAndSelect('schedule.tags', 'tag');
+async function querySchedules(where?: SQL) {
+  const db = databaseManager.getDb();
+  return db.query.schedules.findMany({
+    where,
+    orderBy: [asc(schedules.startDate)],
+    with: {
+      scheduleTags: {
+        with: { tag: true },
+      },
+    },
+  });
+}
 
-  // 텍스트 검색
+export async function searchSchedules(query: SearchQuery): Promise<ScheduleWithTags[]> {
+  const conditions: SQL[] = [];
+
   if (query.text?.trim()) {
     const keyword = `%${query.text.trim()}%`;
-    qb.andWhere('(schedule.title LIKE :keyword OR schedule.description LIKE :keyword)', {
-      keyword,
-    });
+    const textCondition = or(like(schedules.title, keyword), like(schedules.description, keyword));
+    if (textCondition) {
+      conditions.push(textCondition);
+    }
   }
 
-  // 날짜 범위 검색
   const start = query.dateRange?.start ? new Date(query.dateRange.start) : null;
   const end = query.dateRange?.end ? new Date(query.dateRange.end) : null;
 
   if (start && end) {
-    qb.andWhere('schedule.endDate >= :start AND schedule.startDate <= :end', { start, end });
+    conditions.push(gte(schedules.endDate, start), lte(schedules.startDate, end));
   } else if (start) {
-    qb.andWhere('schedule.endDate >= :start', { start });
+    conditions.push(gte(schedules.endDate, start));
   } else if (end) {
-    qb.andWhere('schedule.startDate <= :end', { end });
+    conditions.push(lte(schedules.startDate, end));
   }
 
-  // 태그 필터
   if (query.tags?.length) {
-    const validTags = query.tags.filter((tag) => tag?.id);
-    if (validTags.length > 0) {
-      const tagIds = validTags.map((tag: Tag) => tag.id);
-      qb.andWhere('tag.id IN (:...tagIds)', { tagIds });
+    const tagIds = query.tags.map((tag) => tag?.id).filter((id): id is string => Boolean(id));
+    if (tagIds.length > 0) {
+      conditions.push(
+        inArray(
+          schedules.id,
+          databaseManager
+            .getDb()
+            .select({ id: scheduleTags.scheduleId })
+            .from(scheduleTags)
+            .where(inArray(scheduleTags.tagId, tagIds)),
+        ),
+      );
     }
   }
 
-  // 정렬 및 중복 제거
-  qb.orderBy('schedule.startDate', 'ASC');
-
-  return qb.getMany();
+  const rows = await querySchedules(conditions.length > 0 ? and(...conditions) : undefined);
+  return rows.map(mapScheduleWithTags);
 }
