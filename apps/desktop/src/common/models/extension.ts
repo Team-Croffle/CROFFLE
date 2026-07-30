@@ -27,17 +27,35 @@ export type ConfigurationTabManifest = {
   sections?: ConfigurationSectionContribution[];
 };
 
+/** Host runtime: settings modal tab (includes render hook). */
+export type ConfigurationTabContribution = {
+  id: string;
+  label: string;
+  icon?: unknown;
+  extensionId: string;
+  extensionName?: string;
+  order?: number;
+  render?: (container: HTMLElement) => void;
+  sections?: ConfigurationSectionContribution[];
+};
+
 /** Manifest `contributes.views` 항목 */
 export type ViewManifest = {
   id: string;
   title: string;
   subtitle: string;
-  /** JSON에서는 보통 string; 호스트 기본 메뉴는 컴포넌트도 허용 */
   icon?: unknown;
   url: string;
 };
 
-/** Manifest `contributes.contextMenus` 항목 (action은 코드에서만) */
+/** Host runtime: sidebar / registered view. */
+export type FeatureView = ViewManifest & {
+  active?: boolean;
+  extensionName?: string;
+  extensionId?: string;
+};
+
+/** Manifest `contributes.contextMenus` 항목 */
 export type ContextMenuManifest = {
   id: string;
   label: string;
@@ -45,10 +63,22 @@ export type ContextMenuManifest = {
   disabled?: boolean;
 };
 
+/** Host runtime: context menu with callbacks. */
+export type FeatureContextMenu = ContextMenuManifest & {
+  action: (targetElement: HTMLElement | null) => void;
+  condition?: (targetElement: HTMLElement | null) => boolean;
+  extensionId?: string;
+  extensionName?: string;
+};
+
 export type ExtensionContributes = {
   views?: ViewManifest[];
   contextMenus?: ContextMenuManifest[];
   configuration?: ConfigurationTabManifest[];
+};
+
+export type ExtensionEngines = {
+  croffle?: string;
 };
 
 /** `croffle-manifest.json` on disk */
@@ -59,14 +89,11 @@ export type CroffleManifest = {
   author: string;
   description?: string;
   main?: string;
-  engines?: {
-    /** e.g. ">=1.0.0" — currently only `>=x.y.z` is enforced */
-    croffle?: string;
-  };
+  engines?: ExtensionEngines;
   contributes?: ExtensionContributes;
 };
 
-/** Host-loaded extension (manifest + enabled) — also exposed via ExtensionsApi */
+/** Host-loaded extension (manifest + enabled). */
 export type ExtensionInfo = CroffleManifest & {
   enabled: boolean;
 };
