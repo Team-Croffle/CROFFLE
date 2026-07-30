@@ -3,7 +3,6 @@ import { resolve } from 'node:path';
 import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue';
 import { defineConfig } from 'electron-vite';
-import swc from 'unplugin-swc';
 import type { Plugin } from 'vite';
 
 const commonEntry = resolve(__dirname, 'src/common/index.ts');
@@ -41,19 +40,6 @@ export default defineConfig({
         '@croffledev/common': commonEntry,
       },
     },
-    plugins: [
-      swc.vite({
-        jsc: {
-          parser: {
-            syntax: 'typescript',
-            decorators: true,
-          },
-          transform: {
-            decoratorMetadata: true,
-          },
-        },
-      }),
-    ],
   },
   preload: {
     build: {
