@@ -1,6 +1,7 @@
 # Electron / electron-vite build output
 out/
 dist/
+dev/
 
 # Local secrets / certs
 *.pem
