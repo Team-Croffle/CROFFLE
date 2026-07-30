@@ -1,5 +1,6 @@
 import type { Tag } from './tag';
 
+/** App / IPC schedule DTO — dates match drizzle timestamp columns. */
 export type Schedule = {
   id: string;
   title: string;
