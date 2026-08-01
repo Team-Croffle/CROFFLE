@@ -1,11 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import type { CroffleManifest } from '@croffledev/croffle-types';
+import type { CroffleManifest } from '@croffledev/common';
 import { app, net, protocol } from 'electron';
 import JSZip from 'jszip';
 
-import type { ExtensionInfo } from '../database/schema';
+import type { ExtensionInfoRow } from '../database/schema';
 import { logger } from '../logger';
 import { extensionInfoService } from './info-service';
 import { MANIFEST_FILENAME, satisfiesCroffleEngine } from './manifest';
@@ -109,7 +109,7 @@ class ExtensionManager {
     return { tempDir, contentDir };
   }
 
-  private async finalizeInstall(contentDir: string, tempDir: string): Promise<ExtensionInfo> {
+  private async finalizeInstall(contentDir: string, tempDir: string): Promise<ExtensionInfoRow> {
     try {
       const manifest = this.readAndValidateManifest(contentDir);
       const finalDir = path.join(this.extensionDir, manifest.id);
@@ -128,8 +128,6 @@ class ExtensionManager {
         author: manifest.author,
         description: manifest.description,
         main: manifest.main,
-        engines: manifest.engines,
-        contributes: manifest.contributes ?? {},
         enabled: true,
       });
     } finally {

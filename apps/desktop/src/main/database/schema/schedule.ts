@@ -1,7 +1,8 @@
+import { assertSchemaMatch, type AssertSchema, type ScheduleEntity } from '@croffledev/common';
 import { relations } from 'drizzle-orm';
 import { integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
-import { tags } from './tag';
+import { tags, type TagRow } from './tag';
 
 export const schedules = sqliteTable('schedule', {
   id: text('id').primaryKey(),
@@ -49,6 +50,8 @@ export const tagsRelations = relations(tags, ({ many }) => ({
   scheduleTags: many(scheduleTags),
 }));
 
-export type Schedule = typeof schedules.$inferSelect;
+export type ScheduleRow = typeof schedules.$inferSelect;
 export type NewSchedule = typeof schedules.$inferInsert;
-export type ScheduleWithTags = Schedule & { tags: (typeof tags.$inferSelect)[] };
+export type ScheduleWithTags = ScheduleRow & { tags: TagRow[] };
+
+assertSchemaMatch<AssertSchema<ScheduleRow, ScheduleEntity>>();

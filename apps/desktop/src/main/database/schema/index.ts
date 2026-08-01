@@ -1,7 +1,8 @@
-export { extensionInfo, type ExtensionInfo, type NewExtensionInfo } from './extension-info';
+export { extensionInfo, type ExtensionInfoRow, type NewExtensionInfo } from './extension-info';
 export {
   extensionStorage,
   type ExtensionStorage,
+  type ExtensionStorageRow,
   type NewExtensionStorage,
 } from './extension-storage';
 export {
@@ -10,8 +11,8 @@ export {
   schedulesRelations,
   scheduleTagsRelations,
   tagsRelations,
-  type Schedule,
+  type ScheduleRow,
   type NewSchedule,
   type ScheduleWithTags,
 } from './schedule';
-export { tags, type Tag, type NewTag } from './tag';
+export { tags, type TagRow, type NewTag } from './tag';

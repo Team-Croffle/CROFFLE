@@ -1,11 +1,10 @@
-import type {
-  ExtensionContributes,
-  ExtensionInfo as ExtensionInfoInterface,
-} from '@croffledev/croffle-types';
+import { assertSchemaMatch, type AssertSchema, type ExtensionInfoEntity } from '@croffledev/common';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
-type ExtensionEngines = NonNullable<ExtensionInfoInterface['engines']>;
-
+/**
+ * Extension install registry. Manifest fields (`engines`, `contributes`, …)
+ * are read from `croffle-manifest.json` on disk, not duplicated here.
+ */
 export const extensionInfo = sqliteTable('extension_info', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
@@ -14,9 +13,9 @@ export const extensionInfo = sqliteTable('extension_info', {
   description: text('description'),
   enabled: integer('enabled', { mode: 'boolean' }).notNull().default(true),
   main: text('main'),
-  engines: text('engines', { mode: 'json' }).$type<ExtensionEngines>(),
-  contributes: text('contributes', { mode: 'json' }).$type<ExtensionContributes>(),
 });
 
-export type ExtensionInfo = typeof extensionInfo.$inferSelect;
+export type ExtensionInfoRow = typeof extensionInfo.$inferSelect;
 export type NewExtensionInfo = typeof extensionInfo.$inferInsert;
+
+assertSchemaMatch<AssertSchema<ExtensionInfoRow, ExtensionInfoEntity>>();

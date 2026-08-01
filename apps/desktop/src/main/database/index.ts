@@ -6,9 +6,12 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { app } from 'electron';
 
+import type { PublicTypeIntegrity } from '../../common/assert-public-types';
 import { logger } from '../logger';
 import { ensureSchema } from './ensure-schema';
 import * as schema from './schema';
+
+export type { PublicTypeIntegrity };
 
 export type AppDatabase = BetterSQLite3Database<typeof schema>;
 
