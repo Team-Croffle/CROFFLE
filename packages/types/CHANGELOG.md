@@ -1,5 +1,11 @@
 # @croffledev/croffle-types
 
+## 1.3.0
+
+### Minor Changes
+
+- f7dcae4: Schedule dates use Date instead of ISO strings, and host-only UI types are no longer exported from croffle-types.
+
 ## 1.2.0
 
 ### Minor Changes
