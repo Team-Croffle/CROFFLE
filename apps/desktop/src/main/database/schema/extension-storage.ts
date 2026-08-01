@@ -1,3 +1,8 @@
+import {
+  assertSchemaMatch,
+  type AssertSchema,
+  type ExtensionStorageEntity,
+} from '@croffledev/common';
 import { integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 export const extensionStorage = sqliteTable(
@@ -11,5 +16,10 @@ export const extensionStorage = sqliteTable(
   (t) => [primaryKey({ columns: [t.extensionId, t.key] })],
 );
 
-export type ExtensionStorage = typeof extensionStorage.$inferSelect;
+export type ExtensionStorageRow = typeof extensionStorage.$inferSelect;
 export type NewExtensionStorage = typeof extensionStorage.$inferInsert;
+
+/** @deprecated Use ExtensionStorageRow */
+export type ExtensionStorage = ExtensionStorageRow;
+
+assertSchemaMatch<AssertSchema<ExtensionStorageRow, ExtensionStorageEntity>>();

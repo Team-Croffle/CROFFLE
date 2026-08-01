@@ -1,5 +1,13 @@
 import type Database from 'better-sqlite3';
 
+function dropColumnIfExists(sqlite: Database.Database, table: string, column: string): void {
+  const columns = sqlite.pragma(`table_info(${table})`) as { name: string }[];
+  if (!columns.some((c) => c.name === column)) {
+    return;
+  }
+  sqlite.exec(`ALTER TABLE "${table}" DROP COLUMN "${column}"`);
+}
+
 /** 앱 시작 시 테이블이 없으면 생성한다. */
 export function ensureSchema(sqlite: Database.Database): void {
   sqlite.exec(`
@@ -39,9 +47,7 @@ export function ensureSchema(sqlite: Database.Database): void {
       "author" TEXT NOT NULL,
       "description" TEXT,
       "enabled" integer NOT NULL DEFAULT 1,
-      "main" TEXT,
-      "engines" TEXT,
-      "contributes" TEXT
+      "main" TEXT
     );
 
     CREATE TABLE IF NOT EXISTS "extension_storage" (
@@ -52,4 +58,8 @@ export function ensureSchema(sqlite: Database.Database): void {
       PRIMARY KEY ("extensionId", "key")
     );
   `);
+
+  // Legacy columns moved to on-disk croffle-manifest.json
+  dropColumnIfExists(sqlite, 'extension_info', 'engines');
+  dropColumnIfExists(sqlite, 'extension_info', 'contributes');
 }

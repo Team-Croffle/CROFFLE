@@ -1,15 +1,15 @@
 import { asc, eq } from 'drizzle-orm';
 
 import { databaseManager } from '../database';
-import { extensionInfo, type ExtensionInfo, type NewExtensionInfo } from '../database/schema';
+import { extensionInfo, type ExtensionInfoRow, type NewExtensionInfo } from '../database/schema';
 
 export const extensionInfoService = {
-  getInstalledExtensions: async (): Promise<ExtensionInfo[]> => {
+  getInstalledExtensions: async (): Promise<ExtensionInfoRow[]> => {
     const db = databaseManager.getDb();
     return db.select().from(extensionInfo).orderBy(asc(extensionInfo.name));
   },
 
-  getEnabledExtensions: async (): Promise<ExtensionInfo[]> => {
+  getEnabledExtensions: async (): Promise<ExtensionInfoRow[]> => {
     const db = databaseManager.getDb();
     return db
       .select()
@@ -18,7 +18,7 @@ export const extensionInfoService = {
       .orderBy(asc(extensionInfo.name));
   },
 
-  getExtensionByName: async (name: string): Promise<ExtensionInfo | null> => {
+  getExtensionByName: async (name: string): Promise<ExtensionInfoRow | null> => {
     const db = databaseManager.getDb();
     const row = await db.query.extensionInfo.findFirst({
       where: eq(extensionInfo.name, name),
@@ -26,7 +26,7 @@ export const extensionInfoService = {
     return row ?? null;
   },
 
-  installExtension: async (data: Partial<ExtensionInfo>): Promise<ExtensionInfo> => {
+  installExtension: async (data: Partial<ExtensionInfoRow>): Promise<ExtensionInfoRow> => {
     const db = databaseManager.getDb();
 
     const existingById = data.id
@@ -36,7 +36,7 @@ export const extensionInfoService = {
       : null;
 
     if (existingById) {
-      const updated: ExtensionInfo = {
+      const updated: ExtensionInfoRow = {
         id: existingById.id,
         name: data.name ?? existingById.name,
         version: data.version ?? existingById.version,
@@ -44,8 +44,6 @@ export const extensionInfoService = {
         description: data.description !== undefined ? data.description : existingById.description,
         enabled: data.enabled ?? existingById.enabled,
         main: data.main !== undefined ? data.main : existingById.main,
-        engines: data.engines !== undefined ? data.engines : existingById.engines,
-        contributes: data.contributes !== undefined ? data.contributes : existingById.contributes,
       };
       await db
         .update(extensionInfo)
@@ -56,8 +54,6 @@ export const extensionInfoService = {
           description: updated.description,
           enabled: updated.enabled,
           main: updated.main,
-          engines: updated.engines,
-          contributes: updated.contributes,
         })
         .where(eq(extensionInfo.id, existingById.id));
       return updated;
@@ -84,8 +80,6 @@ export const extensionInfoService = {
       description: data.description ?? null,
       enabled: data.enabled ?? true,
       main: data.main ?? null,
-      engines: data.engines ?? null,
-      contributes: data.contributes ?? null,
     };
 
     await db.insert(extensionInfo).values(row);
@@ -97,12 +91,10 @@ export const extensionInfoService = {
       description: row.description ?? null,
       enabled: row.enabled ?? true,
       main: row.main ?? null,
-      engines: row.engines ?? null,
-      contributes: row.contributes ?? null,
     };
   },
 
-  toggleExtension: async (id: string, enable: boolean): Promise<ExtensionInfo | null> => {
+  toggleExtension: async (id: string, enable: boolean): Promise<ExtensionInfoRow | null> => {
     const db = databaseManager.getDb();
     const row = await db.query.extensionInfo.findFirst({
       where: eq(extensionInfo.id, id),

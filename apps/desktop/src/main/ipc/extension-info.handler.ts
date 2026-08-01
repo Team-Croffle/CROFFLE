@@ -1,22 +1,28 @@
 import { AppEventType } from '@croffledev/common';
-import type { ExtensionInfo } from '@croffledev/croffle-types';
+import type { ExtensionInfo } from '@croffledev/common';
 import { ipcMain, dialog } from 'electron';
 
+import type { ExtensionInfoRow } from '../database/schema';
 import { eventService } from '../event-bus/event-service';
 import { extensionInfoService } from '../extension/info-service';
 import { extensionManager } from '../extension/manager';
+import { readInstalledManifest } from '../extension/manifest';
 import { extensionInfoMapper } from '../mapper/extension-info-mapper';
 import { validateExtensionId } from '../utils/extension-validator';
+
+function toExtensionInfo(row: ExtensionInfoRow): ExtensionInfo {
+  return extensionInfoMapper.toInterface(row, readInstalledManifest(row.id));
+}
 
 export const registerExtensionInfoIpcHandlers = (): void => {
   ipcMain.handle('extensionInfo:getInstalledExtensions', async (): Promise<ExtensionInfo[]> => {
     const entity = await extensionInfoService.getInstalledExtensions();
-    return entity.map(extensionInfoMapper.toInterface);
+    return entity.map(toExtensionInfo);
   });
 
   ipcMain.handle('extensionInfo:getEnabledExtensions', async (): Promise<ExtensionInfo[]> => {
     const entity = await extensionInfoService.getEnabledExtensions();
-    return entity.map(extensionInfoMapper.toInterface);
+    return entity.map(toExtensionInfo);
   });
 
   ipcMain.handle(
@@ -24,7 +30,7 @@ export const registerExtensionInfoIpcHandlers = (): void => {
     async (_, name: string): Promise<ExtensionInfo | null> => {
       validateExtensionId(name);
       const entity = await extensionInfoService.getExtensionByName(name);
-      return entity ? extensionInfoMapper.toInterface(entity) : null;
+      return entity ? toExtensionInfo(entity) : null;
     },
   );
 
@@ -36,7 +42,7 @@ export const registerExtensionInfoIpcHandlers = (): void => {
       }
 
       const entity = await extensionManager.installFromGitHub(pluginData.id);
-      const dto = extensionInfoMapper.toInterface(entity);
+      const dto = toExtensionInfo(entity);
       eventService.emit(AppEventType.EXTENSION_INFO_INSTALL, dto);
       return dto;
     },
@@ -54,7 +60,7 @@ export const registerExtensionInfoIpcHandlers = (): void => {
     }
 
     const entity = await extensionManager.installFromLocalZip(result.filePaths[0]);
-    const dto = extensionInfoMapper.toInterface(entity);
+    const dto = toExtensionInfo(entity);
     eventService.emit(AppEventType.EXTENSION_INFO_INSTALL, dto);
     return dto;
   });
@@ -72,7 +78,7 @@ export const registerExtensionInfoIpcHandlers = (): void => {
         return null;
       }
 
-      const dto = extensionInfoMapper.toInterface(entity);
+      const dto = toExtensionInfo(entity);
       eventService.emit(AppEventType.EXTENSION_INFO_TOGGLE, dto);
       return dto;
     },
