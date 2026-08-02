@@ -16,6 +16,7 @@ import {
   LOGIN_HIDDEN_ARG,
 } from './setting/setting-applies';
 import { settingService } from './setting/setting-service';
+import { closeSplash, showSplash } from './splash';
 import { windowService } from './window/window-service';
 
 // Must be called before app is ready
@@ -70,6 +71,9 @@ function createWindow(): void {
         settings.general.startMinimized ||
         process.argv.includes(LOGIN_HIDDEN_ARG));
 
+    // WHY HERE: Splash window is closed after the main window is created.
+    closeSplash();
+
     if (!shouldHideOnLogin) {
       logger.debug('Main', 'Showing main window');
       mainWindow.show();
@@ -123,6 +127,9 @@ if (!gotTheLock) {
       optimizer.watchWindowShortcuts(window);
     });
 
+    // Splash window is shown before the main window is created.
+    showSplash();
+
     // IPC test
     try {
       await databaseManager.initialize();
@@ -139,6 +146,7 @@ if (!gotTheLock) {
     } catch (error) {
       logger.error('Main', 'Failed to initialize the application', error);
       app.quit();
+      closeSplash();
     }
 
     app.on('activate', function () {
