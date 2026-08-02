@@ -26,7 +26,6 @@ nsis:
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
-  disableWebInstaller: true
 mac:
   # No Developer ID / notarization
   identity: null
