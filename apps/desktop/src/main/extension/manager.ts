@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import type { CroffleManifest } from '@croffledev/common';
+import { is } from '@electron-toolkit/utils';
 import { app, net, protocol } from 'electron';
 import JSZip from 'jszip';
 
@@ -13,7 +14,9 @@ import { clearItem as clearSession } from './session-service';
 import { clear as clearStorage } from './storage';
 
 class ExtensionManager {
-  private extensionDir = path.join(app.getPath('userData'), 'extensions');
+  private extensionDir = is.dev
+    ? path.join(process.cwd(), 'dev/extensions')
+    : path.join(app.getPath('userData'), 'extensions');
 
   constructor() {
     app.whenReady().then(() => {
