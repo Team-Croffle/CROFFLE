@@ -10,6 +10,7 @@ import {
   CalendarWeekStartDay,
 } from '@croffledev/common';
 import type { AppSettings } from '@croffledev/croffle-types';
+import { is } from '@electron-toolkit/utils';
 import { app } from 'electron';
 
 import { logger } from '../logger';
@@ -41,7 +42,9 @@ class SettingService {
   private filePath: string;
 
   constructor() {
-    this.filePath = path.join(app.getPath('userData'), 'settings.json');
+    this.filePath = is.dev
+      ? path.join(process.cwd(), 'dev/settings.json')
+      : path.join(app.getPath('userData'), 'settings.json');
     this.settings = this.loadSettings();
   }
 
