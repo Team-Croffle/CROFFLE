@@ -1,5 +1,11 @@
 # @croffledev/croffle-types
 
+## 1.4.1
+
+### Patch Changes
+
+- 076d5aa: Add an attribute to Schedule for features to develeoped later
+
 ## 1.4.0
 
 ### Minor Changes
