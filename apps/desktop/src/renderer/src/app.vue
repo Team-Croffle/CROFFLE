@@ -184,8 +184,42 @@
     // extensionLoader.init() 내부에서 플러그인을 로딩할 때 extension:loaded를 쏘면 자동으로 handlePluginLoaded가 처리함.
   };
 
+  // Prefer a stable FullCalendar cell/event node. Raw e.target is often .fc-highlight
+  // (or a child), which select()/unselect() remove from the DOM — closest() then fails
+  // on the detached node and the menu shows "no actions".
+  function resolveFrom(el: HTMLElement): HTMLElement | null {
+    return (
+      (el.closest('.fc-event') as HTMLElement | null) ||
+      (el.closest('.fc-daygrid-day') as HTMLElement | null)
+    );
+  }
+
+  function resolveContextMenuTarget(e: MouseEvent): HTMLElement | null {
+    const raw = e.target as HTMLElement | null;
+    if (!raw) {
+      return null;
+    }
+
+    if (raw.isConnected) {
+      return resolveFrom(raw) ?? raw;
+    }
+
+    // Fallback when calendar already mutated selection DOM during this contextmenu.
+    for (const node of document.elementsFromPoint(e.clientX, e.clientY)) {
+      if (!(node instanceof HTMLElement)) {
+        continue;
+      }
+      const stable = resolveFrom(node);
+      if (stable) {
+        return stable;
+      }
+    }
+
+    return raw;
+  }
+
   const handleContextMenuEvent = (e: MouseEvent) => {
-    contextMenuStore.setActiveElement(e.target as HTMLElement);
+    contextMenuStore.setActiveElement(resolveContextMenuTarget(e));
   };
 
   const handleMenuOpenChange = (isOpen: boolean) => {

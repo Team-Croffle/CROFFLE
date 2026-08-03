@@ -21,6 +21,8 @@
     weekStartDayToFirstDay,
   } from '@/utils/calendar-settings';
 
+  const CONTEXT_TARGET_CLASS = 'is-context-menu-target';
+
   // pinia store 연결
   const scheduleStore = useScheduleStore();
   const appSettingsStore = useAppSettingsStore();
@@ -36,24 +38,33 @@
 
   let unsubscribeSettings: (() => void) | null = null;
 
-  const getClickedDate = (e: MouseEvent): string | null => {
-    // 클릭된 요소가 날짜인지 확인
+  function clearContextTarget() {
+    calendarContainerRef.value
+      ?.querySelectorAll(`.${CONTEXT_TARGET_CLASS}`)
+      .forEach((el) => el.classList.remove(CONTEXT_TARGET_CLASS));
+  }
+
+  function handleContextMenu(e: MouseEvent) {
     const target = e.target as HTMLElement;
-    const dayCell = target.closest('.fc-daygrid-day');
+    // Resolve the day cell before any FullCalendar DOM mutation.
+    const dayCell = target.closest('.fc-daygrid-day') as HTMLElement | null;
 
-    return dayCell ? dayCell.getAttribute('data-date') : null;
-  };
-
-  // 우클릭 핸들러
-  const handleContextMenu = (e: MouseEvent) => {
-    // 클릭된 날짜 가져오기
-    const dateStr = getClickedDate(e);
-    if (dateStr && fullCalendarRef.value) {
-      // 우클릭한 날짜를 선택 상태로 변경
-      const calendarApi = fullCalendarRef.value.getApi();
-      calendarApi.select(dateStr);
+    clearContextTarget();
+    if (dayCell) {
+      dayCell.classList.add(CONTEXT_TARGET_CLASS);
     }
-  };
+
+    // WHY: Right-click highlight uses a custom CSS class instead of calendarApi.select().
+    // Left-click still uses FullCalendar's .fc-highlight, so we must clear that selection
+    // or two days look selected. Both select() and unselect() tear down .fc-highlight;
+    // if the user right-clicked that overlay, e.target becomes detached and
+    // closest('.fc-daygrid-day') fails in the context-menu condition.
+    // Defer unselect until after the bubble-phase handler in app.vue captures a stable
+    // day/event cell (see resolveContextMenuTarget).
+    queueMicrotask(() => {
+      fullCalendarRef.value?.getApi()?.unselect();
+    });
+  }
 
   const buildCalendarOptions = (): CalendarOptions => {
     const cal = settings.value?.calendar;
@@ -90,7 +101,15 @@
 
       editable: false, // 이벤트 드래그 가능
       selectable: true, // 날짜 선택 가능
-      dateClick: (info) => handleDateDoubleClick(info.dateStr), // 날짜 클릭 핸들러
+      dateClick: (info) => {
+        // WHY: Left-click selection is rendered by FullCalendar (.fc-highlight), while
+        // right-click uses our custom is-context-menu-target class. If we leave the
+        // custom class after a prior right-click, both highlights stay visible and two
+        // days look selected. Clear the context-menu target so only the FC selection
+        // remains for this left-click.
+        clearContextTarget();
+        handleDateDoubleClick(info.dateStr);
+      }, // 날짜 클릭 핸들러
       eventClick: (info) => {
         const scheduleId =
           (info.event.extendedProps.scheduleId as string | undefined) || info.event.id;
@@ -398,5 +417,10 @@
 
   :deep(.fc-more-link:hover) {
     color: var(--croffle-primary);
+  }
+
+  :deep(.fc-daygrid-day.is-context-menu-target) {
+    background-color: var(--croffle-day-select-bg);
+    border-radius: var(--radius-2xl);
   }
 </style>
