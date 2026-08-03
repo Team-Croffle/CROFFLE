@@ -1,11 +1,11 @@
 <script setup lang="ts">
   import type { FeatureView } from '@croffledev/common';
-  import { Bell, CircleHelp, Settings, Puzzle } from 'lucide-vue-next';
   import { storeToRefs } from 'pinia';
   import { ref, computed } from 'vue';
   import { useRoute } from 'vue-router';
 
   import logoImg from '@/assets/logo-only.png';
+  import { Icon } from '@/components/ui/icon';
   import {
     Sidebar,
     SidebarContent,
@@ -42,7 +42,7 @@
 
     const additionalMenus: FeatureView[] = viewStore.menus.map((menu) => ({
       ...menu,
-      icon: menu.icon || Puzzle,
+      icon: menu.icon || 'lucide:puzzle',
       // 현재 URL의 viewId 파라미터가 메뉴의 id와 같으면 활성화
       active: route.params.viewId === `${menu.id}`,
       url: `/extension/${menu.id}`,
@@ -117,7 +117,14 @@
                   class="text-croffle-text flex w-full items-center py-2.5"
                   :class="[leftSidebarOpen ? 'gap-3 px-4' : 'justify-center px-0']"
                 >
+                  <Icon
+                    v-if="typeof item.icon === 'string'"
+                    :icon="item.icon"
+                    class="text-croffle-text h-5 w-5 shrink-0"
+                    :class="{ 'text-white': item.active }"
+                  />
                   <component
+                    v-else
                     :is="item.icon"
                     class="text-croffle-text h-5 w-5 shrink-0"
                     :class="{ 'text-white': item.active }"
@@ -153,7 +160,7 @@
           class="hover:bg-croffle-hover flex aspect-square h-9 w-9 items-center justify-center border-none bg-transparent shadow-none ring-0 ring-offset-0 transition-colors outline-none [--sidebar-accent:transparent] focus:ring-0 focus-visible:ring-0"
           tooltip="알림"
         >
-          <Bell class="text-croffle-text h-5 w-5" />
+          <Icon icon="lucide:bell" class="text-croffle-text h-5 w-5" />
         </SidebarMenuButton>
 
         <SidebarMenuButton
@@ -162,7 +169,7 @@
           tooltip="설정"
           @click="emit('open-settings')"
         >
-          <Settings class="text-croffle-text h-5 w-5" />
+          <Icon icon="lucide:settings" class="text-croffle-text h-5 w-5" />
         </SidebarMenuButton>
 
         <SidebarMenuButton
@@ -171,7 +178,7 @@
           tooltip="도움말"
           @click="isHelpModalOpen = true"
         >
-          <CircleHelp class="text-croffle-text h-5 w-5" />
+          <Icon icon="lucide:circle-help" class="text-croffle-text h-5 w-5" />
         </SidebarMenuButton>
       </div>
     </SidebarFooter>

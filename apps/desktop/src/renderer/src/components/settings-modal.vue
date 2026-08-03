@@ -9,16 +9,6 @@
   } from '@croffledev/common';
   import type { ConfigurationTabContribution, ExtensionInfo } from '@croffledev/common';
   import type { AppSettings } from '@croffledev/croffle-types';
-  import {
-    Settings,
-    Bell,
-    Puzzle,
-    CalendarDays,
-    Trash2,
-    Github,
-    Download,
-    Loader2,
-  } from 'lucide-vue-next';
   import { ref, onMounted, watch, computed } from 'vue';
   import { toast } from 'vue-sonner';
 
@@ -32,6 +22,7 @@
     DialogTitle,
     DialogDescription,
   } from '@/components/ui/dialog';
+  import { Icon } from '@/components/ui/icon';
   import { Label } from '@/components/ui/label';
   import {
     Select,
@@ -98,10 +89,10 @@
   const UI_DRAFT_STORAGE_KEY = 'croffle:settings-ui-draft';
 
   const builtinTabs = [
-    { id: 'general', label: '일반', icon: Settings },
-    { id: 'calendar', label: '캘린더', icon: CalendarDays },
-    { id: 'notifications', label: '알림', icon: Bell },
-    { id: 'extensions', label: '확장 관리', icon: Puzzle },
+    { id: 'general', label: '일반', icon: 'lucide:settings' },
+    { id: 'calendar', label: '캘린더', icon: 'lucide:calendar-days' },
+    { id: 'notifications', label: '알림', icon: 'lucide:bell' },
+    { id: 'extensions', label: '확장 관리', icon: 'lucide:puzzle' },
   ] as const;
 
   const isBootEnabled = computed(() => settings.value?.general.startOnSystemBoot ?? false);
@@ -110,7 +101,7 @@
     const extension = settingsStore.sortedExtensionTabs.map((tab) => ({
       id: settingsStore.getTabCompositeId(tab),
       label: tab.label,
-      icon: (tab.icon as typeof Puzzle) ?? Puzzle,
+      icon: tab.icon ?? 'lucide:puzzle',
       extensionTab: tab,
     }));
     return [...builtinTabs, ...extension];
@@ -521,7 +512,8 @@
                   : (activeTab = tab.id)
               "
             >
-              <component :is="tab.icon" class="h-4 w-4" />
+              <Icon v-if="typeof tab.icon === 'string'" :icon="tab.icon" class="h-4 w-4" />
+              <component v-else :is="tab.icon" class="h-4 w-4" />
               {{ tab.label }}
             </button>
           </nav>
@@ -872,7 +864,7 @@
                   <h4
                     class="mb-3 text-sm font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-2"
                   >
-                    <Github class="h-4 w-4" />
+                    <Icon icon="lucide:github" class="h-4 w-4" />
                     GitHub에서 설치
                   </h4>
                   <div class="flex items-center gap-3">
@@ -889,8 +881,12 @@
                       class="h-9 gap-2 border-none bg-[#A68A64] text-white hover:bg-[#8E7554]"
                       @click="onInstallPlugin"
                     >
-                      <Loader2 v-if="isInstalling" class="h-4 w-4 animate-spin" />
-                      <Download v-else class="h-4 w-4" />
+                      <Icon
+                        v-if="isInstalling"
+                        icon="lucide:loader-2"
+                        class="h-4 w-4 animate-spin"
+                      />
+                      <Icon v-else icon="lucide:download" class="h-4 w-4" />
                       설치
                     </Button>
                   </div>
@@ -900,7 +896,7 @@
                   <h4
                     class="mb-3 text-sm font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-2"
                   >
-                    <Download class="h-4 w-4" />
+                    <Icon icon="lucide:download" class="h-4 w-4" />
                     로컬 Zip 파일로 설치
                   </h4>
                   <div class="flex items-center gap-3">
@@ -910,8 +906,12 @@
                       class="h-9 gap-2 border-none bg-neutral-200 text-neutral-900 hover:bg-neutral-300 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-700"
                       @click="onLocalZipSelect"
                     >
-                      <Loader2 v-if="isInstalling" class="h-4 w-4 animate-spin" />
-                      <Download v-else class="h-4 w-4" />
+                      <Icon
+                        v-if="isInstalling"
+                        icon="lucide:loader-2"
+                        class="h-4 w-4 animate-spin"
+                      />
+                      <Icon v-else icon="lucide:download" class="h-4 w-4" />
                       파일 선택 및 설치
                     </Button>
                   </div>
@@ -928,7 +928,7 @@
                     class="flex flex-col items-center justify-center rounded-xl border border-dashed border-neutral-300 bg-neutral-50 py-12 text-center dark:border-neutral-800 dark:bg-neutral-950"
                   >
                     <div class="mb-4 rounded-full bg-neutral-200/50 p-3 dark:bg-neutral-800/50">
-                      <Puzzle class="h-6 w-6 text-neutral-500" />
+                      <Icon icon="lucide:puzzle" class="h-6 w-6 text-neutral-500" />
                     </div>
                     <p class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
                       설치된 확장이 없습니다.
@@ -996,7 +996,7 @@
                           class="h-8 w-8 text-neutral-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/50"
                           @click="onUninstallExtension(plugin)"
                         >
-                          <Trash2 class="h-4 w-4" />
+                          <Icon icon="lucide:trash-2" class="h-4 w-4" />
                           <span class="sr-only">삭제</span>
                         </Button>
                       </div>

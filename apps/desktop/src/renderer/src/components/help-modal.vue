@@ -1,12 +1,4 @@
 <script setup lang="ts">
-  import {
-    ChevronRight,
-    ChevronLeft,
-    Calendar,
-    Layout,
-    Palette,
-    PartyPopper,
-  } from 'lucide-vue-next';
   import { ref, computed } from 'vue';
 
   import {
@@ -16,6 +8,7 @@
     DialogTitle,
     DialogDescription,
   } from '@/components/ui/dialog';
+  import { Icon } from '@/components/ui/icon';
 
   // Props 및 Emit 정의
 
@@ -35,7 +28,7 @@
 
       content: '왼쪽 메뉴를 통해 오늘 할 일과\n전체 달력을 자유롭게 오갈 수 있습니다.',
 
-      icon: Layout,
+      icon: 'lucide:layout',
     },
 
     {
@@ -46,7 +39,7 @@
       content:
         '달력의 날짜를 클릭하면 즉시 할 일을 적을 수 있습니다.\n드래그해서 날짜를 옮기는 것도 가능해요!',
 
-      icon: Calendar,
+      icon: 'lucide:calendar',
     },
 
     {
@@ -57,7 +50,7 @@
       content:
         '설정 메뉴에서 크로플의 메인 색상을 변경하여\n본인만의 작업 환경을 만들 수 있습니다.',
 
-      icon: Palette,
+      icon: 'lucide:palette',
     },
 
     {
@@ -67,7 +60,7 @@
 
       content: '지금 바로 첫 번째 할 일을 등록하고\n크로플과 함께 멋진 하루를 계획해 보세요!',
 
-      icon: PartyPopper,
+      icon: 'lucide:party-popper',
     },
   ];
 
@@ -120,7 +113,7 @@
           <div
             class="bg-croffle-primary/10 text-croffle-primary mb-4 flex h-16 w-16 items-center justify-center rounded-full"
           >
-            <component :is="currentStepData.icon" class="h-8 w-8" />
+            <Icon :icon="currentStepData.icon" class="h-8 w-8" />
           </div>
 
           <DialogTitle class="text-croffle-primary text-xl font-bold">
@@ -144,7 +137,7 @@
             class="text-croffle-text flex items-center gap-1 text-sm font-medium transition-colors hover:text-neutral-600"
             @click="prevStep"
           >
-            <ChevronLeft class="h-4 w-4" />
+            <Icon icon="lucide:chevron-left" class="h-4 w-4" />
 
             이전
           </button>
@@ -157,7 +150,7 @@
           >
             {{ currentStep === totalSteps - 1 ? '확인' : '다음' }}
 
-            <ChevronRight v-if="currentStep < totalSteps - 1" class="h-4 w-4" />
+            <Icon v-if="currentStep < totalSteps - 1" icon="lucide:chevron-right" class="h-4 w-4" />
           </button>
         </div>
       </div>
