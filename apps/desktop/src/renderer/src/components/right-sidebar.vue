@@ -9,6 +9,7 @@
   import { Button } from '@/components/ui/button';
   import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
   import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from '@/components/ui/sidebar';
+  import { cn } from '@/lib/utils';
   import { useScheduleStore } from '@/stores/schedule-store';
   import { useUiStore } from '@/stores/ui-store';
 
@@ -54,8 +55,19 @@
   // const hasTodayEvent = computed(() => todayCount.value > 0);
 
   const handleEditTodo = (scheduleId: string) => {
-    uiStore.openTodoSheet('edit', scheduleId);
+    uiStore.openScheduleModal('edit', scheduleId);
   };
+
+  // function getPriorityClass(priority: string) {
+  //   switch (priority) {
+  //     case 'low':
+  //       return 'bg-emerald-500/10 text-emerald-700';
+  //     case 'medium':
+  //       return 'bg-amber-500/10 text-amber-700';
+  //     case 'high':
+  //       return 'bg-rose-500/10 text-rose-700';
+  //   }
+  // }
 
   const packageVersion = `v${pkg.version}`;
 </script>
@@ -96,7 +108,7 @@
       <div class="mt-2 flex justify-center">
         <Button
           class="bg-croffle-primary hover:bg-croffle-hover h-11 w-full rounded-lg border-none font-medium text-white shadow-sm transition-all duration-300 group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:rounded-full group-data-[collapsible=icon]:p-0"
-          @click="uiStore.openTodoSheet('add')"
+          @click="uiStore.openScheduleModal('add')"
         >
           <Plus class="h-5 w-5 transition-all" :class="rightSidebarOpen ? 'mr-1' : ''" />
           <span class="group-data-[collapsible=icon]:hidden">새 일정 추가</span>
@@ -139,7 +151,9 @@
 
                 <Badge
                   variant="outline"
-                  class="text-foreground border-sidebar-ring text-2xs h-4 shrink-0 px-1.5 py-0"
+                  :class="
+                    cn('text-foreground border-sidebar-ring text-2xs h-4 shrink-0 px-1.5 py-0')
+                  "
                 >
                   보통
                 </Badge>

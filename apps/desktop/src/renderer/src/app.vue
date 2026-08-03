@@ -15,8 +15,8 @@
 
   import LeftSidebar from './components/left-sidebar.vue';
   import RightSidebar from './components/right-sidebar.vue';
+  import ScheduleModal from './components/schedule-modal.vue';
   import SettingsModal from './components/settings-modal.vue';
-  import Todosheet from './components/todo-sheet.vue';
   import Button from './components/ui/button/Button.vue';
   import { Separator } from './components/ui/separator/index.ts';
   import UpdateModal from './components/update-modal.vue';
@@ -307,7 +307,7 @@
           </ContextMenu>
         </SidebarInset>
         <RightSidebar />
-        <Todosheet />
+        <ScheduleModal />
       </SidebarProvider>
     </div>
 

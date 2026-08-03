@@ -1,5 +1,7 @@
 // oxlint-disable-next-line import/no-unassigned-import
 import './index.css';
+// oxlint-disable-next-line import/no-unassigned-import
+import './lib/register-icons';
 import { createPinia } from 'pinia';
 import { createApp } from 'vue';
 
