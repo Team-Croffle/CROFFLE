@@ -80,14 +80,14 @@
   const isInstalling = ref<boolean>(false);
 
   const notificationDraft = ref<NotificationDraft>({
-    emailAlert: true,
+    emailAlert: false,
     dndStart: '22:00',
     dndEnd: '07:00',
   });
 
   // 취소 복원용 원본(UI draft)
   const originalNotificationDraft = ref<NotificationDraft>({
-    emailAlert: true,
+    emailAlert: false,
     dndStart: '22:00',
     dndEnd: '07:00',
   });
@@ -827,6 +827,7 @@
                   <div class="flex items-center justify-between py-2">
                     <Label class="text-sm font-semibold">이메일 알림 (준비 중)</Label>
                     <Switch
+                      disabled
                       :checked="notificationDraft.emailAlert"
                       :model-value="notificationDraft.emailAlert"
                       @update:checked="onEmailAlertSwitch"
@@ -834,7 +835,7 @@
                     />
                   </div>
                   <div class="flex flex-wrap items-center gap-3">
-                    <Select v-model="notificationDraft.dndStart">
+                    <Select v-model="notificationDraft.dndStart" disabled>
                       <SelectTrigger class="w-32 border-none bg-neutral-100 shadow-none">
                         <SelectValue />
                       </SelectTrigger>
@@ -845,7 +846,7 @@
                       </SelectContent>
                     </Select>
                     <span class="text-sm font-medium text-neutral-500">~</span>
-                    <Select v-model="notificationDraft.dndEnd">
+                    <Select v-model="notificationDraft.dndEnd" disabled>
                       <SelectTrigger class="w-32 border-none bg-neutral-100 shadow-none">
                         <SelectValue />
                       </SelectTrigger>
