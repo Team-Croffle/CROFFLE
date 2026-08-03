@@ -180,6 +180,7 @@ export async function createSchedule(data: ScheduleEntityInput): Promise<Schedul
     recurrenceRule: scheduleFields.recurrenceRule ?? null,
     colorLabel: scheduleFields.colorLabel ?? '#E1E1E1',
     priority: scheduleFields.priority ?? 'medium',
+    reminderMinutes: scheduleFields.reminderMinutes ?? null,
     createdAt: scheduleFields.createdAt ?? now,
     updatedAt: scheduleFields.updatedAt ?? now,
   };
@@ -220,6 +221,10 @@ export async function updateSchedule(
         : existing.recurrenceRule,
     colorLabel: scheduleFields.colorLabel ?? existing.colorLabel,
     priority: scheduleFields.priority ?? existing.priority,
+    reminderMinutes:
+      scheduleFields.reminderMinutes !== undefined
+        ? scheduleFields.reminderMinutes
+        : existing.reminderMinutes,
     createdAt: scheduleFields.createdAt ?? existing.createdAt,
     updatedAt: scheduleFields.updatedAt ?? existing.updatedAt,
     tags: inputTags ?? existing.tags,
@@ -240,6 +245,7 @@ export async function updateSchedule(
       recurrenceRule: merged.recurrenceRule ?? null,
       colorLabel: merged.colorLabel,
       priority: merged.priority ?? 'medium',
+      reminderMinutes: merged.reminderMinutes ?? null,
       updatedAt: new Date(),
     })
     .where(eq(schedules.id, id));

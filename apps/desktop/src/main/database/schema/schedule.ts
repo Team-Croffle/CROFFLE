@@ -17,6 +17,8 @@ export const schedules = sqliteTable('schedule', {
   priority: text('priority', { enum: ['low', 'medium', 'high'] })
     .notNull()
     .default('medium'),
+  /** null = use app-wide notifications.defaultReminderMinutes */
+  reminderMinutes: integer('reminderMinutes'),
   createdAt: integer('createdAt', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull(),
 });

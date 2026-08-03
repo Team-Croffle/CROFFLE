@@ -5,7 +5,8 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { app, shell, BrowserWindow, protocol } from 'electron';
 import { autoUpdater } from 'electron-updater';
 
-import icon from '../../resources/Logo2Only.png?asset';
+import icon from '../../resources/logo-no-border.png?asset';
+import { reminderScheduler } from './calendar/reminder-scheduler';
 import { databaseManager } from './database';
 import { registerAllIpcHandlers } from './ipc';
 import { logger } from './logger';
@@ -137,6 +138,8 @@ if (!gotTheLock) {
       logger.info('Main', 'Registering IPC handlers');
       registerAllIpcHandlers();
 
+      await reminderScheduler.start();
+
       createWindow();
 
       if (!is.dev && shouldCheckForUpdates(settingService.get())) {
@@ -145,9 +148,14 @@ if (!gotTheLock) {
       }
     } catch (error) {
       logger.error('Main', 'Failed to initialize the application', error);
+      reminderScheduler.stop();
       app.quit();
       closeSplash();
     }
+
+    app.on('before-quit', () => {
+      reminderScheduler.stop();
+    });
 
     app.on('activate', function () {
       // On macOS it's common to re-create a window in the app when the

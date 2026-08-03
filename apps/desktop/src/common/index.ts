@@ -1,5 +1,6 @@
 export * from './enums';
 export * from './models';
 export * from './recurrence';
+export * from './reminder';
 export type { AssertEqual, AssertTrue, AssertSchema } from './type-utils';
 export { assertSchemaMatch } from './type-utils';

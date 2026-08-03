@@ -1,10 +1,9 @@
-import path from 'node:path';
+import { Notification } from 'electron';
 
-import { Notification, app } from 'electron';
-
+import logo from '../../../resources/logo-no-border.png?asset';
 import { logger } from '../logger';
 
-export function showNotification(title?: string, body?: string): void {
+export function showNotification(title?: string, body?: string, onClick?: () => void): void {
   try {
     if (!Notification.isSupported()) {
       logger.warn('OS', 'Notification not supported');
@@ -19,11 +18,17 @@ export function showNotification(title?: string, body?: string): void {
       return;
     }
 
-    new Notification({
-      icon: path.join(app.getAppPath(), '../../icons/Logo2OnlyNoBorderIcon.png'),
+    const notification = new Notification({
+      icon: logo,
       title: Title || 'Notification',
       body: Body || '',
-    }).show();
+    });
+
+    if (onClick) {
+      notification.on('click', onClick);
+    }
+
+    notification.show();
   } catch (error) {
     logger.error('OS', 'Notification error:', error);
     throw error;
