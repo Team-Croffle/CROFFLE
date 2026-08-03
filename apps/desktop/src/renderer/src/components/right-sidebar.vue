@@ -58,16 +58,27 @@
     uiStore.openScheduleModal('edit', scheduleId);
   };
 
-  // function getPriorityClass(priority: string) {
-  //   switch (priority) {
-  //     case 'low':
-  //       return 'bg-emerald-500/10 text-emerald-700';
-  //     case 'medium':
-  //       return 'bg-amber-500/10 text-amber-700';
-  //     case 'high':
-  //       return 'bg-rose-500/10 text-rose-700';
-  //   }
-  // }
+  function getPriorityClass(priority: string) {
+    switch (priority) {
+      case 'low':
+        return 'bg-emerald-500/30 border-emerald-500';
+      case 'medium':
+        return 'bg-amber-500/30 border-amber-500';
+      case 'high':
+        return 'bg-rose-500/30 border-rose-500';
+    }
+  }
+
+  function getPriorityText(priority: string) {
+    switch (priority) {
+      case 'low':
+        return '낮음';
+      case 'medium':
+        return '보통';
+      case 'high':
+        return '높음';
+    }
+  }
 
   const packageVersion = `v${pkg.version}`;
 </script>
@@ -152,10 +163,13 @@
                 <Badge
                   variant="outline"
                   :class="
-                    cn('text-foreground border-sidebar-ring text-2xs h-4 shrink-0 px-1.5 py-0')
+                    cn(
+                      'text-foreground border-sidebar-ring text-2xs h-4 shrink-0 px-1.5 py-0',
+                      getPriorityClass(schedule.priority),
+                    )
                   "
                 >
-                  보통
+                  {{ getPriorityText(schedule.priority) }}
                 </Badge>
               </div>
             </div>
