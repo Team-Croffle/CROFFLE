@@ -8,7 +8,8 @@ import { app } from 'electron';
 
 import type { PublicTypeIntegrity } from '../../common/assert-public-types';
 import { logger } from '../logger';
-import { ensureSchema } from './ensure-schema';
+import { applyLegacySchemaFixes } from './ensure-schema';
+import { runMigrations } from './migrations';
 import * as schema from './schema';
 
 export type { PublicTypeIntegrity };
@@ -25,19 +26,20 @@ class DatabaseManager {
     }
 
     try {
-      // const dbPath = path.join(app.getPath('userData'), 'croffle.db');
       const dbPath = is.dev
-        ? path.join(process.cwd(), 'dev/croffle.db') // development mode, the db file is in the root of the output directory
-        : path.join(app.getPath('userData'), 'croffle.db'); // production mode, the db file is in the user's data directory
+        ? path.join(process.cwd(), 'dev/croffle.db')
+        : path.join(app.getPath('userData'), 'croffle.db');
       logger.debug('DB', `Database path: ${dbPath}`);
 
       this.sqlite = new Database(dbPath);
       this.sqlite.pragma('journal_mode = WAL');
       this.sqlite.pragma('foreign_keys = ON');
 
-      ensureSchema(this.sqlite);
+      applyLegacySchemaFixes(this.sqlite);
 
       this.db = drizzle(this.sqlite, { schema });
+      runMigrations(this.sqlite, this.db);
+
       logger.info('DB', 'Database initialized successfully.');
     } catch (error) {
       logger.error('DB', 'Error during database initialization:', error);
