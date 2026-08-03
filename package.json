@@ -44,7 +44,7 @@
   },
   "lint-staged": {
     "*.{js,jsx,mjs,ts,tsx,mts,cts,vue}": [
-      "oxlint --fix",
+      "oxlint --fix --no-error-on-unmatched-pattern",
       "oxfmt --write"
     ],
     "*.{json,md,yml,yaml}": [
