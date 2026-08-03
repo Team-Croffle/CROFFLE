@@ -4,6 +4,7 @@
   import dayGridPlugin from '@fullcalendar/daygrid';
   import interactionPlugin from '@fullcalendar/interaction';
   import multiMonthPlugin from '@fullcalendar/multimonth';
+  import rrulePlugin from '@fullcalendar/rrule';
   import timeGridPlugin from '@fullcalendar/timegrid';
   import FullCalendar from '@fullcalendar/vue3';
   import dayjs from 'dayjs';
@@ -59,7 +60,7 @@
     const lang = settings.value?.general.language;
 
     return {
-      plugins: [dayGridPlugin, timeGridPlugin, multiMonthPlugin, interactionPlugin],
+      plugins: [dayGridPlugin, timeGridPlugin, multiMonthPlugin, interactionPlugin, rrulePlugin],
       initialView: cal ? calendarViewToFullCalendar(cal.defaultView) : 'dayGridMonth',
       initialDate: new Date().toISOString().slice(0, 10),
       headerToolbar: {
@@ -91,16 +92,18 @@
       selectable: true, // 날짜 선택 가능
       dateClick: (info) => handleDateDoubleClick(info.dateStr), // 날짜 클릭 핸들러
       eventClick: (info) => {
-        const eventId = info.event.id;
-        if (!eventId) {
+        const scheduleId =
+          (info.event.extendedProps.scheduleId as string | undefined) || info.event.id;
+        if (!scheduleId) {
           return;
         }
-        handleEventDoubleClick(eventId);
+        handleEventDoubleClick(scheduleId);
       },
       eventDidMount: (info) => {
-        const eventId = info.event.id;
-        if (eventId) {
-          info.el.setAttribute('data-event-id', eventId);
+        const scheduleId =
+          (info.event.extendedProps.scheduleId as string | undefined) || info.event.id;
+        if (scheduleId) {
+          info.el.setAttribute('data-event-id', scheduleId);
           return;
         }
         info.el.removeAttribute('data-event-id');

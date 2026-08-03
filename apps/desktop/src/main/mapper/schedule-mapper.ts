@@ -13,6 +13,7 @@ export type ScheduleEntityInput = {
   isAllDay?: boolean;
   recurrenceRule?: string | null;
   colorLabel?: string;
+  priority?: 'low' | 'medium' | 'high';
   createdAt?: Date;
   updatedAt?: Date;
   tags?: TagRow[];
@@ -86,6 +87,9 @@ export const scheduleMapper = {
     }
     if (data.colorLabel !== undefined) {
       entity.colorLabel = data.colorLabel;
+    }
+    if (data.priority !== undefined) {
+      entity.priority = data.priority;
     }
     if (data.createdAt !== undefined) {
       entity.createdAt = toDate(data.createdAt);

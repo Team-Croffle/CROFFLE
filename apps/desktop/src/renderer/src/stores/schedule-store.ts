@@ -1,45 +1,73 @@
 import type { Schedule } from '@croffledev/common';
+import { toFullCalendarRRule } from '@croffledev/common';
+import type { EventInput } from '@fullcalendar/core';
 import dayjs from 'dayjs';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { toast } from 'vue-sonner';
 
+function toEventDuration(schedule: Schedule): EventInput['duration'] {
+  const start = dayjs(schedule.startDate);
+  const end = dayjs(schedule.endDate);
+
+  if (schedule.isAllDay) {
+    const startDay = start.startOf('day');
+    const endExclusive = end.startOf('day').add(1, 'day');
+    const days = Math.max(endExclusive.diff(startDay, 'day'), 1);
+    return { days };
+  }
+
+  const ms = Math.max(end.diff(start), 5 * 60 * 1000);
+  return { milliseconds: ms };
+}
+
+function toCalendarEvent(schedule: Schedule): EventInput {
+  const base: EventInput = {
+    id: schedule.id,
+    title: schedule.title,
+    allDay: schedule.isAllDay,
+    backgroundColor: schedule.colorLabel,
+    borderColor: schedule.colorLabel,
+    textColor: '#FFFFFF',
+    display: schedule.isAllDay ? 'auto' : 'block',
+    extendedProps: {
+      scheduleId: schedule.id,
+      description: schedule.description,
+      location: schedule.location,
+      tags: schedule.tags,
+      recurrenceRule: schedule.recurrenceRule,
+      priority: schedule.priority,
+    },
+  };
+
+  if (schedule.recurrenceRule?.trim()) {
+    const rrule = toFullCalendarRRule(schedule.recurrenceRule, schedule.startDate);
+    if (rrule) {
+      return {
+        ...base,
+        rrule,
+        duration: toEventDuration(schedule),
+      };
+    }
+  }
+
+  let displayEndDate: Date | string = schedule.endDate;
+  if (schedule.isAllDay && schedule.endDate) {
+    displayEndDate = dayjs(schedule.endDate).add(1, 'day').toDate();
+  }
+
+  return {
+    ...base,
+    start: schedule.startDate,
+    end: displayEndDate,
+  };
+}
+
 export const useScheduleStore = defineStore('schedule', () => {
-  // 더미 데이터 사용
   const schedules = ref<Schedule[]>([]);
 
-  // 데이터 변환(FullCalendar 이벤트 형식에 맞게)
-  const events = computed(() => {
-    return schedules.value.map((schedule) => {
-      let displayEndDate: Date | string = schedule.endDate;
+  const events = computed(() => schedules.value.map(toCalendarEvent));
 
-      // 종일 일정의 경우, FullCalendar는 end 날짜를 포함하지 않으므로 하루 더해줌
-      if (schedule.isAllDay && schedule.endDate) {
-        displayEndDate = dayjs(schedule.endDate).add(1, 'day').toDate();
-      }
-
-      return {
-        id: schedule.id,
-        title: schedule.title,
-        start: schedule.startDate,
-        end: displayEndDate,
-        allDay: schedule.isAllDay,
-        backgroundColor: schedule.colorLabel,
-        borderColor: schedule.colorLabel,
-        textColor: '#FFFFFF',
-        display: schedule.isAllDay ? 'auto' : 'block',
-        extendedProps: {
-          description: schedule.description,
-          location: schedule.location,
-          tags: schedule.tags,
-          recurrenceRule: schedule.recurrenceRule,
-        },
-      };
-    });
-  });
-
-  // Actions
-  // 일정 조회
   const getScheduleById = (id: string) => {
     return schedules.value.find((s) => s.id === id);
   };
@@ -53,21 +81,18 @@ export const useScheduleStore = defineStore('schedule', () => {
     schedules.value[index] = schedule;
   };
 
-  // 일정 추가
   const createSchedule = async (payload: Partial<Schedule>) => {
     const created = await croffle.calendar.schedules.create(payload);
     upsertSchedule(created);
     return created;
   };
 
-  // 일정 수정
   const updateScheduleById = async (id: string, payload: Partial<Schedule>) => {
     const updated = await croffle.calendar.schedules.update(id, payload);
     upsertSchedule(updated);
     return updated;
   };
 
-  // 일정 제거
   const removeScheduleById = async (id: string) => {
     const ok = await croffle.calendar.schedules.remove(id);
     if (ok) {
@@ -76,7 +101,6 @@ export const useScheduleStore = defineStore('schedule', () => {
     return ok;
   };
 
-  // 일정 불러오기
   const loadSchedules = async (startDate?: string, endDate?: string) => {
     try {
       const now = dayjs();

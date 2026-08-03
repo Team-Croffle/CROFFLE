@@ -1,6 +1,18 @@
 import { randomUUID } from 'node:crypto';
 
-import { and, asc, eq, gte, lte, type SQL as DrizzleSQL } from 'drizzle-orm';
+import { isValidRecurrenceRule, recurrenceMayOverlapPeriod } from '@croffledev/common';
+import {
+  and,
+  asc,
+  eq,
+  gte,
+  isNotNull,
+  isNull,
+  lte,
+  ne,
+  or,
+  type SQL as DrizzleSQL,
+} from 'drizzle-orm';
 
 import { databaseManager } from '../database';
 import {
@@ -48,6 +60,12 @@ export function validateScheduleData(schedule: ScheduleEntityInput) {
       throw new Error('Start date cannot be later than end date');
     }
   }
+
+  if (schedule.recurrenceRule !== undefined && schedule.recurrenceRule !== null) {
+    if (!isValidRecurrenceRule(schedule.recurrenceRule)) {
+      throw new Error('Invalid recurrence rule');
+    }
+  }
 }
 
 async function syncScheduleTags(scheduleId: string, tags: { id: string }[] | undefined) {
@@ -91,17 +109,28 @@ export async function getSchedules(period: {
   const db = databaseManager.getDb();
   const { start, end } = period;
 
-  const conditions: DrizzleSQL[] = [];
+  let where: DrizzleSQL | undefined;
+
   if (start && end) {
-    conditions.push(gte(schedules.endDate, start), lte(schedules.startDate, end));
+    const nonRecurring = and(
+      or(isNull(schedules.recurrenceRule), eq(schedules.recurrenceRule, '')),
+      gte(schedules.endDate, start),
+      lte(schedules.startDate, end),
+    );
+    const recurring = and(
+      isNotNull(schedules.recurrenceRule),
+      ne(schedules.recurrenceRule, ''),
+      lte(schedules.startDate, end),
+    );
+    where = or(nonRecurring, recurring);
   } else if (start) {
-    conditions.push(gte(schedules.endDate, start));
+    where = gte(schedules.endDate, start);
   } else if (end) {
-    conditions.push(lte(schedules.startDate, end));
+    where = lte(schedules.startDate, end);
   }
 
   const rows = await db.query.schedules.findMany({
-    where: conditions.length > 0 ? and(...conditions) : undefined,
+    where,
     orderBy: [asc(schedules.startDate)],
     with: {
       scheduleTags: {
@@ -110,7 +139,18 @@ export async function getSchedules(period: {
     },
   });
 
-  return rows.map(mapScheduleWithTags);
+  const mapped = rows.map(mapScheduleWithTags);
+
+  if (!start || !end) {
+    return mapped;
+  }
+
+  return mapped.filter((schedule) => {
+    if (!schedule.recurrenceRule?.trim()) {
+      return true;
+    }
+    return recurrenceMayOverlapPeriod(schedule.recurrenceRule, schedule.startDate, start, end);
+  });
 }
 
 export async function createSchedule(data: ScheduleEntityInput): Promise<ScheduleWithTags> {
@@ -139,6 +179,7 @@ export async function createSchedule(data: ScheduleEntityInput): Promise<Schedul
     isAllDay: scheduleFields.isAllDay ?? false,
     recurrenceRule: scheduleFields.recurrenceRule ?? null,
     colorLabel: scheduleFields.colorLabel ?? '#E1E1E1',
+    priority: scheduleFields.priority ?? 'medium',
     createdAt: scheduleFields.createdAt ?? now,
     updatedAt: scheduleFields.updatedAt ?? now,
   };
@@ -178,6 +219,7 @@ export async function updateSchedule(
         ? scheduleFields.recurrenceRule
         : existing.recurrenceRule,
     colorLabel: scheduleFields.colorLabel ?? existing.colorLabel,
+    priority: scheduleFields.priority ?? existing.priority,
     createdAt: scheduleFields.createdAt ?? existing.createdAt,
     updatedAt: scheduleFields.updatedAt ?? existing.updatedAt,
     tags: inputTags ?? existing.tags,
@@ -197,6 +239,7 @@ export async function updateSchedule(
       isAllDay: merged.isAllDay,
       recurrenceRule: merged.recurrenceRule ?? null,
       colorLabel: merged.colorLabel,
+      priority: merged.priority ?? 'medium',
       updatedAt: new Date(),
     })
     .where(eq(schedules.id, id));
