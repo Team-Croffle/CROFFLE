@@ -1,6 +1,7 @@
 {
   "name": "@croffledev/desktop",
   "productName": "Croffle",
+  "desktopName": "croffle",
   "version": "1.0.1",
   "private": true,
   "description": "Croffle desktop (Electron)",
@@ -20,6 +21,7 @@
     "build:win": "pnpm build && electron-builder --win",
     "build:mac": "pnpm build && electron-builder --mac",
     "build:linux": "pnpm build && electron-builder --linux",
+    "build:appimage": "pnpm build && electron-builder --linux appimage",
     "db:generate": "drizzle-kit generate",
     "db:studio": "drizzle-kit studio"
   },
