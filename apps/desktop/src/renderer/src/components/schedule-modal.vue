@@ -1,0 +1,618 @@
+<script setup lang="ts">
+  import type { Schedule } from '@croffledev/common';
+  import { CalendarDate, getLocalTimeZone } from '@internationalized/date';
+  import { storeToRefs } from 'pinia';
+  import { reactive, ref, shallowRef, toRaw, watch } from 'vue';
+  import { toast } from 'vue-sonner';
+
+  import { Button } from '@/components/ui/button';
+  import { Calendar } from '@/components/ui/calendar';
+  import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+  } from '@/components/ui/dialog';
+  import {
+    Field,
+    FieldDescription,
+    FieldGroup,
+    FieldLabel,
+    FieldLegend,
+    FieldSeparator,
+    FieldSet,
+  } from '@/components/ui/field';
+  import { Icon } from '@/components/ui/icon';
+  import { Input } from '@/components/ui/input';
+  import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+  import { Switch } from '@/components/ui/switch';
+  import { Textarea } from '@/components/ui/textarea';
+  import { cn } from '@/lib/utils';
+  import { useScheduleStore } from '@/stores/schedule-store';
+  import { useUiStore } from '@/stores/ui-store';
+
+  import TimeField from './time-field.vue';
+
+  const uiStore = useUiStore();
+  const scheduleStore = useScheduleStore();
+  const { isScheduleModalOpen, scheduleModalMode, selectedScheduleId } = storeToRefs(uiStore);
+
+  const DEFAULT_START_TIME = '09:00';
+  const DEFAULT_END_TIME = '10:00';
+
+  const COLOR_PRESETS = [
+    '#DCA780',
+    '#F87171',
+    '#FBBF24',
+    '#34D399',
+    '#60A5FA',
+    '#A78BFA',
+    '#F472B6',
+  ];
+
+  const toCalendarDate = (value: string | Date) => {
+    const d = value instanceof Date ? value : new Date(value);
+    return new CalendarDate(d.getFullYear(), d.getMonth() + 1, d.getDate());
+  };
+
+  const formatCalendarDate = (calendarDate: CalendarDate | undefined) => {
+    if (!calendarDate) {
+      return '날짜 선택';
+    }
+    const jsDate = calendarDate.toDate(getLocalTimeZone());
+    return new Intl.DateTimeFormat('ko-KR', {
+      month: 'long',
+      day: 'numeric',
+      weekday: 'short',
+    }).format(jsDate);
+  };
+
+  const formatTimeFromDate = (value: string | Date) => {
+    const date = value instanceof Date ? value : new Date(value);
+    const hours = String(date.getHours()).padStart(2, '0');
+    const rawMinutes = date.getMinutes();
+    const snapped = Math.round(rawMinutes / 5) * 5;
+    const minutes = String(snapped === 60 ? 55 : snapped).padStart(2, '0');
+    return `${hours}:${minutes}`;
+  };
+
+  const combineDateAndTime = (date: CalendarDate, time: string) => {
+    const [hours = 0, minutes = 0] = time.split(':').map((part) => Number(part));
+    const jsDate = date.toDate(getLocalTimeZone());
+    jsDate.setHours(hours, minutes, 0, 0);
+    return jsDate;
+  };
+
+  const form = reactive({
+    title: '',
+    description: '',
+    location: '',
+    priority: 'medium' as 'low' | 'medium' | 'high',
+    isAllDay: false,
+    recurrenceRule: '',
+    colorLabel: '#DCA780',
+  });
+
+  // CalendarDate 객체 내부의 #private 필드가 Vue Proxy와 충돌하는 것을 막기 위해
+  // 반드시 ref가 아닌 shallowRef를 사용해야 함
+  const startDate = shallowRef<CalendarDate | undefined>(undefined);
+  const endDate = shallowRef<CalendarDate | undefined>(undefined);
+  const startTime = ref(DEFAULT_START_TIME);
+  const endTime = ref(DEFAULT_END_TIME);
+  const isStartCalendarOpen = ref(false);
+  const isEndCalendarOpen = ref(false);
+
+  const resetForm = () => {
+    form.title = '';
+    form.description = '';
+    form.location = '';
+    form.priority = 'medium';
+    form.isAllDay = false;
+    form.recurrenceRule = '';
+    form.colorLabel = '#DCA780';
+    startDate.value = undefined;
+    endDate.value = undefined;
+    startTime.value = DEFAULT_START_TIME;
+    endTime.value = DEFAULT_END_TIME;
+  };
+
+  const fillFormFromSchedule = (schedule: Schedule) => {
+    const cloned = structuredClone(toRaw(schedule));
+
+    form.title = cloned.title ?? '';
+    form.description = cloned.description ?? '';
+    form.location = cloned.location ?? '';
+    form.isAllDay = cloned.isAllDay ?? false;
+    form.recurrenceRule = cloned.recurrenceRule ?? '';
+    form.colorLabel = cloned.colorLabel ?? '#DCA780';
+    startDate.value = cloned.startDate ? toCalendarDate(cloned.startDate) : undefined;
+    endDate.value = cloned.endDate ? toCalendarDate(cloned.endDate) : startDate.value;
+    startTime.value = cloned.startDate ? formatTimeFromDate(cloned.startDate) : DEFAULT_START_TIME;
+    endTime.value = cloned.endDate ? formatTimeFromDate(cloned.endDate) : DEFAULT_END_TIME;
+    form.priority = 'medium';
+  };
+
+  watch(
+    () => ({
+      open: isScheduleModalOpen.value,
+      mode: scheduleModalMode.value,
+      scheduleId: selectedScheduleId.value,
+    }),
+    ({ open, mode, scheduleId }) => {
+      if (!open) {
+        return;
+      }
+
+      if (mode === 'add') {
+        resetForm();
+        if (uiStore.selectedDate) {
+          startDate.value = toCalendarDate(uiStore.selectedDate);
+          endDate.value = toCalendarDate(uiStore.selectedDate);
+        } else {
+          const today = new Date().toISOString().slice(0, 10);
+          startDate.value = toCalendarDate(today);
+          endDate.value = toCalendarDate(today);
+        }
+        return;
+      }
+
+      if (!scheduleId) {
+        resetForm();
+        uiStore.closeScheduleModal();
+        return;
+      }
+
+      const schedule = scheduleStore.getScheduleById(scheduleId);
+      if (!schedule) {
+        resetForm();
+        uiStore.closeScheduleModal();
+        return;
+      }
+
+      fillFormFromSchedule(schedule);
+    },
+    { immediate: true },
+  );
+
+  const handleSave = async () => {
+    if (!form.title.trim() || !startDate.value || !endDate.value) {
+      return;
+    }
+
+    let start: Date;
+    let end: Date;
+
+    if (form.isAllDay) {
+      start = startDate.value.toDate(getLocalTimeZone());
+      start.setHours(0, 0, 0, 0);
+      end = endDate.value.toDate(getLocalTimeZone());
+      end.setHours(23, 59, 59, 999);
+    } else {
+      start = combineDateAndTime(startDate.value, startTime.value);
+      end = combineDateAndTime(endDate.value, endTime.value);
+    }
+
+    if (end < start) {
+      toast.error('종료 일시는 시작 일시보다 빠를 수 없습니다.');
+      return;
+    }
+
+    const payload: Partial<Schedule> = {
+      title: form.title.trim(),
+      description: form.description.trim(),
+      location: form.location.trim(),
+      startDate: start,
+      endDate: end,
+      isAllDay: form.isAllDay,
+      recurrenceRule: form.recurrenceRule.trim() || undefined,
+      colorLabel: form.colorLabel || '#DCA780',
+      tags: [],
+    };
+
+    try {
+      if (scheduleModalMode.value === 'add') {
+        await scheduleStore.createSchedule(payload);
+      } else {
+        if (!selectedScheduleId.value) {
+          return;
+        }
+        await scheduleStore.updateScheduleById(selectedScheduleId.value, payload);
+      }
+
+      uiStore.closeScheduleModal();
+    } catch (error) {
+      toast.error(`일정 저장 실패: ${JSON.stringify(error)}`);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (scheduleModalMode.value !== 'edit' || !selectedScheduleId.value) {
+      return;
+    }
+
+    try {
+      const isSuccess = await scheduleStore.removeScheduleById(selectedScheduleId.value);
+      if (isSuccess) {
+        uiStore.closeScheduleModal();
+      }
+    } catch (error) {
+      toast.error(`일정 삭제 실패: ${JSON.stringify(error)}`);
+    }
+  };
+
+  const onAllDayChange = (value: unknown) => {
+    form.isAllDay = Boolean(value);
+  };
+
+  const priorityOptions = [
+    {
+      value: 'low' as const,
+      label: '낮음',
+      active: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-700',
+      iconClass: 'text-emerald-600',
+    },
+    {
+      value: 'medium' as const,
+      label: '보통',
+      active: 'border-amber-500/40 bg-amber-500/10 text-amber-700',
+      iconClass: 'text-amber-600',
+    },
+    {
+      value: 'high' as const,
+      label: '높음',
+      active: 'border-rose-500/40 bg-rose-500/10 text-rose-700',
+      iconClass: 'text-rose-600',
+    },
+  ];
+</script>
+
+<template>
+  <Dialog
+    :open="isScheduleModalOpen"
+    @update:open="
+      (val) => {
+        if (!val) uiStore.closeScheduleModal();
+      }
+    "
+  >
+    <DialogContent
+      class="border-croffle-border bg-background gap-0 overflow-hidden p-0 shadow-2xl sm:max-w-lg"
+    >
+      <DialogHeader class="space-y-3 border-b px-6 pt-6 pb-5 text-left">
+        <div class="flex items-start gap-3 pr-6">
+          <div
+            class="bg-croffle-primary/10 text-croffle-primary flex size-10 shrink-0 items-center justify-center rounded-xl"
+          >
+            <Icon
+              :icon="
+                scheduleModalMode === 'edit' ? 'lucide:calendar-check-2' : 'lucide:calendar-plus'
+              "
+              class="size-5"
+            />
+          </div>
+          <div class="min-w-0 space-y-1">
+            <DialogTitle class="text-foreground text-lg font-semibold tracking-tight">
+              {{ scheduleModalMode === 'edit' ? '일정 수정' : '새 일정' }}
+            </DialogTitle>
+            <DialogDescription class="text-muted-foreground text-sm">
+              {{
+                scheduleModalMode === 'edit'
+                  ? '선택한 일정의 내용을 변경합니다.'
+                  : '제목과 날짜만 있어도 바로 추가할 수 있어요.'
+              }}
+            </DialogDescription>
+          </div>
+        </div>
+      </DialogHeader>
+
+      <div class="max-h-[min(62vh,560px)] overflow-y-auto px-6 py-5">
+        <form class="contents" @submit.prevent="handleSave">
+          <FieldGroup class="gap-6">
+            <FieldSet class="gap-4">
+              <FieldLegend
+                variant="label"
+                class="text-muted-foreground mb-0 text-xs tracking-wide uppercase"
+              >
+                기본 정보
+              </FieldLegend>
+
+              <Field>
+                <FieldLabel for="schedule-title">
+                  제목 <span class="text-destructive">*</span>
+                </FieldLabel>
+                <Input
+                  id="schedule-title"
+                  v-model="form.title"
+                  placeholder="무엇을 할까요?"
+                  class="border-croffle-border focus-visible:ring-croffle-primary/30 h-10"
+                />
+              </Field>
+
+              <Field>
+                <FieldLabel for="schedule-description">설명</FieldLabel>
+                <Textarea
+                  id="schedule-description"
+                  v-model="form.description"
+                  placeholder="메모나 세부 내용을 남겨두세요"
+                  rows="3"
+                  class="border-croffle-border focus-visible:ring-croffle-primary/30 min-h-20 resize-none"
+                />
+              </Field>
+
+              <Field>
+                <FieldLabel for="schedule-location">장소</FieldLabel>
+                <div class="relative">
+                  <Icon
+                    icon="lucide:map-pin"
+                    class="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2"
+                  />
+                  <Input
+                    id="schedule-location"
+                    v-model="form.location"
+                    placeholder="장소 (선택)"
+                    class="border-croffle-border focus-visible:ring-croffle-primary/30 h-10 pl-9"
+                  />
+                </div>
+              </Field>
+            </FieldSet>
+
+            <FieldSeparator />
+
+            <FieldSet class="gap-4">
+              <FieldLegend
+                variant="label"
+                class="text-muted-foreground mb-0 text-xs tracking-wide uppercase"
+              >
+                날짜와 시간
+              </FieldLegend>
+
+              <Field
+                orientation="horizontal"
+                class="border-croffle-border bg-muted/30 items-center justify-between rounded-xl border px-3.5 py-3"
+              >
+                <div class="space-y-0.5">
+                  <FieldLabel for="schedule-all-day" class="text-sm font-medium">
+                    {{ '하루 종일' }}
+                  </FieldLabel>
+                  <FieldDescription class="text-xs">
+                    {{ '끄면 시작·종료 시간을 설정할 수 있어요' }}
+                  </FieldDescription>
+                </div>
+                <Switch
+                  id="schedule-all-day"
+                  :checked="form.isAllDay"
+                  @update:checked="onAllDayChange"
+                  @update:model-value="onAllDayChange"
+                />
+              </Field>
+
+              <div class="grid grid-cols-2 gap-3">
+                <Field>
+                  <FieldLabel class="text-muted-foreground text-xs">시작일</FieldLabel>
+                  <Popover v-model:open="isStartCalendarOpen">
+                    <PopoverTrigger as-child>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        :class="
+                          cn(
+                            'border-croffle-border hover:bg-muted/50 h-10 w-full justify-between px-3 font-normal',
+                            !startDate && 'text-muted-foreground',
+                          )
+                        "
+                      >
+                        <span class="flex min-w-0 items-center gap-2">
+                          <Icon
+                            icon="lucide:calendar"
+                            class="text-muted-foreground size-4 shrink-0"
+                          />
+                          <span class="truncate">{{ formatCalendarDate(startDate) }}</span>
+                        </span>
+                        <Icon
+                          icon="lucide:chevron-down"
+                          class="text-muted-foreground size-3.5 opacity-60"
+                        />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent class="border-croffle-border z-50 w-auto p-0">
+                      <Calendar
+                        v-model="startDate"
+                        mode="single"
+                        class="rounded-md border-0"
+                        @update:model-value="isStartCalendarOpen = false"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </Field>
+
+                <Field>
+                  <FieldLabel class="text-muted-foreground text-xs">종료일</FieldLabel>
+                  <Popover v-model:open="isEndCalendarOpen">
+                    <PopoverTrigger as-child>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        :class="
+                          cn(
+                            'border-croffle-border hover:bg-muted/50 h-10 w-full justify-between px-3 font-normal',
+                            !endDate && 'text-muted-foreground',
+                          )
+                        "
+                      >
+                        <span class="flex min-w-0 items-center gap-2">
+                          <Icon
+                            icon="lucide:calendar"
+                            class="text-muted-foreground size-4 shrink-0"
+                          />
+                          <span class="truncate">{{ formatCalendarDate(endDate) }}</span>
+                        </span>
+                        <Icon
+                          icon="lucide:chevron-down"
+                          class="text-muted-foreground size-3.5 opacity-60"
+                        />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent class="border-croffle-border z-50 w-auto p-0">
+                      <Calendar
+                        v-model="endDate"
+                        mode="single"
+                        class="rounded-md border-0"
+                        @update:model-value="isEndCalendarOpen = false"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </Field>
+              </div>
+
+              <div
+                v-if="!form.isAllDay"
+                class="grid grid-cols-2 gap-3 duration-200 animate-in fade-in-0 slide-in-from-top-1"
+              >
+                <Field>
+                  <FieldLabel for="schedule-start-time" class="text-muted-foreground text-xs">
+                    시작 시간
+                  </FieldLabel>
+                  <TimeField id="schedule-start-time" v-model="startTime" />
+                </Field>
+                <Field>
+                  <FieldLabel for="schedule-end-time" class="text-muted-foreground text-xs">
+                    종료 시간
+                  </FieldLabel>
+                  <TimeField id="schedule-end-time" v-model="endTime" />
+                </Field>
+              </div>
+            </FieldSet>
+
+            <FieldSeparator />
+
+            <FieldSet class="gap-4">
+              <FieldLegend
+                variant="label"
+                class="text-muted-foreground mb-0 text-xs tracking-wide uppercase"
+              >
+                옵션
+              </FieldLegend>
+
+              <Field>
+                <FieldLabel>우선순위</FieldLabel>
+                <div
+                  class="border-croffle-border bg-muted/20 grid grid-cols-3 gap-1 rounded-xl border p-1"
+                  role="radiogroup"
+                  aria-label="우선순위"
+                >
+                  <button
+                    v-for="option in priorityOptions"
+                    :key="option.value"
+                    type="button"
+                    role="radio"
+                    :aria-checked="form.priority === option.value"
+                    class="flex cursor-pointer flex-col items-center gap-1.5 rounded-lg px-2 py-2.5 text-xs font-medium transition-all"
+                    :class="
+                      form.priority === option.value
+                        ? cn('bg-background shadow-sm ring-1 ring-black/5', option.active)
+                        : 'text-muted-foreground hover:bg-background/70 hover:text-foreground'
+                    "
+                    @click="form.priority = option.value"
+                  >
+                    {{ option.label }}
+                  </button>
+                </div>
+              </Field>
+
+              <Field>
+                <FieldLabel>색상</FieldLabel>
+                <div class="flex flex-wrap items-center gap-2">
+                  <button
+                    v-for="color in COLOR_PRESETS"
+                    :key="color"
+                    type="button"
+                    class="size-8 cursor-pointer rounded-full border-2 transition-transform hover:scale-105"
+                    :class="
+                      form.colorLabel.toLowerCase() === color.toLowerCase()
+                        ? 'border-foreground scale-105'
+                        : 'border-transparent'
+                    "
+                    :style="{ backgroundColor: color }"
+                    :aria-label="`색상 ${color}`"
+                    @click="form.colorLabel = color"
+                  />
+                  <label
+                    class="border-croffle-border hover:bg-muted/50 relative flex size-8 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-dashed"
+                    title="직접 선택"
+                  >
+                    <Icon icon="lucide:palette" class="text-muted-foreground size-3.5" />
+                    <input
+                      v-model="form.colorLabel"
+                      type="color"
+                      class="absolute inset-0 cursor-pointer opacity-0"
+                      aria-label="사용자 지정 색상"
+                    />
+                  </label>
+                </div>
+              </Field>
+
+              <Field>
+                <FieldLabel for="schedule-recurrence">반복</FieldLabel>
+                <div class="relative">
+                  <Icon
+                    icon="lucide:repeat"
+                    class="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2"
+                  />
+                  <Input
+                    id="schedule-recurrence"
+                    v-model="form.recurrenceRule"
+                    placeholder="예: FREQ=WEEKLY;BYDAY=FR"
+                    class="border-croffle-border focus-visible:ring-croffle-primary/30 h-10 pl-9"
+                  />
+                </div>
+                <FieldDescription>비워두면 한 번만 표시됩니다.</FieldDescription>
+              </Field>
+            </FieldSet>
+          </FieldGroup>
+        </form>
+      </div>
+
+      <DialogFooter
+        class="border-croffle-border bg-muted/20 flex-row items-center gap-2 border-t px-6 py-4 sm:justify-between"
+      >
+        <div class="min-w-0">
+          <Button
+            v-if="scheduleModalMode === 'edit'"
+            type="button"
+            variant="ghost"
+            class="text-destructive hover:bg-destructive/10 hover:text-destructive h-9 px-3"
+            @click="handleDelete"
+          >
+            <Icon icon="lucide:trash-2" class="mr-1.5 size-4" />
+            삭제
+          </Button>
+        </div>
+
+        <div class="flex shrink-0 gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            class="border-croffle-border h-9"
+            @click="uiStore.closeScheduleModal()"
+          >
+            취소
+          </Button>
+          <Button
+            type="button"
+            :disabled="!form.title.trim() || !startDate || !endDate"
+            class="bg-croffle-primary hover:bg-croffle-hover h-9 text-white"
+            @click="handleSave"
+          >
+            <Icon
+              :icon="scheduleModalMode === 'edit' ? 'lucide:check' : 'lucide:plus'"
+              class="mr-1.5 size-4"
+            />
+            {{ scheduleModalMode === 'edit' ? '저장' : '추가' }}
+          </Button>
+        </div>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
+</template>

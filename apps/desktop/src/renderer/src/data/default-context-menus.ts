@@ -26,7 +26,7 @@ export const defaultMenus: FeatureContextMenu[] = [
       const uiStore = useUiStore();
       const date = getClickedDateFromTarget(targetElement);
       uiStore.selectedDate = date ?? null;
-      uiStore.openTodoSheet('add');
+      uiStore.openScheduleModal('add');
     },
     condition: isDateElement,
     targetView: ['calendar'],
@@ -58,7 +58,7 @@ export const defaultMenus: FeatureContextMenu[] = [
       if (!eventId || eventId === 'undefined') {
         return;
       }
-      useUiStore().openTodoSheet('edit', eventId);
+      useUiStore().openScheduleModal('edit', eventId);
     },
     condition: (target) => !!target?.closest('.fc-event'),
     targetView: ['calendar'],

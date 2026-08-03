@@ -6,8 +6,8 @@ export const useUiStore = defineStore('ui', () => {
   const leftSidebarOpen = ref(true);
   const rightSidebarOpen = ref(false);
   const selectedDate = ref<string | null>(null);
-  const isTodoSheetOpen = ref(false);
-  const todoSheetMode = ref<'add' | 'edit'>('add');
+  const isScheduleModalOpen = ref(false);
+  const scheduleModalMode = ref<'add' | 'edit'>('add');
   const selectedScheduleId = ref<string | null>(null);
 
   // 사이드바 토글 액션
@@ -24,18 +24,18 @@ export const useUiStore = defineStore('ui', () => {
     rightSidebarOpen.value = true;
   };
 
-  const openTodoSheet = (mode: 'add' | 'edit' = 'add', scheduleId?: string) => {
+  const openScheduleModal = (mode: 'add' | 'edit' = 'add', scheduleId?: string) => {
     if (mode === 'edit' && !scheduleId) {
       return;
     }
-    todoSheetMode.value = mode;
+    scheduleModalMode.value = mode;
     selectedScheduleId.value = scheduleId ?? null;
-    isTodoSheetOpen.value = true;
+    isScheduleModalOpen.value = true;
   };
 
-  const closeTodoSheet = () => {
-    isTodoSheetOpen.value = false;
-    todoSheetMode.value = 'add';
+  const closeScheduleModal = () => {
+    isScheduleModalOpen.value = false;
+    scheduleModalMode.value = 'add';
     selectedScheduleId.value = null;
   };
 
@@ -43,13 +43,13 @@ export const useUiStore = defineStore('ui', () => {
     leftSidebarOpen,
     rightSidebarOpen,
     selectedDate,
-    isTodoSheetOpen,
+    isScheduleModalOpen,
     toggleLeftSidebar,
     toggleRightSidebar,
     openRightSidebarWithDate,
-    openTodoSheet,
-    closeTodoSheet,
-    todoSheetMode,
+    openScheduleModal,
+    closeScheduleModal,
+    scheduleModalMode,
     selectedScheduleId,
   };
 });
