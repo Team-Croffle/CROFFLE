@@ -1,5 +1,11 @@
 # @croffledev/croffle-types
 
+## 1.4.0
+
+### Minor Changes
+
+- 9e6331c: Add priority column in schedule
+
 ## 1.3.0
 
 ### Minor Changes
