@@ -14,6 +14,9 @@ export const schedules = sqliteTable('schedule', {
   isAllDay: integer('isAllDay', { mode: 'boolean' }).notNull().default(false),
   recurrenceRule: text('recurringRule'),
   colorLabel: text('colorLabel').notNull().default('#E1E1E1'),
+  priority: text('priority', { enum: ['low', 'medium', 'high'] })
+    .notNull()
+    .default('medium'),
   createdAt: integer('createdAt', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull(),
 });

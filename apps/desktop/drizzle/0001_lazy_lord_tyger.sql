@@ -1,0 +1,1 @@
+ALTER TABLE `schedule` ADD `priority` text DEFAULT 'medium' NOT NULL;

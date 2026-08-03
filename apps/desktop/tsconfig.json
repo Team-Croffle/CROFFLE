@@ -3,7 +3,9 @@
   "references": [{ "path": "./tsconfig.node.json" }, { "path": "./tsconfig.web.json" }],
   "compilerOptions": {
     "paths": {
-      "@/*": ["./src/renderer/src/*"]
+      "@/*": ["./src/renderer/src/*"],
+      "@croffledev/common": ["./src/common/index.ts"],
+      "@croffledev/common/*": ["./src/common/*"]
     }
   }
 }

@@ -11,6 +11,7 @@ export type Schedule = {
   isAllDay: boolean;
   recurrenceRule?: string;
   colorLabel: string;
+  priority: 'low' | 'medium' | 'high';
   tags: Tag[];
   createdAt: Date;
   updatedAt: Date;
