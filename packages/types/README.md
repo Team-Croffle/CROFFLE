@@ -1,7 +1,7 @@
 # @croffledev/croffle-types
 
 <div align="center">
-<img src="./.github/content/Logo2Only.png" width="120" />
+<img src="../../.github/contents/icon.png" width="120" />
 
 # Croffle Types
 
