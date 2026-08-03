@@ -12,6 +12,8 @@ export type Schedule = {
   recurrenceRule?: string;
   colorLabel: string;
   priority: 'low' | 'medium' | 'high';
+  /** null/undefined = use app-wide notifications.defaultReminderMinutes */
+  reminderMinutes?: number | null;
   tags: Tag[];
   createdAt: Date;
   updatedAt: Date;

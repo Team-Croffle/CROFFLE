@@ -14,6 +14,7 @@ export type ScheduleEntityInput = {
   recurrenceRule?: string | null;
   colorLabel?: string;
   priority?: 'low' | 'medium' | 'high';
+  reminderMinutes?: number | null;
   createdAt?: Date;
   updatedAt?: Date;
   tags?: TagRow[];
@@ -52,6 +53,7 @@ export const scheduleMapper = {
       recurrenceRule: entity.recurrenceRule ?? undefined,
       colorLabel: entity.colorLabel,
       priority: entity.priority,
+      reminderMinutes: entity.reminderMinutes ?? null,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
       tags: entity.tags.map(toTagDto),
@@ -90,6 +92,9 @@ export const scheduleMapper = {
     }
     if (data.priority !== undefined) {
       entity.priority = data.priority;
+    }
+    if (data.reminderMinutes !== undefined) {
+      entity.reminderMinutes = data.reminderMinutes;
     }
     if (data.createdAt !== undefined) {
       entity.createdAt = toDate(data.createdAt);

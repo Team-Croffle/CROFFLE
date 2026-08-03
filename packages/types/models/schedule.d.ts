@@ -12,6 +12,8 @@ export type Schedule = {
   colorLabel: string;
   tags: Tag[];
   priority: 'low' | 'medium' | 'high';
+  /** null/undefined = use app-wide notifications.defaultReminderMinutes */
+  reminderMinutes?: number | null;
   createdAt: Date;
   updatedAt: Date;
 };

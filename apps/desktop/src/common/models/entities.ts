@@ -20,6 +20,8 @@ export type ScheduleEntity = {
   recurrenceRule: string | null;
   colorLabel: string;
   priority: 'low' | 'medium' | 'high';
+  /** null = use app-wide notifications.defaultReminderMinutes */
+  reminderMinutes: number | null;
   createdAt: Date;
   updatedAt: Date;
 };

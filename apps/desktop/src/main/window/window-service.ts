@@ -7,7 +7,7 @@ import { app, Menu, Tray, shell } from 'electron';
 import type { UpdateInfo } from 'electron-updater';
 import { autoUpdater } from 'electron-updater';
 
-import icon from '../../../resources/Logo2OnlyNoBorderIcon.png?asset';
+import icon from '../../../resources/logo-no-border.png?asset';
 import { eventService } from '../event-bus/event-service';
 import { logger } from '../logger';
 import { settingService } from '../setting/setting-service';

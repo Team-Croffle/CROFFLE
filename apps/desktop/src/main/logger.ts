@@ -1,3 +1,5 @@
+import path from 'node:path';
+
 import { app } from 'electron';
 import log from 'electron-log/main';
 import { autoUpdater } from 'electron-updater';
@@ -12,6 +14,11 @@ export class LoggerService {
     log.transports.console.level = isProd ? 'info' : 'debug';
     log.transports.file.level = isProd ? 'info' : 'debug';
     log.transports.file.format = '[{d}/{m}/{y} {h}:{i}:{s}] {level} | {text}';
+
+    if (!isProd) {
+      // electron-vite dev: cwd = apps/desktop → apps/desktop/dev/logs/main.log
+      log.transports.file.resolvePathFn = () => path.join(process.cwd(), 'dev', 'logs', 'main.log');
+    }
 
     // Auto Updater의 로깅을 이 loggerService로 설정합니다.
     autoUpdater.logger = log;

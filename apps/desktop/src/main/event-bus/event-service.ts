@@ -31,6 +31,11 @@ class EventService extends EventEmitter {
     super.on(eventName, listener);
     return this;
   }
+
+  public off(eventName: string, listener: (...args: unknown[]) => void): this {
+    super.off(eventName, listener);
+    return this;
+  }
 }
 
 export const eventService = new EventService();

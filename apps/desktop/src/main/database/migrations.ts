@@ -113,6 +113,12 @@ function baselineExistingDatabase(sqlite: Database.Database, migrationsFolder: s
     insert.run(migrationHash(migrationsFolder, second.tag), second.when);
     logger.info('DB', `Baselined migration ${second.tag} (priority already present).`);
   }
+
+  const third = journal.entries[2];
+  if (third && columnExists(sqlite, 'schedule', 'reminderMinutes')) {
+    insert.run(migrationHash(migrationsFolder, third.tag), third.when);
+    logger.info('DB', `Baselined migration ${third.tag} (reminderMinutes already present).`);
+  }
 }
 
 export function runMigrations(

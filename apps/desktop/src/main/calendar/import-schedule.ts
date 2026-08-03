@@ -8,6 +8,7 @@ import { schedules } from '../database/schema';
 import { scheduleMapper } from '../mapper/schedule-mapper';
 import { openJsonFileDialog } from '../window/json-file-dialog';
 import type { ExportShapeV1 } from './export.type';
+import { reminderScheduler } from './reminder-scheduler';
 import { createSchedule, updateSchedule } from './schedule-service';
 
 export async function importScheduleFromFile(
@@ -60,5 +61,6 @@ export async function importScheduleFromFile(
     created += 1;
   }
 
+  void reminderScheduler.rebuild();
   return { created, updated };
 }
