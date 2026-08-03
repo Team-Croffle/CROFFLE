@@ -1,13 +1,13 @@
 <script setup lang="ts">
   import dayjs from 'dayjs';
   import isBetween from 'dayjs/plugin/isBetween';
-  import { Calendar, Clock, CheckSquare, Plus, Home, PanelRight } from 'lucide-vue-next';
   import { storeToRefs } from 'pinia';
   import { computed } from 'vue';
 
   import { Badge } from '@/components/ui/badge';
   import { Button } from '@/components/ui/button';
   import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+  import { Icon } from '@/components/ui/icon';
   import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from '@/components/ui/sidebar';
   import { cn } from '@/lib/utils';
   import { useScheduleStore } from '@/stores/schedule-store';
@@ -108,7 +108,7 @@
           class="text-muted-foreground h-7 w-7"
           @click="uiStore.toggleRightSidebar"
         >
-          <PanelRight class="h-4 w-4" />
+          <Icon icon="lucide:panel-right" class="h-4 w-4" />
         </Button>
       </div>
 
@@ -121,7 +121,11 @@
           class="bg-croffle-primary hover:bg-croffle-hover h-11 w-full rounded-lg border-none font-medium text-white shadow-sm transition-all duration-300 group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:rounded-full group-data-[collapsible=icon]:p-0"
           @click="uiStore.openScheduleModal('add')"
         >
-          <Plus class="h-5 w-5 transition-all" :class="rightSidebarOpen ? 'mr-1' : ''" />
+          <Icon
+            icon="lucide:plus"
+            class="h-5 w-5 transition-all"
+            :class="rightSidebarOpen ? 'mr-1' : ''"
+          />
           <span class="group-data-[collapsible=icon]:hidden">새 일정 추가</span>
         </Button>
       </div>
@@ -133,7 +137,7 @@
         >
           <CardHeader class="space-y-0 px-4 pt-0 pb-2">
             <CardTitle class="text-croffle-text-dark flex items-center gap-2 text-sm font-bold">
-              <Calendar class="h-4 w-4" />
+              <Icon icon="lucide:calendar" class="h-4 w-4" />
               <span>오늘의 일정</span>
               <Badge
                 class="bg-croffle-sidebar text-croffle-text-dark ml-auto h-5 rounded-md px-1.5"
@@ -154,7 +158,7 @@
                 class="flex cursor-pointer items-center gap-2 rounded-md p-2 transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800"
                 @click="handleEditTodo(schedule.id)"
               >
-                <CheckSquare class="text-muted-foreground h-4 w-4 shrink-0" />
+                <Icon icon="lucide:square-check" class="text-muted-foreground h-4 w-4 shrink-0" />
 
                 <span class="text-foreground flex-1 truncate text-sm">
                   {{ schedule.title }}
@@ -181,7 +185,7 @@
         >
           <CardHeader class="space-y-0 px-4 pt-0 pb-2">
             <CardTitle class="text-croffle-text-dark flex items-center gap-2 text-sm font-bold">
-              <Clock class="h-4 w-4" />
+              <Icon icon="lucide:clock" class="h-4 w-4" />
               <span>다가오는 일정</span>
             </CardTitle>
           </CardHeader>
@@ -196,7 +200,8 @@
       <div
         class="border-croffle-border bg-croffle-sidebar-content-disabled mb-4 flex w-full flex-col items-center justify-center rounded-xl border p-4 shadow-sm group-data-[collapsible=icon]:border-none group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:shadow-none"
       >
-        <Home
+        <Icon
+          icon="lucide:home"
           class="text-croffle-primary mb-1 h-6 w-6 group-data-[collapsible=icon]:h-5 group-data-[collapsible=icon]:w-5"
         />
         <div class="text-center group-data-[collapsible=icon]:hidden">

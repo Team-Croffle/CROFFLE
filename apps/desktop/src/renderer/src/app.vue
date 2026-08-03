@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import { AppEventType } from '@croffledev/common';
   import type { ConfigurationSectionContribution, ExtensionInfo } from '@croffledev/common';
-  import { Minus, Moon, PanelLeft, Square, Sun, X } from 'lucide-vue-next';
   import { ref, onMounted, onUnmounted } from 'vue';
 
   import {
@@ -10,6 +9,7 @@
     ContextMenuContent,
     ContextMenuItem,
   } from '@/components/ui/context-menu';
+  import { Icon } from '@/components/ui/icon';
   import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
   import { Toaster } from '@/components/ui/sonner';
 
@@ -267,7 +267,7 @@
             class="no-drag h-7 w-7 text-neutral-500"
             @click="uiStore.toggleLeftSidebar()"
           >
-            <PanelLeft class="h-4 w-4" />
+            <Icon icon="lucide:panel-left" class="h-4 w-4" />
           </Button>
 
           <div class="absolute right-0 h-4 w-px bg-neutral-300"></div>
@@ -282,8 +282,8 @@
           aria-label="Minimize window"
           @click="themeStore.changeTheme"
         >
-          <Sun v-if="themeStore.isDark" class="h-4 w-4" />
-          <Moon v-else class="h-4 w-4" />
+          <Icon v-if="themeStore.isDark" icon="lucide:sun" class="h-4 w-4" />
+          <Icon v-else icon="lucide:moon" class="h-4 w-4" />
         </button>
         <Separator orientation="vertical" class="mr-6 ml-4 bg-neutral-300 dark:bg-neutral-700" />
         <button
@@ -291,7 +291,7 @@
           aria-label="Minimize window"
           @click="minimizeWindow"
         >
-          <Minus class="h-4 w-4" />
+          <Icon icon="lucide:minus" class="h-4 w-4" />
         </button>
 
         <button
@@ -299,7 +299,7 @@
           aria-label="Maximize window"
           @click="maximizeWindow"
         >
-          <Square class="h-3 w-3" />
+          <Icon icon="lucide:square" class="h-3 w-3" />
         </button>
 
         <button
@@ -307,7 +307,7 @@
           aria-label="Close window"
           @click="closeWindow"
         >
-          <X class="h-4 w-4" />
+          <Icon icon="lucide:x" class="h-4 w-4" />
         </button>
       </div>
     </div>
