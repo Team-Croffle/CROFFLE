@@ -11,6 +11,7 @@ export type Schedule = {
   recurrenceRule?: string;
   colorLabel: string;
   tags: Tag[];
+  priority: 'low' | 'medium' | 'high';
   createdAt: Date;
   updatedAt: Date;
 };

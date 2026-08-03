@@ -19,6 +19,7 @@ export type ScheduleEntity = {
   isAllDay: boolean;
   recurrenceRule: string | null;
   colorLabel: string;
+  priority: 'low' | 'medium' | 'high';
   createdAt: Date;
   updatedAt: Date;
 };

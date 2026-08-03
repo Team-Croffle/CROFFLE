@@ -50,6 +50,7 @@ export const scheduleMapper = {
       isAllDay: entity.isAllDay,
       recurrenceRule: entity.recurrenceRule ?? undefined,
       colorLabel: entity.colorLabel,
+      priority: entity.priority,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
       tags: entity.tags.map(toTagDto),
