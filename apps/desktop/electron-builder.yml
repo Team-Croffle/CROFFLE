@@ -51,6 +51,8 @@ mac:
 dmg:
   artifactName: ${productName}-${version}-${arch}.${ext}
 linux:
+  executableName: croffle
+  syncDesktopName: true
   target:
     - target: AppImage
       arch:
