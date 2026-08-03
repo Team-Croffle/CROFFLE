@@ -5,7 +5,7 @@
   import { ref, computed } from 'vue';
   import { useRoute } from 'vue-router';
 
-  import logoImg from '@/assets/Logo2Only.png';
+  import logoImg from '@/assets/logo-only.png';
   import {
     Sidebar,
     SidebarContent,
