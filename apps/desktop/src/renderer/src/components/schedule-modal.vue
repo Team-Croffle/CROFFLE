@@ -91,9 +91,7 @@
   const formatTimeFromDate = (value: string | Date) => {
     const date = value instanceof Date ? value : new Date(value);
     const hours = String(date.getHours()).padStart(2, '0');
-    const rawMinutes = date.getMinutes();
-    const snapped = Math.round(rawMinutes / 5) * 5;
-    const minutes = String(snapped === 60 ? 55 : snapped).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
     return `${hours}:${minutes}`;
   };
 

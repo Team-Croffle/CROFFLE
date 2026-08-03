@@ -24,15 +24,6 @@
   const HOUR_OPTIONS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
   const MINUTE_OPTIONS = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
 
-  const snapMinute = (minute: string) => {
-    const value = Number(minute);
-    if (Number.isNaN(value)) {
-      return '00';
-    }
-    const snapped = Math.round(value / 5) * 5;
-    return String(snapped === 60 ? 55 : snapped).padStart(2, '0');
-  };
-
   const hour = computed({
     get: () => {
       const [h = '09'] = model.value.split(':');
@@ -46,10 +37,11 @@
   const minute = computed({
     get: () => {
       const [, m = '00'] = model.value.split(':');
-      return snapMinute(m);
+      return MINUTE_OPTIONS.includes(m) ? m : '00';
     },
     set: (nextMinute: string) => {
-      model.value = `${hour.value}:${snapMinute(nextMinute)}`;
+      const normalized = MINUTE_OPTIONS.includes(nextMinute) ? nextMinute : '00';
+      model.value = `${hour.value}:${normalized}`;
     },
   });
 
