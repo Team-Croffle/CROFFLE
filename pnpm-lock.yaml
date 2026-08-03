@@ -74,6 +74,9 @@ importers:
       '@fullcalendar/multimonth':
         specifier: ^6.1.21
         version: 6.1.21(@fullcalendar/core@6.1.21)
+      '@fullcalendar/rrule':
+        specifier: ^6.1.21
+        version: 6.1.21(@fullcalendar/core@6.1.21)(rrule@2.8.1)
       '@fullcalendar/scrollgrid':
         specifier: ^6.1.21
         version: 6.1.21(@fullcalendar/core@6.1.21)
@@ -131,6 +134,9 @@ importers:
       reka-ui:
         specifier: ^2.10.1
         version: 2.10.1(vue@3.5.40(typescript@6.0.3))
+      rrule:
+        specifier: ^2.8.1
+        version: 2.8.1
       tailwind-merge:
         specifier: ^3.6.0
         version: 3.6.0
@@ -1189,6 +1195,12 @@ packages:
     resolution: {integrity: sha512-c1d5e1xyteQiU1aY6QQr5TDOV0qGnHvZy8OQzVbVDjGJEECu9wAZ2Z5GCrMymFgUa5qpL2SXrw7iBkoCeoBs0w==}
     peerDependencies:
       '@fullcalendar/core': ~6.1.21
+
+  '@fullcalendar/rrule@6.1.21':
+    resolution: {integrity: sha512-WPA/2bx6OrVLrD2kz2Go7JGCgTs9PjLuHC+sqvPp+ihZ8cPP1oQdnck6XUbAROFW+FAaI/+LUTmLB4EZFLxLJw==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.21
+      rrule: ^2.6.0
 
   '@fullcalendar/scrollgrid@6.1.21':
     resolution: {integrity: sha512-SmZUixhrJlj0yWagZAbyp+2wQanx3KlbNEqbcN2ym+k2gCimAWmeRTmM3iRfBiSyGYMJ8nAQAbdyXXPODaE9DA==}
@@ -4074,6 +4086,9 @@ packages:
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
+  rrule@2.8.1:
+    resolution: {integrity: sha512-hM3dHSBMeaJ0Ktp7W38BJZ7O1zOgaFEsn41PDk+yHoEtfLV+PoJt9E9xAlZiWgf/iqEqionN0ebHFZIDAp+iGw==}
+
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
 
@@ -5427,6 +5442,11 @@ snapshots:
   '@fullcalendar/premium-common@6.1.21(@fullcalendar/core@6.1.21)':
     dependencies:
       '@fullcalendar/core': 6.1.21
+
+  '@fullcalendar/rrule@6.1.21(@fullcalendar/core@6.1.21)(rrule@2.8.1)':
+    dependencies:
+      '@fullcalendar/core': 6.1.21
+      rrule: 2.8.1
 
   '@fullcalendar/scrollgrid@6.1.21(@fullcalendar/core@6.1.21)':
     dependencies:
@@ -8100,6 +8120,10 @@ snapshots:
       '@rollup/rollup-win32-x64-gnu': 4.62.2
       '@rollup/rollup-win32-x64-msvc': 4.62.2
       fsevents: 2.3.3
+
+  rrule@2.8.1:
+    dependencies:
+      tslib: 2.8.1
 
   run-parallel@1.2.0:
     dependencies:
