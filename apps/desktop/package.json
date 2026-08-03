@@ -60,6 +60,8 @@
   "devDependencies": {
     "@croffledev/croffle-types": "workspace:*",
     "@electron-toolkit/tsconfig": "^2.0.0",
+    "@iconify-json/lucide": "^1.2.121",
+    "@iconify/vue": "^5.0.1",
     "@tailwindcss/vite": "^4.3.3",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^26.1.2",
