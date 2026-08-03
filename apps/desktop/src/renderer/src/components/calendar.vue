@@ -66,6 +66,16 @@
     });
   }
 
+  function moveWeekNumberToLastDay(weekNumberEl: HTMLElement) {
+    // FullCalendar always mounts week numbers in the first day cell of the row.
+    // Move the badge to the last day cell so left-aligned dates stay clear.
+    const row = weekNumberEl.closest('tr');
+    const lastDayFrame = row?.querySelector('td.fc-daygrid-day:last-of-type .fc-daygrid-day-frame');
+    if (lastDayFrame && weekNumberEl.parentElement !== lastDayFrame) {
+      lastDayFrame.appendChild(weekNumberEl);
+    }
+  }
+
   const buildCalendarOptions = (): CalendarOptions => {
     const cal = settings.value?.calendar;
     const lang = settings.value?.general.language;
@@ -127,6 +137,9 @@
         }
         info.el.removeAttribute('data-event-id');
       },
+      weekNumberDidMount: (info) => {
+        moveWeekNumberToLastDay(info.el);
+      },
 
       datesSet: (info) => {
         // 월이 변경될 때마다 호출됨
@@ -140,6 +153,8 @@
       locale: lang ? languageToLocale(lang) : 'ko',
       firstDay: cal ? weekStartDayToFirstDay(cal.weekStartDay) : 0,
       weekNumbers: cal?.showWeekNumbers ?? false,
+      weekNumberFormat: { week: 'narrow' },
+      weekNumberCalculation: 'ISO',
       eventTimeFormat: {
         hour: 'numeric',
         minute: '2-digit',
@@ -422,5 +437,33 @@
   :deep(.fc-daygrid-day.is-context-menu-target) {
     background-color: var(--croffle-day-select-bg);
     border-radius: var(--radius-2xl);
+  }
+
+  /*
+   * Week numbers are NOT a separate column in dayGrid — FullCalendar injects
+   * .fc-daygrid-week-number as position:absolute inside the first day cell.
+   * We relocate it to the last day cell (weekNumberDidMount) and pin it top-right
+   * so left-aligned day numbers are never covered.
+   */
+  :deep(.fc .fc-daygrid-week-number) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: auto;
+    z-index: 5;
+    width: auto;
+    min-width: 1.25rem;
+    padding: 2px 5px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--muted-foreground);
+    background-color: color-mix(in oklab, var(--muted) 55%, transparent);
+    text-decoration: none;
+    border-radius: 0 0 0 var(--radius-sm);
+  }
+
+  :deep(.fc-daygrid-day-frame:has(.fc-daygrid-week-number) .fc-daygrid-day-number) {
+    padding-right: 1.75rem;
   }
 </style>
