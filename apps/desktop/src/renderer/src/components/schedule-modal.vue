@@ -1,8 +1,20 @@
 <script setup lang="ts">
-  import type { Schedule } from '@croffledev/common';
+  import {
+    type Schedule,
+    RECURRENCE_PRESET_OPTIONS,
+    WEEKDAY_OPTIONS,
+    buildRRule,
+    createDefaultRecurrenceFormState,
+    parseRRule,
+    weekdayCodeFromDate,
+    type RecurrenceEndMode,
+    type RecurrenceFormState,
+    type RecurrencePreset,
+    type WeekdayCode,
+  } from '@croffledev/common';
   import { CalendarDate, getLocalTimeZone } from '@internationalized/date';
   import { storeToRefs } from 'pinia';
-  import { reactive, ref, shallowRef, toRaw, watch } from 'vue';
+  import { computed, reactive, ref, shallowRef, toRaw, watch } from 'vue';
   import { toast } from 'vue-sonner';
 
   import { Button } from '@/components/ui/button';
@@ -27,6 +39,13 @@
   import { Icon } from '@/components/ui/icon';
   import { Input } from '@/components/ui/input';
   import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+  import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from '@/components/ui/select';
   import { Switch } from '@/components/ui/switch';
   import { Textarea } from '@/components/ui/textarea';
   import { cn } from '@/lib/utils';
@@ -91,9 +110,25 @@
     location: '',
     priority: 'medium' as 'low' | 'medium' | 'high',
     isAllDay: false,
-    recurrenceRule: '',
     colorLabel: '#DCA780',
   });
+
+  const recurrence = reactive<RecurrenceFormState>(createDefaultRecurrenceFormState());
+  const isUntilCalendarOpen = ref(false);
+  const untilDate = shallowRef<CalendarDate | undefined>(undefined);
+
+  const showInterval = computed(
+    () => recurrence.preset === 'every-n-days' || recurrence.preset === 'every-n-weeks',
+  );
+  const showWeekdays = computed(
+    () =>
+      recurrence.preset === 'weekly' ||
+      recurrence.preset === 'every-n-weeks' ||
+      recurrence.preset === 'weekdays',
+  );
+  const weekdaysEditable = computed(
+    () => recurrence.preset === 'weekly' || recurrence.preset === 'every-n-weeks',
+  );
 
   // CalendarDate 객체 내부의 #private 필드가 Vue Proxy와 충돌하는 것을 막기 위해
   // 반드시 ref가 아닌 shallowRef를 사용해야 함
@@ -104,18 +139,33 @@
   const isStartCalendarOpen = ref(false);
   const isEndCalendarOpen = ref(false);
 
+  const applyRecurrenceState = (state: RecurrenceFormState) => {
+    recurrence.preset = state.preset;
+    recurrence.interval = state.interval;
+    recurrence.byWeekday = [...state.byWeekday];
+    recurrence.endMode = state.endMode;
+    recurrence.until = state.until;
+    recurrence.count = state.count;
+    recurrence.rawRule = state.rawRule;
+    untilDate.value = state.until ? toCalendarDate(state.until) : undefined;
+  };
+
+  const resetRecurrence = () => {
+    applyRecurrenceState(createDefaultRecurrenceFormState());
+  };
+
   const resetForm = () => {
     form.title = '';
     form.description = '';
     form.location = '';
     form.priority = 'medium';
     form.isAllDay = false;
-    form.recurrenceRule = '';
     form.colorLabel = '#DCA780';
     startDate.value = undefined;
     endDate.value = undefined;
     startTime.value = DEFAULT_START_TIME;
     endTime.value = DEFAULT_END_TIME;
+    resetRecurrence();
   };
 
   const fillFormFromSchedule = (schedule: Schedule) => {
@@ -125,13 +175,13 @@
     form.description = cloned.description ?? '';
     form.location = cloned.location ?? '';
     form.isAllDay = cloned.isAllDay ?? false;
-    form.recurrenceRule = cloned.recurrenceRule ?? '';
     form.colorLabel = cloned.colorLabel ?? '#DCA780';
+    form.priority = cloned.priority ?? 'medium';
     startDate.value = cloned.startDate ? toCalendarDate(cloned.startDate) : undefined;
     endDate.value = cloned.endDate ? toCalendarDate(cloned.endDate) : startDate.value;
     startTime.value = cloned.startDate ? formatTimeFromDate(cloned.startDate) : DEFAULT_START_TIME;
     endTime.value = cloned.endDate ? formatTimeFromDate(cloned.endDate) : DEFAULT_END_TIME;
-    form.priority = 'medium';
+    applyRecurrenceState(parseRRule(cloned.recurrenceRule));
   };
 
   watch(
@@ -199,6 +249,25 @@
       return;
     }
 
+    if (recurrence.endMode === 'until' && untilDate.value) {
+      recurrence.until = untilDate.value.toString();
+    }
+
+    if (
+      (recurrence.preset === 'weekly' || recurrence.preset === 'every-n-weeks') &&
+      recurrence.byWeekday.length === 0
+    ) {
+      recurrence.byWeekday = [weekdayCodeFromDate(start)];
+    }
+
+    let recurrenceRule: string | undefined;
+    try {
+      recurrenceRule = buildRRule(recurrence, start);
+    } catch {
+      toast.error('반복 규칙을 만들 수 없습니다.');
+      return;
+    }
+
     const payload: Partial<Schedule> = {
       title: form.title.trim(),
       description: form.description.trim(),
@@ -206,8 +275,9 @@
       startDate: start,
       endDate: end,
       isAllDay: form.isAllDay,
-      recurrenceRule: form.recurrenceRule.trim() || undefined,
+      recurrenceRule,
       colorLabel: form.colorLabel || '#DCA780',
+      priority: form.priority,
       tags: [],
     };
 
@@ -244,6 +314,50 @@
 
   const onAllDayChange = (value: unknown) => {
     form.isAllDay = Boolean(value);
+  };
+
+  const onRecurrencePresetChange = (value: unknown) => {
+    if (typeof value !== 'string') {
+      return;
+    }
+    const preset = value as RecurrencePreset;
+    recurrence.preset = preset;
+    if (preset === 'weekdays') {
+      recurrence.byWeekday = ['MO', 'TU', 'WE', 'TH', 'FR'];
+    } else if (
+      (preset === 'weekly' || preset === 'every-n-weeks') &&
+      recurrence.byWeekday.length === 0 &&
+      startDate.value
+    ) {
+      recurrence.byWeekday = [weekdayCodeFromDate(startDate.value.toDate(getLocalTimeZone()))];
+    } else if (preset === 'none' || preset === 'daily' || preset === 'monthly') {
+      recurrence.byWeekday = [];
+    }
+    if (preset !== 'custom') {
+      recurrence.rawRule = '';
+    }
+  };
+
+  const onRecurrenceEndModeChange = (value: unknown) => {
+    if (typeof value !== 'string') {
+      return;
+    }
+    recurrence.endMode = value as RecurrenceEndMode;
+    if (recurrence.endMode === 'until' && !untilDate.value && startDate.value) {
+      untilDate.value = startDate.value;
+      recurrence.until = startDate.value.toString();
+    }
+  };
+
+  const toggleWeekday = (day: WeekdayCode) => {
+    if (!weekdaysEditable.value) {
+      return;
+    }
+    if (recurrence.byWeekday.includes(day)) {
+      recurrence.byWeekday = recurrence.byWeekday.filter((d) => d !== day);
+      return;
+    }
+    recurrence.byWeekday = [...recurrence.byWeekday, day];
   };
 
   const priorityOptions = [
@@ -555,19 +669,147 @@
 
               <Field>
                 <FieldLabel for="schedule-recurrence">반복</FieldLabel>
-                <div class="relative">
-                  <Icon
-                    icon="lucide:repeat"
-                    class="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2"
-                  />
+                <Select
+                  :model-value="recurrence.preset"
+                  @update:model-value="onRecurrencePresetChange"
+                >
+                  <SelectTrigger id="schedule-recurrence" class="border-croffle-border h-10 w-full">
+                    <SelectValue placeholder="반복 주기" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem
+                      v-for="option in RECURRENCE_PRESET_OPTIONS"
+                      :key="option.value"
+                      :value="option.value"
+                    >
+                      {{ option.label }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <FieldDescription>
+                  캘린더에는 반복 일정이 자동으로 펼쳐져 표시됩니다.
+                </FieldDescription>
+              </Field>
+
+              <Field v-if="showInterval">
+                <FieldLabel for="schedule-recurrence-interval">간격</FieldLabel>
+                <div class="flex items-center gap-2">
                   <Input
-                    id="schedule-recurrence"
-                    v-model="form.recurrenceRule"
-                    placeholder="예: FREQ=WEEKLY;BYDAY=FR"
-                    class="border-croffle-border focus-visible:ring-croffle-primary/30 h-10 pl-9"
+                    id="schedule-recurrence-interval"
+                    v-model.number="recurrence.interval"
+                    type="number"
+                    min="1"
+                    class="border-croffle-border h-10 w-24"
                   />
+                  <span class="text-muted-foreground text-sm">
+                    {{ recurrence.preset === 'every-n-weeks' ? '주마다' : '일마다' }}
+                  </span>
                 </div>
-                <FieldDescription>비워두면 한 번만 표시됩니다.</FieldDescription>
+              </Field>
+
+              <Field v-if="showWeekdays">
+                <FieldLabel>요일</FieldLabel>
+                <div class="flex flex-wrap gap-1.5">
+                  <button
+                    v-for="day in WEEKDAY_OPTIONS"
+                    :key="day.value"
+                    type="button"
+                    class="h-8 min-w-8 rounded-md border px-2 text-xs font-medium transition-colors"
+                    :class="
+                      recurrence.byWeekday.includes(day.value)
+                        ? 'border-croffle-primary bg-croffle-primary/10 text-croffle-primary'
+                        : 'border-croffle-border text-muted-foreground hover:bg-muted/50'
+                    "
+                    :disabled="!weekdaysEditable"
+                    @click="toggleWeekday(day.value)"
+                  >
+                    {{ day.label }}
+                  </button>
+                </div>
+              </Field>
+
+              <template v-if="recurrence.preset !== 'none'">
+                <Field>
+                  <FieldLabel for="schedule-recurrence-end">반복 종료</FieldLabel>
+                  <Select
+                    :model-value="recurrence.endMode"
+                    @update:model-value="onRecurrenceEndModeChange"
+                  >
+                    <SelectTrigger
+                      id="schedule-recurrence-end"
+                      class="border-croffle-border h-10 w-full"
+                    >
+                      <SelectValue placeholder="종료 조건" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="never">종료 없음</SelectItem>
+                      <SelectItem value="until">날짜까지</SelectItem>
+                      <SelectItem value="count">횟수</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </Field>
+
+                <Field v-if="recurrence.endMode === 'until'">
+                  <FieldLabel>종료일</FieldLabel>
+                  <Popover v-model:open="isUntilCalendarOpen">
+                    <PopoverTrigger as-child>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        class="border-croffle-border hover:bg-muted/50 h-10 w-full justify-between px-3 font-normal"
+                      >
+                        <span class="flex min-w-0 items-center gap-2">
+                          <Icon
+                            icon="lucide:calendar"
+                            class="text-muted-foreground size-4 shrink-0"
+                          />
+                          <span class="truncate">{{ formatCalendarDate(untilDate) }}</span>
+                        </span>
+                        <Icon
+                          icon="lucide:chevron-down"
+                          class="text-muted-foreground size-3.5 opacity-60"
+                        />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent class="border-croffle-border z-50 w-auto p-0">
+                      <Calendar
+                        v-model="untilDate"
+                        mode="single"
+                        class="rounded-md border-0"
+                        @update:model-value="
+                          (value) => {
+                            isUntilCalendarOpen = false;
+                            if (value) recurrence.until = value.toString();
+                          }
+                        "
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </Field>
+
+                <Field v-if="recurrence.endMode === 'count'">
+                  <FieldLabel for="schedule-recurrence-count">횟수</FieldLabel>
+                  <div class="flex items-center gap-2">
+                    <Input
+                      id="schedule-recurrence-count"
+                      v-model.number="recurrence.count"
+                      type="number"
+                      min="1"
+                      class="border-croffle-border h-10 w-24"
+                    />
+                    <span class="text-muted-foreground text-sm">회 반복</span>
+                  </div>
+                </Field>
+              </template>
+
+              <Field v-if="recurrence.preset === 'custom'">
+                <FieldLabel for="schedule-recurrence-raw">사용자 지정 RRULE</FieldLabel>
+                <Input
+                  id="schedule-recurrence-raw"
+                  v-model="recurrence.rawRule"
+                  placeholder="FREQ=WEEKLY;BYDAY=FR"
+                  class="border-croffle-border focus-visible:ring-croffle-primary/30 h-10 font-mono text-xs"
+                />
               </Field>
             </FieldSet>
           </FieldGroup>
