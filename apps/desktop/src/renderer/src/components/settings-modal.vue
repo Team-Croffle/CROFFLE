@@ -10,6 +10,7 @@
   import type { ConfigurationTabContribution, ExtensionInfo } from '@croffledev/common';
   import type { AppSettings } from '@croffledev/croffle-types';
   import { ref, onMounted, watch, computed } from 'vue';
+  import { useI18n } from 'vue-i18n';
   import { toast } from 'vue-sonner';
 
   import ConfigSchemaForm from '@/components/settings/config-schema-form.vue';
@@ -56,6 +57,7 @@
 
   const settingsStore = useSettingsStore();
   const appSettingsStore = useAppSettingsStore();
+  const { t } = useI18n();
 
   const activeTab = ref<string>('general');
   const originalSettings = ref<AppSettings | null>(null);
@@ -88,12 +90,12 @@
 
   const UI_DRAFT_STORAGE_KEY = 'croffle:settings-ui-draft';
 
-  const builtinTabs = [
-    { id: 'general', label: '일반', icon: 'lucide:settings' },
-    { id: 'calendar', label: '캘린더', icon: 'lucide:calendar-days' },
-    { id: 'notifications', label: '알림', icon: 'lucide:bell' },
-    { id: 'extensions', label: '확장 관리', icon: 'lucide:puzzle' },
-  ] as const;
+  const builtinTabs = computed(() => [
+    { id: 'general', label: t('settings.tabs.general'), icon: 'lucide:settings' },
+    { id: 'calendar', label: t('settings.tabs.calendar'), icon: 'lucide:calendar-days' },
+    { id: 'notifications', label: t('settings.tabs.notifications'), icon: 'lucide:bell' },
+    { id: 'extensions', label: t('settings.tabs.extensions'), icon: 'lucide:puzzle' },
+  ]);
 
   const isBootEnabled = computed(() => settings.value?.general.startOnSystemBoot ?? false);
 
@@ -104,7 +106,7 @@
       icon: tab.icon ?? 'lucide:puzzle',
       extensionTab: tab,
     }));
-    return [...builtinTabs, ...extension];
+    return [...builtinTabs.value, ...extension];
   });
 
   const activeExtensionTab = computed(() => settingsStore.findExtensionTab(activeTab.value));
@@ -117,7 +119,7 @@
   });
 
   const activeTabLabel = computed(
-    () => allTabs.value.find((t) => t.id === activeTab.value)?.label ?? '설정',
+    () => allTabs.value.find((tab) => tab.id === activeTab.value)?.label ?? t('settings.title'),
   );
 
   // 깊은 복사 유틸
@@ -171,7 +173,7 @@
       }
       return JSON.parse(raw) as { notifications: NotificationDraft };
     } catch (error) {
-      toast.error(`UI draft 로드 실패: ${JSON.stringify(error)}`);
+      toast.error(t('settings.errors.uiDraftLoad', { error: JSON.stringify(error) }));
       return null;
     }
   };
@@ -183,7 +185,7 @@
       };
       localStorage.setItem(UI_DRAFT_STORAGE_KEY, JSON.stringify(payload));
     } catch (error) {
-      toast.error(`UI draft 저장 실패: ${JSON.stringify(error)}`);
+      toast.error(t('settings.errors.uiDraftSave', { error: JSON.stringify(error) }));
     }
   };
 
@@ -213,8 +215,8 @@
       syncUiDraft();
       await loadAllExtensionSettings();
     } catch (error) {
-      toast.error(`설정 로드 실패: ${JSON.stringify(error)}`);
-      loadError.value = '설정을 불러오지 못했습니다.';
+      toast.error(t('settings.errors.load', { error: JSON.stringify(error) }));
+      loadError.value = t('settings.loadFailed');
     } finally {
       isLoadingSettings.value = false;
     }
@@ -224,7 +226,7 @@
     try {
       installedPlugins.value = await croffle.extensions.info.getInstalled();
     } catch (err) {
-      toast.error(`확장 목록 로드 실패: ${JSON.stringify(err)}`);
+      toast.error(t('settings.errors.extensionsList', { error: JSON.stringify(err) }));
     }
   };
 
@@ -241,7 +243,7 @@
       await fetchInstalledPlugins();
       await extensionLoader.loadPluginById(plugin.id);
     } catch (err) {
-      toast.error(`Failed to install extension: ${JSON.stringify(err)}`);
+      toast.error(t('settings.errors.install', { error: JSON.stringify(err) }));
     } finally {
       isInstalling.value = false;
     }
@@ -256,7 +258,7 @@
         await extensionLoader.loadPluginById(result.id);
       }
     } catch (err) {
-      toast.error(`Failed to install local extension: ${JSON.stringify(err)}`);
+      toast.error(t('settings.errors.installLocal', { error: JSON.stringify(err) }));
     } finally {
       isInstalling.value = false;
     }
@@ -273,12 +275,12 @@
         await extensionLoader.unloadPlugin(plugin.id);
       }
     } catch (err) {
-      toast.error(`확장 토글 실패: ${JSON.stringify(err)}`);
+      toast.error(t('settings.errors.toggle', { error: JSON.stringify(err) }));
     }
   };
 
   const onUninstallExtension = async (plugin: ExtensionInfo) => {
-    if (!confirm(`'${plugin.name}' 확장을 삭제하시겠습니까?`)) {
+    if (!confirm(t('settings.extensions.uninstallConfirm', { name: plugin.name }))) {
       return;
     }
     try {
@@ -286,7 +288,7 @@
       await croffle.extensions.info.uninstall(plugin.id);
       await fetchInstalledPlugins();
     } catch (err) {
-      toast.error(`확장 삭제 실패: ${JSON.stringify(err)}`);
+      toast.error(t('settings.errors.uninstall', { error: JSON.stringify(err) }));
     }
   };
 
@@ -350,7 +352,7 @@
 
       emit('update:open', false);
     } catch (error) {
-      toast.error(`설정 저장 실패: ${JSON.stringify(error)}`);
+      toast.error(t('settings.errors.save', { error: JSON.stringify(error) }));
     }
   };
 
@@ -418,53 +420,55 @@
     settings.value.calendar.showWeekNumbers = asBool(v);
   };
 
-  const languageOptions = [
-    { value: AppSettingLanguage.KO, label: '한국어' },
-    { value: AppSettingLanguage.EN, label: 'English' },
-  ] as const;
+  const languageOptions = computed(() => [
+    { value: AppSettingLanguage.KO, label: t('language.ko') },
+    { value: AppSettingLanguage.EN, label: t('language.en') },
+  ]);
 
-  const themeOptions = [
-    { value: AppSettingTheme.LIGHT, label: '라이트' },
-    { value: AppSettingTheme.DARK, label: '다크' },
-    { value: AppSettingTheme.SYSTEM, label: '시스템 설정 따름' },
-  ] as const;
+  const themeOptions = computed(() => [
+    { value: AppSettingTheme.LIGHT, label: t('settings.general.themeLight') },
+    { value: AppSettingTheme.DARK, label: t('settings.general.themeDark') },
+    { value: AppSettingTheme.SYSTEM, label: t('settings.general.themeSystem') },
+  ]);
 
-  const startupBehaviorOptions = [
+  const startupBehaviorOptions = computed(() => [
     {
       value: AppSettingStartupBehavior.OPEN_LAST_SESSION,
-      label: '마지막에 열었던 화면',
+      label: t('settings.general.startupOpenLast'),
     },
     {
       value: AppSettingStartupBehavior.OPEN_NEW_WINDOW,
-      label: '캘린더 기본 화면',
+      label: t('settings.general.startupOpenCalendar'),
     },
     {
       value: AppSettingStartupBehavior.DO_NOTHING,
-      label: '열지 않음 (백그라운드)',
+      label: t('settings.general.startupDoNothing'),
     },
-  ] as const;
+  ]);
 
-  const calendarViewOptions = [
-    { value: CalendarView.DAY, label: '일' },
-    { value: CalendarView.WEEK, label: '주' },
-    { value: CalendarView.MONTH, label: '월' },
-    { value: CalendarView.YEAR, label: '연' },
-  ] as const;
+  const calendarViewOptions = computed(() => [
+    { value: CalendarView.DAY, label: t('settings.calendar.viewDay') },
+    { value: CalendarView.WEEK, label: t('settings.calendar.viewWeek') },
+    { value: CalendarView.MONTH, label: t('settings.calendar.viewMonth') },
+    { value: CalendarView.YEAR, label: t('settings.calendar.viewYear') },
+  ]);
 
-  const weekStartOptions = [
-    { value: CalendarWeekStartDay.SUNDAY, label: '일요일' },
-    { value: CalendarWeekStartDay.MONDAY, label: '월요일' },
-  ] as const;
+  const weekStartOptions = computed(() => [
+    { value: CalendarWeekStartDay.SUNDAY, label: t('settings.calendar.weekStartSunday') },
+    { value: CalendarWeekStartDay.MONDAY, label: t('settings.calendar.weekStartMonday') },
+  ]);
 
-  const timeFormatOptions = [
-    { value: CalendarTimeFormat.H12, label: '12시간 (AM/PM)' },
-    { value: CalendarTimeFormat.H24, label: '24시간' },
-  ] as const;
+  const timeFormatOptions = computed(() => [
+    { value: CalendarTimeFormat.H12, label: t('settings.calendar.timeFormat12h') },
+    { value: CalendarTimeFormat.H24, label: t('settings.calendar.timeFormat24h') },
+  ]);
 
-  const reminderMinuteOptions = [5, 10, 15, 30, 60].map((m) => ({
-    value: String(m),
-    label: `${m}분 전`,
-  }));
+  const reminderMinuteOptions = computed(() =>
+    [5, 10, 15, 30, 60].map((minutes) => ({
+      value: String(minutes),
+      label: t('settings.notifications.minutesBefore', { minutes }),
+    })),
+  );
 
   const onExtensionTabClick = async (tab: ConfigurationTabContribution) => {
     const compositeId = settingsStore.getTabCompositeId(tab);
@@ -487,14 +491,14 @@
       class="h-[90vh] max-h-235 w-[96vw] gap-0 overflow-hidden border-none p-0 shadow-2xl sm:w-[94vw] sm:max-w-none lg:w-[92vw]"
     >
       <DialogHeader class="sr-only">
-        <DialogTitle>설정</DialogTitle>
-        <DialogDescription>설정을 관리하고 업데이트하세요.</DialogDescription>
+        <DialogTitle>{{ $t('settings.title') }}</DialogTitle>
+        <DialogDescription>{{ $t('settings.description') }}</DialogDescription>
       </DialogHeader>
 
       <div class="bg-background text-foreground absolute inset-0 flex overflow-hidden">
         <!-- 좌측 탭 -->
         <div class="border-border bg-muted/20 w-60 shrink-0 overflow-y-auto border-r p-4">
-          <h2 class="text-foreground mb-6 px-2 text-xl font-bold">설정</h2>
+          <h2 class="text-foreground mb-6 px-2 text-xl font-bold">{{ $t('settings.title') }}</h2>
           <nav class="space-y-1">
             <button
               v-for="tab in allTabs"
@@ -529,32 +533,38 @@
 
           <div class="flex-1 overflow-y-auto px-6 pb-8 md:px-8">
             <div v-if="isLoadingSettings" class="w-full max-w-none space-y-3">
-              <p class="text-muted-foreground text-sm">설정을 불러오는 중...</p>
+              <p class="text-muted-foreground text-sm">{{ $t('settings.loading') }}</p>
             </div>
 
             <div v-else-if="loadError" class="w-full max-w-none space-y-3">
               <p class="text-destructive text-sm">{{ loadError }}</p>
               <div class="flex gap-2">
-                <Button type="button" variant="outline" @click="reloadSettings">다시 시도</Button>
-                <Button type="button" @click="emit('update:open', false)">닫기</Button>
+                <Button type="button" variant="outline" @click="reloadSettings">{{
+                  $t('common.retry')
+                }}</Button>
+                <Button type="button" @click="emit('update:open', false)">{{
+                  $t('common.close')
+                }}</Button>
               </div>
             </div>
 
             <div v-else-if="settings" class="w-full max-w-none space-y-8">
               <!-- 일반 -->
               <div v-if="activeTab === 'general'" class="space-y-8">
-                <p class="text-muted-foreground text-sm">앱 전역 기본 설정입니다.</p>
+                <p class="text-muted-foreground text-sm">{{ $t('settings.general.intro') }}</p>
 
                 <section class="space-y-4">
-                  <h4 class="text-base font-bold text-neutral-900">표시</h4>
+                  <h4 class="text-base font-bold text-neutral-900">
+                    {{ $t('settings.general.display') }}
+                  </h4>
 
                   <div class="space-y-2">
-                    <Label for="settings-language" class="text-foreground text-sm font-medium"
-                      >언어</Label
-                    >
+                    <Label for="settings-language" class="text-foreground text-sm font-medium">{{
+                      $t('settings.general.language')
+                    }}</Label>
                     <Select v-model="settings.general.language">
                       <SelectTrigger id="settings-language" class="w-full">
-                        <SelectValue placeholder="언어 선택" />
+                        <SelectValue :placeholder="$t('settings.general.languagePlaceholder')" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem
@@ -569,15 +579,15 @@
                   </div>
 
                   <div class="space-y-2">
-                    <Label for="settings-theme" class="text-foreground text-sm font-medium"
-                      >테마</Label
-                    >
+                    <Label for="settings-theme" class="text-foreground text-sm font-medium">{{
+                      $t('settings.general.theme')
+                    }}</Label>
                     <Select
                       :model-value="settings.general.theme"
                       @update:model-value="onThemeChange"
                     >
                       <SelectTrigger id="settings-theme" class="w-full">
-                        <SelectValue placeholder="테마 선택" />
+                        <SelectValue :placeholder="$t('settings.general.themePlaceholder')" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem
@@ -595,18 +605,22 @@
                 <Separator />
 
                 <section class="space-y-4">
-                  <h4 class="text-base font-bold text-neutral-900">업데이트</h4>
+                  <h4 class="text-base font-bold text-neutral-900">
+                    {{ $t('settings.general.updates') }}
+                  </h4>
                   <div class="flex items-center justify-between">
                     <div class="space-y-0.5">
-                      <Label class="text-foreground text-sm font-medium">자동 업데이트</Label>
+                      <Label class="text-foreground text-sm font-medium">{{
+                        $t('settings.general.autoUpdate')
+                      }}</Label>
                       <p class="text-muted-foreground text-xs">
-                        새 버전이 있으면 자동으로 확인하고 알립니다.
+                        {{ $t('settings.general.autoUpdateHint') }}
                       </p>
                     </div>
                     <Switch
                       :checked="settings.general.autoUpdate"
                       :model-value="settings.general.autoUpdate"
-                      aria-label="자동 업데이트"
+                      :aria-label="$t('settings.general.autoUpdate')"
                       @update:checked="(v: boolean) => setGeneralBool('autoUpdate', v)"
                       @update:model-value="(v: unknown) => setGeneralBool('autoUpdate', v)"
                     />
@@ -616,19 +630,23 @@
                 <Separator />
 
                 <section class="space-y-4">
-                  <h4 class="text-base font-bold text-neutral-900">시작 프로그램</h4>
+                  <h4 class="text-base font-bold text-neutral-900">
+                    {{ $t('settings.general.startup') }}
+                  </h4>
 
                   <div class="flex items-center justify-between">
                     <div class="space-y-0.5">
-                      <Label class="text-foreground text-sm font-medium">OS 시작 시 실행</Label>
+                      <Label class="text-foreground text-sm font-medium">{{
+                        $t('settings.general.startOnBoot')
+                      }}</Label>
                       <p class="text-muted-foreground text-xs">
-                        켜면 로그인 시 Croffle이 자동으로 실행됩니다.
+                        {{ $t('settings.general.startOnBootHint') }}
                       </p>
                     </div>
                     <Switch
                       :checked="settings.general.startOnSystemBoot"
                       :model-value="settings.general.startOnSystemBoot"
-                      aria-label="OS 시작 시 실행"
+                      :aria-label="$t('settings.general.startOnBoot')"
                       @update:checked="(v: boolean) => setGeneralBool('startOnSystemBoot', v)"
                       @update:model-value="(v: unknown) => setGeneralBool('startOnSystemBoot', v)"
                     />
@@ -644,11 +662,13 @@
                       <Label
                         for="settings-startup-behavior"
                         class="text-foreground text-sm font-medium"
-                        >시작 시 동작</Label
+                        >{{ $t('settings.general.startupBehavior') }}</Label
                       >
                       <Select v-model="settings.general.startupBehavior" :disabled="!isBootEnabled">
                         <SelectTrigger id="settings-startup-behavior" class="w-full">
-                          <SelectValue placeholder="시작 동작 선택" />
+                          <SelectValue
+                            :placeholder="$t('settings.general.startupBehaviorPlaceholder')"
+                          />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem
@@ -661,22 +681,24 @@
                         </SelectContent>
                       </Select>
                       <p class="text-muted-foreground text-xs">
-                        OS 시작으로 앱이 실행될 때의 초기 화면 동작입니다.
+                        {{ $t('settings.general.startupBehaviorHint') }}
                       </p>
                     </div>
 
                     <div class="flex items-center justify-between">
                       <div class="space-y-0.5">
-                        <Label class="text-foreground text-sm font-medium">최소화로 시작</Label>
+                        <Label class="text-foreground text-sm font-medium">{{
+                          $t('settings.general.startMinimized')
+                        }}</Label>
                         <p class="text-muted-foreground text-xs">
-                          시작 시 창을 표시하지 않고 트레이에서 실행합니다.
+                          {{ $t('settings.general.startMinimizedHint') }}
                         </p>
                       </div>
                       <Switch
                         :checked="settings.general.startMinimized"
                         :model-value="settings.general.startMinimized"
                         :disabled="!isBootEnabled"
-                        aria-label="최소화로 시작"
+                        :aria-label="$t('settings.general.startMinimized')"
                         @update:checked="(v: boolean) => setGeneralBool('startMinimized', v)"
                         @update:model-value="(v: unknown) => setGeneralBool('startMinimized', v)"
                       />
@@ -687,15 +709,15 @@
 
               <!-- 캘린더 -->
               <div v-if="activeTab === 'calendar'" class="space-y-6">
-                <p class="text-muted-foreground text-sm">캘린더 표시 방식을 설정합니다.</p>
+                <p class="text-muted-foreground text-sm">{{ $t('settings.calendar.intro') }}</p>
 
                 <div class="space-y-2">
-                  <Label for="settings-default-view" class="text-foreground text-sm font-medium"
-                    >기본 뷰</Label
-                  >
+                  <Label for="settings-default-view" class="text-foreground text-sm font-medium">{{
+                    $t('settings.calendar.defaultView')
+                  }}</Label>
                   <Select v-model="settings.calendar.defaultView">
                     <SelectTrigger id="settings-default-view" class="w-full">
-                      <SelectValue placeholder="기본 뷰 선택" />
+                      <SelectValue :placeholder="$t('settings.calendar.defaultViewPlaceholder')" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem
@@ -710,12 +732,12 @@
                 </div>
 
                 <div class="space-y-2">
-                  <Label for="settings-week-start" class="text-foreground text-sm font-medium"
-                    >한 주의 시작 요일</Label
-                  >
+                  <Label for="settings-week-start" class="text-foreground text-sm font-medium">{{
+                    $t('settings.calendar.weekStart')
+                  }}</Label>
                   <Select v-model="settings.calendar.weekStartDay">
                     <SelectTrigger id="settings-week-start" class="w-full">
-                      <SelectValue placeholder="시작 요일" />
+                      <SelectValue :placeholder="$t('settings.calendar.weekStartPlaceholder')" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem
@@ -730,12 +752,12 @@
                 </div>
 
                 <div class="space-y-2">
-                  <Label for="settings-time-format" class="text-foreground text-sm font-medium"
-                    >시간 형식</Label
-                  >
+                  <Label for="settings-time-format" class="text-foreground text-sm font-medium">{{
+                    $t('settings.calendar.timeFormat')
+                  }}</Label>
                   <Select v-model="settings.calendar.timeFormat">
                     <SelectTrigger id="settings-time-format" class="w-full">
-                      <SelectValue placeholder="시간 형식" />
+                      <SelectValue :placeholder="$t('settings.calendar.timeFormatPlaceholder')" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem
@@ -751,13 +773,17 @@
 
                 <div class="flex items-center justify-between">
                   <div class="space-y-0.5">
-                    <Label class="text-foreground text-sm font-medium">주차 표시</Label>
-                    <p class="text-muted-foreground text-xs">캘린더에 주차 번호를 표시합니다.</p>
+                    <Label class="text-foreground text-sm font-medium">{{
+                      $t('settings.calendar.showWeekNumbers')
+                    }}</Label>
+                    <p class="text-muted-foreground text-xs">
+                      {{ $t('settings.calendar.showWeekNumbersHint') }}
+                    </p>
                   </div>
                   <Switch
                     :checked="settings.calendar.showWeekNumbers"
                     :model-value="settings.calendar.showWeekNumbers"
-                    aria-label="주차 표시"
+                    :aria-label="$t('settings.calendar.showWeekNumbers')"
                     @update:checked="onShowWeekNumbersSwitch"
                     @update:model-value="onShowWeekNumbersSwitch"
                   />
@@ -766,34 +792,42 @@
 
               <!-- 알림 -->
               <div v-if="activeTab === 'notifications'" class="space-y-6">
-                <p class="text-muted-foreground text-sm">일정 알림 설정입니다.</p>
+                <p class="text-muted-foreground text-sm">
+                  {{ $t('settings.notifications.intro') }}
+                </p>
 
                 <div class="flex items-center justify-between border-b border-neutral-100 py-2">
                   <div class="min-w-0 space-y-0.5">
-                    <Label class="text-sm font-semibold">알림 사용</Label>
+                    <Label class="text-sm font-semibold">{{
+                      $t('settings.notifications.enabled')
+                    }}</Label>
                     <p class="text-muted-foreground wrap-break-words text-xs">
-                      일정 알림을 받을지 설정합니다.
+                      {{ $t('settings.notifications.enabledHint') }}
                     </p>
                   </div>
                   <Switch
                     :checked="settings.notifications.enabled"
                     :model-value="settings.notifications.enabled"
-                    aria-label="알림 사용"
+                    :aria-label="$t('settings.notifications.enabled')"
                     @update:checked="onAppAlertSwitch"
                     @update:model-value="onAppAlertSwitch"
                   />
                 </div>
 
                 <div class="space-y-2">
-                  <Label for="settings-reminder-minutes" class="text-foreground text-sm font-medium"
-                    >기본 알림 시간</Label
+                  <Label
+                    for="settings-reminder-minutes"
+                    class="text-foreground text-sm font-medium"
+                    >{{ $t('settings.notifications.defaultTime') }}</Label
                   >
                   <Select
                     :model-value="String(settings.notifications.defaultReminderMinutes)"
                     @update:model-value="onReminderMinutesChange"
                   >
                     <SelectTrigger id="settings-reminder-minutes" class="w-full">
-                      <SelectValue placeholder="알림 시점" />
+                      <SelectValue
+                        :placeholder="$t('settings.notifications.defaultTimePlaceholder')"
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem
@@ -806,7 +840,7 @@
                     </SelectContent>
                   </Select>
                   <p class="text-muted-foreground text-xs">
-                    새 일정 생성 시 기본으로 적용되는 알림 시점입니다.
+                    {{ $t('settings.notifications.defaultTimeHint') }}
                   </p>
                 </div>
 
@@ -814,10 +848,12 @@
 
                 <section class="space-y-4 opacity-80">
                   <p class="text-muted-foreground text-xs">
-                    아래 항목은 추후 계정/알림 고도화용 UI입니다 (현재 AppSettings에 미포함).
+                    {{ $t('settings.notifications.comingSoon') }}
                   </p>
                   <div class="flex items-center justify-between py-2">
-                    <Label class="text-sm font-semibold">이메일 알림 (준비 중)</Label>
+                    <Label class="text-sm font-semibold">{{
+                      $t('settings.notifications.emailAlert')
+                    }}</Label>
                     <Switch
                       disabled
                       :checked="notificationDraft.emailAlert"
@@ -848,14 +884,16 @@
                         </SelectItem>
                       </SelectContent>
                     </Select>
-                    <span class="text-sm text-neutral-500">방해 금지 (준비 중)</span>
+                    <span class="text-sm text-neutral-500">{{
+                      $t('settings.notifications.dnd')
+                    }}</span>
                   </div>
                 </section>
               </div>
 
               <!-- 플러그인 관리 -->
               <div v-if="activeTab === 'extensions'" class="space-y-6">
-                <p class="text-muted-foreground text-sm">확장을 설치하고 관리합니다.</p>
+                <p class="text-muted-foreground text-sm">{{ $t('settings.extensions.intro') }}</p>
 
                 <!-- 설치 폼 -->
                 <div
@@ -865,7 +903,7 @@
                     class="mb-3 text-sm font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-2"
                   >
                     <Icon icon="lucide:github" class="h-4 w-4" />
-                    GitHub에서 설치
+                    {{ $t('settings.extensions.installFromGithub') }}
                   </h4>
                   <div class="flex items-center gap-3">
                     <input
@@ -887,7 +925,7 @@
                         class="h-4 w-4 animate-spin"
                       />
                       <Icon v-else icon="lucide:download" class="h-4 w-4" />
-                      설치
+                      {{ $t('settings.extensions.install') }}
                     </Button>
                   </div>
 
@@ -897,7 +935,7 @@
                     class="mb-3 text-sm font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-2"
                   >
                     <Icon icon="lucide:download" class="h-4 w-4" />
-                    로컬 Zip 파일로 설치
+                    {{ $t('settings.extensions.installFromZip') }}
                   </h4>
                   <div class="flex items-center gap-3">
                     <Button
@@ -912,7 +950,7 @@
                         class="h-4 w-4 animate-spin"
                       />
                       <Icon v-else icon="lucide:download" class="h-4 w-4" />
-                      파일 선택 및 설치
+                      {{ $t('settings.extensions.selectAndInstall') }}
                     </Button>
                   </div>
                 </div>
@@ -920,7 +958,7 @@
                 <!-- 확장 목록 -->
                 <div class="space-y-4">
                   <h4 class="text-base font-bold text-neutral-900 dark:text-neutral-100">
-                    설치된 확장
+                    {{ $t('settings.extensions.installed') }}
                   </h4>
 
                   <div
@@ -931,10 +969,10 @@
                       <Icon icon="lucide:puzzle" class="h-6 w-6 text-neutral-500" />
                     </div>
                     <p class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
-                      설치된 확장이 없습니다.
+                      {{ $t('settings.extensions.emptyTitle') }}
                     </p>
                     <p class="mt-1 text-xs text-neutral-500">
-                      위쪽 설치 폼에 GitHub URL을 입력하여 확장을 추가해보세요.
+                      {{ $t('settings.extensions.emptyHint') }}
                     </p>
                   </div>
 
@@ -974,7 +1012,7 @@
                         <div class="flex items-center gap-2">
                           <Switch
                             :model-value="plugin.enabled"
-                            aria-label="확장 활성화"
+                            :aria-label="$t('settings.extensions.enableAria')"
                             @update:model-value="
                               (v) => {
                                 plugin.enabled = v;
@@ -986,7 +1024,11 @@
                             class="text-xs font-medium"
                             :class="plugin.enabled ? 'text-[#A68A64]' : 'text-neutral-500'"
                           >
-                            {{ plugin.enabled ? '사용 중' : '사용 안 함' }}
+                            {{
+                              plugin.enabled
+                                ? $t('settings.extensions.enabled')
+                                : $t('settings.extensions.disabled')
+                            }}
                           </span>
                         </div>
                         <Button
@@ -997,7 +1039,7 @@
                           @click="onUninstallExtension(plugin)"
                         >
                           <Icon icon="lucide:trash-2" class="h-4 w-4" />
-                          <span class="sr-only">삭제</span>
+                          <span class="sr-only">{{ $t('common.delete') }}</span>
                         </Button>
                       </div>
                     </div>
@@ -1015,7 +1057,11 @@
               <!-- Extension: schema sections -->
               <div v-else-if="activeExtensionTab?.sections?.length" class="space-y-8">
                 <p v-if="activeExtensionTab.extensionName" class="text-muted-foreground text-sm">
-                  {{ activeExtensionTab.extensionName }} 확장 구성
+                  {{
+                    $t('settings.extensions.configHeading', {
+                      name: activeExtensionTab.extensionName,
+                    })
+                  }}
                 </p>
                 <ConfigSchemaForm
                   v-for="section in activeExtensionTab.sections"
@@ -1038,14 +1084,14 @@
               class="h-9 border-neutral-200 px-6 font-semibold"
               @click="handleCancel"
             >
-              취소
+              {{ $t('common.cancel') }}
             </Button>
             <Button
               type="button"
               class="h-9 border-none bg-[#A68A64] px-6 font-semibold text-white transition-colors hover:bg-[#8E7554]"
               @click="handleSave"
             >
-              저장
+              {{ $t('common.save') }}
             </Button>
           </div>
         </div>

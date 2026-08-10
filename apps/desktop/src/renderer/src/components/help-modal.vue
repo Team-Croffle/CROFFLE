@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue';
+  import { useI18n } from 'vue-i18n';
 
   import {
     Dialog,
@@ -10,70 +11,48 @@
   } from '@/components/ui/dialog';
   import { Icon } from '@/components/ui/icon';
 
-  // Props 및 Emit 정의
-
   defineProps<{ open: boolean }>();
 
   const emit = defineEmits(['update:open']);
+  const { t } = useI18n();
 
   const currentStep = ref(0);
 
-  // 튜토리얼 데이터 정의
-
-  const steps = [
+  const steps = computed(() => [
     {
-      title: '환영합니다!',
-
-      description: '크로플(CROFFLE)에 오신 것을 환영해요.',
-
-      content: '왼쪽 메뉴를 통해 오늘 할 일과\n전체 달력을 자유롭게 오갈 수 있습니다.',
-
+      title: t('help.welcome.title'),
+      description: t('help.welcome.description'),
+      content: t('help.welcome.content'),
       icon: 'lucide:layout',
     },
-
     {
-      title: '할 일 추가하기',
-
-      description: '클릭 한 번으로 일정을 등록하세요.',
-
-      content:
-        '달력의 날짜를 클릭하면 즉시 할 일을 적을 수 있습니다.\n드래그해서 날짜를 옮기는 것도 가능해요!',
-
+      title: t('help.addTodo.title'),
+      description: t('help.addTodo.description'),
+      content: t('help.addTodo.content'),
       icon: 'lucide:calendar',
     },
-
     {
-      title: '나만의 테마 설정',
-
-      description: '취향에 맞는 색상으로 꾸며보세요.',
-
-      content:
-        '설정 메뉴에서 크로플의 메인 색상을 변경하여\n본인만의 작업 환경을 만들 수 있습니다.',
-
+      title: t('help.theme.title'),
+      description: t('help.theme.description'),
+      content: t('help.theme.content'),
       icon: 'lucide:palette',
     },
-
     {
-      title: '준비 완료!',
-
-      description: '이제 모든 준비가 끝났습니다.',
-
-      content: '지금 바로 첫 번째 할 일을 등록하고\n크로플과 함께 멋진 하루를 계획해 보세요!',
-
+      title: t('help.ready.title'),
+      description: t('help.ready.description'),
+      content: t('help.ready.content'),
       icon: 'lucide:party-popper',
     },
-  ];
+  ]);
 
-  const totalSteps = steps.length;
+  const totalSteps = computed(() => steps.value.length);
 
   const currentStepData = computed(() => {
-    return steps[currentStep.value] || steps[0];
+    return steps.value[currentStep.value] || steps.value[0];
   });
 
-  // 로직 함수
-
   const nextStep = () => {
-    if (currentStep.value < totalSteps - 1) {
+    if (currentStep.value < totalSteps.value - 1) {
       currentStep.value++;
     } else {
       handleClose();
@@ -139,7 +118,7 @@
           >
             <Icon icon="lucide:chevron-left" class="h-4 w-4" />
 
-            이전
+            {{ $t('help.prev') }}
           </button>
 
           <div v-else></div>
@@ -148,7 +127,7 @@
             class="bg-croffle-primary hover:bg-opacity-90 hover:bg-croffle-hover flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-bold text-white shadow-md transition-all"
             @click="nextStep"
           >
-            {{ currentStep === totalSteps - 1 ? '확인' : '다음' }}
+            {{ currentStep === totalSteps - 1 ? $t('help.done') : $t('help.next') }}
 
             <Icon v-if="currentStep < totalSteps - 1" icon="lucide:chevron-right" class="h-4 w-4" />
           </button>

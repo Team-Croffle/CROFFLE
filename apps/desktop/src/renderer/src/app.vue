@@ -12,6 +12,7 @@
   import { Icon } from '@/components/ui/icon';
   import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
   import { Toaster } from '@/components/ui/sonner';
+  import { translateOrRaw } from '@/i18n';
 
   import LeftSidebar from './components/left-sidebar.vue';
   import RightSidebar from './components/right-sidebar.vue';
@@ -332,11 +333,11 @@
                 :disabled="item.disabled"
                 @click="item.action(contextMenuStore.activeElement)"
               >
-                {{ item.label }}
+                {{ translateOrRaw(item.label) }}
               </ContextMenuItem>
             </ContextMenuContent>
             <ContextMenuContent v-else>
-              <ContextMenuItem disabled>등록된 동작이 없습니다.</ContextMenuItem>
+              <ContextMenuItem disabled>{{ $t('contextMenu.empty') }}</ContextMenuItem>
             </ContextMenuContent>
           </ContextMenu>
         </SidebarInset>

@@ -6,6 +6,8 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { toast } from 'vue-sonner';
 
+import { i18n } from '@/i18n';
+
 function toEventDuration(schedule: Schedule): EventInput['duration'] {
   const start = dayjs(schedule.startDate);
   const end = dayjs(schedule.endDate);
@@ -110,7 +112,7 @@ export const useScheduleStore = defineStore('schedule', () => {
       const result = await croffle.calendar.schedules.getAll({ start, end });
       schedules.value = result;
     } catch (error) {
-      toast.error(`일정 불러오기 실패: ${JSON.stringify(error)}`);
+      toast.error(String(i18n.global.t('schedule.loadFailed', { error: JSON.stringify(error) })));
     }
   };
 

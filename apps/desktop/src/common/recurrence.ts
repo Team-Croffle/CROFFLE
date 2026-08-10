@@ -38,26 +38,18 @@ export type RecurrenceFormState = {
   rawRule: string;
 };
 
-export const RECURRENCE_PRESET_OPTIONS: { value: RecurrencePreset; label: string }[] = [
-  { value: 'none', label: '반복 안 함' },
-  { value: 'daily', label: '매일' },
-  { value: 'weekdays', label: '평일 (월–금)' },
-  { value: 'weekly', label: '매주' },
-  { value: 'monthly', label: '매월' },
-  { value: 'every-n-days', label: 'N일마다' },
-  { value: 'every-n-weeks', label: 'N주마다' },
-  { value: 'custom', label: '사용자 지정' },
+export const RECURRENCE_PRESET_OPTIONS: RecurrencePreset[] = [
+  'none',
+  'daily',
+  'weekdays',
+  'weekly',
+  'monthly',
+  'every-n-days',
+  'every-n-weeks',
+  'custom',
 ];
 
-export const WEEKDAY_OPTIONS: { value: WeekdayCode; label: string }[] = [
-  { value: 'MO', label: '월' },
-  { value: 'TU', label: '화' },
-  { value: 'WE', label: '수' },
-  { value: 'TH', label: '목' },
-  { value: 'FR', label: '금' },
-  { value: 'SA', label: '토' },
-  { value: 'SU', label: '일' },
-];
+export const WEEKDAY_OPTIONS: WeekdayCode[] = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
 
 export function createDefaultRecurrenceFormState(): RecurrenceFormState {
   return {

@@ -1,6 +1,7 @@
 import type { FeatureContextMenu } from '@croffledev/common';
 import { toast } from 'vue-sonner';
 
+import { i18n } from '@/i18n';
 import { useScheduleStore } from '@/stores/schedule-store';
 
 import { useUiStore } from '../stores/ui-store';
@@ -14,10 +15,14 @@ const getClickedDateFromTarget = (target: HTMLElement): string | null => {
   return dayCell ? dayCell.getAttribute('data-date') : null;
 };
 
+function t(key: string) {
+  return String(i18n.global.t(key));
+}
+
 export const defaultMenus: FeatureContextMenu[] = [
   {
     id: 'add-schedule',
-    label: '일정 추가',
+    label: 'contextMenu.addSchedule',
     action: (targetElement: HTMLElement | null) => {
       if (!targetElement) {
         return;
@@ -33,7 +38,7 @@ export const defaultMenus: FeatureContextMenu[] = [
   },
   {
     id: 'view-schedule',
-    label: '해당 일자 보기',
+    label: 'contextMenu.viewDay',
     action: (targetElement: HTMLElement | null) => {
       if (!targetElement) {
         return;
@@ -49,7 +54,7 @@ export const defaultMenus: FeatureContextMenu[] = [
   },
   {
     id: 'edit-schedule',
-    label: '일정 수정',
+    label: 'contextMenu.editSchedule',
     action: (targetElement: HTMLElement | null) => {
       if (!targetElement) {
         return;
@@ -65,7 +70,7 @@ export const defaultMenus: FeatureContextMenu[] = [
   },
   {
     id: 'delete-schedule',
-    label: '일정 삭제',
+    label: 'contextMenu.deleteSchedule',
     action: async (targetElement: HTMLElement | null) => {
       if (!targetElement) {
         return;
@@ -75,7 +80,7 @@ export const defaultMenus: FeatureContextMenu[] = [
         return;
       }
 
-      const confirmed = window.confirm('이 일정을 삭제하시겠습니까?');
+      const confirmed = window.confirm(t('contextMenu.deleteConfirm'));
       if (!confirmed) {
         return;
       }
@@ -83,12 +88,12 @@ export const defaultMenus: FeatureContextMenu[] = [
       try {
         const isSuccess = await useScheduleStore().removeScheduleById(eventId);
         if (!isSuccess) {
-          toast.error('일정 삭제에 실패했습니다. 다시 시도해주세요.');
+          toast.error(t('contextMenu.deleteFailed'));
         } else {
-          toast.success('일정이 삭제되었습니다.');
+          toast.success(t('contextMenu.deleteSuccess'));
         }
       } catch {
-        toast.error('일정 삭제 중 오류가 발생했습니다. 다시 시도해주세요.');
+        toast.error(t('contextMenu.deleteError'));
       }
     },
     condition: (target) => !!target?.closest('.fc-event'),
