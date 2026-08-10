@@ -18,7 +18,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "adm-zip": "^0.5.16",
+    "adm-zip": "^0.6.0",
     "commander": "^13.1.0",
     "fs-extra": "^11.3.0",
     "picocolors": "^1.1.1",
