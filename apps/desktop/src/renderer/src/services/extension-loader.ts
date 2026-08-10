@@ -2,6 +2,12 @@ import type { ExtensionInfo } from '@croffledev/common';
 import type { ExtensionContext, RegisterConfigurationTabOptions } from '@croffledev/croffle-types';
 import { toast } from 'vue-sonner';
 
+import { i18n } from '@/i18n';
+
+function t(key: string, values?: Record<string, unknown>) {
+  return String(values ? i18n.global.t(key, values) : i18n.global.t(key));
+}
+
 class ExtensionLoader {
   private activeExtensions = new Map<string, unknown>();
 
@@ -12,7 +18,7 @@ class ExtensionLoader {
         await this.loadExtension(extension);
       }
     } catch {
-      toast.error('Failed to load extensions');
+      toast.error(t('extensions.loadFailed'));
     }
   }
 
@@ -24,7 +30,7 @@ class ExtensionLoader {
         await this.loadExtension(extension);
       }
     } catch {
-      toast.error(`Failed to load extension ${extensionId}`);
+      toast.error(t('extensions.loadOneFailed', { id: extensionId }));
     }
   }
 
@@ -67,7 +73,7 @@ class ExtensionLoader {
         }),
       );
     } catch {
-      toast.error(`Failed to execute extension ${extension.name}`);
+      toast.error(t('extensions.executeFailed', { name: extension.name }));
     }
   }
 
@@ -92,7 +98,7 @@ class ExtensionLoader {
         );
       }
     } catch {
-      toast.error(`Failed to unload extension ${extensionId}`);
+      toast.error(t('extensions.unloadFailed', { id: extensionId }));
     }
   }
 

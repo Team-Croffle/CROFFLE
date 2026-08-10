@@ -21,10 +21,10 @@
   <Dialog :open="isModalOpen">
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>{{ '새 버전이 있습니다.' }}</DialogTitle>
+        <DialogTitle>{{ $t('update.available') }}</DialogTitle>
       </DialogHeader>
       <DialogDescription>
-        {{ `v${updateInfo?.version} 버전으로 업데이트 할 수 있습니다.` }}
+        {{ $t('update.availableDescription', { version: updateInfo?.version }) }}
       </DialogDescription>
 
       <div
@@ -34,17 +34,17 @@
       />
 
       <div v-if="isDownloading">
-        <p>{{ `다운로드 중... (${Math.round(downloadProgress)}%)` }}</p>
+        <p>{{ $t('update.downloading', { percent: Math.round(downloadProgress) }) }}</p>
       </div>
 
       <DialogFooter class="gap-2">
         <Button variant="ghost" :disabled="isDownloading" @click="skipUpdate">{{
-          '이번 버전은 건너뛰기'
+          $t('update.skip')
         }}</Button>
         <Button variant="outline" :disabled="isDownloading" @click="downloadLater">{{
-          '다음 시작 시 적용'
+          $t('update.later')
         }}</Button>
-        <Button :disabled="isDownloading" @click="downloadNow">{{ '지금 업데이트' }}</Button>
+        <Button :disabled="isDownloading" @click="downloadNow">{{ $t('update.now') }}</Button>
       </DialogFooter>
     </DialogContent>
   </Dialog>

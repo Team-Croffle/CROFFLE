@@ -3,7 +3,12 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { toast } from 'vue-sonner';
 
+import { i18n } from '@/i18n';
 import type { UpdateInfo } from '@/types/update';
+
+function t(key: string) {
+  return String(i18n.global.t(key));
+}
 
 export const useUpdateStore = defineStore('update', () => {
   const isModalOpen = ref<boolean>(false);
@@ -21,7 +26,7 @@ export const useUpdateStore = defineStore('update', () => {
         isModalOpen.value = true;
       }),
       croffle.event.on(AppEventType.UPDATE_NOT_AVAILABLE, () => {
-        toast('이미 최신 버전입니다.');
+        toast(t('update.alreadyLatest'));
       }),
       croffle.event.on(AppEventType.UPDATE_DOWNLOAD_PROGRESS, (payload) => {
         isDownloading.value = true;
@@ -34,12 +39,12 @@ export const useUpdateStore = defineStore('update', () => {
       }),
       croffle.event.on(AppEventType.UPDATE_ERROR, (payload) => {
         const err = payload as Error;
-        const message = err?.message ?? '업데이트 중 오류가 발생했습니다.';
+        const message = err?.message ?? t('update.errorFallback');
         isDownloading.value = false;
         downloadProgress.value = 0;
         isModalOpen.value = false;
         updateError.value = message;
-        toast.error('업데이트 실패', { description: message });
+        toast.error(t('update.failed'), { description: message });
       }),
     ];
   }

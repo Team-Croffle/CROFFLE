@@ -15,6 +15,7 @@
   import { CalendarDate, getLocalTimeZone } from '@internationalized/date';
   import { storeToRefs } from 'pinia';
   import { computed, reactive, ref, shallowRef, toRaw, watch } from 'vue';
+  import { useI18n } from 'vue-i18n';
   import { toast } from 'vue-sonner';
 
   import { Button } from '@/components/ui/button';
@@ -56,6 +57,7 @@
 
   const uiStore = useUiStore();
   const scheduleStore = useScheduleStore();
+  const { t, locale } = useI18n();
   const { isScheduleModalOpen, scheduleModalMode, selectedScheduleId } = storeToRefs(uiStore);
 
   const DEFAULT_START_TIME = '09:00';
@@ -78,10 +80,10 @@
 
   const formatCalendarDate = (calendarDate: CalendarDate | undefined) => {
     if (!calendarDate) {
-      return '날짜 선택';
+      return t('schedule.pickDate');
     }
     const jsDate = calendarDate.toDate(getLocalTimeZone());
-    return new Intl.DateTimeFormat('ko-KR', {
+    return new Intl.DateTimeFormat(locale.value === 'ko' ? 'ko-KR' : 'en-US', {
       month: 'long',
       day: 'numeric',
       weekday: 'short',
@@ -243,7 +245,7 @@
     }
 
     if (end < start) {
-      toast.error('종료 일시는 시작 일시보다 빠를 수 없습니다.');
+      toast.error(t('schedule.invalidRange'));
       return;
     }
 
@@ -262,7 +264,7 @@
     try {
       recurrenceRule = buildRRule(recurrence, start);
     } catch {
-      toast.error('반복 규칙을 만들 수 없습니다.');
+      toast.error(t('schedule.invalidRule'));
       return;
     }
 
@@ -291,7 +293,7 @@
 
       uiStore.closeScheduleModal();
     } catch (error) {
-      toast.error(`일정 저장 실패: ${JSON.stringify(error)}`);
+      toast.error(t('schedule.saveFailed', { error: JSON.stringify(error) }));
     }
   };
 
@@ -306,7 +308,7 @@
         uiStore.closeScheduleModal();
       }
     } catch (error) {
-      toast.error(`일정 삭제 실패: ${JSON.stringify(error)}`);
+      toast.error(t('schedule.deleteFailed', { error: JSON.stringify(error) }));
     }
   };
 
@@ -358,26 +360,37 @@
     recurrence.byWeekday = [...recurrence.byWeekday, day];
   };
 
-  const priorityOptions = [
+  const RECURRENCE_PRESET_KEYS: Record<RecurrencePreset, string> = {
+    none: 'recurrence.none',
+    daily: 'recurrence.daily',
+    weekdays: 'recurrence.weekdays',
+    weekly: 'recurrence.weekly',
+    monthly: 'recurrence.monthly',
+    'every-n-days': 'recurrence.everyNDays',
+    'every-n-weeks': 'recurrence.everyNWeeks',
+    custom: 'recurrence.custom',
+  };
+
+  const priorityOptions = computed(() => [
     {
       value: 'low' as const,
-      label: '낮음',
+      label: t('priority.low'),
       active: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-700',
       iconClass: 'text-emerald-600',
     },
     {
       value: 'medium' as const,
-      label: '보통',
+      label: t('priority.medium'),
       active: 'border-amber-500/40 bg-amber-500/10 text-amber-700',
       iconClass: 'text-amber-600',
     },
     {
       value: 'high' as const,
-      label: '높음',
+      label: t('priority.high'),
       active: 'border-rose-500/40 bg-rose-500/10 text-rose-700',
       iconClass: 'text-rose-600',
     },
-  ];
+  ]);
 </script>
 
 <template>
@@ -406,13 +419,15 @@
           </div>
           <div class="min-w-0 space-y-1">
             <DialogTitle class="text-foreground text-lg font-semibold tracking-tight">
-              {{ scheduleModalMode === 'edit' ? '일정 수정' : '새 일정' }}
+              {{
+                scheduleModalMode === 'edit' ? $t('schedule.editTitle') : $t('schedule.createTitle')
+              }}
             </DialogTitle>
             <DialogDescription class="text-muted-foreground text-sm">
               {{
                 scheduleModalMode === 'edit'
-                  ? '선택한 일정의 내용을 변경합니다.'
-                  : '제목과 날짜만 있어도 바로 추가할 수 있어요.'
+                  ? $t('schedule.editDescription')
+                  : $t('schedule.createDescription')
               }}
             </DialogDescription>
           </div>
@@ -427,34 +442,34 @@
                 variant="label"
                 class="text-muted-foreground mb-0 text-xs tracking-wide uppercase"
               >
-                기본 정보
+                {{ $t('schedule.basics') }}
               </FieldLegend>
 
               <Field>
                 <FieldLabel for="schedule-title">
-                  제목 <span class="text-destructive">*</span>
+                  {{ $t('schedule.title') }} <span class="text-destructive">*</span>
                 </FieldLabel>
                 <Input
                   id="schedule-title"
                   v-model="form.title"
-                  placeholder="무엇을 할까요?"
+                  :placeholder="$t('schedule.titlePlaceholder')"
                   class="border-croffle-border focus-visible:ring-croffle-primary/30 h-10"
                 />
               </Field>
 
               <Field>
-                <FieldLabel for="schedule-description">설명</FieldLabel>
+                <FieldLabel for="schedule-description">{{ $t('schedule.description') }}</FieldLabel>
                 <Textarea
                   id="schedule-description"
                   v-model="form.description"
-                  placeholder="메모나 세부 내용을 남겨두세요"
+                  :placeholder="$t('schedule.descriptionPlaceholder')"
                   rows="3"
                   class="border-croffle-border focus-visible:ring-croffle-primary/30 min-h-20 resize-none"
                 />
               </Field>
 
               <Field>
-                <FieldLabel for="schedule-location">장소</FieldLabel>
+                <FieldLabel for="schedule-location">{{ $t('schedule.location') }}</FieldLabel>
                 <div class="relative">
                   <Icon
                     icon="lucide:map-pin"
@@ -463,7 +478,7 @@
                   <Input
                     id="schedule-location"
                     v-model="form.location"
-                    placeholder="장소 (선택)"
+                    :placeholder="$t('schedule.locationPlaceholder')"
                     class="border-croffle-border focus-visible:ring-croffle-primary/30 h-10 pl-9"
                   />
                 </div>
@@ -477,7 +492,7 @@
                 variant="label"
                 class="text-muted-foreground mb-0 text-xs tracking-wide uppercase"
               >
-                날짜와 시간
+                {{ $t('schedule.dateTime') }}
               </FieldLegend>
 
               <Field
@@ -486,10 +501,10 @@
               >
                 <div class="space-y-0.5">
                   <FieldLabel for="schedule-all-day" class="text-sm font-medium">
-                    {{ '하루 종일' }}
+                    {{ $t('schedule.allDay') }}
                   </FieldLabel>
                   <FieldDescription class="text-xs">
-                    {{ '끄면 시작·종료 시간을 설정할 수 있어요' }}
+                    {{ $t('schedule.allDayHint') }}
                   </FieldDescription>
                 </div>
                 <Switch
@@ -502,7 +517,9 @@
 
               <div class="grid grid-cols-2 gap-3">
                 <Field>
-                  <FieldLabel class="text-muted-foreground text-xs">시작일</FieldLabel>
+                  <FieldLabel class="text-muted-foreground text-xs">{{
+                    $t('schedule.startDate')
+                  }}</FieldLabel>
                   <Popover v-model:open="isStartCalendarOpen">
                     <PopoverTrigger as-child>
                       <Button
@@ -540,7 +557,9 @@
                 </Field>
 
                 <Field>
-                  <FieldLabel class="text-muted-foreground text-xs">종료일</FieldLabel>
+                  <FieldLabel class="text-muted-foreground text-xs">{{
+                    $t('schedule.endDate')
+                  }}</FieldLabel>
                   <Popover v-model:open="isEndCalendarOpen">
                     <PopoverTrigger as-child>
                       <Button
@@ -584,13 +603,13 @@
               >
                 <Field>
                   <FieldLabel for="schedule-start-time" class="text-muted-foreground text-xs">
-                    시작 시간
+                    {{ $t('schedule.startTime') }}
                   </FieldLabel>
                   <TimeField id="schedule-start-time" v-model="startTime" />
                 </Field>
                 <Field>
                   <FieldLabel for="schedule-end-time" class="text-muted-foreground text-xs">
-                    종료 시간
+                    {{ $t('schedule.endTime') }}
                   </FieldLabel>
                   <TimeField id="schedule-end-time" v-model="endTime" />
                 </Field>
@@ -604,15 +623,15 @@
                 variant="label"
                 class="text-muted-foreground mb-0 text-xs tracking-wide uppercase"
               >
-                옵션
+                {{ $t('schedule.options') }}
               </FieldLegend>
 
               <Field>
-                <FieldLabel>우선순위</FieldLabel>
+                <FieldLabel>{{ $t('schedule.priority') }}</FieldLabel>
                 <div
                   class="border-croffle-border bg-muted/20 grid grid-cols-3 gap-1 rounded-xl border p-1"
                   role="radiogroup"
-                  aria-label="우선순위"
+                  :aria-label="$t('schedule.priority')"
                 >
                   <button
                     v-for="option in priorityOptions"
@@ -634,7 +653,7 @@
               </Field>
 
               <Field>
-                <FieldLabel>색상</FieldLabel>
+                <FieldLabel>{{ $t('schedule.color') }}</FieldLabel>
                 <div class="flex flex-wrap items-center gap-2">
                   <button
                     v-for="color in COLOR_PRESETS"
@@ -647,50 +666,52 @@
                         : 'border-transparent'
                     "
                     :style="{ backgroundColor: color }"
-                    :aria-label="`색상 ${color}`"
+                    :aria-label="$t('schedule.colorAria', { color })"
                     @click="form.colorLabel = color"
                   />
                   <label
                     class="border-croffle-border hover:bg-muted/50 relative flex size-8 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-dashed"
-                    title="직접 선택"
+                    :title="$t('schedule.customColor')"
                   >
                     <Icon icon="lucide:palette" class="text-muted-foreground size-3.5" />
                     <input
                       v-model="form.colorLabel"
                       type="color"
                       class="absolute inset-0 cursor-pointer opacity-0"
-                      aria-label="사용자 지정 색상"
+                      :aria-label="$t('schedule.customColorAria')"
                     />
                   </label>
                 </div>
               </Field>
 
               <Field>
-                <FieldLabel for="schedule-recurrence">반복</FieldLabel>
+                <FieldLabel for="schedule-recurrence">{{ $t('schedule.recurrence') }}</FieldLabel>
                 <Select
                   :model-value="recurrence.preset"
                   @update:model-value="onRecurrencePresetChange"
                 >
                   <SelectTrigger id="schedule-recurrence" class="border-croffle-border h-10 w-full">
-                    <SelectValue placeholder="반복 주기" />
+                    <SelectValue :placeholder="$t('schedule.recurrencePlaceholder')" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem
-                      v-for="option in RECURRENCE_PRESET_OPTIONS"
-                      :key="option.value"
-                      :value="option.value"
+                      v-for="preset in RECURRENCE_PRESET_OPTIONS"
+                      :key="preset"
+                      :value="preset"
                     >
-                      {{ option.label }}
+                      {{ $t(RECURRENCE_PRESET_KEYS[preset]) }}
                     </SelectItem>
                   </SelectContent>
                 </Select>
                 <FieldDescription>
-                  캘린더에는 반복 일정이 자동으로 펼쳐져 표시됩니다.
+                  {{ $t('schedule.recurrenceHint') }}
                 </FieldDescription>
               </Field>
 
               <Field v-if="showInterval">
-                <FieldLabel for="schedule-recurrence-interval">간격</FieldLabel>
+                <FieldLabel for="schedule-recurrence-interval">{{
+                  $t('schedule.interval')
+                }}</FieldLabel>
                 <div class="flex items-center gap-2">
                   <Input
                     id="schedule-recurrence-interval"
@@ -700,35 +721,41 @@
                     class="border-croffle-border h-10 w-24"
                   />
                   <span class="text-muted-foreground text-sm">
-                    {{ recurrence.preset === 'every-n-weeks' ? '주마다' : '일마다' }}
+                    {{
+                      recurrence.preset === 'every-n-weeks'
+                        ? $t('schedule.everyWeeks')
+                        : $t('schedule.everyDays')
+                    }}
                   </span>
                 </div>
               </Field>
 
               <Field v-if="showWeekdays">
-                <FieldLabel>요일</FieldLabel>
+                <FieldLabel>{{ $t('schedule.weekdays') }}</FieldLabel>
                 <div class="flex flex-wrap gap-1.5">
                   <button
                     v-for="day in WEEKDAY_OPTIONS"
-                    :key="day.value"
+                    :key="day"
                     type="button"
                     class="h-8 min-w-8 rounded-md border px-2 text-xs font-medium transition-colors"
                     :class="
-                      recurrence.byWeekday.includes(day.value)
+                      recurrence.byWeekday.includes(day)
                         ? 'border-croffle-primary bg-croffle-primary/10 text-croffle-primary'
                         : 'border-croffle-border text-muted-foreground hover:bg-muted/50'
                     "
                     :disabled="!weekdaysEditable"
-                    @click="toggleWeekday(day.value)"
+                    @click="toggleWeekday(day)"
                   >
-                    {{ day.label }}
+                    {{ $t(`recurrence.weekday.${day}`) }}
                   </button>
                 </div>
               </Field>
 
               <template v-if="recurrence.preset !== 'none'">
                 <Field>
-                  <FieldLabel for="schedule-recurrence-end">반복 종료</FieldLabel>
+                  <FieldLabel for="schedule-recurrence-end">{{
+                    $t('schedule.recurrenceEnd')
+                  }}</FieldLabel>
                   <Select
                     :model-value="recurrence.endMode"
                     @update:model-value="onRecurrenceEndModeChange"
@@ -737,18 +764,18 @@
                       id="schedule-recurrence-end"
                       class="border-croffle-border h-10 w-full"
                     >
-                      <SelectValue placeholder="종료 조건" />
+                      <SelectValue :placeholder="$t('schedule.endConditionPlaceholder')" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="never">종료 없음</SelectItem>
-                      <SelectItem value="until">날짜까지</SelectItem>
-                      <SelectItem value="count">횟수</SelectItem>
+                      <SelectItem value="never">{{ $t('schedule.endNever') }}</SelectItem>
+                      <SelectItem value="until">{{ $t('schedule.endUntil') }}</SelectItem>
+                      <SelectItem value="count">{{ $t('schedule.endCount') }}</SelectItem>
                     </SelectContent>
                   </Select>
                 </Field>
 
                 <Field v-if="recurrence.endMode === 'until'">
-                  <FieldLabel>종료일</FieldLabel>
+                  <FieldLabel>{{ $t('schedule.untilDate') }}</FieldLabel>
                   <Popover v-model:open="isUntilCalendarOpen">
                     <PopoverTrigger as-child>
                       <Button
@@ -786,7 +813,9 @@
                 </Field>
 
                 <Field v-if="recurrence.endMode === 'count'">
-                  <FieldLabel for="schedule-recurrence-count">횟수</FieldLabel>
+                  <FieldLabel for="schedule-recurrence-count">{{
+                    $t('schedule.count')
+                  }}</FieldLabel>
                   <div class="flex items-center gap-2">
                     <Input
                       id="schedule-recurrence-count"
@@ -795,13 +824,17 @@
                       min="1"
                       class="border-croffle-border h-10 w-24"
                     />
-                    <span class="text-muted-foreground text-sm">회 반복</span>
+                    <span class="text-muted-foreground text-sm">{{
+                      $t('schedule.countSuffix')
+                    }}</span>
                   </div>
                 </Field>
               </template>
 
               <Field v-if="recurrence.preset === 'custom'">
-                <FieldLabel for="schedule-recurrence-raw">사용자 지정 RRULE</FieldLabel>
+                <FieldLabel for="schedule-recurrence-raw">{{
+                  $t('schedule.customRrule')
+                }}</FieldLabel>
                 <Input
                   id="schedule-recurrence-raw"
                   v-model="recurrence.rawRule"
@@ -826,7 +859,7 @@
             @click="handleDelete"
           >
             <Icon icon="lucide:trash-2" class="mr-1.5 size-4" />
-            삭제
+            {{ $t('common.delete') }}
           </Button>
         </div>
 
@@ -837,7 +870,7 @@
             class="border-croffle-border h-9"
             @click="uiStore.closeScheduleModal()"
           >
-            취소
+            {{ $t('common.cancel') }}
           </Button>
           <Button
             type="button"
@@ -849,7 +882,7 @@
               :icon="scheduleModalMode === 'edit' ? 'lucide:check' : 'lucide:plus'"
               class="mr-1.5 size-4"
             />
-            {{ scheduleModalMode === 'edit' ? '저장' : '추가' }}
+            {{ scheduleModalMode === 'edit' ? $t('common.save') : $t('common.add') }}
           </Button>
         </div>
       </DialogFooter>

@@ -18,6 +18,7 @@
     SidebarGroupContent,
   } from '@/components/ui/sidebar';
   import { DEFAULT_MENU_ITEMS } from '@/data/default-menus';
+  import { translateOrRaw } from '@/i18n';
   import { useUiStore } from '@/stores/ui-store';
   import { useViewStore } from '@/stores/view-store';
 
@@ -84,7 +85,7 @@
             >CROFFLE</span
           >
 
-          <span class="text-croffle-text text-xs leading-none">할일 달력</span>
+          <span class="text-croffle-text text-xs leading-none">{{ $t('sidebar.tagline') }}</span>
         </div>
       </div>
     </SidebarHeader>
@@ -93,7 +94,7 @@
       v-if="leftSidebarOpen"
       class="bg-croffle-sidebar text-croffle-text w-full pt-3 pr-0 pb-2 pl-4 text-left text-xs font-semibold tracking-wider uppercase"
     >
-      메인 메뉴
+      {{ $t('sidebar.mainMenu') }}
     </div>
 
     <SidebarContent class="bg-croffle-sidebar">
@@ -110,7 +111,7 @@
                   { 'bg-croffle-primary hover:bg-croffle-primary': item.active },
                   leftSidebarOpen ? 'mr-2 ml-0' : 'mx-0 justify-center',
                 ]"
-                :tooltip="item.title"
+                :tooltip="translateOrRaw(item.title)"
               >
                 <router-link
                   :to="item.url"
@@ -135,14 +136,14 @@
                       class="text-croffle-text text-sm leading-tight font-medium"
                       :class="{ 'text-white': item.active }"
                     >
-                      {{ item.title }}
+                      {{ translateOrRaw(item.title) }}
                     </span>
 
                     <span
                       class="text-croffle-text text-xs leading-none"
                       :class="{ 'text-white/80': item.active }"
                     >
-                      {{ item.subtitle }}
+                      {{ translateOrRaw(item.subtitle) }}
                     </span>
                   </div>
                 </router-link>
@@ -158,7 +159,7 @@
         <SidebarMenuButton
           size="sm"
           class="hover:bg-croffle-hover flex aspect-square h-9 w-9 items-center justify-center border-none bg-transparent shadow-none ring-0 ring-offset-0 transition-colors outline-none [--sidebar-accent:transparent] focus:ring-0 focus-visible:ring-0"
-          tooltip="알림"
+          :tooltip="$t('sidebar.notifications')"
         >
           <Icon icon="lucide:bell" class="text-croffle-text h-5 w-5" />
         </SidebarMenuButton>
@@ -166,7 +167,7 @@
         <SidebarMenuButton
           size="sm"
           class="hover:bg-croffle-hover flex aspect-square h-9 w-9 items-center justify-center border-none bg-transparent shadow-none ring-0 ring-offset-0 transition-colors outline-none [--sidebar-accent:transparent] focus:ring-0 focus-visible:ring-0"
-          tooltip="설정"
+          :tooltip="$t('sidebar.settings')"
           @click="emit('open-settings')"
         >
           <Icon icon="lucide:settings" class="text-croffle-text h-5 w-5" />
@@ -175,7 +176,7 @@
         <SidebarMenuButton
           size="sm"
           class="hover:bg-croffle-hover flex aspect-square h-9 w-9 items-center justify-center border-none bg-transparent shadow-none ring-0 ring-offset-0 transition-colors outline-none [--sidebar-accent:transparent] focus:ring-0 focus-visible:ring-0"
-          tooltip="도움말"
+          :tooltip="$t('sidebar.help')"
           @click="isHelpModalOpen = true"
         >
           <Icon icon="lucide:circle-help" class="text-croffle-text h-5 w-5" />

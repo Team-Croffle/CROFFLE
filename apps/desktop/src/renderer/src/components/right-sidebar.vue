@@ -3,6 +3,7 @@
   import isBetween from 'dayjs/plugin/isBetween';
   import { storeToRefs } from 'pinia';
   import { computed } from 'vue';
+  import { useI18n } from 'vue-i18n';
 
   import { Badge } from '@/components/ui/badge';
   import { Button } from '@/components/ui/button';
@@ -19,6 +20,7 @@
 
   const uiStore = useUiStore();
   const scheduleStore = useScheduleStore();
+  const { t } = useI18n();
 
   const { rightSidebarOpen, selectedDate } = storeToRefs(uiStore);
 
@@ -72,11 +74,11 @@
   function getPriorityText(priority: string) {
     switch (priority) {
       case 'low':
-        return '낮음';
+        return t('priority.low');
       case 'medium':
-        return '보통';
+        return t('priority.medium');
       case 'high':
-        return '높음';
+        return t('priority.high');
     }
   }
 
@@ -98,8 +100,12 @@
         <div
           class="space-y-1 overflow-hidden text-left transition-all duration-300 group-data-[collapsible=icon]:hidden"
         >
-          <h2 class="text-croffle-text-dark text-lg font-bold whitespace-nowrap">일정 관리</h2>
-          <p class="text-croffle-text text-xs whitespace-nowrap">오늘의 일정과 계획</p>
+          <h2 class="text-croffle-text-dark text-lg font-bold whitespace-nowrap">
+            {{ $t('rightSidebar.title') }}
+          </h2>
+          <p class="text-croffle-text text-xs whitespace-nowrap">
+            {{ $t('rightSidebar.subtitle') }}
+          </p>
         </div>
 
         <Button
@@ -126,7 +132,7 @@
             class="h-5 w-5 transition-all"
             :class="rightSidebarOpen ? 'mr-1' : ''"
           />
-          <span class="group-data-[collapsible=icon]:hidden">새 일정 추가</span>
+          <span class="group-data-[collapsible=icon]:hidden">{{ $t('rightSidebar.add') }}</span>
         </Button>
       </div>
       <div
@@ -138,7 +144,7 @@
           <CardHeader class="space-y-0 px-4 pt-0 pb-2">
             <CardTitle class="text-croffle-text-dark flex items-center gap-2 text-sm font-bold">
               <Icon icon="lucide:calendar" class="h-4 w-4" />
-              <span>오늘의 일정</span>
+              <span>{{ $t('rightSidebar.today') }}</span>
               <Badge
                 class="bg-croffle-sidebar text-croffle-text-dark ml-auto h-5 rounded-md px-1.5"
               >
@@ -150,7 +156,7 @@
             class="text-croffle-text flex min-h-25 justify-center text-sm"
             :class="selectedSchedules.length === 0 ? 'items-center' : 'items-start'"
           >
-            <span v-if="selectedSchedules.length === 0">오늘 일정이 없습니다</span>
+            <span v-if="selectedSchedules.length === 0">{{ $t('rightSidebar.emptyToday') }}</span>
             <div v-else class="mt-2 flex w-full flex-col gap-1">
               <div
                 v-for="schedule in selectedSchedules"
@@ -186,11 +192,11 @@
           <CardHeader class="space-y-0 px-4 pt-0 pb-2">
             <CardTitle class="text-croffle-text-dark flex items-center gap-2 text-sm font-bold">
               <Icon icon="lucide:clock" class="h-4 w-4" />
-              <span>다가오는 일정</span>
+              <span>{{ $t('rightSidebar.upcoming') }}</span>
             </CardTitle>
           </CardHeader>
           <CardContent class="text-croffle-text flex min-h-25 items-center justify-center text-sm">
-            다가오는 일정이 없습니다
+            {{ $t('rightSidebar.emptyUpcoming') }}
           </CardContent>
         </Card>
       </div>
