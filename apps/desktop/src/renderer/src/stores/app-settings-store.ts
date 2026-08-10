@@ -3,11 +3,14 @@ import type { AppSettings } from '@croffledev/croffle-types';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
+import { setI18nLocale } from '@/i18n';
+
 import { useThemeStore } from './theme-store';
 
 const applyToUi = (value: AppSettings) => {
   const themeStore = useThemeStore();
   themeStore.applyFromSettings(value.general.theme);
+  setI18nLocale(value.general.language);
 };
 
 export const useAppSettingsStore = defineStore('appSettings', () => {

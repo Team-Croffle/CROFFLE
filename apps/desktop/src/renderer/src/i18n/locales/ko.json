@@ -1,0 +1,253 @@
+{
+  "common": {
+    "save": "저장",
+    "cancel": "취소",
+    "close": "닫기",
+    "delete": "삭제",
+    "retry": "다시 시도",
+    "add": "추가"
+  },
+  "language": {
+    "ko": "한국어",
+    "en": "English"
+  },
+  "priority": {
+    "low": "낮음",
+    "medium": "보통",
+    "high": "높음"
+  },
+  "settings": {
+    "title": "설정",
+    "description": "설정을 관리하고 업데이트하세요.",
+    "tabs": {
+      "general": "일반",
+      "calendar": "캘린더",
+      "notifications": "알림",
+      "extensions": "확장 관리"
+    },
+    "loading": "설정을 불러오는 중...",
+    "loadFailed": "설정을 불러오지 못했습니다.",
+    "general": {
+      "intro": "앱 전역 기본 설정입니다.",
+      "display": "표시",
+      "language": "언어",
+      "languagePlaceholder": "언어 선택",
+      "theme": "테마",
+      "themePlaceholder": "테마 선택",
+      "themeLight": "라이트",
+      "themeDark": "다크",
+      "themeSystem": "시스템 설정 따름",
+      "updates": "업데이트",
+      "autoUpdate": "자동 업데이트",
+      "autoUpdateHint": "새 버전이 있으면 자동으로 확인하고 알립니다.",
+      "startup": "시작 프로그램",
+      "startOnBoot": "OS 시작 시 실행",
+      "startOnBootHint": "켜면 로그인 시 Croffle이 자동으로 실행됩니다.",
+      "startupBehavior": "시작 시 동작",
+      "startupBehaviorPlaceholder": "시작 동작 선택",
+      "startupOpenLast": "마지막에 열었던 화면",
+      "startupOpenCalendar": "캘린더 기본 화면",
+      "startupDoNothing": "열지 않음 (백그라운드)",
+      "startupBehaviorHint": "OS 시작으로 앱이 실행될 때의 초기 화면 동작입니다.",
+      "startMinimized": "최소화로 시작",
+      "startMinimizedHint": "시작 시 창을 표시하지 않고 트레이에서 실행합니다."
+    },
+    "calendar": {
+      "intro": "캘린더 표시 방식을 설정합니다.",
+      "defaultView": "기본 뷰",
+      "defaultViewPlaceholder": "기본 뷰 선택",
+      "viewDay": "일",
+      "viewWeek": "주",
+      "viewMonth": "월",
+      "viewYear": "연",
+      "weekStart": "한 주의 시작 요일",
+      "weekStartPlaceholder": "시작 요일",
+      "weekStartSunday": "일요일",
+      "weekStartMonday": "월요일",
+      "timeFormat": "시간 형식",
+      "timeFormatPlaceholder": "시간 형식",
+      "timeFormat12h": "12시간 (AM/PM)",
+      "timeFormat24h": "24시간",
+      "showWeekNumbers": "주차 표시",
+      "showWeekNumbersHint": "캘린더에 주차 번호를 표시합니다."
+    },
+    "notifications": {
+      "intro": "일정 알림 설정입니다.",
+      "enabled": "알림 사용",
+      "enabledHint": "일정 알림을 받을지 설정합니다.",
+      "defaultTime": "기본 알림 시간",
+      "defaultTimePlaceholder": "알림 시점",
+      "minutesBefore": "{minutes}분 전",
+      "defaultTimeHint": "새 일정 생성 시 기본으로 적용되는 알림 시점입니다.",
+      "comingSoon": "아래 항목은 추후 계정/알림 고도화용 UI입니다 (현재 AppSettings에 미포함).",
+      "emailAlert": "이메일 알림 (준비 중)",
+      "dnd": "방해 금지 (준비 중)"
+    },
+    "extensions": {
+      "intro": "확장을 설치하고 관리합니다.",
+      "installFromGithub": "GitHub에서 설치",
+      "install": "설치",
+      "installFromZip": "로컬 Zip 파일로 설치",
+      "selectAndInstall": "파일 선택 및 설치",
+      "installed": "설치된 확장",
+      "emptyTitle": "설치된 확장이 없습니다.",
+      "emptyHint": "위쪽 설치 폼에 GitHub URL을 입력하여 확장을 추가해보세요.",
+      "enabled": "사용 중",
+      "disabled": "사용 안 함",
+      "enableAria": "확장 활성화",
+      "uninstallConfirm": "'{name}' 확장을 삭제하시겠습니까?",
+      "configHeading": "{name} 확장 구성"
+    },
+    "errors": {
+      "uiDraftLoad": "UI draft 로드 실패: {error}",
+      "uiDraftSave": "UI draft 저장 실패: {error}",
+      "load": "설정 로드 실패: {error}",
+      "extensionsList": "확장 목록 로드 실패: {error}",
+      "install": "Failed to install extension: {error}",
+      "installLocal": "Failed to install local extension: {error}",
+      "toggle": "확장 토글 실패: {error}",
+      "uninstall": "확장 삭제 실패: {error}",
+      "save": "설정 저장 실패: {error}"
+    }
+  },
+  "sidebar": {
+    "tagline": "할일 달력",
+    "mainMenu": "메인 메뉴",
+    "notifications": "알림",
+    "settings": "설정",
+    "help": "도움말",
+    "calendar": {
+      "title": "캘린더",
+      "subtitle": "Calendar"
+    }
+  },
+  "rightSidebar": {
+    "title": "일정 관리",
+    "subtitle": "오늘의 일정과 계획",
+    "add": "새 일정 추가",
+    "today": "오늘의 일정",
+    "emptyToday": "오늘 일정이 없습니다",
+    "upcoming": "다가오는 일정",
+    "emptyUpcoming": "다가오는 일정이 없습니다"
+  },
+  "contextMenu": {
+    "addSchedule": "일정 추가",
+    "viewDay": "해당 일자 보기",
+    "editSchedule": "일정 수정",
+    "deleteSchedule": "일정 삭제",
+    "deleteConfirm": "이 일정을 삭제하시겠습니까?",
+    "deleteFailed": "일정 삭제에 실패했습니다. 다시 시도해주세요.",
+    "deleteSuccess": "일정이 삭제되었습니다.",
+    "deleteError": "일정 삭제 중 오류가 발생했습니다. 다시 시도해주세요.",
+    "empty": "등록된 동작이 없습니다."
+  },
+  "schedule": {
+    "editTitle": "일정 수정",
+    "createTitle": "새 일정",
+    "editDescription": "선택한 일정의 내용을 변경합니다.",
+    "createDescription": "제목과 날짜만 있어도 바로 추가할 수 있어요.",
+    "basics": "기본 정보",
+    "title": "제목",
+    "titlePlaceholder": "무엇을 할까요?",
+    "description": "설명",
+    "descriptionPlaceholder": "메모나 세부 내용을 남겨두세요",
+    "location": "장소",
+    "locationPlaceholder": "장소 (선택)",
+    "dateTime": "날짜와 시간",
+    "allDay": "하루 종일",
+    "allDayHint": "끄면 시작·종료 시간을 설정할 수 있어요",
+    "startDate": "시작일",
+    "endDate": "종료일",
+    "startTime": "시작 시간",
+    "endTime": "종료 시간",
+    "pickDate": "날짜 선택",
+    "options": "옵션",
+    "priority": "우선순위",
+    "color": "색상",
+    "colorAria": "색상 {color}",
+    "customColor": "직접 선택",
+    "customColorAria": "사용자 지정 색상",
+    "recurrence": "반복",
+    "recurrencePlaceholder": "반복 주기",
+    "recurrenceHint": "캘린더에는 반복 일정이 자동으로 펼쳐져 표시됩니다.",
+    "interval": "간격",
+    "everyWeeks": "주마다",
+    "everyDays": "일마다",
+    "weekdays": "요일",
+    "recurrenceEnd": "반복 종료",
+    "endConditionPlaceholder": "종료 조건",
+    "endNever": "종료 없음",
+    "endUntil": "날짜까지",
+    "endCount": "횟수",
+    "untilDate": "종료일",
+    "count": "횟수",
+    "countSuffix": "회 반복",
+    "customRrule": "사용자 지정 RRULE",
+    "invalidRange": "종료 일시는 시작 일시보다 빠를 수 없습니다.",
+    "invalidRule": "반복 규칙을 만들 수 없습니다.",
+    "saveFailed": "일정 저장 실패: {error}",
+    "deleteFailed": "일정 삭제 실패: {error}",
+    "loadFailed": "일정 불러오기 실패: {error}"
+  },
+  "recurrence": {
+    "none": "반복 안 함",
+    "daily": "매일",
+    "weekdays": "평일 (월–금)",
+    "weekly": "매주",
+    "monthly": "매월",
+    "everyNDays": "N일마다",
+    "everyNWeeks": "N주마다",
+    "custom": "사용자 지정",
+    "weekday": {
+      "MO": "월",
+      "TU": "화",
+      "WE": "수",
+      "TH": "목",
+      "FR": "금",
+      "SA": "토",
+      "SU": "일"
+    }
+  },
+  "help": {
+    "prev": "이전",
+    "next": "다음",
+    "done": "확인",
+    "welcome": {
+      "title": "환영합니다!",
+      "description": "크로플(CROFFLE)에 오신 것을 환영해요.",
+      "content": "왼쪽 메뉴를 통해 오늘 할 일과\n전체 달력을 자유롭게 오갈 수 있습니다."
+    },
+    "addTodo": {
+      "title": "할 일 추가하기",
+      "description": "클릭 한 번으로 일정을 등록하세요.",
+      "content": "달력의 날짜를 클릭하면 즉시 할 일을 적을 수 있습니다.\n드래그해서 날짜를 옮기는 것도 가능해요!"
+    },
+    "theme": {
+      "title": "나만의 테마 설정",
+      "description": "취향에 맞는 색상으로 꾸며보세요.",
+      "content": "설정 메뉴에서 크로플의 메인 색상을 변경하여\n본인만의 작업 환경을 만들 수 있습니다."
+    },
+    "ready": {
+      "title": "준비 완료!",
+      "description": "이제 모든 준비가 끝났습니다.",
+      "content": "지금 바로 첫 번째 할 일을 등록하고\n크로플과 함께 멋진 하루를 계획해 보세요!"
+    }
+  },
+  "update": {
+    "available": "새 버전이 있습니다.",
+    "availableDescription": "v{version} 버전으로 업데이트 할 수 있습니다.",
+    "downloading": "다운로드 중... ({percent}%)",
+    "skip": "이번 버전은 건너뛰기",
+    "later": "다음 시작 시 적용",
+    "now": "지금 업데이트",
+    "alreadyLatest": "이미 최신 버전입니다.",
+    "failed": "업데이트 실패",
+    "errorFallback": "업데이트 중 오류가 발생했습니다."
+  },
+  "extensions": {
+    "loadFailed": "Failed to load extensions",
+    "loadOneFailed": "Failed to load extension {id}",
+    "executeFailed": "Failed to execute extension {name}",
+    "unloadFailed": "Failed to unload extension {id}"
+  }
+}
