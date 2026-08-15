@@ -97,9 +97,9 @@ class WindowService {
       this.tray.setToolTip('CROFFLE');
 
       const contextMenu = Menu.buildFromTemplate([
-        { label: '열기', click: () => this.showWindow() },
+        { label: 'Open Window', click: () => this.showWindow() },
         { type: 'separator' },
-        { label: '종료', click: () => this.exitApp() },
+        { label: 'Exit App', click: () => this.exitApp() },
       ]);
 
       this.tray.setContextMenu(contextMenu);
