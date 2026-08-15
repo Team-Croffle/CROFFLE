@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { AppEventType } from '@croffledev/common';
   import type { CalendarOptions } from '@fullcalendar/core';
+  import koLocale from '@fullcalendar/core/locales/ko';
   import dayGridPlugin from '@fullcalendar/daygrid';
   import interactionPlugin from '@fullcalendar/interaction';
   import multiMonthPlugin from '@fullcalendar/multimonth';
@@ -150,7 +151,8 @@
 
       windowResizeDelay: 0,
       handleWindowResize: false,
-      locale: lang ? languageToLocale(lang) : 'ko',
+      locale: lang ? languageToLocale(lang) : 'en',
+      locales: [koLocale],
       firstDay: cal ? weekStartDayToFirstDay(cal.weekStartDay) : 0,
       weekNumbers: cal?.showWeekNumbers ?? false,
       weekNumberFormat: { week: 'narrow' },
@@ -179,7 +181,7 @@
     }
 
     const patch: Partial<CalendarOptions> = {
-      locale: lang ? languageToLocale(lang) : 'ko',
+      locale: lang ? languageToLocale(lang) : 'en',
       firstDay: weekStartDayToFirstDay(cal.weekStartDay),
       weekNumbers: cal.showWeekNumbers,
       eventTimeFormat: {
