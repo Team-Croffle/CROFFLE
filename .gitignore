@@ -46,3 +46,6 @@ coverage
 # Build
 dist
 *buildinfo
+
+# Personal AI Files
+.ai/*
