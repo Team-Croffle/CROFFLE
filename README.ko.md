@@ -70,6 +70,14 @@ packages/types        @croffledev/croffle-types (배포)
 packages/cli          @croffledev/croffle-cli (배포)
 ```
 
+main·renderer가 공유하는 UI 문구 위치:
+
+```text
+apps/desktop/src/common/i18n/locales/   # 언어당 JSON 하나 (en, ko, …)
+```
+
+언어를 추가하려면 **[CONTRIBUTING.ko.md → 국제화](./CONTRIBUTING.ko.md#국제화-i18n)** 절차로 PR을 열어 주세요 (`en.json` 복사 → 로케일 등록 → 설정 UI 반영).
+
 ```bash
 git clone https://github.com/team-croffle/croffle.git
 cd croffle
@@ -96,7 +104,7 @@ pnpm dev
 
 ## 기여하기
 
-버그 제보, 아이디어, PR을 환영합니다. 자세한 내용은 **[CONTRIBUTING.ko.md](./CONTRIBUTING.ko.md)**를 참고하세요.
+버그 제보, 아이디어, 번역, PR을 환영합니다. 자세한 내용(i18n 파일 위치·언어 추가 절차 포함)은 **[CONTRIBUTING.ko.md](./CONTRIBUTING.ko.md)**를 참고하세요.
 
 ---
 
