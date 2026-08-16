@@ -41,6 +41,10 @@ export type AppSettings = {
     startOnSystemBoot: boolean;
     startMinimized: boolean;
   };
+  appearance: {
+    /** Accent color hue in degrees (0–360). Drives --croffle-accent-hue. */
+    accentHue: number;
+  };
   calendar: {
     defaultView: CalendarView;
     weekStartDay: CalendarWeekStartDay;

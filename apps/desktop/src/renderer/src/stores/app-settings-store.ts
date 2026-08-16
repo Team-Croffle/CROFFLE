@@ -4,6 +4,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 import { setI18nLocale } from '@/i18n';
+import { applyAppearance, DEFAULT_ACCENT_HUE } from '@/utils/appearance';
 
 import { useThemeStore } from './theme-store';
 
@@ -11,6 +12,9 @@ const applyToUi = (value: AppSettings) => {
   const themeStore = useThemeStore();
   themeStore.applyFromSettings(value.general.theme);
   setI18nLocale(value.general.language);
+  applyAppearance({
+    accentHue: value.appearance?.accentHue ?? DEFAULT_ACCENT_HUE,
+  });
 };
 
 export const useAppSettingsStore = defineStore('appSettings', () => {
@@ -48,6 +52,17 @@ export const useAppSettingsStore = defineStore('appSettings', () => {
     useThemeStore().applyFromSettings(theme);
   };
 
+  const setAccentHueDraft = (accentHue: number) => {
+    if (!settings.value) {
+      return;
+    }
+    if (!settings.value.appearance) {
+      settings.value.appearance = { accentHue: DEFAULT_ACCENT_HUE };
+    }
+    settings.value.appearance.accentHue = accentHue;
+    applyAppearance({ accentHue });
+  };
+
   return {
     settings,
     isReady,
@@ -55,5 +70,6 @@ export const useAppSettingsStore = defineStore('appSettings', () => {
     dispose,
     load,
     setThemeDraft,
+    setAccentHueDraft,
   };
 });
