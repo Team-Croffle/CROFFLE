@@ -1,5 +1,17 @@
 # @croffledev/croffle-types
 
+## 1.4.3
+
+### Patch Changes
+
+- 15858b4: Remove AppSettingStartupBehavior, general.startupBehavior, and SETTINGS_STARTUP_NAVIGATE.
+
+  Login presentation is now controlled only by startMinimized (and the
+  --croffle-start-hidden launch arg). Host settings no longer offer
+  last-session or calendar-home startup routing.
+
+- 21b2ceb: Remove unused behavior
+
 ## 1.4.2
 
 ### Patch Changes
