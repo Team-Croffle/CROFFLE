@@ -81,7 +81,7 @@ pnpm --filter @croffledev/croffle-cli build
 
 ### Labels
 
-[`.github/labeler.yaml`](./.github/labeler.yaml) auto-labels PRs by path and branch prefix (`feat`, `fix`, `refactor`, …). Labels are created automatically if missing.
+[`.github/labeler.yaml`](./.github/labeler.yaml) auto-labels PRs by path and branch prefix (`feat`, `fix`, `refactor`, …). Locale / i18n file changes get the `i18n` label. Labels are created automatically if missing.
 
 ### Commit style
 
@@ -91,6 +91,36 @@ Prefer concise conventional-style subjects used in this repo, for example:
 - `fix: …`
 - `refactor: …`
 - `chore: …`
+
+---
+
+## Internationalization (i18n)
+
+UI copy for **main and renderer** lives in **one catalog per language**:
+
+| Path | Role |
+| ---- | ---- |
+| `apps/desktop/src/common/i18n/locales/{lang}.json` | Shared message catalogs (`en`, `ko`, …) |
+| `apps/desktop/src/common/i18n/index.ts` | Lightweight `t()` / `localeMessages` for main + shared code |
+| `apps/desktop/src/main/i18n.ts` | Main helper that reads `settings.general.language` |
+| `apps/desktop/src/renderer/src/i18n/index.ts` | vue-i18n wiring (imports `localeMessages` from `@croffledev/common`) |
+
+Do **not** add a separate `renderer/.../locales` tree. Keep keys nested (e.g. `tray.openWindow`, `settings.general.language`) and use `{name}` placeholders consistently.
+
+### Adding a language (PR welcome)
+
+Language packs are **built into the app** for now (not extension-contributed). A translation PR typically:
+
+1. Add `apps/desktop/src/common/i18n/locales/<code>.json` by copying `en.json` and translating values (keep every key).
+2. Register the locale in:
+   - `AppSettingLanguage` in `apps/desktop/src/common/enums.ts`
+   - `AppSettingLanguage` in `packages/types/models/app-settings.d.ts` (publishable — add a Changeset)
+   - `localeMessages` / `resolveAppLocale` in `apps/desktop/src/common/i18n/index.ts`
+3. Expose it in Settings UI (`settings-modal.vue` language options) and `language.<code>` in the locale JSON.
+4. Wire calendar display if needed (`languageToLocale` in `calendar-settings.ts`, FullCalendar locale import when available).
+5. Smoke-test: switch language in Settings → confirm renderer UI, tray menu, and a reminder notification body.
+
+Prefer a focused PR titled like `feat(desktop): add <language> locale`. Use the Feature PR template and expect the `i18n` label from [`.github/labeler.yaml`](./.github/labeler.yaml).
 
 ---
 

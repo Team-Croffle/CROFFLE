@@ -81,7 +81,7 @@ pnpm --filter @croffledev/croffle-cli build
 
 ### 라벨
 
-[`.github/labeler.yaml`](./.github/labeler.yaml)이 경로·브랜치 prefix에 따라 라벨을 붙입니다. 없는 라벨은 워크플로가 생성할 수 있습니다.
+[`.github/labeler.yaml`](./.github/labeler.yaml)이 경로·브랜치 prefix에 따라 라벨을 붙입니다. locale / i18n 파일 변경에는 `i18n` 라벨이 붙습니다. 없는 라벨은 워크플로가 생성할 수 있습니다.
 
 ### 커밋 메시지
 
@@ -91,6 +91,36 @@ pnpm --filter @croffledev/croffle-cli build
 - `fix: …`
 - `refactor: …`
 - `chore: …`
+
+---
+
+## 언어 및 번역 (i18n)
+
+**main·renderer** UI 문구는 **언어당 카탈로그 하나**에 모읍니다.
+
+| 경로                                               | 역할                                                               |
+| -------------------------------------------------- | ------------------------------------------------------------------ |
+| `apps/desktop/src/common/i18n/locales/{lang}.json` | 공유 메시지 카탈로그 (`en`, `ko`, …)                               |
+| `apps/desktop/src/common/i18n/index.ts`            | main/공유용 `t()` · `localeMessages`                               |
+| `apps/desktop/src/main/i18n.ts`                    | 설정 언어를 읽는 main 헬퍼                                         |
+| `apps/desktop/src/renderer/src/i18n/index.ts`      | vue-i18n 연결 (`localeMessages`를 `@croffledev/common`에서 import) |
+
+`renderer/.../locales`를 따로 만들지 마세요. 키는 중첩 구조(`tray.openWindow` 등)를 유지하고, 플레이스홀더는 `{name}` 형식을 통일합니다.
+
+### 언어 추가 PR (환영)
+
+지금은 **앱 내장** 언어만 지원합니다 (확장으로 언어 팩을 넣는 방식은 아직 없음). 번역 PR은 보통 다음을 포함합니다.
+
+1. `en.json`을 복사해 `apps/desktop/src/common/i18n/locales/<code>.json`을 만들고 값을 번역합니다 (키는 빠짐없이).
+2. 로케일 등록:
+   - `apps/desktop/src/common/enums.ts`의 `AppSettingLanguage`
+   - `packages/types/models/app-settings.d.ts`의 `AppSettingLanguage` (배포 패키지 — Changeset 추가)
+   - `apps/desktop/src/common/i18n/index.ts`의 `localeMessages` / `resolveAppLocale`
+3. 설정 UI 옵션(`settings-modal.vue`)과 locale JSON의 `language.<code>` 추가
+4. 필요 시 캘린더 표시 연동 (`calendar-settings.ts`의 `languageToLocale`, FullCalendar locale)
+5. 스모크 테스트: 설정에서 언어 전환 → renderer UI, 트레이 메뉴, 리마인더 알림 본문 확인
+
+PR 제목 예: `feat(desktop): add <language> locale`. Feature 템플릿을 쓰고, [`.github/labeler.yaml`](./.github/labeler.yaml)의 `i18n` 라벨이 붙는지 확인하세요.
 
 ---
 

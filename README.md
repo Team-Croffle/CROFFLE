@@ -70,6 +70,14 @@ packages/types        @croffledev/croffle-types (publishable)
 packages/cli          @croffledev/croffle-cli (publishable)
 ```
 
+Shared UI strings (main + renderer) live in:
+
+```text
+apps/desktop/src/common/i18n/locales/   # one JSON file per language (en, ko, …)
+```
+
+Want to add a language? Open a PR following **[CONTRIBUTING.md → Internationalization](./CONTRIBUTING.md#internationalization-i18n)** (copy `en.json`, register the locale, update Settings).
+
 ```bash
 git clone https://github.com/team-croffle/croffle.git
 cd croffle
@@ -96,7 +104,7 @@ Requirements: **Node.js ≥ 24**, **pnpm** (via Corepack).
 
 ## Contributing
 
-Bug reports, ideas, and PRs are welcome. See **[CONTRIBUTING.md](./CONTRIBUTING.md)** for setup, PR templates, labels, and release notes.
+Bug reports, ideas, translations, and PRs are welcome. See **[CONTRIBUTING.md](./CONTRIBUTING.md)** for setup, i18n locations, PR templates, labels, and release notes.
 
 ---
 
