@@ -25,6 +25,9 @@ const DEFAULT_SETTINGS: AppSettings = {
     startOnSystemBoot: false,
     startMinimized: false,
   },
+  appearance: {
+    accentHue: 69.8,
+  },
   calendar: {
     defaultView: CalendarView.MONTH,
     weekStartDay: CalendarWeekStartDay.SUNDAY,
@@ -63,6 +66,7 @@ class SettingService {
         ...DEFAULT_SETTINGS,
         ...parsed,
         general: { ...DEFAULT_SETTINGS.general, ...parsed.general },
+        appearance: { ...DEFAULT_SETTINGS.appearance, ...parsed.appearance },
         calendar: { ...DEFAULT_SETTINGS.calendar, ...parsed.calendar },
         notifications: { ...DEFAULT_SETTINGS.notifications, ...parsed.notifications },
       };
@@ -106,6 +110,11 @@ class SettingService {
       general: {
         ...this.settings.general,
         ...partialSettings.general,
+      },
+      appearance: {
+        ...DEFAULT_SETTINGS.appearance,
+        ...this.settings.appearance,
+        ...partialSettings.appearance,
       },
       calendar: {
         ...this.settings.calendar,

@@ -37,6 +37,17 @@ export const validateSettings = (settings: Partial<AppSettings>): void => {
     }
   }
 
+  if (settings.appearance) {
+    const { accentHue } = settings.appearance;
+    if (accentHue !== undefined) {
+      if (typeof accentHue !== 'number' || Number.isNaN(accentHue) || accentHue < 0 || accentHue > 360) {
+        throw new Error(
+          `Invalid accentHue setting: ${String(accentHue)}. Expected a number between 0 and 360.`,
+        );
+      }
+    }
+  }
+
   if (settings.calendar) {
     const { defaultView, weekStartDay, timeFormat } = settings.calendar || {};
     if (defaultView && !isValidEnum(defaultView, CalendarView)) {
