@@ -170,7 +170,8 @@ class ReminderScheduler {
   private fire(candidate: ReminderCandidate, key: string): void {
     this.fired.add(key);
     try {
-      showNotification(candidate.title, formatReminderBody(candidate), () => {
+      const language = settingService.get().general.language;
+      showNotification(candidate.title, formatReminderBody(candidate, language), () => {
         windowService.showWindow();
       });
       logger.info(

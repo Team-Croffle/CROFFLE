@@ -1,5 +1,6 @@
 import { rrulestr } from 'rrule';
 
+import { t } from './i18n';
 import { asSingleRRule, extractRuleBody } from './recurrence-internal';
 
 export type ReminderScheduleInput = {
@@ -125,13 +126,16 @@ export function reminderDedupKey(scheduleId: string, occurrenceStart: Date): str
   return `${scheduleId}|${occurrenceStart.getTime()}`;
 }
 
-export function formatReminderBody(candidate: ReminderCandidate): string {
+export function formatReminderBody(candidate: ReminderCandidate, locale?: string | null): string {
   if (candidate.isAllDay) {
-    return `${candidate.reminderMinutes}분 전 · 종일 일정`;
+    return t('reminder.bodyAllDay', locale, { minutes: candidate.reminderMinutes });
   }
 
   const start = candidate.occurrenceStart;
   const hh = String(start.getHours()).padStart(2, '0');
   const mm = String(start.getMinutes()).padStart(2, '0');
-  return `${candidate.reminderMinutes}분 후 시작 · ${hh}:${mm}`;
+  return t('reminder.bodyTimed', locale, {
+    minutes: candidate.reminderMinutes,
+    time: `${hh}:${mm}`,
+  });
 }

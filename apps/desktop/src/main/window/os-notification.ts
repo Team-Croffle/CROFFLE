@@ -1,6 +1,7 @@
 import { Notification } from 'electron';
 
 import logo from '../../../resources/logo-no-border.png?asset';
+import { t } from '../i18n';
 import { logger } from '../logger';
 
 export function showNotification(title?: string, body?: string, onClick?: () => void): void {
@@ -20,7 +21,7 @@ export function showNotification(title?: string, body?: string, onClick?: () => 
 
     const notification = new Notification({
       icon: logo,
-      title: Title || 'Notification',
+      title: Title || t('notification.fallbackTitle'),
       body: Body || '',
     });
 

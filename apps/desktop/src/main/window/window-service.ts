@@ -2,6 +2,7 @@ import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
 import { AppEventType } from '@croffledev/common';
+import type { AppSettings } from '@croffledev/croffle-types';
 import type { BrowserWindow } from 'electron';
 import { app, Menu, Tray, shell } from 'electron';
 import type { UpdateInfo } from 'electron-updater';
@@ -9,6 +10,7 @@ import { autoUpdater } from 'electron-updater';
 
 import icon from '../../../resources/logo-no-border.png?asset';
 import { eventService } from '../event-bus/event-service';
+import { t } from '../i18n';
 import { logger } from '../logger';
 import { settingService } from '../setting/setting-service';
 
@@ -44,7 +46,18 @@ class WindowService {
     this.mainWindow = window;
     this.createTray();
     this.registerWindowEvents();
+    this.registerSettingsListeners();
     logger.info('WindowService', 'Window initialized.');
+  }
+
+  private registerSettingsListeners(): void {
+    eventService.on(AppEventType.SETTINGS_UPDATE, (payload) => {
+      const settings = payload as AppSettings | undefined;
+      if (!settings?.general?.language) {
+        return;
+      }
+      this.refreshTrayMenu();
+    });
   }
 
   public setCloseToTrayMode(enabled: boolean): void {
@@ -95,18 +108,24 @@ class WindowService {
     try {
       this.tray = new Tray(icon);
       this.tray.setToolTip('CROFFLE');
-
-      const contextMenu = Menu.buildFromTemplate([
-        { label: 'Open Window', click: () => this.showWindow() },
-        { type: 'separator' },
-        { label: 'Exit App', click: () => this.exitApp() },
-      ]);
-
-      this.tray.setContextMenu(contextMenu);
+      this.refreshTrayMenu();
       this.tray.on('double-click', () => this.showWindow());
     } catch (err) {
       logger.error('WindowService', 'Tray error:', err);
     }
+  }
+
+  private refreshTrayMenu(): void {
+    if (!this.tray) {
+      return;
+    }
+
+    const contextMenu = Menu.buildFromTemplate([
+      { label: t('tray.openWindow'), click: () => this.showWindow() },
+      { type: 'separator' },
+      { label: t('tray.exitApp'), click: () => this.exitApp() },
+    ]);
+    this.tray.setContextMenu(contextMenu);
   }
 
   public showWindow(): void {

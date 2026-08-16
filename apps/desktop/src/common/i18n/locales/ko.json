@@ -1,0 +1,13 @@
+{
+  "tray": {
+    "openWindow": "창 열기",
+    "exitApp": "앱 종료"
+  },
+  "notification": {
+    "fallbackTitle": "알림"
+  },
+  "reminder": {
+    "bodyAllDay": "{minutes}분 전 · 종일 일정",
+    "bodyTimed": "{minutes}분 후 시작 · {time}"
+  }
+}
