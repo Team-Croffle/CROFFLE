@@ -458,8 +458,7 @@
     onAccentHexChange(target.value);
   };
 
-  const isAccentPresetSelected = (hex: string) =>
-    huesMatch(hexToHue(hex), currentAccentHue.value);
+  const isAccentPresetSelected = (hex: string) => huesMatch(hexToHue(hex), currentAccentHue.value);
 
   const onReminderMinutesChange = (v: unknown) => {
     if (!settings.value || v === null) {
@@ -1192,7 +1191,7 @@
             </Button>
             <Button
               type="button"
-              class="h-9 border-none bg-[#A68A64] px-6 font-semibold text-white transition-colors hover:bg-[#8E7554]"
+              class="bg-croffle-primary hover:bg-croffle-hover h-9 text-white"
               @click="handleSave"
             >
               {{ $t('common.save') }}
