@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import {
     AppSettingLanguage,
-    AppSettingStartupBehavior,
     AppSettingTheme,
     CalendarTimeFormat,
     CalendarView,
@@ -496,21 +495,6 @@
     { value: AppSettingTheme.SYSTEM, label: t('settings.general.themeSystem') },
   ]);
 
-  const startupBehaviorOptions = computed(() => [
-    {
-      value: AppSettingStartupBehavior.OPEN_LAST_SESSION,
-      label: t('settings.general.startupOpenLast'),
-    },
-    {
-      value: AppSettingStartupBehavior.OPEN_NEW_WINDOW,
-      label: t('settings.general.startupOpenCalendar'),
-    },
-    {
-      value: AppSettingStartupBehavior.DO_NOTHING,
-      label: t('settings.general.startupDoNothing'),
-    },
-  ]);
-
   const calendarViewOptions = computed(() => [
     { value: CalendarView.DAY, label: t('settings.calendar.viewDay') },
     { value: CalendarView.WEEK, label: t('settings.calendar.viewWeek') },
@@ -756,38 +740,11 @@
                   </div>
 
                   <div
-                    class="space-y-4 rounded-lg border border-neutral-100 bg-neutral-50/50 p-4"
+                    class="space-y-4"
                     :class="{
                       'pointer-events-none opacity-50': !isBootEnabled,
                     }"
                   >
-                    <div class="space-y-2">
-                      <Label
-                        for="settings-startup-behavior"
-                        class="text-foreground text-sm font-medium"
-                        >{{ $t('settings.general.startupBehavior') }}</Label
-                      >
-                      <Select v-model="settings.general.startupBehavior" :disabled="!isBootEnabled">
-                        <SelectTrigger id="settings-startup-behavior" class="w-full">
-                          <SelectValue
-                            :placeholder="$t('settings.general.startupBehaviorPlaceholder')"
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem
-                            v-for="option in startupBehaviorOptions"
-                            :key="option.value"
-                            :value="option.value"
-                          >
-                            {{ option.label }}
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <p class="text-muted-foreground text-xs">
-                        {{ $t('settings.general.startupBehaviorHint') }}
-                      </p>
-                    </div>
-
                     <div class="flex items-center justify-between">
                       <div class="space-y-0.5">
                         <Label class="text-foreground text-sm font-medium">

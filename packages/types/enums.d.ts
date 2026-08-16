@@ -18,7 +18,6 @@ export declare enum AppEventType {
 
   // Settings
   SETTINGS_UPDATE = 'settings:update',
-  SETTINGS_STARTUP_NAVIGATE = 'settings:startup-navigate',
 
   // Window lifecycle
   WINDOW_SHOW = 'window:show',

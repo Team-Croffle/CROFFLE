@@ -1,6 +1,5 @@
 import { join } from 'node:path';
 
-import { AppSettingStartupBehavior } from '@croffledev/common';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { app, shell, BrowserWindow, protocol } from 'electron';
 import { autoUpdater } from 'electron-updater';
@@ -68,9 +67,7 @@ function createWindow(): void {
     const wasOpenedAtLogin = loginSettings.wasOpenedAtLogin || process.argv.includes(STARTUP_ARG);
     const shouldHideOnLogin =
       wasOpenedAtLogin &&
-      (settings.general.startupBehavior === AppSettingStartupBehavior.DO_NOTHING ||
-        settings.general.startMinimized ||
-        process.argv.includes(LOGIN_HIDDEN_ARG));
+      (settings.general.startMinimized || process.argv.includes(LOGIN_HIDDEN_ARG));
 
     // WHY HERE: Splash window is closed after the main window is created.
     closeSplash();
