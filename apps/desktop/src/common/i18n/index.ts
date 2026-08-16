@@ -2,10 +2,11 @@ import { AppSettingLanguage } from '../enums';
 import en from './locales/en.json';
 import ko from './locales/ko.json';
 
-type MessageTree = { [key: string]: string | MessageTree };
+export type MessageTree = { [key: string]: string | MessageTree };
 type MessageValues = Record<string, string | number>;
 
-const messages: Record<AppSettingLanguage, MessageTree> = {
+/** Shared locale catalogs for main + renderer (one JSON per language). */
+export const localeMessages: Record<AppSettingLanguage, MessageTree> = {
   [AppSettingLanguage.EN]: en,
   [AppSettingLanguage.KO]: ko,
 };
@@ -41,8 +42,11 @@ function interpolate(template: string, values?: MessageValues): string {
 /** Lightweight i18n for main / shared code (no vue-i18n). */
 export function t(key: string, locale?: string | null, values?: MessageValues): string {
   const resolved = resolveAppLocale(locale);
-  const primary = lookup(messages[resolved], key);
-  const fallback = resolved === AppSettingLanguage.EN ? undefined : lookup(messages.en, key);
+  const primary = lookup(localeMessages[resolved], key);
+  const fallback =
+    resolved === AppSettingLanguage.EN
+      ? undefined
+      : lookup(localeMessages[AppSettingLanguage.EN], key);
   const template = primary ?? fallback ?? key;
   return interpolate(template, values);
 }
