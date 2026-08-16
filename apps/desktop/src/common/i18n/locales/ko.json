@@ -77,10 +77,7 @@
       "defaultTime": "기본 알림 시간",
       "defaultTimePlaceholder": "알림 시점",
       "minutesBefore": "{minutes}분 전",
-      "defaultTimeHint": "새 일정 생성 시 기본으로 적용되는 알림 시점입니다.",
-      "comingSoon": "아래 항목은 추후 계정/알림 고도화용 UI입니다 (현재 AppSettings에 미포함).",
-      "emailAlert": "이메일 알림 (준비 중)",
-      "dnd": "방해 금지 (준비 중)"
+      "defaultTimeHint": "새 일정 생성 시 기본으로 적용되는 알림 시점입니다."
     },
     "extensions": {
       "intro": "확장을 설치하고 관리합니다.",
@@ -98,8 +95,6 @@
       "configHeading": "{name} 확장 구성"
     },
     "errors": {
-      "uiDraftLoad": "UI draft 로드 실패: {error}",
-      "uiDraftSave": "UI draft 저장 실패: {error}",
       "load": "설정 로드 실패: {error}",
       "extensionsList": "확장 목록 로드 실패: {error}",
       "install": "Failed to install extension: {error}",

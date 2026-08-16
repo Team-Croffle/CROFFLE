@@ -49,13 +49,6 @@
     open: boolean;
   };
 
-  // 알림 탭 UI 전용 스키마
-  type NotificationDraft = {
-    emailAlert: boolean;
-    dndStart: string;
-    dndEnd: string;
-  };
-
   const props = defineProps<Props>();
   const emit = defineEmits<{
     (e: 'update:open', value: boolean): void;
@@ -78,23 +71,8 @@
   const installUrl = ref<string>('');
   const isInstalling = ref<boolean>(false);
 
-  const notificationDraft = ref<NotificationDraft>({
-    emailAlert: false,
-    dndStart: '22:00',
-    dndEnd: '07:00',
-  });
-
-  // 취소 복원용 원본(UI draft)
-  const originalNotificationDraft = ref<NotificationDraft>({
-    emailAlert: false,
-    dndStart: '22:00',
-    dndEnd: '07:00',
-  });
-
   const extensionDrafts = ref<Record<string, Record<string, unknown>>>({});
   const originalExtensionDrafts = ref<Record<string, Record<string, unknown>>>({});
-
-  const UI_DRAFT_STORAGE_KEY = 'croffle:settings-ui-draft';
 
   /** Croffle main first, then a small rainbow of accent options. */
   const ACCENT_COLOR_PRESETS = [
@@ -147,8 +125,6 @@
 
   // 깊은 복사 유틸
   const cloneSettings = (value: AppSettings) => JSON.parse(JSON.stringify(value)) as AppSettings;
-  const cloneNotificationDraft = (value: NotificationDraft) =>
-    JSON.parse(JSON.stringify(value)) as NotificationDraft;
   const cloneExtensionDrafts = (value: Record<string, Record<string, unknown>>) =>
     JSON.parse(JSON.stringify(value)) as Record<string, Record<string, unknown>>;
 
@@ -186,48 +162,6 @@
     originalExtensionDrafts.value = originals;
   };
 
-  const loadUiDraftFromStorage = (): {
-    notifications: NotificationDraft;
-  } | null => {
-    try {
-      const raw = localStorage.getItem(UI_DRAFT_STORAGE_KEY);
-      if (!raw) {
-        return null;
-      }
-      return JSON.parse(raw) as { notifications: NotificationDraft };
-    } catch (error) {
-      toast.error(t('settings.errors.uiDraftLoad', { error: JSON.stringify(error) }));
-      return null;
-    }
-  };
-
-  const saveUiDraftToStorage = () => {
-    try {
-      const payload = {
-        notifications: cloneNotificationDraft(notificationDraft.value),
-      };
-      localStorage.setItem(UI_DRAFT_STORAGE_KEY, JSON.stringify(payload));
-    } catch (error) {
-      toast.error(t('settings.errors.uiDraftSave', { error: JSON.stringify(error) }));
-    }
-  };
-
-  // 저장본 우선 동기화
-  const syncUiDraft = () => {
-    const saved = loadUiDraftFromStorage();
-
-    notificationDraft.value = saved?.notifications
-      ? cloneNotificationDraft(saved.notifications)
-      : {
-          emailAlert: true,
-          dndStart: '22:00',
-          dndEnd: '07:00',
-        };
-
-    // 취소 복원용 원본 갱신
-    originalNotificationDraft.value = cloneNotificationDraft(notificationDraft.value);
-  };
-
   const reloadSettings = async () => {
     isLoadingSettings.value = true;
     loadError.value = null;
@@ -235,7 +169,6 @@
       const loaded = await croffle.settings.getAll();
       originalSettings.value = loaded;
       settings.value = cloneSettings(loaded);
-      syncUiDraft();
       await loadAllExtensionSettings();
     } catch (error) {
       toast.error(t('settings.errors.load', { error: JSON.stringify(error) }));
@@ -329,7 +262,6 @@
       if (originalSettings.value) {
         settings.value = cloneSettings(originalSettings.value);
         reapplyPersistedAppearance(originalSettings.value);
-        syncUiDraft();
         extensionDrafts.value = cloneExtensionDrafts(originalExtensionDrafts.value);
       } else {
         void reloadSettings();
@@ -369,9 +301,6 @@
       originalSettings.value = reloaded;
       settings.value = cloneSettings(reloaded);
 
-      saveUiDraftToStorage();
-
-      originalNotificationDraft.value = cloneNotificationDraft(notificationDraft.value);
       originalExtensionDrafts.value = cloneExtensionDrafts(extensionDrafts.value);
 
       emit('update:open', false);
@@ -390,7 +319,6 @@
       settings.value = cloneSettings(originalSettings.value);
       reapplyPersistedAppearance(originalSettings.value);
     }
-    notificationDraft.value = cloneNotificationDraft(originalNotificationDraft.value);
     extensionDrafts.value = cloneExtensionDrafts(originalExtensionDrafts.value);
 
     emit('update:open', false);
@@ -466,10 +394,6 @@
     settings.value.notifications.defaultReminderMinutes = Number(v);
   };
 
-  const onEmailAlertSwitch = (v: unknown) => {
-    notificationDraft.value.emailAlert = asBool(v);
-  };
-
   const onAppAlertSwitch = (v: unknown) => {
     if (!settings.value) {
       return;
@@ -526,11 +450,6 @@
       await loadExtensionTabSettings(tab);
     }
   };
-
-  const timeOptions = Array.from({ length: 24 }, (_, i) => {
-    const hour = `${String(i).padStart(2, '0')}:00`;
-    return { value: hour, label: hour };
-  });
 </script>
 
 <template>
@@ -903,52 +822,6 @@
                     {{ $t('settings.notifications.defaultTimeHint') }}
                   </p>
                 </div>
-
-                <Separator class="my-4" />
-
-                <section class="space-y-4 opacity-80">
-                  <p class="text-muted-foreground text-xs">
-                    {{ $t('settings.notifications.comingSoon') }}
-                  </p>
-                  <div class="flex items-center justify-between py-2">
-                    <Label class="text-sm font-semibold">
-                      {{ $t('settings.notifications.emailAlert') }}
-                    </Label>
-                    <Switch
-                      disabled
-                      :checked="notificationDraft.emailAlert"
-                      :model-value="notificationDraft.emailAlert"
-                      @update:checked="onEmailAlertSwitch"
-                      @update:model-value="onEmailAlertSwitch"
-                    />
-                  </div>
-                  <div class="flex flex-wrap items-center gap-3">
-                    <Select v-model="notificationDraft.dndStart" disabled>
-                      <SelectTrigger class="w-32 border-none bg-neutral-100 shadow-none">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem v-for="t in timeOptions" :key="t.value" :value="t.value">
-                          {{ t.label }}
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <span class="text-sm font-medium text-neutral-500">~</span>
-                    <Select v-model="notificationDraft.dndEnd" disabled>
-                      <SelectTrigger class="w-32 border-none bg-neutral-100 shadow-none">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem v-for="t in timeOptions" :key="t.value" :value="t.value">
-                          {{ t.label }}
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <span class="text-sm text-neutral-500">
-                      {{ $t('settings.notifications.dnd') }}
-                    </span>
-                  </div>
-                </section>
               </div>
 
               <!-- 플러그인 관리 -->
