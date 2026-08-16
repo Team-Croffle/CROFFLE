@@ -14,6 +14,7 @@
   import { Toaster } from '@/components/ui/sonner';
   import { translateOrRaw } from '@/i18n';
 
+  import ConfirmModal from './components/confirm-modal.vue';
   import LeftSidebar from './components/left-sidebar.vue';
   import RightSidebar from './components/right-sidebar.vue';
   import ScheduleModal from './components/schedule-modal.vue';
@@ -343,6 +344,7 @@
         </SidebarInset>
         <RightSidebar />
         <ScheduleModal />
+        <ConfirmModal />
       </SidebarProvider>
     </div>
 

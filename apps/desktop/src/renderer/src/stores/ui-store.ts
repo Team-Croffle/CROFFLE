@@ -2,6 +2,14 @@ import dayjs from 'dayjs';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
+export type ConfirmDialogOptions = {
+  title: string;
+  description: string;
+  confirmLabel?: string;
+  cancelLabel?: string;
+  confirmVariant?: 'default' | 'destructive';
+};
+
 export const useUiStore = defineStore('ui', () => {
   const leftSidebarOpen = ref(true);
   const rightSidebarOpen = ref(false);
@@ -9,6 +17,14 @@ export const useUiStore = defineStore('ui', () => {
   const isScheduleModalOpen = ref(false);
   const scheduleModalMode = ref<'add' | 'edit'>('add');
   const selectedScheduleId = ref<string | null>(null);
+
+  const isConfirmModalOpen = ref(false);
+  const confirmTitle = ref('');
+  const confirmDescription = ref('');
+  const confirmConfirmLabel = ref('');
+  const confirmCancelLabel = ref('');
+  const confirmVariant = ref<'default' | 'destructive'>('default');
+  let confirmResolver: ((value: boolean) => void) | null = null;
 
   // 사이드바 토글 액션
   const toggleLeftSidebar = () => {
@@ -39,16 +55,53 @@ export const useUiStore = defineStore('ui', () => {
     selectedScheduleId.value = null;
   };
 
+  const resolveConfirm = (value: boolean) => {
+    if (!confirmResolver) {
+      isConfirmModalOpen.value = false;
+      return;
+    }
+    const resolve = confirmResolver;
+    confirmResolver = null;
+    isConfirmModalOpen.value = false;
+    resolve(value);
+  };
+
+  const openConfirm = (options: ConfirmDialogOptions): Promise<boolean> => {
+    if (confirmResolver) {
+      confirmResolver(false);
+      confirmResolver = null;
+    }
+
+    confirmTitle.value = options.title;
+    confirmDescription.value = options.description;
+    confirmConfirmLabel.value = options.confirmLabel ?? '';
+    confirmCancelLabel.value = options.cancelLabel ?? '';
+    confirmVariant.value = options.confirmVariant ?? 'default';
+    isConfirmModalOpen.value = true;
+
+    return new Promise<boolean>((resolve) => {
+      confirmResolver = resolve;
+    });
+  };
+
   return {
     leftSidebarOpen,
     rightSidebarOpen,
     selectedDate,
     isScheduleModalOpen,
+    isConfirmModalOpen,
+    confirmTitle,
+    confirmDescription,
+    confirmConfirmLabel,
+    confirmCancelLabel,
+    confirmVariant,
     toggleLeftSidebar,
     toggleRightSidebar,
     openRightSidebarWithDate,
     openScheduleModal,
     closeScheduleModal,
+    openConfirm,
+    resolveConfirm,
     scheduleModalMode,
     selectedScheduleId,
   };

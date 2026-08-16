@@ -80,7 +80,13 @@ export const defaultMenus: FeatureContextMenu[] = [
         return;
       }
 
-      const confirmed = window.confirm(t('contextMenu.deleteConfirm'));
+      const confirmed = await useUiStore().openConfirm({
+        title: t('contextMenu.deleteSchedule'),
+        description: t('contextMenu.deleteConfirm'),
+        confirmLabel: t('common.delete'),
+        cancelLabel: t('common.cancel'),
+        confirmVariant: 'destructive',
+      });
       if (!confirmed) {
         return;
       }
