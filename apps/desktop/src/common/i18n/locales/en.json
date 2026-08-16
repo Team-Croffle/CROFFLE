@@ -77,10 +77,7 @@
       "defaultTime": "Default reminder",
       "defaultTimePlaceholder": "Select reminder time",
       "minutesBefore": "{minutes} minutes before",
-      "defaultTimeHint": "Applied by default when you create a new schedule.",
-      "comingSoon": "The items below are for a future account/notification UI (not in AppSettings yet).",
-      "emailAlert": "Email notifications (coming soon)",
-      "dnd": "Do not disturb (coming soon)"
+      "defaultTimeHint": "Applied by default when you create a new schedule."
     },
     "extensions": {
       "intro": "Install and manage extensions.",
@@ -98,8 +95,6 @@
       "configHeading": "{name} configuration"
     },
     "errors": {
-      "uiDraftLoad": "Failed to load UI draft: {error}",
-      "uiDraftSave": "Failed to save UI draft: {error}",
       "load": "Failed to load settings: {error}",
       "extensionsList": "Failed to load extensions: {error}",
       "install": "Failed to install extension: {error}",
