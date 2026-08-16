@@ -37,6 +37,13 @@
   import { extensionLoader } from '@/services/extension-loader';
   import { useAppSettingsStore } from '@/stores/app-settings-store';
   import { useSettingsStore } from '@/stores/settings-store';
+  import {
+    DEFAULT_ACCENT_HUE,
+    DEFAULT_ACCENT_PRESET_HEX,
+    hexToHue,
+    hueToPreviewHex,
+    huesMatch,
+  } from '@/utils/appearance';
   import { mergeWithSchemaDefaults } from '@/utils/extension-configuration-schema';
 
   type Props = {
@@ -90,6 +97,17 @@
 
   const UI_DRAFT_STORAGE_KEY = 'croffle:settings-ui-draft';
 
+  /** Croffle main first, then a small rainbow of accent options. */
+  const ACCENT_COLOR_PRESETS = [
+    DEFAULT_ACCENT_PRESET_HEX,
+    '#F87171',
+    '#FBBF24',
+    '#34D399',
+    '#60A5FA',
+    '#A78BFA',
+    '#F472B6',
+  ];
+
   const builtinTabs = computed(() => [
     { id: 'general', label: t('settings.tabs.general'), icon: 'lucide:settings' },
     { id: 'calendar', label: t('settings.tabs.calendar'), icon: 'lucide:calendar-days' },
@@ -98,6 +116,12 @@
   ]);
 
   const isBootEnabled = computed(() => settings.value?.general.startOnSystemBoot ?? false);
+
+  const currentAccentHue = computed(
+    () => settings.value?.appearance?.accentHue ?? DEFAULT_ACCENT_HUE,
+  );
+
+  const accentPreviewHex = computed(() => hueToPreviewHex(currentAccentHue.value));
 
   const allTabs = computed(() => {
     const extension = settingsStore.sortedExtensionTabs.map((tab) => ({
@@ -305,6 +329,7 @@
       }
       if (originalSettings.value) {
         settings.value = cloneSettings(originalSettings.value);
+        reapplyPersistedAppearance(originalSettings.value);
         syncUiDraft();
         extensionDrafts.value = cloneExtensionDrafts(originalExtensionDrafts.value);
       } else {
@@ -356,9 +381,15 @@
     }
   };
 
+  const reapplyPersistedAppearance = (value: AppSettings) => {
+    appSettingsStore.setThemeDraft(value.general.theme);
+    appSettingsStore.setAccentHueDraft(value.appearance?.accentHue ?? DEFAULT_ACCENT_HUE);
+  };
+
   const handleCancel = () => {
     if (originalSettings.value) {
       settings.value = cloneSettings(originalSettings.value);
+      reapplyPersistedAppearance(originalSettings.value);
     }
     notificationDraft.value = cloneNotificationDraft(originalNotificationDraft.value);
     extensionDrafts.value = cloneExtensionDrafts(originalExtensionDrafts.value);
@@ -394,6 +425,41 @@
     settings.value.general.theme = theme as AppSettingTheme;
     appSettingsStore.setThemeDraft(theme as AppSettingTheme);
   };
+
+  const ensureAppearance = () => {
+    if (!settings.value) {
+      return null;
+    }
+    if (!settings.value.appearance) {
+      settings.value.appearance = { accentHue: DEFAULT_ACCENT_HUE };
+    }
+    return settings.value;
+  };
+
+  const onAccentHexChange = (hex: string) => {
+    const draft = ensureAppearance();
+    if (!draft) {
+      return;
+    }
+    // First preset is the exact Croffle primary hue (avoid round-trip drift).
+    const hue =
+      hex.toUpperCase() === DEFAULT_ACCENT_PRESET_HEX.toUpperCase()
+        ? DEFAULT_ACCENT_HUE
+        : hexToHue(hex);
+    draft.appearance.accentHue = hue;
+    appSettingsStore.setAccentHueDraft(hue);
+  };
+
+  const onAccentColorInput = (event: Event) => {
+    const target = event.target as HTMLInputElement | null;
+    if (!target?.value) {
+      return;
+    }
+    onAccentHexChange(target.value);
+  };
+
+  const isAccentPresetSelected = (hex: string) =>
+    huesMatch(hexToHue(hex), currentAccentHue.value);
 
   const onReminderMinutesChange = (v: unknown) => {
     if (!settings.value || v === null) {
@@ -599,6 +665,44 @@
                         </SelectItem>
                       </SelectContent>
                     </Select>
+                  </div>
+
+                  <div class="space-y-2">
+                    <Label class="text-foreground text-sm font-medium">
+                      {{ $t('settings.general.accentColor') }}
+                    </Label>
+                    <div class="flex flex-wrap items-center gap-2">
+                      <button
+                        v-for="color in ACCENT_COLOR_PRESETS"
+                        :key="color"
+                        type="button"
+                        class="size-8 cursor-pointer rounded-full border-2 transition-transform hover:scale-105"
+                        :class="
+                          isAccentPresetSelected(color)
+                            ? 'border-foreground scale-105'
+                            : 'border-transparent'
+                        "
+                        :style="{ backgroundColor: color }"
+                        :aria-label="$t('settings.general.accentColorAria', { color })"
+                        @click="onAccentHexChange(color)"
+                      />
+                      <label
+                        class="border-croffle-border hover:bg-muted/50 relative flex size-8 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-dashed"
+                        :title="$t('settings.general.customAccentColor')"
+                      >
+                        <Icon icon="lucide:palette" class="text-muted-foreground size-3.5" />
+                        <input
+                          type="color"
+                          class="absolute inset-0 cursor-pointer opacity-0"
+                          :value="accentPreviewHex"
+                          :aria-label="$t('settings.general.customAccentColorAria')"
+                          @input="onAccentColorInput"
+                        />
+                      </label>
+                    </div>
+                    <p class="text-muted-foreground text-xs">
+                      {{ $t('settings.general.accentColorHint') }}
+                    </p>
                   </div>
                 </section>
 
