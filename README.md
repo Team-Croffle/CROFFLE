@@ -13,17 +13,23 @@
 
 **Croffle** is an open-source **desktop application** designed to go beyond simple schedule management. It empowers users to add custom features and automate workflows directly within the app.
 
-We provide a **powerful extension system** that lets you build your own productivity environment. Starting with Calendar and To-Do management, you can extend Croffle to fit your workflow. Built on Electron, it runs on Windows, macOS, and Linux.
+We provide a **powerful extension system** that lets you build your own productivity environment. Starting with a **calendar-first** schedule workspace, you can extend Croffle to fit your workflow. Built on Electron, it runs on Windows, macOS, and Linux.
 
 ---
 
 ## Key Features
 
-### All-in-One Life Management
+### Calendar & schedules
 
-- **Unified View**: Manage **Schedules** and **To-dos** on a single timeline.
-- **Flexible Tagging**: Categorize and filter work with tags.
-- **Desktop Optimized**: Built for large screens and keyboard-driven use.
+- **Calendar views**: Day, week, month, and year, with week-start and time-format preferences.
+- **Rich schedules**: Priorities, recurrence, color labels, and desktop reminders.
+- **Desktop optimized**: Built for large screens and keyboard-driven use.
+
+### Personalization
+
+- **Theme**: Light, dark, or follow the system.
+- **Accent color**: Tint brand UI (and matching chrome) from Settings.
+- **Startup**: Optionally launch at login, including start minimized to the tray.
 
 ### Extension System
 
@@ -49,7 +55,7 @@ Download the latest build from the [Releases](https://github.com/team-croffle/cr
 | macOS    | `.dmg` / `.zip` (arm64)             |
 | Linux    | `.AppImage` / `.deb` / `.rpm` (x64) |
 
-> Exact filenames include the version and architecture (for example `croffle-1.0.2-arm64.dmg`).
+> Exact filenames include the version and architecture (for example `croffle-1.1.0-arm64.dmg`).
 
 ### Using extensions
 
