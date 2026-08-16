@@ -93,10 +93,10 @@ export const defaultMenus: FeatureContextMenu[] = [
 
       try {
         const isSuccess = await useScheduleStore().removeScheduleById(eventId);
-        if (!isSuccess) {
-          toast.error(t('contextMenu.deleteFailed'));
-        } else {
+        if (isSuccess) {
           toast.success(t('contextMenu.deleteSuccess'));
+        } else {
+          toast.error(t('contextMenu.deleteFailed'));
         }
       } catch {
         toast.error(t('contextMenu.deleteError'));
