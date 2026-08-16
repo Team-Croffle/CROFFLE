@@ -232,7 +232,7 @@
     "availableDescription": "You can update to version {version}.",
     "downloading": "Downloading... ({percent}%)",
     "skip": "Skip this version",
-    "later": "Apply on next launch",
+    "later": "Install on quit",
     "now": "Update now",
     "alreadyLatest": "You're already on the latest version.",
     "failed": "Update failed",
