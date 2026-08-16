@@ -1,17 +1,15 @@
+import { localeMessages, resolveAppLocale } from '@croffledev/common';
 import { createI18n } from 'vue-i18n';
-
-import en from './locales/en.json';
-import ko from './locales/ko.json';
 
 export const i18n = createI18n({
   legacy: false,
   locale: 'en',
   fallbackLocale: 'en',
-  messages: { en, ko },
+  messages: localeMessages,
 });
 
 export function setI18nLocale(locale: string): void {
-  i18n.global.locale.value = locale === 'ko' ? 'ko' : 'en';
+  i18n.global.locale.value = resolveAppLocale(locale);
 }
 
 export function translateOrRaw(key: string): string {

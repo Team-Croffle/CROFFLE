@@ -1,4 +1,255 @@
 {
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "delete": "Delete",
+    "retry": "Retry",
+    "add": "Add"
+  },
+  "language": {
+    "ko": "한국어",
+    "en": "English"
+  },
+  "priority": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High"
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage and update your settings.",
+    "tabs": {
+      "general": "General",
+      "calendar": "Calendar",
+      "notifications": "Notifications",
+      "extensions": "Extensions"
+    },
+    "loading": "Loading settings...",
+    "loadFailed": "Failed to load settings.",
+    "general": {
+      "intro": "App-wide defaults.",
+      "display": "Display",
+      "language": "Language",
+      "languagePlaceholder": "Select language",
+      "theme": "Theme",
+      "themePlaceholder": "Select theme",
+      "themeLight": "Light",
+      "themeDark": "Dark",
+      "themeSystem": "Match system",
+      "updates": "Updates",
+      "autoUpdate": "Automatic updates",
+      "autoUpdateHint": "Check for new versions and notify you automatically.",
+      "startup": "Startup",
+      "startOnBoot": "Launch at login",
+      "startOnBootHint": "Start Croffle automatically when you log in.",
+      "startupBehavior": "On launch",
+      "startupBehaviorPlaceholder": "Select startup behavior",
+      "startupOpenLast": "Last opened screen",
+      "startupOpenCalendar": "Calendar home",
+      "startupDoNothing": "Don't open (background)",
+      "startupBehaviorHint": "What to show when the app starts with the OS.",
+      "startMinimized": "Start minimized",
+      "startMinimizedHint": "Run in the tray without showing a window."
+    },
+    "calendar": {
+      "intro": "How the calendar is displayed.",
+      "defaultView": "Default view",
+      "defaultViewPlaceholder": "Select default view",
+      "viewDay": "Day",
+      "viewWeek": "Week",
+      "viewMonth": "Month",
+      "viewYear": "Year",
+      "weekStart": "First day of week",
+      "weekStartPlaceholder": "Select first day",
+      "weekStartSunday": "Sunday",
+      "weekStartMonday": "Monday",
+      "timeFormat": "Time format",
+      "timeFormatPlaceholder": "Select time format",
+      "timeFormat12h": "12-hour (AM/PM)",
+      "timeFormat24h": "24-hour",
+      "showWeekNumbers": "Week numbers",
+      "showWeekNumbersHint": "Show week numbers on the calendar."
+    },
+    "notifications": {
+      "intro": "Schedule notification settings.",
+      "enabled": "Enable notifications",
+      "enabledHint": "Choose whether to receive schedule reminders.",
+      "defaultTime": "Default reminder",
+      "defaultTimePlaceholder": "Select reminder time",
+      "minutesBefore": "{minutes} minutes before",
+      "defaultTimeHint": "Applied by default when you create a new schedule.",
+      "comingSoon": "The items below are for a future account/notification UI (not in AppSettings yet).",
+      "emailAlert": "Email notifications (coming soon)",
+      "dnd": "Do not disturb (coming soon)"
+    },
+    "extensions": {
+      "intro": "Install and manage extensions.",
+      "installFromGithub": "Install from GitHub",
+      "install": "Install",
+      "installFromZip": "Install from local zip",
+      "selectAndInstall": "Choose file and install",
+      "installed": "Installed extensions",
+      "emptyTitle": "No extensions installed.",
+      "emptyHint": "Enter a GitHub URL in the form above to add an extension.",
+      "enabled": "On",
+      "disabled": "Off",
+      "enableAria": "Enable extension",
+      "uninstallConfirm": "Uninstall '{name}'?",
+      "configHeading": "{name} configuration"
+    },
+    "errors": {
+      "uiDraftLoad": "Failed to load UI draft: {error}",
+      "uiDraftSave": "Failed to save UI draft: {error}",
+      "load": "Failed to load settings: {error}",
+      "extensionsList": "Failed to load extensions: {error}",
+      "install": "Failed to install extension: {error}",
+      "installLocal": "Failed to install local extension: {error}",
+      "toggle": "Failed to toggle extension: {error}",
+      "uninstall": "Failed to uninstall extension: {error}",
+      "save": "Failed to save settings: {error}"
+    }
+  },
+  "sidebar": {
+    "tagline": "Task calendar",
+    "mainMenu": "Main menu",
+    "notifications": "Notifications",
+    "settings": "Settings",
+    "help": "Help",
+    "calendar": {
+      "title": "Calendar",
+      "subtitle": "Calendar"
+    }
+  },
+  "rightSidebar": {
+    "title": "Schedules",
+    "subtitle": "Today's plans",
+    "add": "Add schedule",
+    "today": "Today",
+    "emptyToday": "No schedules today",
+    "upcoming": "Upcoming",
+    "emptyUpcoming": "No upcoming schedules"
+  },
+  "contextMenu": {
+    "addSchedule": "Add schedule",
+    "viewDay": "View this day",
+    "editSchedule": "Edit schedule",
+    "deleteSchedule": "Delete schedule",
+    "deleteConfirm": "Delete this schedule?",
+    "deleteFailed": "Failed to delete the schedule. Please try again.",
+    "deleteSuccess": "Schedule deleted.",
+    "deleteError": "An error occurred while deleting the schedule. Please try again.",
+    "empty": "No actions registered."
+  },
+  "schedule": {
+    "editTitle": "Edit schedule",
+    "createTitle": "New schedule",
+    "editDescription": "Change the selected schedule.",
+    "createDescription": "A title and dates are enough to add it.",
+    "basics": "Basics",
+    "title": "Title",
+    "titlePlaceholder": "What do you want to do?",
+    "description": "Description",
+    "descriptionPlaceholder": "Notes or details",
+    "location": "Location",
+    "locationPlaceholder": "Location (optional)",
+    "dateTime": "Date and time",
+    "allDay": "All day",
+    "allDayHint": "Turn off to set start and end times",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "startTime": "Start time",
+    "endTime": "End time",
+    "pickDate": "Pick a date",
+    "options": "Options",
+    "priority": "Priority",
+    "color": "Color",
+    "colorAria": "Color {color}",
+    "customColor": "Custom",
+    "customColorAria": "Custom color",
+    "recurrence": "Repeat",
+    "recurrencePlaceholder": "Repeat interval",
+    "recurrenceHint": "Repeating schedules expand automatically on the calendar.",
+    "interval": "Interval",
+    "everyWeeks": "weeks",
+    "everyDays": "days",
+    "weekdays": "Days",
+    "recurrenceEnd": "Ends",
+    "endConditionPlaceholder": "End condition",
+    "endNever": "Never",
+    "endUntil": "On date",
+    "endCount": "After occurrences",
+    "untilDate": "End date",
+    "count": "Occurrences",
+    "countSuffix": "times",
+    "customRrule": "Custom RRULE",
+    "invalidRange": "End date/time cannot be before start.",
+    "invalidRule": "Could not build the recurrence rule.",
+    "saveFailed": "Failed to save schedule: {error}",
+    "deleteFailed": "Failed to delete schedule: {error}",
+    "loadFailed": "Failed to load schedules: {error}"
+  },
+  "recurrence": {
+    "none": "Does not repeat",
+    "daily": "Daily",
+    "weekdays": "Weekdays (Mon–Fri)",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "everyNDays": "Every N days",
+    "everyNWeeks": "Every N weeks",
+    "custom": "Custom",
+    "weekday": {
+      "MO": "Mon",
+      "TU": "Tue",
+      "WE": "Wed",
+      "TH": "Thu",
+      "FR": "Fri",
+      "SA": "Sat",
+      "SU": "Sun"
+    }
+  },
+  "help": {
+    "prev": "Back",
+    "next": "Next",
+    "done": "Done",
+    "welcome": {
+      "title": "Welcome!",
+      "description": "Welcome to Croffle.",
+      "content": "Use the left menu to switch between today's tasks\nand the full calendar."
+    },
+    "addTodo": {
+      "title": "Add a task",
+      "description": "Create a schedule with one click.",
+      "content": "Click a date on the calendar to jot down a task.\nYou can also drag to move dates!"
+    },
+    "theme": {
+      "title": "Set your theme",
+      "description": "Pick colors that suit you.",
+      "content": "Change Croffle's main color in Settings\nto make the workspace yours."
+    },
+    "ready": {
+      "title": "You're ready!",
+      "description": "That's everything you need.",
+      "content": "Add your first task and plan the day with Croffle!"
+    }
+  },
+  "update": {
+    "available": "A new version is available.",
+    "availableDescription": "You can update to version {version}.",
+    "downloading": "Downloading... ({percent}%)",
+    "skip": "Skip this version",
+    "later": "Apply on next launch",
+    "now": "Update now",
+    "alreadyLatest": "You're already on the latest version.",
+    "failed": "Update failed",
+    "errorFallback": "An error occurred during the update."
+  },
+  "extensions": {
+    "loadFailed": "Failed to load extensions",
+    "loadOneFailed": "Failed to load extension {id}",
+    "executeFailed": "Failed to execute extension {name}",
+    "unloadFailed": "Failed to unload extension {id}"
+  },
   "tray": {
     "openWindow": "Open Window",
     "exitApp": "Exit App"
