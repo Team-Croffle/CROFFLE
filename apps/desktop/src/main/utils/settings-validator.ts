@@ -1,6 +1,5 @@
 import {
   AppSettingLanguage,
-  AppSettingStartupBehavior,
   AppSettingTheme,
   CalendarTimeFormat,
   CalendarView,
@@ -16,7 +15,7 @@ function isValidEnum<T extends object>(value: unknown, enumObj: T): value is T[k
 
 export const validateSettings = (settings: Partial<AppSettings>): void => {
   if (settings.general) {
-    const { language, theme, startupBehavior } = settings.general;
+    const { language, theme } = settings.general;
 
     if (language && !isValidEnum(language, AppSettingLanguage)) {
       throw new Error(
@@ -29,18 +28,17 @@ export const validateSettings = (settings: Partial<AppSettings>): void => {
         `Invalid theme setting: ${theme}. Allowed values are: ${Object.values(AppSettingTheme).join(', ')}`,
       );
     }
-
-    if (startupBehavior && !isValidEnum(startupBehavior, AppSettingStartupBehavior)) {
-      throw new Error(
-        `Invalid startupBehavior setting: ${startupBehavior}. Allowed values are: ${Object.values(AppSettingStartupBehavior).join(', ')}`,
-      );
-    }
   }
 
   if (settings.appearance) {
     const { accentHue } = settings.appearance;
     if (accentHue !== undefined) {
-      if (typeof accentHue !== 'number' || Number.isNaN(accentHue) || accentHue < 0 || accentHue > 360) {
+      if (
+        typeof accentHue !== 'number' ||
+        Number.isNaN(accentHue) ||
+        accentHue < 0 ||
+        accentHue > 360
+      ) {
         throw new Error(
           `Invalid accentHue setting: ${String(accentHue)}. Expected a number between 0 and 360.`,
         );

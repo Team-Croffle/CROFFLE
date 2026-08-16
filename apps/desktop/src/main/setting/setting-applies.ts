@@ -1,8 +1,6 @@
-import { AppEventType, AppSettingStartupBehavior } from '@croffledev/common';
 import type { AppSettings } from '@croffledev/croffle-types';
 import { app } from 'electron';
 
-import { eventService } from '../event-bus/event-service';
 import { windowService } from '../window/window-service';
 
 export const LOGIN_HIDDEN_ARG = '--croffle-start-hidden';
@@ -36,7 +34,7 @@ export function applyPersisted(settings: AppSettings): void {
   applyLoginItem(settings);
 }
 
-/** 앱 최초 표시 시(로그인 시작 포함) 창 표시·라우팅 결정 */
+/** 앱 최초 표시 시(로그인 시작 포함) 창 표시 결정 */
 export function applyStartupPresentation(settings: AppSettings): void {
   applyLoginItem(settings);
 
@@ -48,17 +46,11 @@ export function applyStartupPresentation(settings: AppSettings): void {
     return;
   }
 
-  const { startupBehavior, startMinimized } = settings.general;
-  const shouldHide =
-    startupBehavior === AppSettingStartupBehavior.DO_NOTHING || startMinimized || wasOpenedAsHidden;
+  const { startMinimized } = settings.general;
+  const shouldHide = startMinimized || wasOpenedAsHidden;
 
   if (shouldHide) {
     windowService.hideWindow();
-    return;
-  }
-
-  if (startupBehavior === AppSettingStartupBehavior.OPEN_NEW_WINDOW) {
-    eventService.emit(AppEventType.SETTINGS_STARTUP_NAVIGATE, '/calendar');
   }
 }
 

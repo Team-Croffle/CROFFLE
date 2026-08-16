@@ -48,12 +48,6 @@
       "startup": "Startup",
       "startOnBoot": "Launch at login",
       "startOnBootHint": "Start Croffle automatically when you log in.",
-      "startupBehavior": "On launch",
-      "startupBehaviorPlaceholder": "Select startup behavior",
-      "startupOpenLast": "Last opened screen",
-      "startupOpenCalendar": "Calendar home",
-      "startupDoNothing": "Don't open (background)",
-      "startupBehaviorHint": "What to show when the app starts with the OS.",
       "startMinimized": "Start minimized",
       "startMinimizedHint": "Run in the tray without showing a window."
     },

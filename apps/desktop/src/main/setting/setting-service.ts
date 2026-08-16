@@ -3,7 +3,6 @@ import path from 'node:path';
 
 import {
   AppSettingLanguage,
-  AppSettingStartupBehavior,
   AppSettingTheme,
   CalendarTimeFormat,
   CalendarView,
@@ -21,7 +20,6 @@ const DEFAULT_SETTINGS: AppSettings = {
     language: AppSettingLanguage.EN,
     theme: AppSettingTheme.SYSTEM,
     autoUpdate: true,
-    startupBehavior: AppSettingStartupBehavior.OPEN_LAST_SESSION,
     startOnSystemBoot: false,
     startMinimized: false,
   },

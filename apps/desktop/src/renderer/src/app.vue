@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import { AppEventType } from '@croffledev/common';
   import type { ConfigurationSectionContribution, ExtensionInfo } from '@croffledev/common';
   import { ref, onMounted, onUnmounted } from 'vue';
 
@@ -23,7 +22,6 @@
   import { Separator } from './components/ui/separator/index.ts';
   import UpdateModal from './components/update-modal.vue';
   import { defaultMenus } from './data/default-context-menus.ts';
-  import router from './router/index.ts';
   import { extensionLoader } from './services/extension-loader.ts';
   import { useAppSettingsStore } from './stores/app-settings-store.ts';
   import { useContextMenuStore } from './stores/context-menu-store.ts';
@@ -230,17 +228,12 @@
     }
   };
 
-  let unsubscribeStartupNav: (() => void) | null = null;
-
   onMounted(async () => {
     registerDefaultContextMenu();
     await appSettingsStore.initialize();
     updateStore.init();
     await setPluginMenus();
     await extensionLoader.init();
-    unsubscribeStartupNav = croffle.event.on(AppEventType.SETTINGS_STARTUP_NAVIGATE, (path) => {
-      void router.push(typeof path === 'string' ? path : '/calendar');
-    });
   });
 
   onUnmounted(() => {
@@ -249,7 +242,6 @@
     window.removeEventListener('extension:register-context-menu', handleRegisterContextMenu);
     window.removeEventListener('extension:loaded', handleExtensionLoaded);
     window.removeEventListener('extension:unloaded', handlePluginUnloaded);
-    unsubscribeStartupNav?.();
     appSettingsStore.dispose();
     updateStore.dispose();
   });

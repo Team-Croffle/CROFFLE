@@ -9,12 +9,6 @@ export declare enum AppSettingTheme {
   SYSTEM = 'system',
 }
 
-export declare enum AppSettingStartupBehavior {
-  OPEN_LAST_SESSION = 'openLastSession',
-  OPEN_NEW_WINDOW = 'openNewWindow',
-  DO_NOTHING = 'doNothing',
-}
-
 export declare enum CalendarView {
   DAY = 'day',
   WEEK = 'week',
@@ -37,7 +31,6 @@ export type AppSettings = {
     language: AppSettingLanguage;
     theme: AppSettingTheme;
     autoUpdate: boolean;
-    startupBehavior: AppSettingStartupBehavior;
     startOnSystemBoot: boolean;
     startMinimized: boolean;
   };

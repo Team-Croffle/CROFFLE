@@ -14,7 +14,6 @@ import type { WindowApi } from './api/window';
 import type { AppEventType } from './enums';
 import type {
   AppSettingLanguage,
-  AppSettingStartupBehavior,
   AppSettingTheme,
   CalendarTimeFormat,
   CalendarView,
@@ -25,7 +24,6 @@ import type { ClipboardDataType } from './models/clipboard';
 export interface EnumsApi {
   AppSettingLanguage: typeof AppSettingLanguage;
   AppSettingTheme: typeof AppSettingTheme;
-  AppSettingStartupBehavior: typeof AppSettingStartupBehavior;
   CalendarView: typeof CalendarView;
   CalendarWeekStartDay: typeof CalendarWeekStartDay;
   CalendarTimeFormat: typeof CalendarTimeFormat;

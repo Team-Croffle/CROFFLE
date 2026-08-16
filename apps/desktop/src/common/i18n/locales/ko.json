@@ -48,12 +48,6 @@
       "startup": "시작 프로그램",
       "startOnBoot": "OS 시작 시 실행",
       "startOnBootHint": "켜면 로그인 시 Croffle이 자동으로 실행됩니다.",
-      "startupBehavior": "시작 시 동작",
-      "startupBehaviorPlaceholder": "시작 동작 선택",
-      "startupOpenLast": "마지막에 열었던 화면",
-      "startupOpenCalendar": "캘린더 기본 화면",
-      "startupDoNothing": "열지 않음 (백그라운드)",
-      "startupBehaviorHint": "OS 시작으로 앱이 실행될 때의 초기 화면 동작입니다.",
       "startMinimized": "최소화로 시작",
       "startMinimizedHint": "시작 시 창을 표시하지 않고 트레이에서 실행합니다."
     },

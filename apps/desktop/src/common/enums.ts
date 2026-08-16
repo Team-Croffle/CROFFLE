@@ -9,12 +9,6 @@ export enum AppSettingTheme {
   SYSTEM = 'system',
 }
 
-export enum AppSettingStartupBehavior {
-  OPEN_LAST_SESSION = 'openLastSession',
-  OPEN_NEW_WINDOW = 'openNewWindow',
-  DO_NOTHING = 'doNothing',
-}
-
 export enum CalendarView {
   DAY = 'day',
   WEEK = 'week',
@@ -61,7 +55,6 @@ export enum AppEventType {
 
   // Settings
   SETTINGS_UPDATE = 'settings:update',
-  SETTINGS_STARTUP_NAVIGATE = 'settings:startup-navigate',
 
   // Window lifecycle
   WINDOW_SHOW = 'window:show',
