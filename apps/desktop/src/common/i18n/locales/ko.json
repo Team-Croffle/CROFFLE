@@ -239,10 +239,10 @@
     "errorFallback": "업데이트 중 오류가 발생했습니다."
   },
   "extensions": {
-    "loadFailed": "Failed to load extensions",
-    "loadOneFailed": "Failed to load extension {id}",
-    "executeFailed": "Failed to execute extension {name}",
-    "unloadFailed": "Failed to unload extension {id}"
+    "loadFailed": "확장을 불러오지 못했습니다",
+    "loadOneFailed": "확장 {id}를 불러오지 못했습니다",
+    "executeFailed": "확장 {name} 실행에 실패했습니다",
+    "unloadFailed": "확장 {id}를 해제하지 못했습니다"
   },
   "tray": {
     "openWindow": "창 열기",
