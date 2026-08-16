@@ -517,9 +517,9 @@
 
               <div class="grid grid-cols-2 gap-3">
                 <Field>
-                  <FieldLabel class="text-muted-foreground text-xs">{{
-                    $t('schedule.startDate')
-                  }}</FieldLabel>
+                  <FieldLabel class="text-muted-foreground text-xs">
+                    {{ $t('schedule.startDate') }}
+                  </FieldLabel>
                   <Popover v-model:open="isStartCalendarOpen">
                     <PopoverTrigger as-child>
                       <Button
@@ -557,9 +557,9 @@
                 </Field>
 
                 <Field>
-                  <FieldLabel class="text-muted-foreground text-xs">{{
-                    $t('schedule.endDate')
-                  }}</FieldLabel>
+                  <FieldLabel class="text-muted-foreground text-xs">
+                    {{ $t('schedule.endDate') }}
+                  </FieldLabel>
                   <Popover v-model:open="isEndCalendarOpen">
                     <PopoverTrigger as-child>
                       <Button
@@ -709,9 +709,9 @@
               </Field>
 
               <Field v-if="showInterval">
-                <FieldLabel for="schedule-recurrence-interval">{{
-                  $t('schedule.interval')
-                }}</FieldLabel>
+                <FieldLabel for="schedule-recurrence-interval">
+                  {{ $t('schedule.interval') }}
+                </FieldLabel>
                 <div class="flex items-center gap-2">
                   <Input
                     id="schedule-recurrence-interval"
@@ -753,9 +753,9 @@
 
               <template v-if="recurrence.preset !== 'none'">
                 <Field>
-                  <FieldLabel for="schedule-recurrence-end">{{
-                    $t('schedule.recurrenceEnd')
-                  }}</FieldLabel>
+                  <FieldLabel for="schedule-recurrence-end">
+                    {{ $t('schedule.recurrenceEnd') }}
+                  </FieldLabel>
                   <Select
                     :model-value="recurrence.endMode"
                     @update:model-value="onRecurrenceEndModeChange"
@@ -813,9 +813,9 @@
                 </Field>
 
                 <Field v-if="recurrence.endMode === 'count'">
-                  <FieldLabel for="schedule-recurrence-count">{{
-                    $t('schedule.count')
-                  }}</FieldLabel>
+                  <FieldLabel for="schedule-recurrence-count">
+                    {{ $t('schedule.count') }}
+                  </FieldLabel>
                   <div class="flex items-center gap-2">
                     <Input
                       id="schedule-recurrence-count"
@@ -824,17 +824,17 @@
                       min="1"
                       class="border-croffle-border h-10 w-24"
                     />
-                    <span class="text-muted-foreground text-sm">{{
-                      $t('schedule.countSuffix')
-                    }}</span>
+                    <span class="text-muted-foreground text-sm">
+                      {{ $t('schedule.countSuffix') }}
+                    </span>
                   </div>
                 </Field>
               </template>
 
               <Field v-if="recurrence.preset === 'custom'">
-                <FieldLabel for="schedule-recurrence-raw">{{
-                  $t('schedule.customRrule')
-                }}</FieldLabel>
+                <FieldLabel for="schedule-recurrence-raw">
+                  {{ $t('schedule.customRrule') }}
+                </FieldLabel>
                 <Input
                   id="schedule-recurrence-raw"
                   v-model="recurrence.rawRule"

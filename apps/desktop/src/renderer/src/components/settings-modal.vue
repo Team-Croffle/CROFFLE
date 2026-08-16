@@ -539,12 +539,12 @@
             <div v-else-if="loadError" class="w-full max-w-none space-y-3">
               <p class="text-destructive text-sm">{{ loadError }}</p>
               <div class="flex gap-2">
-                <Button type="button" variant="outline" @click="reloadSettings">{{
-                  $t('common.retry')
-                }}</Button>
-                <Button type="button" @click="emit('update:open', false)">{{
-                  $t('common.close')
-                }}</Button>
+                <Button type="button" variant="outline" @click="reloadSettings">
+                  {{ $t('common.retry') }}
+                </Button>
+                <Button type="button" @click="emit('update:open', false)">
+                  {{ $t('common.close') }}
+                </Button>
               </div>
             </div>
 
@@ -554,14 +554,14 @@
                 <p class="text-muted-foreground text-sm">{{ $t('settings.general.intro') }}</p>
 
                 <section class="space-y-4">
-                  <h4 class="text-base font-bold text-neutral-900">
+                  <h4 class="text-base font-bold text-foreground">
                     {{ $t('settings.general.display') }}
                   </h4>
 
                   <div class="space-y-2">
-                    <Label for="settings-language" class="text-foreground text-sm font-medium">{{
-                      $t('settings.general.language')
-                    }}</Label>
+                    <Label for="settings-language" class="text-foreground text-sm font-medium">
+                      {{ $t('settings.general.language') }}
+                    </Label>
                     <Select v-model="settings.general.language">
                       <SelectTrigger id="settings-language" class="w-full">
                         <SelectValue :placeholder="$t('settings.general.languagePlaceholder')" />
@@ -579,9 +579,9 @@
                   </div>
 
                   <div class="space-y-2">
-                    <Label for="settings-theme" class="text-foreground text-sm font-medium">{{
-                      $t('settings.general.theme')
-                    }}</Label>
+                    <Label for="settings-theme" class="text-foreground text-sm font-medium">
+                      {{ $t('settings.general.theme') }}
+                    </Label>
                     <Select
                       :model-value="settings.general.theme"
                       @update:model-value="onThemeChange"
@@ -605,14 +605,14 @@
                 <Separator />
 
                 <section class="space-y-4">
-                  <h4 class="text-base font-bold text-neutral-900">
+                  <h4 class="text-base font-bold text-foreground">
                     {{ $t('settings.general.updates') }}
                   </h4>
                   <div class="flex items-center justify-between">
                     <div class="space-y-0.5">
-                      <Label class="text-foreground text-sm font-medium">{{
-                        $t('settings.general.autoUpdate')
-                      }}</Label>
+                      <Label class="text-foreground text-sm font-medium">
+                        {{ $t('settings.general.autoUpdate') }}
+                      </Label>
                       <p class="text-muted-foreground text-xs">
                         {{ $t('settings.general.autoUpdateHint') }}
                       </p>
@@ -630,15 +630,15 @@
                 <Separator />
 
                 <section class="space-y-4">
-                  <h4 class="text-base font-bold text-neutral-900">
+                  <h4 class="text-base font-bold text-foreground">
                     {{ $t('settings.general.startup') }}
                   </h4>
 
                   <div class="flex items-center justify-between">
                     <div class="space-y-0.5">
-                      <Label class="text-foreground text-sm font-medium">{{
-                        $t('settings.general.startOnBoot')
-                      }}</Label>
+                      <Label class="text-foreground text-sm font-medium">
+                        {{ $t('settings.general.startOnBoot') }}
+                      </Label>
                       <p class="text-muted-foreground text-xs">
                         {{ $t('settings.general.startOnBootHint') }}
                       </p>
@@ -687,9 +687,9 @@
 
                     <div class="flex items-center justify-between">
                       <div class="space-y-0.5">
-                        <Label class="text-foreground text-sm font-medium">{{
-                          $t('settings.general.startMinimized')
-                        }}</Label>
+                        <Label class="text-foreground text-sm font-medium">
+                          {{ $t('settings.general.startMinimized') }}
+                        </Label>
                         <p class="text-muted-foreground text-xs">
                           {{ $t('settings.general.startMinimizedHint') }}
                         </p>
@@ -712,9 +712,9 @@
                 <p class="text-muted-foreground text-sm">{{ $t('settings.calendar.intro') }}</p>
 
                 <div class="space-y-2">
-                  <Label for="settings-default-view" class="text-foreground text-sm font-medium">{{
-                    $t('settings.calendar.defaultView')
-                  }}</Label>
+                  <Label for="settings-default-view" class="text-foreground text-sm font-medium">
+                    {{ $t('settings.calendar.defaultView') }}
+                  </Label>
                   <Select v-model="settings.calendar.defaultView">
                     <SelectTrigger id="settings-default-view" class="w-full">
                       <SelectValue :placeholder="$t('settings.calendar.defaultViewPlaceholder')" />
@@ -732,9 +732,9 @@
                 </div>
 
                 <div class="space-y-2">
-                  <Label for="settings-week-start" class="text-foreground text-sm font-medium">{{
-                    $t('settings.calendar.weekStart')
-                  }}</Label>
+                  <Label for="settings-week-start" class="text-foreground text-sm font-medium">
+                    {{ $t('settings.calendar.weekStart') }}
+                  </Label>
                   <Select v-model="settings.calendar.weekStartDay">
                     <SelectTrigger id="settings-week-start" class="w-full">
                       <SelectValue :placeholder="$t('settings.calendar.weekStartPlaceholder')" />
@@ -752,9 +752,9 @@
                 </div>
 
                 <div class="space-y-2">
-                  <Label for="settings-time-format" class="text-foreground text-sm font-medium">{{
-                    $t('settings.calendar.timeFormat')
-                  }}</Label>
+                  <Label for="settings-time-format" class="text-foreground text-sm font-medium">
+                    {{ $t('settings.calendar.timeFormat') }}
+                  </Label>
                   <Select v-model="settings.calendar.timeFormat">
                     <SelectTrigger id="settings-time-format" class="w-full">
                       <SelectValue :placeholder="$t('settings.calendar.timeFormatPlaceholder')" />
@@ -773,9 +773,9 @@
 
                 <div class="flex items-center justify-between">
                   <div class="space-y-0.5">
-                    <Label class="text-foreground text-sm font-medium">{{
-                      $t('settings.calendar.showWeekNumbers')
-                    }}</Label>
+                    <Label class="text-foreground text-sm font-medium">
+                      {{ $t('settings.calendar.showWeekNumbers') }}
+                    </Label>
                     <p class="text-muted-foreground text-xs">
                       {{ $t('settings.calendar.showWeekNumbersHint') }}
                     </p>
@@ -798,9 +798,9 @@
 
                 <div class="flex items-center justify-between border-b border-neutral-100 py-2">
                   <div class="min-w-0 space-y-0.5">
-                    <Label class="text-sm font-semibold">{{
-                      $t('settings.notifications.enabled')
-                    }}</Label>
+                    <Label class="text-sm font-semibold">
+                      {{ $t('settings.notifications.enabled') }}
+                    </Label>
                     <p class="text-muted-foreground wrap-break-words text-xs">
                       {{ $t('settings.notifications.enabledHint') }}
                     </p>
@@ -851,9 +851,9 @@
                     {{ $t('settings.notifications.comingSoon') }}
                   </p>
                   <div class="flex items-center justify-between py-2">
-                    <Label class="text-sm font-semibold">{{
-                      $t('settings.notifications.emailAlert')
-                    }}</Label>
+                    <Label class="text-sm font-semibold">
+                      {{ $t('settings.notifications.emailAlert') }}
+                    </Label>
                     <Switch
                       disabled
                       :checked="notificationDraft.emailAlert"
@@ -884,9 +884,9 @@
                         </SelectItem>
                       </SelectContent>
                     </Select>
-                    <span class="text-sm text-neutral-500">{{
-                      $t('settings.notifications.dnd')
-                    }}</span>
+                    <span class="text-sm text-neutral-500">
+                      {{ $t('settings.notifications.dnd') }}
+                    </span>
                   </div>
                 </section>
               </div>
@@ -900,7 +900,7 @@
                   class="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900"
                 >
                   <h4
-                    class="mb-3 text-sm font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-2"
+                    class="mb-3 text-sm font-bold text-foreground dark:text-neutral-100 flex items-center gap-2"
                   >
                     <Icon icon="lucide:github" class="h-4 w-4" />
                     {{ $t('settings.extensions.installFromGithub') }}
@@ -932,7 +932,7 @@
                   <Separator class="my-5" />
 
                   <h4
-                    class="mb-3 text-sm font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-2"
+                    class="mb-3 text-sm font-bold text-foreground dark:text-neutral-100 flex items-center gap-2"
                   >
                     <Icon icon="lucide:download" class="h-4 w-4" />
                     {{ $t('settings.extensions.installFromZip') }}
@@ -941,7 +941,7 @@
                     <Button
                       type="button"
                       :disabled="isInstalling"
-                      class="h-9 gap-2 border-none bg-neutral-200 text-neutral-900 hover:bg-neutral-300 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-700"
+                      class="h-9 gap-2 border-none bg-neutral-200 text-foreground hover:bg-neutral-300 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-700"
                       @click="onLocalZipSelect"
                     >
                       <Icon
@@ -957,7 +957,7 @@
 
                 <!-- 확장 목록 -->
                 <div class="space-y-4">
-                  <h4 class="text-base font-bold text-neutral-900 dark:text-neutral-100">
+                  <h4 class="text-base font-bold text-foreground dark:text-neutral-100">
                     {{ $t('settings.extensions.installed') }}
                   </h4>
 
@@ -968,7 +968,7 @@
                     <div class="mb-4 rounded-full bg-neutral-200/50 p-3 dark:bg-neutral-800/50">
                       <Icon icon="lucide:puzzle" class="h-6 w-6 text-neutral-500" />
                     </div>
-                    <p class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                    <p class="text-sm font-medium text-foreground dark:text-neutral-100">
                       {{ $t('settings.extensions.emptyTitle') }}
                     </p>
                     <p class="mt-1 text-xs text-neutral-500">
@@ -986,7 +986,7 @@
                         <div class="min-w-0 flex-1">
                           <div class="flex items-center gap-2">
                             <h5
-                              class="truncate font-semibold text-neutral-900 dark:text-neutral-100"
+                              class="truncate font-semibold text-foreground dark:text-neutral-100"
                               :title="plugin.name"
                             >
                               {{ plugin.name }}
