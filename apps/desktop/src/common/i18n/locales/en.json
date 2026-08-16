@@ -209,12 +209,12 @@
     "welcome": {
       "title": "Welcome!",
       "description": "Welcome to Croffle.",
-      "content": "Use the left menu to switch between today's tasks\nand the full calendar."
+      "content": "Use the left sidebar and calendar to manage your schedules.\nSee today and upcoming events in one place."
     },
     "addTodo": {
-      "title": "Add a task",
+      "title": "Add a schedule",
       "description": "Create a schedule with one click.",
-      "content": "Click a date on the calendar to jot down a task.\nYou can also drag to move dates!"
+      "content": "Click a date on the calendar to create a new event.\nYou can also drag to move dates!"
     },
     "theme": {
       "title": "Set your theme",
@@ -224,7 +224,7 @@
     "ready": {
       "title": "You're ready!",
       "description": "That's everything you need.",
-      "content": "Add your first task and plan the day with Croffle!"
+      "content": "Add your first schedule and plan the day with Croffle!"
     }
   },
   "update": {
