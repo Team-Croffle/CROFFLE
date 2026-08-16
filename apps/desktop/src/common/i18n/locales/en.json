@@ -1,0 +1,13 @@
+{
+  "tray": {
+    "openWindow": "Open Window",
+    "exitApp": "Exit App"
+  },
+  "notification": {
+    "fallbackTitle": "Notification"
+  },
+  "reminder": {
+    "bodyAllDay": "{minutes} minutes before · All-day",
+    "bodyTimed": "Starts in {minutes} min · {time}"
+  }
+}
