@@ -8,8 +8,8 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@croffledev/croffle-types": "latest",
-    "typescript": "^5.0.0",
-    "vite": "^5.0.0"
+    "@croffledev/croffle-types": "^1.4.1",
+    "typescript": "6.0.3",
+    "vite": "^8.2.1"
   }
 }
