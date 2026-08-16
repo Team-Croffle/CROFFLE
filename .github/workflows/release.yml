@@ -3,6 +3,9 @@
 # Inspired by electron-builder GitHub Actions docs and dispatch-driven flows
 # (e.g. openhive bump+tag+matrix publish, Orca normalize-version dispatch).
 #
+# After tagging, creates a single draft Release first so parallel mac/linux/win
+# electron-builder --publish jobs attach assets to one release (no draft race).
+#
 # Trigger: Actions → "Croffle Release" → Run workflow
 #   - release_type: rc | patch | minor | major
 #   - version: optional exact semver (no leading v). If empty, bump from apps/desktop.
@@ -222,6 +225,26 @@ jobs:
           git push origin "$TAG"
 
           echo "ref=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      # Create one draft before the OS matrix publishes. Without this, parallel
+      # electron-builder --publish jobs race and each may create its own draft.
+      - name: Create draft GitHub Release
+        if: ${{ inputs.dry_run != true }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.calc.outputs.tag }}
+          VERSION: ${{ steps.calc.outputs.version }}
+          IS_PRE: ${{ steps.calc.outputs.is_prerelease }}
+        run: |
+          set -euo pipefail
+          # Empty body; editors can fill notes before publishing. Always draft
+          # here so electron-updater never sees a half-uploaded release.
+          ARGS=(--draft --title "$VERSION" --notes "")
+          if [[ "$IS_PRE" == "true" ]]; then
+            ARGS+=(--prerelease)
+          fi
+          gh release create "$TAG" "${ARGS[@]}" --repo "$GITHUB_REPOSITORY"
+          echo "Created draft release $TAG (assets will be uploaded by build matrix)"
 
   build:
     name: Build (${{ matrix.os }})
