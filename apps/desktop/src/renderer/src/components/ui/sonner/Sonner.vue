@@ -6,13 +6,18 @@
   import type { ToasterProps } from 'vue-sonner';
   import { Toaster as Sonner } from 'vue-sonner';
 
+  import { useThemeStore } from '@/stores/theme-store';
+
   const props = defineProps<ToasterProps>();
+  const { currentTheme } = useThemeStore();
 </script>
 
 <template>
   <Sonner
-    class="toaster group pointer-events-auto"
     v-bind="props"
+    class="toaster group pointer-events-auto"
+    rich-colors
+    :theme="currentTheme"
     :style="{
       '--normal-bg': 'var(--popover)',
       '--normal-text': 'var(--popover-foreground)',
